@@ -29,6 +29,7 @@ import { TARGETS } from "../src/zod/constants";
  */
 
 const MAX_SAFE = Number.MAX_SAFE_INTEGER;
+const VERSION: string = JSON.parse(fs.readFileSync("package.json", "utf-8")).version;
 
 type Compte = { total: number; decrits: number; nus: string[] };
 
@@ -165,6 +166,35 @@ function run(): void {
     } else {
       console.error("  ✗ $id absent ou vide — le schéma n'a pas d'identité citable");
       echecs++;
+    }
+
+    // 3b. gel versionne : meme contenu, identite propre
+    const cheminGel = path.join("schemas", t.game.folder, VERSION, `${t.name}.schema.json`);
+    if (!fs.existsSync(cheminGel)) {
+      console.error(
+        `  ✗ gel absent (${cheminGel}) — un consommateur ne peut epingler aucune version`,
+      );
+      echecs++;
+    } else {
+      const gel = JSON.parse(fs.readFileSync(cheminGel, "utf-8"));
+      const attendu = schema.$id?.replace(
+        `/${t.game.folder}/${t.name}.schema.json`,
+        `/${t.game.folder}/${VERSION}/${t.name}.schema.json`,
+      );
+      const memeContenu =
+        JSON.stringify({ ...gel, $id: undefined }) ===
+        JSON.stringify({ ...schema, $id: undefined });
+      if (gel.$id === attendu && memeContenu) {
+        console.log(`  ✓ gel ${VERSION} conforme, identite propre`);
+      } else {
+        if (gel.$id !== attendu) {
+          console.error(`  ✗ gel ${VERSION} : $id attendu ${attendu}, trouve ${gel.$id}`);
+        }
+        if (!memeContenu) {
+          console.error(`  ✗ gel ${VERSION} : le contenu differe du schema courant hors $id`);
+        }
+        echecs++;
+      }
     }
 
     // 4. couverture des descriptions

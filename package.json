@@ -1,6 +1,6 @@
 {
   "name": "schema-adrenaline",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Open, versioned data schemas for the Adrenaline System (Zombiology and friends), to make digital tools interoperable.",
   "scripts": {
     "gen": "tsx tools/gen-schemas.ts",

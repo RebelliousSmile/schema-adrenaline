@@ -109,6 +109,17 @@ the refusal corpus, and it does not recurse into subdirectories anyway.
 Adding a field means adding its refusal case. A constraint no test exercises is
 a constraint nobody will notice losing.
 
+## Publishing a version
+
+The version in `package.json` drives the frozen copies under
+`schemas/<game>/<version>/`. Bumping it makes `npm run gen` write a new frozen
+directory beside the previous ones.
+
+A frozen directory that has been published must never be regenerated or edited
+by hand: someone may already be pinning it. The audit checks that each frozen
+copy matches the current schema byte for byte apart from its `$id`, so bumping
+the version is the only correct way to change a published shape.
+
 ## Dev commands
 
 ```bash

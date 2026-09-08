@@ -54,6 +54,23 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
   rejected
 - `tools/` provides generation, validation and audit scripts
 
+## Pinning a version
+
+`npm run gen` writes each schema twice:
+
+- `schemas/adrenaline/<target>.schema.json` — the latest version. Its `$id`
+  points at `main`, and its content changes whenever the sources do.
+- `schemas/adrenaline/<version>/<target>.schema.json` — a frozen copy, whose
+  `$id` carries the version number in its own path.
+
+Point your tool at the frozen copy if you need the document to stay put. An
+`$id` under `main` changes content without changing identity, which is fine to
+follow but not to depend on.
+
+Versioning goes through the path, never through a git tag: the same file served
+from a tag would still declare `main` as its `$id`, so its identity would not
+match the URL serving it.
+
 ## How far to trust these schemas
 
 Claims about a schema are cheap, so `npm run audit` measures them instead. It
