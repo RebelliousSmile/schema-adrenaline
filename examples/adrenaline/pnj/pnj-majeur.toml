@@ -1,0 +1,117 @@
+# Cartouche complet : chiffré de bout en bout et narratif fourni.
+
+niveauDeDanger = 4
+
+[identite]
+nom = "Kaczmarek"
+prenom = "Wanda"
+surnom = "La Capitaine"
+nationalite = "polonaise"
+genre = "femme"
+age = 47
+cheveux = "gris coupés court"
+yeux = "gris"
+taille = "1,74 m"
+signesParticuliers = ["boiterie de la jambe droite"]
+description = "Voix basse, dos droit, ne s'assied jamais dos à une porte."
+
+[caracteristiques]
+for = 55
+con = 60
+dex = 50
+rap = 40
+log = 65
+vol = 75
+per = 60
+cha = 55
+
+[sante.physique.superficiel]
+base = 8
+
+[sante.physique.leger]
+base = 19
+
+[sante.physique.grave]
+base = 24
+
+[sante.physique.profond]
+base = 29
+
+[sante.mental.superficiel]
+base = 7
+couvert = 9
+
+[sante.mental.leger]
+base = 20
+couvert = 22
+
+[sante.mental.grave]
+base = 25
+couvert = 27
+
+[sante.mental.profond]
+base = 30
+couvert = 32
+
+[protections.physiques]
+solidite = 8
+
+[protections.physiques.armure]
+nom = "gilet pare-balles de gendarmerie"
+points = 5
+localisations = ["torse"]
+
+[protections.mentales]
+solidite = 7
+
+[protections.mentales.caractere]
+trait = "discipline de commandement"
+points = 2
+localisations = ["peur", "impuissance", "culpabilite"]
+
+[[formations]]
+nom = "Officier de gendarmerie"
+pourcentage = 70
+
+[[formations.competences]]
+nom = "Commandement"
+pourcentage = 75
+
+[[formations.competences]]
+nom = "Armes à feu (fusil d'assaut)"
+pourcentage = 65
+
+[[competences]]
+nom = "Premiers secours"
+pourcentage = 50
+
+[equipement]
+possessionsFavorites = ["carnet de service annoté", "sifflet de manoeuvre"]
+
+[[equipement.armesPhysiques]]
+nom = "pistolet de service"
+type = "distance"
+degats = "2d6"
+
+[[equipement.armesMentales]]
+nom = "rappel à l'ordre"
+type = "sociale"
+
+[narratif]
+role = "Tient le poste de commandement improvisé du lycée et arbitre les rationnements."
+attitude = "neutre, tendance méfiante tant que les joueurs n'ont pas rendu un service vérifiable"
+personnalite = ["méthodique", "peu bavarde", "loyale jusqu'à l'entêtement"]
+historique = "Trente ans de service, dont deux missions extérieures ; elle a perdu son unité le troisième jour."
+evolutionPossible = "Peut basculer dans l'autoritarisme si le ravitaillement s'effondre, ou céder le commandement si on lui prouve qu'elle se trompe."
+interpretation = [
+  "Parler lentement, faire répéter plutôt que hausser le ton.",
+  "Ne jamais donner d'ordre sans en donner la raison.",
+]
+repliques = [
+  "Vous me donnez un nom, une heure, et je vous donne une réponse.",
+  "Ici, on ne négocie pas les tours de garde.",
+]
+notesMj = [
+  "Sait que le générateur ne tiendra pas trois semaines et le cache.",
+  "Cède si on lui présente un plan écrit, jamais à une promesse.",
+]

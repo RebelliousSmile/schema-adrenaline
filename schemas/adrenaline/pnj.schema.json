@@ -1,0 +1,685 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "identite": {
+      "type": "object",
+      "properties": {
+        "nom": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prenom": {
+          "type": "string",
+          "minLength": 1
+        },
+        "surnom": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nationalite": {
+          "type": "string",
+          "minLength": 1
+        },
+        "genre": {
+          "type": "string",
+          "minLength": 1
+        },
+        "age": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cheveux": {
+          "type": "string",
+          "minLength": 1
+        },
+        "yeux": {
+          "type": "string",
+          "minLength": 1
+        },
+        "peau": {
+          "type": "string",
+          "minLength": 1
+        },
+        "taille": {
+          "type": "string",
+          "minLength": 1
+        },
+        "poids": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signesParticuliers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "historique": {
+          "type": "string",
+          "minLength": 1
+        },
+        "momentsMarquants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "nom"
+      ],
+      "additionalProperties": false
+    },
+    "caracteristiques": {
+      "type": "object",
+      "properties": {
+        "for": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Force."
+        },
+        "con": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Constitution."
+        },
+        "dex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Dextérité."
+        },
+        "rap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Rapidité."
+        },
+        "log": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Logique."
+        },
+        "vol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Volonté."
+        },
+        "per": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Perception."
+        },
+        "cha": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Charisme."
+        }
+      },
+      "additionalProperties": false
+    },
+    "sante": {
+      "description": "Seuils de santé. Chaque palier est séparément optionnel : un cartouche allégé n'en note qu'une partie.",
+      "type": "object",
+      "properties": {
+        "physique": {
+          "type": "object",
+          "properties": {
+            "superficiel": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            },
+            "leger": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            },
+            "grave": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            },
+            "profond": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "mental": {
+          "type": "object",
+          "properties": {
+            "superficiel": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            },
+            "leger": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            },
+            "grave": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            },
+            "profond": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "Valeur du palier sur une localisation non couverte."
+                },
+                "couvert": {
+                  "description": "Valeur du palier sur une localisation couverte par une armure ou un trait de caractère.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "protections": {
+      "type": "object",
+      "properties": {
+        "physiques": {
+          "type": "object",
+          "properties": {
+            "solidite": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991,
+              "description": "PP de Solidité physique."
+            },
+            "armure": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "points": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "PP d'Armure."
+                },
+                "localisations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "jambe-droite",
+                      "jambe-gauche",
+                      "torse",
+                      "bras-faible",
+                      "bras-fort",
+                      "tete"
+                    ],
+                    "description": "Localisation corporelle. Caractéristique associée : jambe droite RAP, jambe gauche RAP, torse ou dos CON, bras faible DEX, bras fort FOR, tête PER."
+                  },
+                  "description": "Localisations corporelles couvertes par l'armure."
+                }
+              },
+              "required": [
+                "points",
+                "localisations"
+              ],
+              "additionalProperties": false
+            },
+            "bouclier": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "proprietes": {
+                  "description": "Type de couvert (bouclier physique) ou de censure (bouclier mental).",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "nom"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "solidite"
+          ],
+          "additionalProperties": false
+        },
+        "mentales": {
+          "type": "object",
+          "properties": {
+            "solidite": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991,
+              "description": "PM de Solidité mentale."
+            },
+            "caractere": {
+              "type": "object",
+              "properties": {
+                "trait": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Trait de caractère."
+                },
+                "points": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991,
+                  "description": "PM de Caractère."
+                },
+                "localisations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "anxiete",
+                      "impuissance",
+                      "colere",
+                      "tristesse",
+                      "peur",
+                      "culpabilite"
+                    ],
+                    "description": "Localisation émotionnelle. Caractéristique associée : anxiété CHA, impuissance CHA, colère LOG, tristesse PER, peur VOL, culpabilité DEX."
+                  },
+                  "description": "Localisations émotionnelles couvertes par le trait de caractère."
+                }
+              },
+              "required": [
+                "trait",
+                "points",
+                "localisations"
+              ],
+              "additionalProperties": false
+            },
+            "bouclier": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "proprietes": {
+                  "description": "Type de couvert (bouclier physique) ou de censure (bouclier mental).",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "nom"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "solidite"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "formations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pourcentage": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "competences": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pourcentage": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "nom",
+                "pourcentage"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "nom",
+          "pourcentage",
+          "competences"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "competences": {
+      "description": "Compétences rattachées directement au personnage, hors formation : un cartouche de scénario en donne souvent sans passer par les trois formations d'un PJ.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pourcentage": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "nom",
+          "pourcentage"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "equipement": {
+      "type": "object",
+      "properties": {
+        "armesPhysiques": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "type": "string",
+                "minLength": 1
+              },
+              "degats": {
+                "description": "Dégâts, tels que notés sur la feuille.",
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "nom"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "armesMentales": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "type": "string",
+                "minLength": 1
+              },
+              "degats": {
+                "description": "Dégâts, tels que notés sur la feuille.",
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "nom"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "possessionsFavorites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "niveauDeDanger": {
+      "description": "ND. Mesure l'opposition que le personnage représente.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "narratif": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "description": "Rôle du personnage dans le scénario.",
+          "type": "string",
+          "minLength": 1
+        },
+        "attitude": {
+          "description": "Attitude envers les personnages joueurs. Chaîne libre et non ensemble fermé : les cartouches la nuancent volontiers au-delà du triptyque favorable, neutre, hostile.",
+          "type": "string",
+          "minLength": 1
+        },
+        "personnalite": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "historique": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evolutionPossible": {
+          "description": "Ce que le personnage peut devenir selon le tour que prend la partie.",
+          "type": "string",
+          "minLength": 1
+        },
+        "interpretation": {
+          "description": "Conseils de jeu : approche, tics et manières, réactions émotionnelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "repliques": {
+          "description": "Répliques types, à lancer telles quelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "notesMj": {
+          "description": "Réservé au meneur : secrets, faiblesses, alliés, stratégies, réactions contextuelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "identite"
+  ],
+  "additionalProperties": false,
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pnj.schema.json",
+  "title": "Personnage non joué — Adrenaline System",
+  "description": "Cartouche de personnage non joué du socle Adrenaline System : identité requise, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré."
+}

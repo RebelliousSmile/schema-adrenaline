@@ -1,6 +1,7 @@
 import { ZodObject } from "zod";
 
 import { PersonnageJoueur } from "./adrenaline/pj";
+import { PersonnageNonJoue } from "./adrenaline/pnj";
 
 type Game = {
   name: string;
@@ -48,6 +49,11 @@ export const TARGETS: Array<SchemaTarget> = [
   {
     name: "pj",
     zod: PersonnageJoueur,
+    game: GAMES.adrenaline,
+  },
+  {
+    name: "pnj",
+    zod: PersonnageNonJoue,
     game: GAMES.adrenaline,
   },
 ];

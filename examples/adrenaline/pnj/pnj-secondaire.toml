@@ -1,0 +1,35 @@
+# Cartouche allégé : quelques chiffres, aucun bloc narratif.
+# Trois paliers de seuil seulement, comme le note souvent un cartouche.
+
+[identite]
+nom = "Brenner"
+prenom = "Ludovic"
+age = 52
+
+[caracteristiques]
+for = 50
+con = 45
+per = 40
+
+[sante.physique.leger]
+base = 14
+
+[sante.physique.grave]
+base = 19
+
+[sante.physique.profond]
+base = 24
+
+[protections.physiques]
+solidite = 5
+
+[[competences]]
+nom = "Mécanique (moteurs diesel)"
+pourcentage = 60
+
+[[competences]]
+nom = "Bricolage"
+pourcentage = 45
+
+[equipement]
+possessionsFavorites = ["clé à molette ébréchée"]
