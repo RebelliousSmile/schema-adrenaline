@@ -1,0 +1,81 @@
+# Un zé de base : aucune caractéristique mentale hors perception, un bloc
+# contagion, un état stimulé qui rejoue les valeurs modifiées.
+
+nom = "Rôdeur"
+typeDeCorps = "adulte moyen"
+instinct = "traque au bruit"
+typeDInfecte = "première génération"
+description = "Se déplace au son, sans jamais lever la tête. Ne court pas tant que rien ne l'a stimulé."
+niveauDeDanger = 2
+zoneDeDetection = "15 m au bruit, 5 m à vue"
+deplacement = "6 m par action"
+actionsParRound = 1
+comportement = [
+  "Marche vers la source sonore la plus proche.",
+  "Ne contourne pas un obstacle : il le pousse ou s'y arrête.",
+]
+traitsSpeciaux = [
+  "Insensible aux attaques mentales.",
+  "Ne ressent ni douleur ni fatigue.",
+]
+
+[caracteristiques]
+for = 45
+con = 60
+dex = 25
+rap = 30
+per = 40
+
+[sante.physique.superficiel]
+base = 5
+
+[sante.physique.leger]
+base = 15
+
+[sante.physique.grave]
+base = 20
+
+[sante.physique.profond]
+base = 25
+
+[protections.physiques]
+solidite = 5
+
+[etatAlternatif]
+nom = "stimulé"
+declencheurs = [
+  "Un cri, un coup de feu ou une lumière vive à portée de détection.",
+  "Retombe à l'état de base après deux rounds sans nouveau stimulus.",
+]
+zoneDeDetection = "30 m au bruit"
+deplacement = "12 m par action"
+actionsParRound = 2
+notes = "Ce qui n'est pas redéclaré ici reste celui de l'état de base."
+
+[etatAlternatif.caracteristiques]
+rap = 55
+per = 55
+
+[contagion]
+agent = "agent viral de première génération"
+delaiAvantEffet = "de quelques heures à deux jours"
+issue = "La victime meurt, puis se relève sous la forme du corps qu'elle avait."
+
+[[contagion.vecteurs]]
+nom = "morsure"
+notes = "Vecteur principal ; la plaie suffit, la quantité importe peu."
+
+[[contagion.vecteurs]]
+nom = "griffure"
+notes = "Contamination moindre, liée aux résidus sous les ongles."
+
+[[contagion.vecteurs]]
+nom = "projection sur muqueuse"
+
+[[contagion.modulations]]
+profil = "enfant en bas âge"
+delaiAvantEffet = "nettement raccourci"
+
+[[contagion.modulations]]
+profil = "personne âgée"
+issue = "Meurt souvent sans se relever."

@@ -10,9 +10,26 @@ for their specific needs.
 
 ## Status
 
-Early. `src/zod/constants.ts` declares no schema target yet, so `schemas/` and
-`examples/` are empty and `npm run check` passes trivially. The toolchain is in
-place and ready for the first schema.
+Early, but no longer empty. Three character schemas are published under the
+`adrenaline` folder, each covered by two examples.
+
+## Published schemas
+
+They live under `adrenaline` rather than under a game folder because they
+describe the engine itself: every game running on the Adrenaline System shares
+them, and a game folder holds only what is specific to it.
+
+| Schema | Covers |
+| ------ | ------ |
+| `schemas/adrenaline/pj.schema.json` | A player character sheet: identity, the eight characteristics, physical and mental damage thresholds, protections, trainings and gear. |
+| `schemas/adrenaline/pnj.schema.json` | A non-player character record: identity only is required, everything else optional, from a named walk-on to a fully statted major character. |
+| `schemas/adrenaline/monstre.schema.json` | A creature record: name and the four physical characteristics required, mental ones optional, with an alternate state, a generic contagion block and a narrative block. |
+
+**These schemas describe the shape of a record, not its content.** They enumerate
+no training, no skill, no weapon, no character trait and no creature. Every such
+name is a free string, because those catalogues belong to each game and to its
+publisher — not to the engine. What is closed is what the engine itself fixes:
+the eight characteristics, the twelve hit locations, the four damage thresholds.
 
 ## What's in here
 
@@ -28,8 +45,8 @@ place and ready for the first schema.
 If you use TypeScript and Zod parsing, you can copy/paste the provided Zod schemas:
 
 ```ts
-import { ZombiologyExampleSchema } from "./src/zod/zombiology/example";
-const parsed = ZombiologyExampleSchema.parse(userInputJson);
+import { PersonnageJoueur } from "./src/zod/adrenaline/pj";
+const parsed = PersonnageJoueur.parse(userInputJson);
 ```
 
 ### Validate data (language-agnostic)
@@ -42,7 +59,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
 const schema = JSON.parse(
-  fs.readFileSync("schemas/zombiology/example.schema.json", "utf8")
+  fs.readFileSync("schemas/adrenaline/pj.schema.json", "utf8")
 );
 
 const ajv = new Ajv({ allErrors: true, strict: false });
