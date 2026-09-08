@@ -1,0 +1,21 @@
+node_modules/
+package-lock.json
+
+# Réécrits à chaque `npm run gen` par JSON.stringify : les reformater créerait
+# une dérive que la génération suivante annule.
+schemas/
+
+# Plans et specs, rédigés à la main ; Prettier reflowerait le Markdown.
+aidd_docs/
+
+# Textes de licence : ils doivent rester a l octet pres.
+LICENSE
+LICENSES/
+
+# Artefacts IA, hors depot (voir .git/info/exclude).
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+GEMINI.md
+MEMORY.md
+.claude/

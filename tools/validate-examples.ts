@@ -38,11 +38,7 @@ async function run() {
   const allResults: Result[] = [];
 
   for (const t of TARGETS) {
-    const schemaPath = path.join(
-      "schemas",
-      t.game.folder,
-      `${t.name}.schema.json`
-    );
+    const schemaPath = path.join("schemas", t.game.folder, `${t.name}.schema.json`);
     const examplesDir = path.join("examples", t.game.folder, t.name);
 
     if (!fs.existsSync(schemaPath)) {

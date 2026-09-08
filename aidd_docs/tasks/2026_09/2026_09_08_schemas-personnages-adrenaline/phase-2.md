@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Socle Zod et cible `pj`
@@ -16,7 +16,7 @@ status: pending
 │   │   ├── caracteristiques.ts         ✅ les 8 clés fermées, valeur en pourcentage
 │   │   ├── localisations.ts            ✅ 6 localisations corporelles et 6 émotionnelles, fermées
 │   │   ├── sante.ts                    ✅ seuils physiques et mentaux, 4 niveaux fermés
-│   │   ├── protections.ts              ✅ PP et PM par localisation, bouclier
+│   │   ├── protections.ts              ✅ PP et PM par localisation, solidités, bouclier
 │   │   ├── equipement.ts               ✅ armes physiques et mentales, possessions, listes non bornées
 │   │   ├── formations.ts               ✅ formation pourcentée et ses compétences, noms en chaînes libres
 │   │   └── identite.ts                 ✅ bloc identité, tout optionnel sauf le nom
@@ -51,6 +51,14 @@ flowchart TD
 2. Laisser `zombiology` et `rdt` en place et intactes.
 3. Documenter en commentaire que cette entrée porte le socle commun, et que les jeux ne portent que leurs spécificités.
 
+### `1bis)` Rejouer la sonde Zod avant d'écrire
+
+> Les faits de composition datent de la planification ; les phases suivantes s'y adossent.
+
+1. Écrire un fichier de sonde jetable, le lancer par `npx.cmd tsx`, puis le supprimer — il ne rejoint ni `src/` ni `TARGETS`.
+2. Confirmer sur le Zod réellement installé : `A.extend(B.shape)` et `A.extend(B.partial().shape)` rendent un objet fermé unique, `A.and(B)` rend un `allOf` insatisfiable, `.meta({ $id })` émet `$id`, un sous-schéma réutilisé est inliné sans `$ref`.
+3. Si la version installée a bougé et qu'un de ces points tombe, arrêter et corriger le plan avant d'écrire une ligne de schéma.
+
 ### `2)` Écrire les sous-schémas de forme
 
 > Fermer ce qui est mécanique, laisser ouvert ce qui est catalogue.
@@ -60,11 +68,11 @@ flowchart TD
 3. `sante.ts` : enum fermé des 4 niveaux `superficiel`, `leger`, `grave`, `profond` — libellés attestés par le PDF, pas par le générateur web — et un objet de seuils physiques et un de seuils mentaux.
 4. `protections.ts` : une valeur de protection par localisation, plus solidité et bouclier.
 5. `equipement.ts` : armes physiques, armes mentales, possessions. Nom en chaîne libre, listes sans `maxItems` — la borne à 3 du générateur vient de la place sur la feuille.
-6. `formations.ts` : une formation porte un nom libre, un pourcentage, et une liste de compétences nommées et pourcentées.
+6. `formations.ts` : exporter d'abord la compétence seule — nom libre et pourcentage — puis la formation, qui porte un nom libre, un pourcentage et une liste de ces compétences. L'exportation séparée n'est pas facultative : la phase 3 donne des compétences à un PNJ sans formation, la phase 4 en donne à un monstre qui n'en a aucune ; sans elle, les deux consommeraient un objet qui n'existe pas.
 7. `identite.ts` : nom requis, le reste optionnel.
 8. Sur chaque champ, poser un `.meta({ description })` court, et y reporter les faits de la phase 1 que le schéma publié doit porter — `aidd_docs/` est commité, mais un consommateur du seul `schemas/` ne lit que ces descriptions.
 9. N'employer `.default()` nulle part : la génération tourne en vue output, un `.default()` atterrit dans `required` et fait inventer une valeur. Un champ optionnel prend `.optional()`.
-10. N'employer `.refine()` nulle part sur un objet destiné à `TARGETS` : la contrainte disparaît du JSON Schema généré, et l'objet devient un `ZodEffects` que le type `SchemaTarget` de `constants.ts` refuse.
+10. N'employer `.refine()` nulle part sur un objet destiné à `TARGETS` : la contrainte disparaît silencieusement du JSON Schema généré. Rien ne l'attrape — sondé sur Zod 4.3.6, `.refine()` rend un `ZodObject` (`instanceof z.ZodObject` vrai, `ZodEffects` n'existe plus en Zod 4), donc `SchemaTarget` l'accepte et `tsc --noEmit --strict` sort 0. Le typage ne protège pas ici ; seule la relecture protège. Écrire la contrainte en `.meta({ description })`.
 11. Accepter que les sous-schémas soient inlinés dans chaque cible plutôt que référencés : Zod 4.3.6 n'émet ni `$ref` ni `$defs` en draft-7. Les trois fichiers générés dupliqueront donc santé et caractéristiques — c'est attendu, pas un défaut à corriger à la main.
 
 ### `3)` Assembler la cible `pj`
@@ -92,6 +100,7 @@ flowchart TD
 | Task | Acceptance criteria                                                                                                                                      |
 | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1    | `GAMES.adrenaline` existe, `npx.cmd tsc --noEmit` passe, et les entrées `zombiology` et `rdt` n'ont pas bougé. Ne pas s'appuyer sur `npm run check` ici : `TARGETS` est encore vide, la chaîne sort en 0 sans rien prouver. |
-| 2    | Une valeur hors des 8 clés de caractéristique, des 12 localisations ou des 4 niveaux de seuil est refusée ; un nom de compétence ou d'arme inédit est accepté. Un personnage portant les 8 caractéristiques valide — ce qui prouve que la composition n'a pas produit un `allOf` insatisfiable. |
+| 1bis | La sonde a tourné sur la version de Zod installée, ses quatre points sont confirmés, et le fichier de sonde n'existe plus — `git status` est propre de tout fichier temporaire. |
+| 2    | `grep -rn -e '\.refine(' -e '\.default(' src/zod/` sort vide — ni le typage ni `npm run check` n'attrapent ces deux-là, seul ce grep le fait. Commande à lancer sous Bash — sous PowerShell `grep` n'existe pas. Sortie vide = code 1 : ne pas l'enchaîner derrière `&&`. Une valeur hors des 8 clés de caractéristique, des 12 localisations ou des 4 niveaux de seuil est refusée ; un nom de compétence ou d'arme inédit est accepté. Un personnage portant les 8 caractéristiques valide — ce qui prouve que la composition n'a pas produit un `allOf` insatisfiable. |
 | 3    | Une fiche sans bloc `meta` valide ; une fiche sans nom ou sans caractéristiques est refusée. Le schéma généré porte un `$id` en `$id`, pas en `id`.         |
 | 4    | `schemas/adrenaline/pj.schema.json` existe et `npm run check` affiche exactement deux lignes `✓`, aucun `⚠️`, aucune ligne `✗`.                            |

@@ -1,0 +1,1197 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "nom": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Nom ou rôle, tel qu'il est écrit en en-tête de la fiche.",
+      "examples": [
+        "Sœur Madeleine",
+        "Le gardien du dépôt"
+      ]
+    },
+    "niveauDeDanger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "ND, imprimé en en-tête de fiche. Mesure l'opposition représentée. Sur une créature, il s'obtient en additionnant les ND du corps, de l'instinct et du type ; il n'est donc pas borné par le 5 de chaque composant.",
+      "examples": [
+        1,
+        3,
+        8
+      ]
+    },
+    "description": {
+      "description": "Le paragraphe de présentation, tel qu'il est lu à la table : silhouette, allure, ce qu'on perçoit au premier regard.",
+      "type": "string",
+      "minLength": 1
+    },
+    "identite": {
+      "description": "Bloc Identité, quand la fiche en porte un.",
+      "type": "object",
+      "properties": {
+        "nationalite": {
+          "description": "Nationalité, en clair.",
+          "examples": [
+            "Française"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "genre": {
+          "description": "Genre, en clair. Chaîne libre : la feuille n'impose aucune liste.",
+          "examples": [
+            "Femme"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "cheveux": {
+          "description": "Couleur ou aspect des cheveux.",
+          "examples": [
+            "Bruns, coupés court"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "age": {
+          "description": "Âge en années.",
+          "examples": [
+            34
+          ],
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200
+        },
+        "yeux": {
+          "description": "Couleur des yeux.",
+          "examples": [
+            "Verts"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "taille": {
+          "description": "Taille, telle qu'écrite sur la feuille, unité comprise. Chaîne libre et non un nombre : la feuille est manuscrite et n'impose pas d'unité, deux fiches ne sont donc pas comparables sur ce champ.",
+          "examples": [
+            "1,72 m"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "peau": {
+          "description": "Teint ou aspect de la peau.",
+          "examples": [
+            "Mate"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "poids": {
+          "description": "Poids, tel qu'écrit sur la feuille, unité comprise. Même réserve que la taille : chaîne libre, non comparable d'une fiche à l'autre.",
+          "examples": [
+            "64 kg"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "signesParticuliers": {
+          "description": "Signes particuliers : cicatrices, tatouages, tout ce qui se remarque.",
+          "examples": [
+            [
+              "Cicatrice à l'arcade gauche"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un signe particulier, en une ligne."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "caracteristiques": {
+      "description": "Caractéristiques, chacune facultative : une fiche de figurant n'en chiffre qu'une ou deux, une fiche de personnage majeur les porte toutes les huit.",
+      "type": "object",
+      "properties": {
+        "for": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Force. Pourcentage de d100.",
+          "examples": [
+            40
+          ]
+        },
+        "con": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Constitution. Pourcentage de d100.",
+          "examples": [
+            50
+          ]
+        },
+        "dex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Dextérité. Pourcentage de d100.",
+          "examples": [
+            45
+          ]
+        },
+        "rap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Rapidité. Pourcentage de d100.",
+          "examples": [
+            35
+          ]
+        },
+        "log": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Logique. Pourcentage de d100.",
+          "examples": [
+            30
+          ]
+        },
+        "vol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Volonté. Pourcentage de d100.",
+          "examples": [
+            40
+          ]
+        },
+        "per": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Perception. Pourcentage de d100.",
+          "examples": [
+            50
+          ]
+        },
+        "cha": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Charisme. Pourcentage de d100.",
+          "examples": [
+            25
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "sante": {
+      "description": "Bloc Santé. Absent ou complet : les fiches publiées portent leurs quatre seuils de chaque côté dès qu'elles en portent un.",
+      "type": "object",
+      "properties": {
+        "physique": {
+          "type": "object",
+          "properties": {
+            "superficiel": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât superficiel, le moins élevé des quatre."
+            },
+            "leger": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât léger."
+            },
+            "grave": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât grave."
+            },
+            "profond": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât profond, le plus élevé des quatre."
+            }
+          },
+          "required": [
+            "superficiel",
+            "leger",
+            "grave",
+            "profond"
+          ],
+          "additionalProperties": false,
+          "description": "Seuils physiques : superficiel, léger, grave, profond. Stockés tels que lus sur la feuille, jamais recalculés — deux fiches publiées s'écartent d'un point de la dérivation."
+        },
+        "mental": {
+          "type": "object",
+          "properties": {
+            "superficiel": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât superficiel, le moins élevé des quatre."
+            },
+            "leger": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât léger."
+            },
+            "grave": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât grave."
+            },
+            "profond": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    7,
+                    16
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    9,
+                    18
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât profond, le plus élevé des quatre."
+            }
+          },
+          "required": [
+            "superficiel",
+            "leger",
+            "grave",
+            "profond"
+          ],
+          "additionalProperties": false,
+          "description": "Seuils mentaux : superficiel, léger, grave, profond. Symétriques des physiques, dérivés de la Solidité mentale et des qualités de LOG et VOL."
+        }
+      },
+      "required": [
+        "physique",
+        "mental"
+      ],
+      "additionalProperties": false
+    },
+    "protections": {
+      "description": "Protections, chaque versant facultatif : une fiche peut ne chiffrer que le physique.",
+      "type": "object",
+      "properties": {
+        "physiques": {
+          "type": "object",
+          "properties": {
+            "solidite": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "PP de Solidité physique. Fixe le seuil superficiel.",
+              "examples": [
+                7
+              ]
+            },
+            "armure": {
+              "description": "Armure portée, si le personnage en a une.",
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "description": "Nom de l'armure, tel qu'écrit sur la fiche.",
+                  "examples": [
+                    "Blouson de cuir"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "points": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "PP d'Armure. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
+                  "examples": [
+                    2
+                  ]
+                },
+                "localisations": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "jambe-droite",
+                      "jambe-gauche",
+                      "torse",
+                      "bras-faible",
+                      "bras-fort",
+                      "tete"
+                    ],
+                    "description": "Localisation corporelle. Caractéristique associée : jambe droite RAP, jambe gauche RAP, torse ou dos CON, bras faible DEX, bras fort FOR, tête PER.",
+                    "examples": [
+                      "torse",
+                      "tete"
+                    ]
+                  },
+                  "description": "Localisations corporelles couvertes par l'armure. Au moins une : une armure ne couvrant rien rendrait la valeur couverte de chaque seuil ininterprétable.",
+                  "examples": [
+                    [
+                      "torse",
+                      "bras-fort"
+                    ]
+                  ]
+                }
+              },
+              "required": [
+                "points",
+                "localisations"
+              ],
+              "additionalProperties": false
+            },
+            "bouclier": {
+              "description": "Bouclier physique : ce que le personnage interpose entre lui et le coup.",
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nom du bouclier, tel qu'écrit sur la fiche.",
+                  "examples": [
+                    "Portière de voiture",
+                    "Déni"
+                  ]
+                },
+                "proprietes": {
+                  "description": "Type de couvert (bouclier physique) ou de censure (bouclier mental).",
+                  "examples": [
+                    [
+                      "Couvert partiel"
+                    ]
+                  ],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
+                  }
+                }
+              },
+              "required": [
+                "nom"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "solidite"
+          ],
+          "additionalProperties": false,
+          "description": "Protections physiques : solidité, armure, bouclier."
+        },
+        "mentales": {
+          "type": "object",
+          "properties": {
+            "solidite": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "PM de Solidité mentale. Fixe le seuil mental superficiel.",
+              "examples": [
+                5
+              ]
+            },
+            "caractere": {
+              "description": "Trait de caractère protecteur, si le personnage en a un.",
+              "type": "object",
+              "properties": {
+                "trait": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Trait de caractère qui protège. Chaîne libre : le catalogue est éditorial.",
+                  "examples": [
+                    "Cynique"
+                  ]
+                },
+                "points": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "PM de Caractère. S'ajoutent à la base de chaque seuil mental couvert.",
+                  "examples": [
+                    2
+                  ]
+                },
+                "localisations": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "anxiete",
+                      "impuissance",
+                      "colere",
+                      "tristesse",
+                      "peur",
+                      "culpabilite"
+                    ],
+                    "description": "Localisation émotionnelle. Caractéristique associée : anxiété CHA, impuissance CHA, colère LOG, tristesse PER, peur VOL, culpabilité DEX.",
+                    "examples": [
+                      "peur",
+                      "colere"
+                    ]
+                  },
+                  "description": "Localisations émotionnelles couvertes par le trait de caractère. Au moins une, pour la même raison que l'armure.",
+                  "examples": [
+                    [
+                      "peur",
+                      "anxiete"
+                    ]
+                  ]
+                }
+              },
+              "required": [
+                "trait",
+                "points",
+                "localisations"
+              ],
+              "additionalProperties": false
+            },
+            "bouclier": {
+              "description": "Bouclier mental : la censure derrière laquelle le personnage se réfugie.",
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nom du bouclier, tel qu'écrit sur la fiche.",
+                  "examples": [
+                    "Portière de voiture",
+                    "Déni"
+                  ]
+                },
+                "proprietes": {
+                  "description": "Type de couvert (bouclier physique) ou de censure (bouclier mental).",
+                  "examples": [
+                    [
+                      "Couvert partiel"
+                    ]
+                  ],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
+                  }
+                }
+              },
+              "required": [
+                "nom"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "solidite"
+          ],
+          "additionalProperties": false,
+          "description": "Protections mentales : solidité, trait de caractère, bouclier."
+        }
+      },
+      "additionalProperties": false
+    },
+    "formations": {
+      "description": "Formations, quand la fiche les nomme. Souvent absentes : la fiche de PNJ liste plus volontiers les compétences seules.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Type de formation, imprimé en tête de colonne sur la feuille de PJ. Absent d'une fiche de PNJ, qui ne qualifie pas ses formations.",
+            "type": "string",
+            "enum": [
+              "classe-sociale",
+              "professionnelle",
+              "personnelle"
+            ],
+            "examples": [
+              "professionnelle"
+            ]
+          },
+          "nom": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Nom de la formation, écrit à la main entre parenthèses sur la feuille.",
+            "examples": [
+              "Moyenne",
+              "Infirmière"
+            ]
+          },
+          "pourcentage": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200,
+            "description": "Pourcentage de la formation.",
+            "examples": [
+              15,
+              40
+            ]
+          },
+          "competences": {
+            "description": "Compétences rattachées à cette formation. La feuille de PJ les imprime sous la colonne de leur formation ; la fiche de PNJ les regroupe hors formation, et cette liste est alors absente.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
+                  "examples": [
+                    "Arme sociale",
+                    "Athlétisme"
+                  ]
+                },
+                "specialite": {
+                  "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
+                  "examples": [
+                    "Négociation"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pourcentage": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 200,
+                  "description": "Pourcentage de la compétence seule, hors caractéristique.",
+                  "examples": [
+                    30
+                  ]
+                },
+                "caracteristique": {
+                  "description": "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
+                  "examples": [
+                    "cha"
+                  ],
+                  "type": "string",
+                  "enum": [
+                    "for",
+                    "con",
+                    "dex",
+                    "rap",
+                    "log",
+                    "vol",
+                    "per",
+                    "cha"
+                  ]
+                },
+                "total": {
+                  "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
+                  "examples": [
+                    50
+                  ],
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 200
+                },
+                "avantages": {
+                  "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
+                  "examples": [
+                    [
+                      "Gestion du stress"
+                    ]
+                  ],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Un avantage, en une ligne."
+                  }
+                }
+              },
+              "required": [
+                "nom",
+                "pourcentage"
+              ],
+              "additionalProperties": false,
+              "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
+            }
+          }
+        },
+        "required": [
+          "nom",
+          "pourcentage"
+        ],
+        "additionalProperties": false,
+        "description": "Une formation et les compétences qu'elle porte."
+      }
+    },
+    "competences": {
+      "description": "Compétences du personnage. La fiche publiée les regroupe sous un bloc unique, hors des formations, et note pour chacune sa caractéristique et son total.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
+            "examples": [
+              "Arme sociale",
+              "Athlétisme"
+            ]
+          },
+          "specialite": {
+            "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
+            "examples": [
+              "Négociation"
+            ],
+            "type": "string",
+            "minLength": 1
+          },
+          "pourcentage": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200,
+            "description": "Pourcentage de la compétence seule, hors caractéristique.",
+            "examples": [
+              30
+            ]
+          },
+          "caracteristique": {
+            "description": "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
+            "examples": [
+              "cha"
+            ],
+            "type": "string",
+            "enum": [
+              "for",
+              "con",
+              "dex",
+              "rap",
+              "log",
+              "vol",
+              "per",
+              "cha"
+            ]
+          },
+          "total": {
+            "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
+            "examples": [
+              50
+            ],
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200
+          },
+          "avantages": {
+            "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
+            "examples": [
+              [
+                "Gestion du stress"
+              ]
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Un avantage, en une ligne."
+            }
+          }
+        },
+        "required": [
+          "nom",
+          "pourcentage"
+        ],
+        "additionalProperties": false,
+        "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
+      }
+    },
+    "equipement": {
+      "description": "Ce que le personnage porte sur lui et ce dont il se sert.",
+      "type": "object",
+      "properties": {
+        "possessions": {
+          "description": "Ce que le personnage transporte ou possède. Liste non bornée.",
+          "examples": [
+            [
+              "Trousse de secours",
+              "Lampe torche"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un objet possédé, en une ligne."
+          }
+        },
+        "equipementFavori": {
+          "description": "L'équipement favori, au singulier : la feuille n'en prévoit qu'un, et il ouvre un avantage.",
+          "examples": [
+            "Trousse de secours"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "armesPhysiques": {
+          "description": "Armes physiques. Liste non bornée : les deux lignes de la feuille sont de la place sur le papier, pas une règle.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Nom de l'arme, tel qu'écrit sur la feuille. Chaîne libre.",
+                "examples": [
+                  "Judo",
+                  "Batte de baseball",
+                  "Sarcasme"
+                ]
+              },
+              "pourcentage": {
+                "description": "Pourcentage auquel l'arme se manie, tel que noté sur la feuille.",
+                "examples": [
+                  30
+                ],
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200
+              },
+              "desDeDegats": {
+                "description": "Nombre de d10 de dégâts.",
+                "examples": [
+                  1,
+                  2
+                ],
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "type": {
+                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "examples": [
+                  "Contact",
+                  "Sociale"
+                ],
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "description": "Ce que la ligne d'arme porte en plus : munitions, portée, contrainte d'emploi.",
+                "examples": [
+                  "Deux mains"
+                ],
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "nom"
+            ],
+            "additionalProperties": false,
+            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+          }
+        },
+        "armesMentales": {
+          "description": "Armes mentales, notées comme les physiques. Liste non bornée.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Nom de l'arme, tel qu'écrit sur la feuille. Chaîne libre.",
+                "examples": [
+                  "Judo",
+                  "Batte de baseball",
+                  "Sarcasme"
+                ]
+              },
+              "pourcentage": {
+                "description": "Pourcentage auquel l'arme se manie, tel que noté sur la feuille.",
+                "examples": [
+                  30
+                ],
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200
+              },
+              "desDeDegats": {
+                "description": "Nombre de d10 de dégâts.",
+                "examples": [
+                  1,
+                  2
+                ],
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "type": {
+                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "examples": [
+                  "Contact",
+                  "Sociale"
+                ],
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "description": "Ce que la ligne d'arme porte en plus : munitions, portée, contrainte d'emploi.",
+                "examples": [
+                  "Deux mains"
+                ],
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "nom"
+            ],
+            "additionalProperties": false,
+            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "narratif": {
+      "description": "Bloc narratif : rôle, attitude, répliques, notes réservées au meneur.",
+      "type": "object",
+      "properties": {
+        "role": {
+          "description": "Rôle du personnage dans le scénario.",
+          "examples": [
+            "Médecin du camp"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "attitude": {
+          "description": "Attitude envers les personnages joueurs. Chaîne libre et non ensemble fermé : les fiches la nuancent volontiers au-delà du triptyque favorable, neutre, hostile.",
+          "examples": [
+            "Méfiante, mais prête à soigner quiconque le demande"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "personnalite": {
+          "description": "Traits de personnalité, un par entrée.",
+          "examples": [
+            [
+              "Obstinée",
+              "Économe de ses mots"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un trait de personnalité."
+          }
+        },
+        "historique": {
+          "description": "D'où vient le personnage, en un paragraphe.",
+          "type": "string",
+          "minLength": 1
+        },
+        "evolutionPossible": {
+          "description": "Ce que le personnage peut devenir selon le tour que prend la partie.",
+          "type": "string",
+          "minLength": 1
+        },
+        "interpretation": {
+          "description": "Conseils de jeu : approche, tics et manières, réactions émotionnelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un conseil de jeu."
+          }
+        },
+        "repliques": {
+          "description": "Répliques types, à lancer telles quelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Une réplique, à lancer telle quelle."
+          }
+        },
+        "notesMj": {
+          "description": "Réservé au meneur : secrets, faiblesses, alliés, stratégies, réactions contextuelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Une note réservée au meneur."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "meta": {
+      "description": "Attribution et catalogage : d'où vient cette fiche.",
+      "type": "object",
+      "properties": {
+        "typeDePublication": {
+          "type": "string",
+          "enum": [
+            "officiel",
+            "tiers",
+            "communautaire",
+            "maison"
+          ],
+          "description": "Origine du contenu, pour le catalogage par les outils tiers. Correspondance schema-in-the-mist : officiel/official, tiers/third_party, communautaire/cauldron, maison/homebrew.",
+          "examples": [
+            "officiel",
+            "maison"
+          ]
+        },
+        "source": {
+          "description": "Titre de l'ouvrage, du supplément ou du PDF dont la fiche est tirée.",
+          "examples": [
+            "Zombiology — Contamination",
+            "Livret PNJ et animaux"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "auteurs": {
+          "description": "Personnes créditées.",
+          "examples": [
+            [
+              "Damien Coltice"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un nom crédité."
+          }
+        },
+        "page": {
+          "description": "Page dans la source, quand elle est pertinente.",
+          "examples": [
+            42,
+            118
+          ],
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "licence": {
+          "description": "Conditions de réutilisation de cette fiche, en clair.",
+          "examples": [
+            "CC BY 4.0"
+          ],
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "nom"
+  ],
+  "additionalProperties": false,
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pnj.schema.json",
+  "title": "Personnage non joué — Adrenaline System",
+  "description": "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré."
+}

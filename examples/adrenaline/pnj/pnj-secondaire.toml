@@ -1,0 +1,7 @@
+# Fiche de PNJ réduite à son en-tête : le rôle, le niveau de danger, le
+# paragraphe qu'on lit à la table. Aucun chiffre — ce personnage ne s'oppose à
+# rien, il informe et disparaît.
+
+nom = "Le veilleur de nuit"
+niveauDeDanger = 1
+description = "Un homme sec, la soixantaine, qui n'a pas quitté sa guérite depuis trois jours. Il parle bas, par phrases courtes, et regarde la porte plus souvent que son interlocuteur."

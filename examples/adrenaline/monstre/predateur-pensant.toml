@@ -1,0 +1,82 @@
+# Les huit caractéristiques, aucune contagion, des compétences : la même forme
+# accueille une créature qui pense et qu'on peut atteindre mentalement.
+
+nom = "Le Guetteur du silo"
+typeDeCorps = "adulte athlétique"
+instinct = "embuscade"
+typeInfecte = "génération tardive, conscience résiduelle"
+description = "Attend en hauteur, choisit sa proie, et ne descend que s'il est certain de sa prise."
+niveauDeDanger = 6
+zoneDeDetection = "50 m à vue, davantage en surplomb"
+deplacement = "10 m par action, 4 m en escalade"
+actionsParRound = 2
+comportement = [
+  "Observe une heure durant avant d'attaquer.",
+  "Isole un membre du groupe plutôt que d'affronter l'ensemble.",
+  "Rompt le contact dès qu'il encaisse un dégât grave.",
+]
+traitsSpeciaux = [
+  "Escalade toute surface verticale sans jet.",
+  "Reste immobile assez longtemps pour passer pour un cadavre.",
+]
+
+[caracteristiques]
+for = 70
+con = 65
+dex = 60
+rap = 55
+log = 40
+vol = 50
+per = 75
+cha = 20
+
+[sante.physique.superficiel]
+base = 9
+
+[sante.physique.leger]
+base = 22
+
+[sante.physique.grave]
+base = 27
+
+[sante.physique.profond]
+base = 32
+
+[sante.mental.superficiel]
+base = 4
+
+[sante.mental.leger]
+base = 12
+
+[sante.mental.grave]
+base = 17
+
+[sante.mental.profond]
+base = 22
+
+[protections.physiques]
+solidite = 9
+
+[protections.mentales]
+solidite = 4
+
+[[competences]]
+nom = "Discrétion"
+pourcentage = 70
+
+[[competences]]
+nom = "Escalade"
+pourcentage = 65
+
+[[competences]]
+nom = "Embuscade"
+pourcentage = 60
+
+[narratif]
+role = "Verrouille l'accès au silo à grain, seule réserve de nourriture du secteur."
+attitude = "hostile, mais évitable : il ne poursuit pas hors de son territoire"
+personnalite = ["patient", "économe de ses forces", "territorial"]
+notesMj = [
+  "Fuit le feu, ce que rien dans son comportement ne laisse deviner.",
+  "Un second guetteur occupe le silo voisin ; ils ne coopèrent pas.",
+]

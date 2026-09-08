@@ -1,0 +1,179 @@
+# Feuille de PJ de campagne, tous les blocs de la feuille imprimée remplis.
+#
+# Dérivations vérifiées :
+#   Solidité physique 6, FOR 30 et CON 40 (qualités 3 et 4)
+#     superficiel 6, léger 6+3+4 = 13, grave 13+5 = 18, profond 13+10 = 23
+#   Armure 3 PP sur torse et bras fort : colonne « + Armure » = base + 3
+#   Solidité mentale 5, LOG 30 et VOL 40 (qualités 3 et 4)
+#     superficiel 5, léger 5+3+4 = 12, grave 17, profond 22
+#   Caractère 2 PM sur anxiété, peur, culpabilité : colonne « + Caractère » = base + 2
+#
+# Chaque compétence porte son pourcentage, sa caractéristique et leur total.
+
+nom = "Naïma Berthier"
+
+[identite]
+nationalite = "Française"
+genre = "Femme"
+cheveux = "Noirs, coupés court"
+age = 34
+yeux = "Bruns"
+taille = "1,68 m"
+peau = "Mate"
+poids = "61 kg"
+signesParticuliers = ["Cicatrice à l'avant-bras gauche", "Tatouage au poignet droit"]
+
+[caracteristiques]
+for = 30
+con = 40
+dex = 50
+rap = 40
+log = 30
+vol = 40
+per = 50
+cha = 30
+
+[sante.physique.superficiel]
+base = 6
+couvert = 9
+
+[sante.physique.leger]
+base = 13
+couvert = 16
+
+[sante.physique.grave]
+base = 18
+couvert = 21
+
+[sante.physique.profond]
+base = 23
+couvert = 26
+
+[sante.mental.superficiel]
+base = 5
+couvert = 7
+
+[sante.mental.leger]
+base = 12
+couvert = 14
+
+[sante.mental.grave]
+base = 17
+couvert = 19
+
+[sante.mental.profond]
+base = 22
+couvert = 24
+
+[protections.physiques]
+solidite = 6
+
+[protections.physiques.armure]
+nom = "Veste de chantier renforcée"
+points = 3
+localisations = ["torse", "bras-fort"]
+
+[protections.physiques.bouclier]
+nom = "Panneau de signalisation"
+proprietes = ["Couvert partiel"]
+
+[protections.mentales]
+solidite = 5
+
+[protections.mentales.caractere]
+trait = "Obstinée"
+points = 2
+localisations = ["anxiete", "peur", "culpabilite"]
+
+[parametresDuJeu]
+joueur = "Camille"
+typeDeCreation = "equitable"
+typeDeScenario = "campagne"
+px = 12
+
+[equipement]
+possessions = ["Trousse de secours", "Radio à manivelle", "Carnet de relevés"]
+equipementFavori = "Multitool héritée de son père"
+
+[[equipement.armesPhysiques]]
+nom = "Pied-de-biche"
+pourcentage = 55
+desDeDegats = 2
+type = "Contact"
+
+[[equipement.armesPhysiques]]
+nom = "Carabine .22"
+pourcentage = 40
+desDeDegats = 3
+type = "Distance"
+
+[[equipement.armesMentales]]
+nom = "Arme sociale (Apaisement)"
+pourcentage = 60
+desDeDegats = 1
+type = "Sociale"
+
+[[formations]]
+type = "classe-sociale"
+nom = "Classe moyenne"
+pourcentage = 20
+
+[[formations.competences]]
+nom = "Étiquette"
+specialite = "Classe moyenne"
+pourcentage = 40
+caracteristique = "vol"
+total = 80
+
+[[formations.competences]]
+nom = "Bureaucratie"
+pourcentage = 35
+caracteristique = "log"
+total = 65
+
+[[formations]]
+type = "professionnelle"
+nom = "Secours et logistique"
+pourcentage = 25
+
+[[formations.competences]]
+nom = "Survie"
+specialite = "Premiers secours"
+pourcentage = 40
+caracteristique = "per"
+total = 90
+avantages = ["Gestion du stress"]
+
+[[formations.competences]]
+nom = "Conduite"
+specialite = "Poids lourd"
+pourcentage = 35
+caracteristique = "per"
+total = 85
+
+[[formations.competences]]
+nom = "Gestion de ressources"
+pourcentage = 35
+caracteristique = "log"
+total = 65
+
+[[formations]]
+type = "personnelle"
+nom = "Loisirs"
+pourcentage = 15
+
+[[formations.competences]]
+nom = "Sport"
+specialite = "Escalade"
+pourcentage = 30
+caracteristique = "dex"
+total = 80
+avantages = ["Équipement favori"]
+
+[[formations.competences]]
+nom = "Arme sociale"
+specialite = "Apaisement"
+pourcentage = 30
+caracteristique = "cha"
+total = 60
+avantages = ["Bouclier personnel"]
