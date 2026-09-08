@@ -1,0 +1,19 @@
+{
+  "nom": "Témoin",
+  "caracteristiques": {
+    "for": 40,
+    "con": 50,
+    "dex": 20,
+    "rap": 15,
+    "per": 30
+  },
+  "contagion": {
+    "agent": "Souche R-7",
+    "vecteurs": [
+      {
+        "nom": "Morsure",
+        "probabilite": 150
+      }
+    ]
+  }
+}

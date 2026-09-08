@@ -1,44 +1,46 @@
-# Fiche de one-shot : uniquement ce qu'une fiche jouable porte toujours.
+# Feuille de PJ réduite au strict nécessaire : ce qu'un one-shot demande avant
+# de commencer. Ni identité, ni formations, ni équipement.
+# Solidité physique 5, FOR 20 et CON 30 : superficiel 5, léger 5+2+3 = 10,
+# grave 15, profond 20. Solidité mentale 4, LOG 20 et VOL 20 : 4, 8, 13, 18.
 
-[identite]
-nom = "Vasseur"
+nom = "Karim"
 
 [caracteristiques]
-for = 45
-con = 50
-dex = 40
-rap = 35
-log = 55
-vol = 60
-per = 50
+for = 20
+con = 30
+dex = 30
+rap = 20
+log = 20
+vol = 20
+per = 30
 cha = 30
 
 [sante.physique.superficiel]
-base = 6
-
-[sante.physique.leger]
-base = 15
-
-[sante.physique.grave]
-base = 20
-
-[sante.physique.profond]
-base = 25
-
-[sante.mental.superficiel]
 base = 5
 
+[sante.physique.leger]
+base = 10
+
+[sante.physique.grave]
+base = 15
+
+[sante.physique.profond]
+base = 20
+
+[sante.mental.superficiel]
+base = 4
+
 [sante.mental.leger]
-base = 16
+base = 8
 
 [sante.mental.grave]
-base = 21
+base = 13
 
 [sante.mental.profond]
-base = 26
+base = 18
 
 [protections.physiques]
-solidite = 6
+solidite = 5
 
 [protections.mentales]
-solidite = 5
+solidite = 4

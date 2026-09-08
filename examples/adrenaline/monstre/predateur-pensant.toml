@@ -4,7 +4,7 @@
 nom = "Le Guetteur du silo"
 typeDeCorps = "adulte athlétique"
 instinct = "embuscade"
-typeDInfecte = "génération tardive, conscience résiduelle"
+typeInfecte = "génération tardive, conscience résiduelle"
 description = "Attend en hauteur, choisit sa proie, et ne descend que s'il est certain de sa prise."
 niveauDeDanger = 6
 zoneDeDetection = "50 m à vue, davantage en surplomb"

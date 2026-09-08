@@ -1,155 +1,179 @@
-# Fiche de campagne : tous les blocs remplis, y compris les paramètres de
-# création et les seconds seuils applicables aux localisations couvertes.
+# Feuille de PJ de campagne, tous les blocs de la feuille imprimée remplis.
+#
+# Dérivations vérifiées :
+#   Solidité physique 6, FOR 30 et CON 40 (qualités 3 et 4)
+#     superficiel 6, léger 6+3+4 = 13, grave 13+5 = 18, profond 13+10 = 23
+#   Armure 3 PP sur torse et bras fort : colonne « + Armure » = base + 3
+#   Solidité mentale 5, LOG 30 et VOL 40 (qualités 3 et 4)
+#     superficiel 5, léger 5+3+4 = 12, grave 17, profond 22
+#   Caractère 2 PM sur anxiété, peur, culpabilité : colonne « + Caractère » = base + 2
+#
+# Chaque compétence porte son pourcentage, sa caractéristique et leur total.
+
+nom = "Naïma Berthier"
 
 [identite]
-nom = "Delcourt"
-prenom = "Iris"
-surnom = "La Vétérinaire"
-nationalite = "française"
-genre = "femme"
+nationalite = "Française"
+genre = "Femme"
+cheveux = "Noirs, coupés court"
 age = 34
-cheveux = "châtain foncé"
-yeux = "noisette"
-peau = "claire"
+yeux = "Bruns"
 taille = "1,68 m"
-poids = "58 kg"
-signesParticuliers = ["cicatrice de morsure à l'avant-bras gauche", "tatouage au poignet"]
-description = "Silhouette sèche, gestes économes, ne lâche jamais son sac."
-historique = "Vétérinaire de campagne, elle soignait les troupeaux du plateau quand la contamination a coupé les routes."
-momentsMarquants = [
-  "A dû euthanasier son propre chien au premier jour.",
-  "A tenu le dispensaire du village trois semaines seule.",
-]
+peau = "Mate"
+poids = "61 kg"
+signesParticuliers = ["Cicatrice à l'avant-bras gauche", "Tatouage au poignet droit"]
 
 [caracteristiques]
-for = 40
-con = 55
-dex = 65
-rap = 45
-log = 70
-vol = 60
-per = 55
-cha = 50
+for = 30
+con = 40
+dex = 50
+rap = 40
+log = 30
+vol = 40
+per = 50
+cha = 30
 
 [sante.physique.superficiel]
-base = 7
-couvert = 10
+base = 6
+couvert = 9
 
 [sante.physique.leger]
-base = 16
-couvert = 19
+base = 13
+couvert = 16
 
 [sante.physique.grave]
-base = 21
-couvert = 24
+base = 18
+couvert = 21
 
 [sante.physique.profond]
-base = 26
-couvert = 29
+base = 23
+couvert = 26
 
 [sante.mental.superficiel]
-base = 6
-couvert = 8
+base = 5
+couvert = 7
 
 [sante.mental.leger]
-base = 18
-couvert = 20
+base = 12
+couvert = 14
 
 [sante.mental.grave]
-base = 23
-couvert = 25
+base = 17
+couvert = 19
 
 [sante.mental.profond]
-base = 28
-couvert = 30
+base = 22
+couvert = 24
 
 [protections.physiques]
-solidite = 7
-
-[protections.physiques.armure]
-nom = "blouson de moto renforcé"
-points = 3
-localisations = ["torse", "bras-faible", "bras-fort"]
-
-[protections.physiques.bouclier]
-nom = "porte de véhicule"
-proprietes = ["couvert partiel", "encombrant"]
-
-[protections.mentales]
 solidite = 6
 
+[protections.physiques.armure]
+nom = "Veste de chantier renforcée"
+points = 3
+localisations = ["torse", "bras-fort"]
+
+[protections.physiques.bouclier]
+nom = "Panneau de signalisation"
+proprietes = ["Couvert partiel"]
+
+[protections.mentales]
+solidite = 5
+
 [protections.mentales.caractere]
-trait = "sang-froid clinique"
+trait = "Obstinée"
 points = 2
-localisations = ["peur", "tristesse", "impuissance"]
+localisations = ["anxiete", "peur", "culpabilite"]
 
-[protections.mentales.bouclier]
-nom = "routine de soignante"
-proprietes = ["censure : endurci"]
-
-[[formations]]
-nom = "Classe moyenne rurale"
-pourcentage = 30
-
-[[formations.competences]]
-nom = "Conduite (tout-terrain)"
-pourcentage = 45
-
-[[formations.competences]]
-nom = "Négociation"
-pourcentage = 30
-
-[[formations]]
-nom = "Vétérinaire"
-pourcentage = 65
-
-[[formations.competences]]
-nom = "Médecine (animale)"
-pourcentage = 70
-
-[[formations.competences]]
-nom = "Biologie"
-pourcentage = 55
-
-[[formations.competences]]
-nom = "Chirurgie"
-pourcentage = 45
-
-[[formations]]
-nom = "Randonnée en montagne"
-pourcentage = 40
-
-[[formations.competences]]
-nom = "Orientation"
-pourcentage = 50
-
-[[formations.competences]]
-nom = "Endurance"
-pourcentage = 40
-
-[equipement]
-possessionsFavorites = [
-  "trousse vétérinaire de campagne",
-  "carnet de vaccinations annoté",
-]
-
-[[equipement.armesPhysiques]]
-nom = "scalpel"
-type = "contact"
-degats = "1d6"
-notes = "Sert d'abord d'outil ; l'employer comme arme coûte un tour de dégagement."
-
-[[equipement.armesPhysiques]]
-nom = "carabine .22"
-type = "distance"
-degats = "2d6"
-
-[[equipement.armesMentales]]
-nom = "diagnostic implacable"
-type = "psychologique"
-notes = "Énoncer à voix haute ce que tout le monde refuse de nommer."
-
-[meta]
+[parametresDuJeu]
+joueur = "Camille"
 typeDeCreation = "equitable"
 typeDeScenario = "campagne"
-declinaisonDeCampagne = "storyline"
+px = 12
+
+[equipement]
+possessions = ["Trousse de secours", "Radio à manivelle", "Carnet de relevés"]
+equipementFavori = "Multitool héritée de son père"
+
+[[equipement.armesPhysiques]]
+nom = "Pied-de-biche"
+pourcentage = 55
+desDeDegats = 2
+type = "Contact"
+
+[[equipement.armesPhysiques]]
+nom = "Carabine .22"
+pourcentage = 40
+desDeDegats = 3
+type = "Distance"
+
+[[equipement.armesMentales]]
+nom = "Arme sociale (Apaisement)"
+pourcentage = 60
+desDeDegats = 1
+type = "Sociale"
+
+[[formations]]
+type = "classe-sociale"
+nom = "Classe moyenne"
+pourcentage = 20
+
+[[formations.competences]]
+nom = "Étiquette"
+specialite = "Classe moyenne"
+pourcentage = 40
+caracteristique = "vol"
+total = 80
+
+[[formations.competences]]
+nom = "Bureaucratie"
+pourcentage = 35
+caracteristique = "log"
+total = 65
+
+[[formations]]
+type = "professionnelle"
+nom = "Secours et logistique"
+pourcentage = 25
+
+[[formations.competences]]
+nom = "Survie"
+specialite = "Premiers secours"
+pourcentage = 40
+caracteristique = "per"
+total = 90
+avantages = ["Gestion du stress"]
+
+[[formations.competences]]
+nom = "Conduite"
+specialite = "Poids lourd"
+pourcentage = 35
+caracteristique = "per"
+total = 85
+
+[[formations.competences]]
+nom = "Gestion de ressources"
+pourcentage = 35
+caracteristique = "log"
+total = 65
+
+[[formations]]
+type = "personnelle"
+nom = "Loisirs"
+pourcentage = 15
+
+[[formations.competences]]
+nom = "Sport"
+specialite = "Escalade"
+pourcentage = 30
+caracteristique = "dex"
+total = 80
+avantages = ["Équipement favori"]
+
+[[formations.competences]]
+nom = "Arme sociale"
+specialite = "Apaisement"
+pourcentage = 30
+caracteristique = "cha"
+total = 60
+avantages = ["Bouclier personnel"]

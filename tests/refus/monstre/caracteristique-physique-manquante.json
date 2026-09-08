@@ -1,0 +1,9 @@
+{
+  "nom": "Témoin",
+  "caracteristiques": {
+    "for": 40,
+    "dex": 20,
+    "rap": 15,
+    "per": 30
+  }
+}

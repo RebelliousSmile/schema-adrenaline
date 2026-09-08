@@ -19,7 +19,7 @@ status: done
 ├── schemas/adrenaline/
 │   └── pnj.schema.json                 ✅ généré
 └── examples/adrenaline/pnj/
-    ├── pnj-majeur.toml                 ✅ cartouche chiffré et bloc narratif complet
+    ├── pnj-majeur.toml                 ✅ fiche chiffrée et bloc narratif complet
     └── pnj-secondaire.toml             ✅ quelques stats, aucun narratif
 ```
 

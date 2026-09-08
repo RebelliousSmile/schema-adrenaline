@@ -16,7 +16,7 @@ status: implemented
 
 | #   | Phase                                               | File                         |
 | --- | --------------------------------------------------- | ---------------------------- |
-| 1   | Référence des cartouches → `reference-cartouches.md` | [`phase-1.md`](./phase-1.md) |
+| 1   | Référence des fiches → `reference-fiches.md` | [`phase-1.md`](./phase-1.md) |
 | 2   | Socle Zod et cible `pj`        | [`phase-2.md`](./phase-2.md) |
 | 3   | Cible `pnj`                    | [`phase-3.md`](./phase-3.md) |
 | 4   | Cible `monstre` et publication | [`phase-4.md`](./phase-4.md) |
@@ -28,9 +28,9 @@ status: implemented
 | `~/Documents/Perso/RPG/zombiology/_sources/regles/zombiology_part_01.pdf`                                | Les seuils de santé sont **Superficiel / Léger / Grave / Profond**, physiques comme mentaux. La Feuille de PJ se décompose en blocs Paramètres de jeu, Compétence, Caractéristique, Équipement, Santé, Identité. |
 | `~/Documents/Perso/RPG/zombiology/_sources/regles/Z1L01_Zombiology__1_Contamination_Ldb.pdf`             | Livre de base complet, autorité désignée en cas de divergence. 62 Mo, à découper avant lecture.                                                                        |
 | https://www.adrenalinesystem.com/creation-de-pj                                                          | Le générateur borne armes et avantages à 3 entrées et propose 6 emplacements de protection physique et 6 de protection mentale. Ses libellés de seuils sont fautifs — le PDF prime. |
-| https://www.adrenalinesystem.com/creation-de-zombie                                                      | Le cartouche monstre porte corps, état stimulé, type d'infecté, comportement, zone de détection, déplacement, SP et ND — jamais de formation ni de compétence chiffrée. |
-| `~/Documents/Perso/RPG/zombiology/_sources/regles/Z1L05_Livret PNJ et animaux.pdf`                       | Source des formes de cartouche PNJ, à lire en phase 1.                                                                                                                 |
-| `~/Documents/Perso/RPG/zombiology/_sources/regles/*.md` — `part_01_resume.md` à `part_06_resume.md`, `ZOMBIOLOGY_REGLES_COMPLETES.md`, `adrenaline-d100.md`, `template_pnj.md` | 86 Ko d'extractions markdown déjà faites, vérifiées présentes. `template_pnj.md` donne la forme du cartouche PNJ champ par champ — ND, identité, rôle narratif, personnalité, attitude PJ, stats, compétences clés, équipement, infos MJ, réplique. Point d'entrée de la phase 1 ; le PDF ne sert plus qu'à trancher les divergences. |
+| https://www.adrenalinesystem.com/creation-de-zombie                                                      | La fiche de créature porte corps, état stimulé, type d'infecté, comportement, zone de détection, déplacement, SP et ND — jamais de formation ni de compétence chiffrée. |
+| `~/Documents/Perso/RPG/zombiology/_sources/regles/Z1L05_Livret PNJ et animaux.pdf`                       | Source des formes de fiche de PNJ, à lire en phase 1.                                                                                                                 |
+| `~/Documents/Perso/RPG/zombiology/_sources/regles/*.md` — `part_01_resume.md` à `part_06_resume.md`, `ZOMBIOLOGY_REGLES_COMPLETES.md`, `adrenaline-d100.md`, `template_pnj.md` | 86 Ko d'extractions markdown déjà faites, vérifiées présentes. `template_pnj.md` donne la forme de la fiche de PNJ champ par champ — ND, identité, rôle narratif, personnalité, attitude PJ, stats, compétences clés, équipement, infos MJ, réplique. Point d'entrée de la phase 1 ; le PDF ne sert plus qu'à trancher les divergences. |
 | https://zod.dev/json-schema                                                                              | Comportement de `z.toJSONSchema` en cible draft-7, confirmé par sonde sur la version 4.3.6 installée : `additionalProperties: false` est émis à tous les niveaux, les sous-schémas réutilisés sont inlinés sans `$ref`, un `.refine()` disparaît entièrement, et une intersection `.and()` produit un `allOf` insatisfiable. |
 
 ## Decisions

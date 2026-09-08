@@ -1,0 +1,13 @@
+{
+  "nom": "X",
+  "protections": {
+    "mentales": {
+      "solidite": 5,
+      "caractere": {
+        "trait": "Froid",
+        "points": 2,
+        "localisations": ["ennui"]
+      }
+    }
+  }
+}

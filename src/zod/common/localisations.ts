@@ -11,6 +11,7 @@ export const LocalisationCorporelle = z
   .meta({
     description:
       "Localisation corporelle. Caractéristique associée : jambe droite RAP, jambe gauche RAP, torse ou dos CON, bras faible DEX, bras fort FOR, tête PER.",
+    examples: ["torse", "tete"],
   });
 
 /**
@@ -23,4 +24,8 @@ export const LocalisationEmotionnelle = z
   .meta({
     description:
       "Localisation émotionnelle. Caractéristique associée : anxiété CHA, impuissance CHA, colère LOG, tristesse PER, peur VOL, culpabilité DEX.",
+    examples: ["peur", "colere"],
   });
+
+export type LocalisationCorporelleValeur = z.infer<typeof LocalisationCorporelle>;
+export type LocalisationEmotionnelleValeur = z.infer<typeof LocalisationEmotionnelle>;

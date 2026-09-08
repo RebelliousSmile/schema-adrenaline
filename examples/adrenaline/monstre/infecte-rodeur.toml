@@ -4,7 +4,7 @@
 nom = "Rôdeur"
 typeDeCorps = "adulte moyen"
 instinct = "traque au bruit"
-typeDInfecte = "première génération"
+typeInfecte = "première génération"
 description = "Se déplace au son, sans jamais lever la tête. Ne court pas tant que rien ne l'a stimulé."
 niveauDeDanger = 2
 zoneDeDetection = "15 m au bruit, 5 m à vue"

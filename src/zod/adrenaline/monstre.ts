@@ -1,14 +1,14 @@
 import { z } from "zod";
-import {
-  CaracteristiquesMentales,
-  CaracteristiquesPhysiques,
-} from "../common/caracteristiques";
+import { CaracteristiquesMentales, CaracteristiquesPhysiques } from "../common/caracteristiques";
 import { Contagion } from "../common/contagion";
+import { NiveauDeDanger } from "../common/danger";
 import { Equipement } from "../common/equipement";
 import { Competence } from "../common/formations";
+import { Meta } from "../common/meta";
 import { Narratif } from "../common/narratif";
+import { Compte } from "../common/primitives";
 import { Protections } from "../common/protections";
-import { SeuilsMentaux, SeuilsPhysiques } from "../common/sante";
+import { SanteDeCreature } from "../common/sante";
 
 /**
  * Les caractéristiques d'une créature : les quatre physiques requises, les
@@ -24,7 +24,10 @@ import { SeuilsMentaux, SeuilsPhysiques } from "../common/sante";
  */
 const CaracteristiquesDeCreature = CaracteristiquesPhysiques.extend(
   CaracteristiquesMentales.partial().shape,
-);
+).meta({
+  description:
+    "Caractéristiques d'une créature : les quatre physiques toujours, les mentales seulement si elle en a. Un corps d'infecté ne porte souvent que PER.",
+});
 
 /**
  * L'état alternatif d'une créature — le stimulé du générateur d'infectés.
@@ -32,17 +35,44 @@ const CaracteristiquesDeCreature = CaracteristiquesPhysiques.extend(
  * Rejoue les mêmes valeurs, modifiées. Ce qu'il ne redéclare pas reste celui de
  * l'état de base.
  */
-const EtatAlternatif = z.object({
-  nom: z.string().min(1).meta({ description: "Nom de l'état, par exemple stimulé." }),
-  declencheurs: z.array(z.string().min(1)).optional().meta({
-    description: "Ce qui déclenche l'état, et ce qui y met fin.",
-  }),
-  caracteristiques: CaracteristiquesDeCreature.partial().optional(),
-  zoneDeDetection: z.string().min(1).optional(),
-  deplacement: z.string().min(1).optional(),
-  actionsParRound: z.int().min(0).optional(),
-  notes: z.string().min(1).optional(),
-});
+const EtatAlternatif = z
+  .object({
+    nom: z
+      .string()
+      .min(1)
+      .meta({
+        description: "Nom de l'état, par exemple stimulé.",
+        examples: ["Stimulé"],
+      }),
+    declencheurs: z
+      .array(z.string().min(1).meta({ description: "Un déclencheur ou une condition de fin." }))
+      .optional()
+      .meta({
+        description: "Ce qui déclenche l'état, et ce qui y met fin.",
+        examples: [["Odeur de sang frais"]],
+      }),
+    caracteristiques: CaracteristiquesDeCreature.partial().optional().meta({
+      description:
+        "Caractéristiques modifiées par l'état. Ce qui n'est pas redéclaré garde la valeur de l'état de base.",
+    }),
+    zoneDeDetection: z.string().min(1).optional().meta({
+      description: "Distance de détection dans cet état, si elle change.",
+    }),
+    deplacement: z.string().min(1).optional().meta({
+      description: "Distance parcourue par action dans cet état, si elle change.",
+    }),
+    actionsParRound: Compte.optional().meta({
+      description: "Nombre d'actions par round dans cet état, s'il change.",
+      examples: [2],
+    }),
+    notes: z.string().min(1).optional().meta({
+      description: "Ce que l'état change en plus des valeurs chiffrées.",
+    }),
+  })
+  .meta({
+    description:
+      "Un état alternatif : les mêmes valeurs, modifiées. Ce qu'il ne redéclare pas reste celui de l'état de base.",
+  });
 
 /**
  * Une créature du socle Adrenaline System.
@@ -61,57 +91,111 @@ const EtatAlternatif = z.object({
  */
 export const Monstre = z
   .object({
-    nom: z.string().min(1),
-    typeDeCorps: z.string().min(1).optional().meta({
-      description: "Corps servant de base à la créature. Chaîne libre : le catalogue des corps appartient à chaque jeu.",
+    nom: z
+      .string()
+      .min(1)
+      .meta({
+        description:
+          "Nom de la créature. Champ local et non bloc identité : elle n'a ni nationalité ni signes particuliers.",
+        examples: ["Zé lent", "Traqueur"],
+      }),
+    typeDeCorps: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description:
+          "Corps servant de base à la créature. Chaîne libre : le catalogue des corps appartient à chaque jeu.",
+        examples: ["Corps humain adulte"],
+      }),
+    instinct: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description: "Instinct qui gouverne son comportement. Chaîne libre : un meneur en ajoute.",
+        examples: ["Dévorer"],
+      }),
+    typeInfecte: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description: "Type d'infecté, quand le jeu en distingue plusieurs. Chaîne libre.",
+        examples: ["Type 1"],
+      }),
+    description: z.string().min(1).optional().meta({
+      description: "Ce qu'on perçoit de la créature au premier regard.",
     }),
-    instinct: z.string().min(1).optional().meta({
-      description: "Instinct qui gouverne son comportement. Chaîne libre : un meneur en ajoute.",
-    }),
-    typeDInfecte: z.string().min(1).optional(),
-    description: z.string().min(1).optional(),
-    niveauDeDanger: z.int().min(0).optional().meta({
-      description:
-        "ND. Se construit en additionnant ceux du corps, de l'instinct et du type ; le cartouche final n'en porte qu'un.",
-    }),
+    niveauDeDanger: NiveauDeDanger.optional(),
     caracteristiques: CaracteristiquesDeCreature,
-    sante: z
-      .object({
-        physique: SeuilsPhysiques,
-        mental: SeuilsMentaux.partial().optional().meta({
-          description:
-            "Seuils mentaux. Optionnels : une créature sans caractéristiques mentales est insensible aux attaques mentales et n'en porte aucun.",
-        }),
-      })
-      .optional(),
-    protections: Protections.partial().optional(),
-    zoneDeDetection: z.string().min(1).optional().meta({
-      description: "Distance à laquelle la créature repère une proie.",
+    sante: SanteDeCreature.optional().meta({
+      description:
+        "Seuils de dégât. Les mentaux n'ont de sens que si la créature a des caractéristiques mentales.",
     }),
-    deplacement: z.string().min(1).optional().meta({
-      description: "Distance parcourue par action.",
+    protections: Protections.partial().optional().meta({
+      description: "Protections, chaque versant facultatif.",
     }),
-    actionsParRound: z.int().min(0).optional(),
-    etatAlternatif: EtatAlternatif.optional(),
-    comportement: z.array(z.string().min(1)).optional(),
-    traitsSpeciaux: z.array(z.string().min(1)).optional().meta({
-      description: "Insensibilités, immunités, capacités hors du commun. Liste non bornée.",
+    zoneDeDetection: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description: "Distance à laquelle la créature repère une proie.",
+        examples: ["20 m"],
+      }),
+    deplacement: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description: "Distance parcourue par action.",
+        examples: ["5 m par action"],
+      }),
+    actionsParRound: Compte.optional().meta({
+      description: "Nombre d'actions par round.",
+      examples: [1],
     }),
+    etatAlternatif: EtatAlternatif.optional().meta({
+      description: "État second de la créature, quand elle en a un.",
+    }),
+    comportement: z
+      .array(z.string().min(1).meta({ description: "Un trait de comportement." }))
+      .optional()
+      .meta({
+        description: "Comment la créature agit, un trait par entrée.",
+        examples: [["Suit le bruit", "N'escalade pas"]],
+      }),
+    traitsSpeciaux: z
+      .array(z.string().min(1).meta({ description: "Un trait spécial." }))
+      .optional()
+      .meta({
+        description: "Insensibilités, immunités, capacités hors du commun. Liste non bornée.",
+      }),
     competences: z.array(Competence).optional().meta({
       description:
         "Compétences rattachées directement à la créature : elle ne passe par aucune formation.",
     }),
-    equipement: Equipement.optional(),
+    equipement: Equipement.optional().meta({
+      description: "Ce dont la créature se sert, quand elle se sert de quelque chose.",
+    }),
     contagion: Contagion.optional().meta({
       description: "Mécanique de transmission. Absente sur une créature non contagieuse.",
     }),
     narratif: Narratif.optional().meta({
-      description: "Une créature nommée et jouée mérite le même traitement qu'un personnage non joué.",
+      description:
+        "Une créature nommée et jouée mérite le même traitement qu'un personnage non joué.",
+    }),
+    meta: Meta.optional().meta({
+      description: "Attribution et catalogage : d'où vient cette fiche.",
     }),
   })
   .meta({
     $id: "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/monstre.schema.json",
     title: "Créature — Adrenaline System",
     description:
-      "Cartouche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, état alternatif, contagion générique et bloc narratif facultatifs.",
+      "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, état alternatif, contagion générique et bloc narratif facultatifs.",
   });
+
+export type EtatAlternatifValeur = z.infer<typeof EtatAlternatif>;
+export type MonstreValeur = z.infer<typeof Monstre>;

@@ -1,8 +1,8 @@
 import { ZodObject } from "zod";
 
 import { PersonnageJoueur } from "./adrenaline/pj";
-import { Monstre } from "./adrenaline/monstre";
 import { PersonnageNonJoue } from "./adrenaline/pnj";
+import { Monstre } from "./adrenaline/monstre";
 
 type Game = {
   name: string;

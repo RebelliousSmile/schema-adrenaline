@@ -7,9 +7,6 @@ for (const t of TARGETS) {
   fs.mkdirSync(`schemas/${t.game.folder}`, {
     recursive: true,
   });
-  fs.writeFileSync(
-    `schemas/${t.game.folder}/${t.name}.schema.json`,
-    JSON.stringify(json, null, 2)
-  );
+  fs.writeFileSync(`schemas/${t.game.folder}/${t.name}.schema.json`, JSON.stringify(json, null, 2));
   console.log("Wrote", `schemas/${t.game.folder}/${t.name}.schema.json`);
 }
