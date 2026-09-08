@@ -98,10 +98,14 @@ compile (an unsatisfiable schema passes the meta-schema but not this), the
 presence of an `$id`, a description on every single property, and that no
 numeric bound was left at `MAX_SAFE_INTEGER`. Then it replays two corpora:
 
-- `tests/temoins/<target>/` — legitimate documents that **must be accepted**.
+- `corpus/temoins/<target>/` — legitimate documents that **must be accepted**.
   Without them, a schema that rejected everything would pass every refusal case.
-- `tests/refus/<target>/` — malformed documents that **must be rejected**, one
+- `corpus/refus/<target>/` — malformed documents that **must be rejected**, one
   defect each, the filename naming the defect.
+
+  `corpus/` follows the shared structure used across the three schema
+  repositories (`schema-pbta`, `schema-adrenaline`, `schema-in-the-mist`); see
+  `corpus/README.md`.
 
 Both live outside `examples/` on purpose: `validate-examples.ts` would choke on
 the refusal corpus, and it does not recurse into subdirectories anyway.
