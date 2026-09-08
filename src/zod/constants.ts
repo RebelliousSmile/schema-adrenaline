@@ -1,5 +1,7 @@
 import { ZodObject } from "zod";
 
+import { PersonnageJoueur } from "./adrenaline/pj";
+
 type Game = {
   name: string;
   folder: string;
@@ -21,6 +23,15 @@ type SchemaTarget = {
  * no matching TARGETS entry creates no folder and no file.
  */
 export const GAMES: GameDictionary = {
+  /**
+   * The engine itself, holder of the common ground shared by every game running
+   * on it. Games listed below carry only what is specific to them.
+   */
+  adrenaline: {
+    name: "Adrenaline System",
+    folder: "adrenaline",
+    abbr: "adrenaline",
+  },
   zombiology: {
     name: "Zombiology",
     folder: "zombiology",
@@ -33,8 +44,10 @@ export const GAMES: GameDictionary = {
   },
 };
 
-/**
- * Empty on purpose: no schema has been written yet. `npm run check` is green
- * on an empty list — gen writes nothing and validate reports zero files.
- */
-export const TARGETS: Array<SchemaTarget> = [];
+export const TARGETS: Array<SchemaTarget> = [
+  {
+    name: "pj",
+    zod: PersonnageJoueur,
+    game: GAMES.adrenaline,
+  },
+];

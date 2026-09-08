@@ -1,0 +1,44 @@
+# Fiche de one-shot : uniquement ce qu'une fiche jouable porte toujours.
+
+[identite]
+nom = "Vasseur"
+
+[caracteristiques]
+for = 45
+con = 50
+dex = 40
+rap = 35
+log = 55
+vol = 60
+per = 50
+cha = 30
+
+[sante.physique.superficiel]
+base = 6
+
+[sante.physique.leger]
+base = 15
+
+[sante.physique.grave]
+base = 20
+
+[sante.physique.profond]
+base = 25
+
+[sante.mental.superficiel]
+base = 5
+
+[sante.mental.leger]
+base = 16
+
+[sante.mental.grave]
+base = 21
+
+[sante.mental.profond]
+base = 26
+
+[protections.physiques]
+solidite = 6
+
+[protections.mentales]
+solidite = 5

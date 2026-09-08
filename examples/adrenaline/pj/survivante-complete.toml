@@ -1,0 +1,155 @@
+# Fiche de campagne : tous les blocs remplis, y compris les paramètres de
+# création et les seconds seuils applicables aux localisations couvertes.
+
+[identite]
+nom = "Delcourt"
+prenom = "Iris"
+surnom = "La Vétérinaire"
+nationalite = "française"
+genre = "femme"
+age = 34
+cheveux = "châtain foncé"
+yeux = "noisette"
+peau = "claire"
+taille = "1,68 m"
+poids = "58 kg"
+signesParticuliers = ["cicatrice de morsure à l'avant-bras gauche", "tatouage au poignet"]
+description = "Silhouette sèche, gestes économes, ne lâche jamais son sac."
+historique = "Vétérinaire de campagne, elle soignait les troupeaux du plateau quand la contamination a coupé les routes."
+momentsMarquants = [
+  "A dû euthanasier son propre chien au premier jour.",
+  "A tenu le dispensaire du village trois semaines seule.",
+]
+
+[caracteristiques]
+for = 40
+con = 55
+dex = 65
+rap = 45
+log = 70
+vol = 60
+per = 55
+cha = 50
+
+[sante.physique.superficiel]
+base = 7
+couvert = 10
+
+[sante.physique.leger]
+base = 16
+couvert = 19
+
+[sante.physique.grave]
+base = 21
+couvert = 24
+
+[sante.physique.profond]
+base = 26
+couvert = 29
+
+[sante.mental.superficiel]
+base = 6
+couvert = 8
+
+[sante.mental.leger]
+base = 18
+couvert = 20
+
+[sante.mental.grave]
+base = 23
+couvert = 25
+
+[sante.mental.profond]
+base = 28
+couvert = 30
+
+[protections.physiques]
+solidite = 7
+
+[protections.physiques.armure]
+nom = "blouson de moto renforcé"
+points = 3
+localisations = ["torse", "bras-faible", "bras-fort"]
+
+[protections.physiques.bouclier]
+nom = "porte de véhicule"
+proprietes = ["couvert partiel", "encombrant"]
+
+[protections.mentales]
+solidite = 6
+
+[protections.mentales.caractere]
+trait = "sang-froid clinique"
+points = 2
+localisations = ["peur", "tristesse", "impuissance"]
+
+[protections.mentales.bouclier]
+nom = "routine de soignante"
+proprietes = ["censure : endurci"]
+
+[[formations]]
+nom = "Classe moyenne rurale"
+pourcentage = 30
+
+[[formations.competences]]
+nom = "Conduite (tout-terrain)"
+pourcentage = 45
+
+[[formations.competences]]
+nom = "Négociation"
+pourcentage = 30
+
+[[formations]]
+nom = "Vétérinaire"
+pourcentage = 65
+
+[[formations.competences]]
+nom = "Médecine (animale)"
+pourcentage = 70
+
+[[formations.competences]]
+nom = "Biologie"
+pourcentage = 55
+
+[[formations.competences]]
+nom = "Chirurgie"
+pourcentage = 45
+
+[[formations]]
+nom = "Randonnée en montagne"
+pourcentage = 40
+
+[[formations.competences]]
+nom = "Orientation"
+pourcentage = 50
+
+[[formations.competences]]
+nom = "Endurance"
+pourcentage = 40
+
+[equipement]
+possessionsFavorites = [
+  "trousse vétérinaire de campagne",
+  "carnet de vaccinations annoté",
+]
+
+[[equipement.armesPhysiques]]
+nom = "scalpel"
+type = "contact"
+degats = "1d6"
+notes = "Sert d'abord d'outil ; l'employer comme arme coûte un tour de dégagement."
+
+[[equipement.armesPhysiques]]
+nom = "carabine .22"
+type = "distance"
+degats = "2d6"
+
+[[equipement.armesMentales]]
+nom = "diagnostic implacable"
+type = "psychologique"
+notes = "Énoncer à voix haute ce que tout le monde refuse de nommer."
+
+[meta]
+typeDeCreation = "equitable"
+typeDeScenario = "campagne"
+declinaisonDeCampagne = "storyline"
