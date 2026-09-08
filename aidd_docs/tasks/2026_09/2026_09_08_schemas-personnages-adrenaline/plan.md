@@ -1,6 +1,6 @@
 ---
 objective: "Le dépôt publie trois schémas de personnage du socle Adrenaline System — pj, pnj, monstre — générés depuis Zod, chacun validé par deux exemples, `npm run check` affichant six lignes `✓` sans avertissement."
-status: pending
+status: in-progress
 ---
 
 # Plan: Schémas de personnages Adrenaline System
