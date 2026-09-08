@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.0] - 2026-09-08
 
 ### Added
 
@@ -38,6 +38,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tests/temoins/` (3 documents that must validate) and `tests/refus/`
   (23 documents that must not), replayed by the audit. They live outside
   `examples/` because `validate-examples.ts` would fail on the refusal corpus.
+- Versioned copies of every schema under `schemas/<game>/<version>/`, whose
+  `$id` carries the version in its own path. The moving copy under
+  `schemas/<game>/` still points at `main`; pin the frozen one if you need the
+  document to stay put. Versioning goes through the path rather than a git tag,
+  because the same file served from a tag would still declare `main`, and
+  draft-7 admits a single `$id` per document.
+- An audit check that the frozen copy exists, carries the expected versioned
+  `$id`, and matches the current schema byte for byte apart from that `$id`, so
+  a published version cannot drift unnoticed.
+- Six decision records under `aidd_docs/memory/internal/decisions/`: the
+  `adrenaline` common ground rather than a game folder, `.meta({ $id })` rather
+  than `.meta({ id })` which Ajv ignores silently, versioning by path, three
+  targets rather than one discriminated union, derived values stored as printed,
+  and enums closed only on what the engine itself fixes.
 - Prettier, with `format` and `format:check` scripts.
 
 ### Changed
