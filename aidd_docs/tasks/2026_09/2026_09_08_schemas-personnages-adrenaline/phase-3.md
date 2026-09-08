@@ -48,7 +48,7 @@ flowchart TD
 > Un humain non joué : même socle qu'un PJ, moins la machinerie de création.
 
 1. Réutiliser identité, caractéristiques, équipement, protections et santé du socle de la phase 2.
-2. Rendre les formations optionnelles : un PNJ de scénario porte souvent des compétences sans passer par les trois formations.
+2. Rendre les formations optionnelles, et rattacher une liste de compétences directement au PNJ à partir de la compétence exportée par `formations.ts` en phase 2 : un PNJ de scénario porte souvent des compétences sans passer par les trois formations.
 3. Ajouter un niveau de danger et le bloc narratif, tous deux optionnels.
 4. Ne pas reprendre le bloc `meta` des paramètres de création : il n'a de sens que pour un PJ.
 5. Poser un `.meta({ $id, title, description })` sur l'objet racine, l'`$id` pointant `schemas/adrenaline/pnj.schema.json` dans le dépôt, sur le même modèle que la phase 2.

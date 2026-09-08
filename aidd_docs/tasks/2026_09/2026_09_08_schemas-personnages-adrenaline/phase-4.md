@@ -52,13 +52,13 @@ flowchart TD
 
 > Un zombie sans conscience et un prédateur pensant doivent tenir dans la même forme.
 
-1. Rendre les quatre caractéristiques physiques requises et les quatre mentales optionnelles — un zé les omet, un monstre pensant les porte et devient cible d'attaques mentales. Composer par `Physiques.extend(Mentales.partial().shape)` : la sonde de la phase 2 confirme que cette forme produit un objet fermé unique, là où `.and()` produirait un `allOf` insatisfiable.
+1. Rendre les quatre caractéristiques physiques requises et les quatre mentales optionnelles — un zé les omet, un monstre pensant les porte et devient cible d'attaques mentales. Composer par `Physiques.extend(Mentales.partial().shape)` : la sonde de la phase 2, tâche 1bis, confirme que cette forme produit un objet fermé unique, là où `.and()` produirait un `allOf` insatisfiable.
 2. Exiger un nom, en champ local et non par le bloc `identite.ts` : un monstre n'a ni âge, ni profession, ni les autres champs de ce bloc. Le générateur zombie impose un « nom du corps », et un bestiaire sans identifiant n'est pas exploitable.
 3. Ajouter zone de détection, déplacement, niveau de danger, seuils de santé physiques ; rendre les seuils mentaux optionnels.
-4. Ne pas tenter de lier les seuils mentaux à la présence des caractéristiques mentales. Un `.refine()` disparaît du JSON Schema généré et transforme la racine en `ZodEffects` que `SchemaTarget` refuse ; draft-7 n'a pas de `dependentSchemas`. Écrire la contrainte en `.meta({ description })` et l'assumer comme non validable.
+4. Ne pas tenter de lier les seuils mentaux à la présence des caractéristiques mentales. Un `.refine()` disparaît silencieusement du JSON Schema généré, et draft-7 n'a pas de `dependentSchemas`. Ne pas compter sur le typage pour l'interdire : `.refine()` rend un `ZodObject` que `SchemaTarget` accepte et que `tsc` valide (voir phase 2, tâche 2.10). Écrire la contrainte en `.meta({ description })` et l'assumer comme non validable.
 5. Ajouter un bloc d'état alternatif optionnel — le stimulé du générateur zombie — qui rejoue les mêmes valeurs modifiées.
 6. Ajouter comportement et actions en chaînes libres, plus une liste de traits spéciaux non bornée.
-7. Rendre les compétences optionnelles, et n'exiger aucune formation.
+7. Rendre les compétences optionnelles, en réutilisant la compétence exportée seule par `formations.ts` en phase 2, et n'exiger aucune formation.
 8. Rattacher le bloc narratif de la phase 3, optionnel : un monstre nommé et joué mérite le même traitement qu'un PNJ.
 9. Poser un `.meta({ $id, title, description })` sur l'objet racine, l'`$id` pointant `schemas/adrenaline/monstre.schema.json`.
 10. Enregistrer la cible dans `TARGETS` avec `game: GAMES.adrenaline` et `name: "monstre"`.
@@ -87,5 +87,5 @@ flowchart TD
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1    | Un monstre sans bloc contagion valide ; un vecteur de transmission au nom inédit est accepté.                                                       |
 | 2    | Un monstre sans aucune caractéristique mentale valide ; un monstre sans caractéristiques physiques ou sans nom est refusé. Un monstre portant les huit caractéristiques valide, ce qui prouve que la composition n'a pas produit un `allOf` insatisfiable. Le schéma généré porte un `$id`. |
-| 3    | `npm run check` affiche exactement six lignes `✓` couvrant les trois cibles, aucun `⚠️`, aucune ligne `✗`.                                          |
+| 3    | `npm run check` affiche exactement six lignes `✓` couvrant les trois cibles, aucun `⚠️`, aucune ligne `✗`. `grep -rn -e '\.refine(' -e '\.default(' src/zod/` sort toujours vide sur l'ensemble du dossier. Deux `-e` plutôt qu'une alternance : une barre verticale dans une cellule de table GFM casse la cellule, même à l'intérieur d'un code span. Commande à lancer sous Bash — sous PowerShell `grep` n'existe pas. Sortie vide = code 1 : ne pas l'enchaîner derrière `&&`. |
 | 4    | Le `README.md` nomme les trois schémas et dit qu'ils décrivent une forme, pas un catalogue ; le `CONTRIBUTING.md` dit où poser un champ nouveau.    |
