@@ -49,8 +49,8 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
   TypeScript type beside the schema
 - `schemas/` contains the generated JSON Schemas
 - `examples/` contains JSON/TOML examples per schema
-- `tests/temoins/` holds one legitimate document per schema, which must validate
-- `tests/refus/` holds one malformed document per defect, each of which must be
+- `corpus/temoins/` holds one legitimate document per schema, which must validate
+- `corpus/refus/` holds one malformed document per defect, each of which must be
   rejected
 - `tools/` provides generation, validation and audit scripts
 

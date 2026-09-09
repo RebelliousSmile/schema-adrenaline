@@ -20,12 +20,16 @@ import { TARGETS } from "../src/zod/constants";
  *  5. aucune borne numérique n'est absente : un `z.int()` nu émet un `maximum`
  *     valant Number.MAX_SAFE_INTEGER, ce qui revient à n'en poser aucune.
  *
- * Puis les cas de refus : chaque document de `tests/refus/<cible>/` doit être
- * rejeté, et le témoin de `tests/temoins/<cible>/` accepté. Sans le témoin, une
+ * Puis les cas de refus : chaque document de `corpus/refus/<cible>/` doit être
+ * rejeté, et le témoin de `corpus/temoins/<cible>/` accepté. Sans le témoin, une
  * série de refus ne prouve rien — un schéma qui rejette tout les passerait tous.
  *
  * Ces documents vivent hors d'`examples/` à dessein : `validate-examples.ts`
  * échouerait dessus, et il ne récurse pas dans les sous-dossiers.
+ *
+ * `corpus/` suit la structure partagée par les trois dépôts de schéma
+ * (`corpus/refus/`, `corpus/temoins/`, un fichier par faute nommé par la
+ * faute) : voir `corpus/README.md`.
  */
 
 const MAX_SAFE = Number.MAX_SAFE_INTEGER;
@@ -226,10 +230,10 @@ function run(): void {
     if (!valider) continue;
 
     // 6. témoin : un document légitime, qui doit être accepté
-    const temoins = listerFichiers(path.join("tests", "temoins", t.name));
+    const temoins = listerFichiers(path.join("corpus", "temoins", t.name));
     if (temoins.length === 0) {
       console.error(
-        `  ✗ aucun témoin dans tests/temoins/${t.name} — les refus ne prouveraient rien`,
+        `  ✗ aucun témoin dans corpus/temoins/${t.name} — les refus ne prouveraient rien`,
       );
       echecs++;
     }
@@ -244,9 +248,9 @@ function run(): void {
     }
 
     // 7. cas de refus : chacun doit être rejeté
-    const refus = listerFichiers(path.join("tests", "refus", t.name));
+    const refus = listerFichiers(path.join("corpus", "refus", t.name));
     if (refus.length === 0) {
-      console.error(`  ✗ aucun cas de refus dans tests/refus/${t.name}`);
+      console.error(`  ✗ aucun cas de refus dans corpus/refus/${t.name}`);
       echecs++;
     }
     for (const f of refus) {
