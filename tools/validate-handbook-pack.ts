@@ -126,7 +126,19 @@ export function validateHandbookPack(source: unknown): void {
     requireContrast(note, "--text-muted", "--background-primary");
     requireContrast(note, "--h1-color", "--background-primary", 3);
     requireContrast(note, "--interactive-accent", "--background-primary", 3);
+    requireContrast(note, "--code-normal", "--code-background");
     requireContrast(note, "--adrenaline-callout-ink", "--adrenaline-callout-surface");
+    for (const surface of [
+      "--adrenaline-callout-info",
+      "--adrenaline-callout-success",
+      "--adrenaline-callout-question",
+      "--adrenaline-callout-warning",
+      "--adrenaline-callout-danger",
+      "--adrenaline-callout-example",
+      "--adrenaline-callout-quote",
+    ]) {
+      requireContrast(note, "--adrenaline-callout-ink", surface);
+    }
     requireContrast(note, "--adrenaline-signal-ink", "--adrenaline-signal");
     requireContrast(workspace, "--text-normal", "--background-primary");
     requireContrast(workspace, "--interactive-accent", "--background-primary", 3);
