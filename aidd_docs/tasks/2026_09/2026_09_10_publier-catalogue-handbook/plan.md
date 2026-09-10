@@ -1,6 +1,6 @@
 ---
 objective: "Le dépôt expose un catalogue Handbook versionné qui permet à Handbook 2.7.0 ou plus récent d'installer et de mettre à jour le pack Adrenaline, ses fonds et ses polices sans copie manuelle."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Publier le catalogue Handbook du dépôt
