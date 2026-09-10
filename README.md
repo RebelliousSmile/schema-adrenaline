@@ -4,9 +4,9 @@ Open, versioned data schemas for the **Adrenaline System** — the d100 engine b
 Damien Coltice behind _Zombiology_ — so VTTs, builders, and other digital tools
 can **share the same data**.
 
-The aim is an ecosystem of interoperable digital tools where they can exchange
-structured JSON/TOML, validate it via schemas (e.g., using Zod), and leverage it
-for their specific needs.
+The repository is the shared Adrenaline source for **Handbook** and **Lantern**:
+they exchange structured JSON/TOML through the schemas below, while each tool
+keeps its own declarative integration alongside them.
 
 ## Status
 
@@ -53,6 +53,12 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
 - `corpus/refus/` holds one malformed document per defect, each of which must be
   rejected
 - `tools/` provides generation, validation and audit scripts
+- `handbook/adrenaline/` is the versioned, declarative game plugin copied into
+  Handbook; it contains no executable code
+
+Lantern-specific integration files will live under `lantern/` when that
+consumer needs them. Adrenaline remains one repository: neither consumer needs
+a second per-game integration repository.
 
 ## Pinning a version
 
