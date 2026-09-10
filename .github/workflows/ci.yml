@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: schema-adrenaline
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Install dependencies
+        working-directory: schema-adrenaline
+        run: npm ci
+
+      - name: Check schemas and Handbook package
+        working-directory: schema-adrenaline
+        run: npm run check
+
+      - name: Verify generated schemas are committed
+        working-directory: schema-adrenaline
+        run: git diff --exit-code
+
+      - name: Read minimum Handbook release
+        id: handbook-ref
+        working-directory: schema-adrenaline
+        run: echo "tag=$(node -p \"require('./handbook/adrenaline/pack.json').minimumHandbookVersion\")" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout declared Handbook release
+        uses: actions/checkout@v4
+        with:
+          repository: RebelliousSmile/obsidian-handbook
+          ref: ${{ steps.handbook-ref.outputs.tag }}
+          path: handbook-host
+
+      - name: Install Handbook dependencies
+        working-directory: handbook-host
+        run: npm install
+
+      - name: Check package against declared Handbook release
+        working-directory: handbook-host
+        env:
+          SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}/schema-adrenaline
+        run: |
+          npm run assert:adrenaline-source
+          npm run assert:adrenaline-theme

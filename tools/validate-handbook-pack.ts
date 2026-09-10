@@ -119,15 +119,17 @@ export function validateHandbookPack(source: unknown): void {
   validateAssetMap(assets, "fonts", FONT_EXTENSIONS);
 
   for (const polarity of ["light", "dark"]) {
-    const note = record(
-      record(style[polarity], `style.${polarity}`).note,
-      `style.${polarity}.note`,
-    );
+    const layer = record(style[polarity], `style.${polarity}`);
+    const note = record(layer.note, `style.${polarity}.note`);
+    const workspace = record(layer.workspace, `style.${polarity}.workspace`);
     requireContrast(note, "--text-normal", "--background-primary");
     requireContrast(note, "--text-muted", "--background-primary");
     requireContrast(note, "--h1-color", "--background-primary", 3);
+    requireContrast(note, "--interactive-accent", "--background-primary", 3);
     requireContrast(note, "--adrenaline-callout-ink", "--adrenaline-callout-surface");
     requireContrast(note, "--adrenaline-signal-ink", "--adrenaline-signal");
+    requireContrast(workspace, "--text-normal", "--background-primary");
+    requireContrast(workspace, "--interactive-accent", "--background-primary", 3);
   }
 
   for (const license of ["ADRENALINE-ASSETS.md", "FONT-BODY.txt", "FONT-DISPLAY.txt"]) {
