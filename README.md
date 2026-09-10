@@ -54,7 +54,8 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
   rejected
 - `tools/` provides generation, validation and audit scripts
 - `handbook/adrenaline/` is the versioned, declarative game plugin copied into
-  Handbook; it contains no executable code
+  Handbook; version 0.2.0 adds the licensed fonts and original light/dark
+  textures while containing no executable code or external stylesheet
 
 Lantern-specific integration files will live under `lantern/` when that
 consumer needs them. Adrenaline remains one repository: neither consumer needs
