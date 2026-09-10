@@ -1,0 +1,8 @@
+Roboto Condensed Bold
+Copyright 2015 Google Inc.
+
+Licensed under the Apache License, Version 2.0. The complete terms are stored
+in `Apache-2.0.txt` in this directory.
+
+This distribution contains a WOFF2 subset covering U+0000-024F and
+U+2000-206F. The modified file is named Adrenaline Display.

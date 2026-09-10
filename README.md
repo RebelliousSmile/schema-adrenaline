@@ -54,7 +54,8 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
   rejected
 - `tools/` provides generation, validation and audit scripts
 - `handbook/adrenaline/` is the versioned, declarative game plugin copied into
-  Handbook; it contains no executable code
+  Handbook; version 0.2.0 adds the licensed fonts and original light/dark
+  textures while containing no executable code or external stylesheet
 
 Lantern-specific integration files will live under `lantern/` when that
 consumer needs them. Adrenaline remains one repository: neither consumer needs
@@ -76,6 +77,27 @@ follow but not to depend on.
 Versioning goes through the path, never through a git tag: the same file served
 from a tag would still declare `main` as its `$id`, so its identity would not
 match the URL serving it.
+
+### Coordinating Handbook compatibility
+
+The Handbook package declares one minimum host in
+`handbook/adrenaline/pack.json`. CI derives the immutable Handbook tag directly
+from `minimumHandbookVersion`; schema-adrenaline therefore needs no reciprocal
+SHA file. Handbook, conversely, pins the full schema-adrenaline commit it tests
+in `compat/schema-adrenaline.ref`.
+
+Publish a compatibility change sequentially:
+
+1. release the new Handbook host first, while it still accepts the last
+   published Adrenaline package through its flat-colour and system-font
+   fallbacks;
+2. set the package's `minimumHandbookVersion` to that exact release, validate
+   both repositories, and publish schema-adrenaline;
+3. update Handbook's single schema-adrenaline SHA, run its full check, then
+   publish any follow-up Handbook release.
+
+This order avoids a circular pair of mutable references: the package tests a
+released host tag, and the host tests one exact package commit.
 
 ## How far to trust these schemas
 
