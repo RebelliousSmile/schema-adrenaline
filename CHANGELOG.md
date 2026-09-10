@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-09-10
+
+### Added
+
+- A declarative Handbook game pack under `handbook/adrenaline/`, with light and
+  dark palettes, the three Adrenaline document capabilities, three original
+  textures and two redistributable local fonts.
+- A strict root `handbook.json` catalogue that lets Handbook 2.7.0 or newer
+  install and update the Adrenaline pack directly from this repository.
+- Local catalogue, pack, asset, licence and contrast validation, including
+  negative fixtures for unsafe paths, missing capabilities and inconsistent
+  catalogue entries.
+- A cross-repository installation harness that exercises the real installer of
+  the declared minimum Handbook release, including successful asset replacement
+  and atomic rollback after a failed update.
+
+### Changed
+
+- Validation fixtures now live under the shared `corpus/temoins/` and
+  `corpus/refus/` layout.
+- CI validates the Adrenaline package and theme against the immutable Handbook
+  release named by `minimumHandbookVersion`, then installs the published
+  catalogue through that host.
+
+### Fixed
+
+- Preserved readable Adrenaline content contrast on dark backgrounds.
+
 ## [0.1.0] - 2026-09-08
 
 ### Added
