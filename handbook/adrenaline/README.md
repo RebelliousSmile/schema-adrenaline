@@ -6,17 +6,14 @@ structural styles that the manifest declares as requirements.
 
 ## Install
 
-Copy this whole `adrenaline` directory to Handbook's persistent data folder:
+With Handbook 2.7.0 or newer, open **Settings → Handbook → Schema sources**,
+choose **Add source**, enter `RebelliousSmile/schema-adrenaline`, then select the
+release, tag or branch to follow. **Save and check** installs the Adrenaline
+pack. Choose **Adrenaline System** as the game mode after installation.
 
-```text
-<vault>/<configDir>/handbook/packs/adrenaline
-```
-
-Restart Handbook, then choose **Adrenaline System** as the game mode. Remove
-the copied directory and restart Handbook to uninstall it.
-
-`configDir` is usually `.obsidian`, but Handbook reads the vault's actual
-configuration directory. The manifest requires Handbook 2.7.0 or newer.
+Use **Check** on the source to update it. Handbook replaces the installed
+manifest, three backgrounds and two fonts atomically, so no manual directory
+copy or restart is required.
 
 ## Visual package
 
