@@ -1,0 +1,15 @@
+{
+  "manifestVersion": 1,
+  "repository": "RebelliousSmile/schema-adrenaline",
+  "name": "Schema Adrenaline",
+  "description": "Versioned Handbook packs for the Adrenaline System.",
+  "author": "RebelliousSmile",
+  "packs": [
+    {
+      "id": "adrenaline",
+      "version": "0.2.0",
+      "path": "handbook/adrenaline/pack.json",
+      "label": "Adrenaline System"
+    }
+  ]
+}

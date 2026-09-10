@@ -53,3 +53,9 @@ jobs:
         run: |
           npm run assert:adrenaline-source
           npm run assert:adrenaline-theme
+
+      - name: Install catalogue through declared Handbook release
+        working-directory: schema-adrenaline
+        env:
+          HANDBOOK_ROOT: ${{ github.workspace }}/handbook-host
+        run: npx tsx tools/validate-handbook-install.ts

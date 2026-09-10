@@ -53,13 +53,27 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
 - `corpus/refus/` holds one malformed document per defect, each of which must be
   rejected
 - `tools/` provides generation, validation and audit scripts
+- `handbook.json` publishes the repository as a versioned Handbook catalogue
 - `handbook/adrenaline/` is the versioned, declarative game plugin copied into
-  Handbook; version 0.2.0 adds the licensed fonts and original light/dark
-  textures while containing no executable code or external stylesheet
+  Handbook from that catalogue; version 0.2.0 adds the licensed fonts and
+  original light/dark textures while containing no executable code or external
+  stylesheet
 
 Lantern-specific integration files will live under `lantern/` when that
 consumer needs them. Adrenaline remains one repository: neither consumer needs
 a second per-game integration repository.
+
+### Installing in Handbook
+
+Handbook 2.7.0 or newer can install this repository directly. Open
+**Settings → Handbook → Schema sources**, choose **Add source**, enter
+`RebelliousSmile/schema-adrenaline`, select the release, tag or branch to
+follow, then choose **Save and check**. Handbook reads `handbook.json` and
+installs Adrenaline with its declared backgrounds and fonts.
+
+Use **Check** on the same source to update it. Handbook downloads the catalogue,
+pack and declared assets together, then replaces the installed source
+atomically; no manual pack copy is required.
 
 ## Pinning a version
 
