@@ -1,6 +1,6 @@
 ---
 objective: "Handbook et Lantern peuvent installer depuis la même GitHub Release immuable un contrat Adrenaline 1.0.0 qui expose les schémas, types, codecs JSON/TOML et le kit de conformité sans copie locale."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Publier le contrat Adrenaline commun
