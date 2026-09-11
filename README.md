@@ -10,8 +10,9 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-Early, but no longer empty. Three character schemas are published under the
-`adrenaline` folder, each covered by two examples.
+The stable contract is `schema-adrenaline@1.0.0`. Three character schemas are
+published under the `adrenaline` folder, each covered by JSON and TOML examples
+and a shared conformance corpus.
 
 ## Published schemas
 
@@ -127,7 +128,8 @@ currently reports, and enforces:
   succeeds automatically and gains quality.
 - **Each schema is a valid draft-7 and compiles under Ajv,** which an
   unsatisfiable schema would not.
-- **23 malformed documents are rejected and 3 legitimate ones accepted.**
+- **24 malformed documents are rejected and 3 legitimate JSON witnesses accepted,**
+  alongside the TOML conformance cases indexed by `corpus/cases.json`.
 
 What it does not prove: no schema can check that a skill's `total` equals its
 percentage plus the characteristic it is rolled against — draft-7 cannot express
@@ -140,27 +142,48 @@ from: `typeDePublication` (`officiel`, `tiers`, `communautaire`, `maison`),
 `source`, `auteurs`, `page` and `licence`. It describes the file. Do not confuse
 it with `parametresDuJeu`, which describes a table's session.
 
-## Using the schemas in your tool
+## Using the contract in your tool
 
-### Use Zod directly (TS apps)
+Install the immutable GitHub Release asset directly. npm records this complete
+URL and its SHA-512 SRI integrity in the consumer lockfile:
 
-If you use TypeScript and Zod parsing, you can copy/paste the provided Zod schemas:
+```sh
+npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v1.0.0/schema-adrenaline-1.0.0.tgz
+```
+
+### Types and codecs (TypeScript apps)
+
+Import the public contract; do not copy the Zod sources into a consumer:
 
 ```ts
-import { PersonnageJoueur } from "./src/zod/adrenaline/pj";
-const parsed = PersonnageJoueur.parse(userInputJson);
+import {
+  ADRENALINE_DOCUMENT_CODECS,
+  PersonnageJoueur,
+  parsePnjToml,
+  type PersonnageJoueurValeur,
+} from "schema-adrenaline";
+
+const pj: PersonnageJoueurValeur = PersonnageJoueur.parse(userInputJson);
+const pnj = parsePnjToml(tomlSource);
+const json = ADRENALINE_DOCUMENT_CODECS.monstre.parseJson(jsonSource);
 ```
+
+The registry keys are `pj`, `pnj` and `monstre`. Every codec parses and
+serializes JSON and TOML through the same strict Zod schema, so unknown keys are
+rejected rather than silently removed.
 
 ### Validate data (language-agnostic)
 
-Use any JSON Schema validator (AJV, Python jsonschema, Rust jsonschema). Example with AJV:
+Use the frozen JSON Schemas exported by the installed package with any JSON
+Schema validator (AJV, Python jsonschema, Rust jsonschema):
 
 ```ts
 import fs from "node:fs";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
-const schema = JSON.parse(fs.readFileSync("schemas/adrenaline/pj.schema.json", "utf8"));
+const schemaUrl = import.meta.resolve("schema-adrenaline/schemas/pj.schema.json");
+const schema = JSON.parse(fs.readFileSync(new URL(schemaUrl), "utf8"));
 
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
@@ -169,6 +192,30 @@ const validate = ajv.compile(schema);
 const data = JSON.parse(fs.readFileSync("path/to/data.json", "utf8"));
 if (!validate(data)) console.error(validate.errors);
 ```
+
+### Run the shared conformance kit
+
+`schema-adrenaline/corpus/cases.json` lists every accepted and rejected JSON or
+TOML case. Each `path` resolves from the package name, for example:
+
+```ts
+const manifestUrl = import.meta.resolve("schema-adrenaline/corpus/cases.json");
+const manifest = JSON.parse(fs.readFileSync(new URL(manifestUrl), "utf8"));
+const firstCaseUrl = import.meta.resolve(`schema-adrenaline/${manifest.cases[0].path}`);
+```
+
+Paths beginning with `examples/` and `corpus/` are public package exports.
+
+### Compatibility and versioning
+
+The npm contract and frozen schema paths use Semantic Versioning. A breaking
+API or document-shape change requires a new major contract version; a changed
+shape always receives a new `schemas/adrenaline/<version>/` directory. Published
+version directories, tags and release assets are immutable.
+
+The Handbook catalogue and game pack have their own version (`0.2.0` here).
+Their version changes only when the pack changes and is deliberately independent
+from the `1.0.0` contract version.
 
 ### Editor autocomplete for JSON and TOML
 

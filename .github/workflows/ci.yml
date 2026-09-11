@@ -33,7 +33,7 @@ jobs:
       - name: Read minimum Handbook release
         id: handbook-ref
         working-directory: schema-adrenaline
-        run: echo "tag=$(node -p \"require('./handbook/adrenaline/pack.json').minimumHandbookVersion\")" >> "$GITHUB_OUTPUT"
+        run: echo "tag=$(node -p 'require("./handbook/adrenaline/pack.json").minimumHandbookVersion')" >> "$GITHUB_OUTPUT"
 
       - name: Checkout declared Handbook release
         uses: actions/checkout@v4

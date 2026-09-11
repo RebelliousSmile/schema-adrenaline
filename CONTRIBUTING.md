@@ -66,6 +66,10 @@ catalogue would both freeze it and reproduce editorial content.
   refined object is still a `ZodObject`, so `SchemaTarget` accepts it and `tsc`
   is happy. Write the constraint into `.meta({ description })` instead, and treat
   it as documented rather than enforced.
+- **Every contract object uses `z.strictObject()`:** generated JSON Schemas set
+  `additionalProperties: false`, so the executable Zod contract must reject the
+  same unknown keys instead of stripping them. The source audit rejects
+  `z.object()` even when the call is split across lines.
 - **Composition:** compose objects with `A.extend(B.shape)`, never with
   `A.and(B)` — an intersection generates an `allOf` of two objects each carrying
   `additionalProperties: false`, which no document can satisfy.
@@ -82,17 +86,19 @@ catalogue would both freeze it and reproduce editorial content.
 
 ## Quality gate
 
-`npm run check` chains four steps, and each one can fail the build:
+`npm run check` is the complete release gate; each family below can fail the build:
 
-| Step        | What it proves                                       |
-| ----------- | ---------------------------------------------------- |
-| `typecheck` | The Zod sources compile under `--strict`.            |
-| `gen`       | Every target produces a JSON Schema.                 |
-| `validate`  | Every file in `examples/` is accepted by its schema. |
-| `audit`     | The schemas are worth trusting — see below.          |
+| Step                                     | What it proves                                                                                 |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `typecheck`, `build`, `gen`              | Sources compile and every target produces its moving and frozen JSON Schema.                   |
+| `validate`, `validate:contract`, `audit` | Examples, round trips, strict rejection corpus and schema-quality controls pass.               |
+| `validate:version`                       | Historical schema directories match their tags and current package/pack versions are coherent. |
+| `validate:package`, `validate:bundle`    | The packed public API installs in Node and bundles through esbuild without private imports.    |
+| `validate:release`, `validate:handbook`  | Package contents are reproducible and the independent Handbook pack remains valid.             |
 
 `npm run audit` (`tools/audit-schemas.ts`) is the one that measures rather than
-asserts. On the sources it forbids `.refine()` and `.default()`. On each
+asserts. On the sources it forbids `.refine()`, `.default()` and permissive
+`z.object()`. On each
 generated schema it checks draft-7 validity against the meta-schema, an Ajv
 compile (an unsatisfiable schema passes the meta-schema but not this), the
 presence of an `$id`, a description on every single property, and that no
@@ -121,8 +127,29 @@ directory beside the previous ones.
 
 A frozen directory that has been published must never be regenerated or edited
 by hand: someone may already be pinning it. The audit checks that each frozen
-copy matches the current schema byte for byte apart from its `$id`, so bumping
-the version is the only correct way to change a published shape.
+copy still matches its release tag, so bumping the version is the only correct
+way to change a published shape. The Handbook catalogue and pack versions are
+checked separately and do not follow the npm contract version.
+
+For a release:
+
+1. set the package version, generate the new frozen schemas and update the
+   changelog;
+2. run `npm ci`, `npm run check` and `npm run release:prepare -- --output release`;
+3. enable release immutability once with
+   `gh api --method PUT -H "X-GitHub-Api-Version: 2026-03-10" repos/RebelliousSmile/schema-adrenaline/immutable-releases`;
+4. merge the release commit, then push the matching tag (for example `v1.0.0`).
+
+The tag workflow rejects a tag that differs from `package.json`, reruns the
+complete check, prepares the `.tgz` and `.sha256`, uploads both to a draft, then
+publishes it. A rerun may replace assets only while that release is a draft; it
+fails before touching an already published release. After publication, verify:
+
+```sh
+gh release view v1.0.0
+gh api -H "X-GitHub-Api-Version: 2026-03-10" \
+  repos/RebelliousSmile/schema-adrenaline/releases/tags/v1.0.0 --jq .immutable
+```
 
 ## Dev commands
 
