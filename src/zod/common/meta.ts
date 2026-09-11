@@ -25,7 +25,7 @@ export const TypeDePublication = z.enum(["officiel", "tiers", "communautaire", "
  * partie et non un fichier.
  */
 export const Meta = z
-  .object({
+  .strictObject({
     typeDePublication: TypeDePublication.optional(),
     source: z
       .string()

@@ -18,7 +18,7 @@ import { Sante } from "../common/sante.js";
  * décrit le fichier et sa provenance.
  */
 const ParametresDuJeu = z
-  .object({
+  .strictObject({
     joueur: z.string().min(1).optional().meta({
       description: "Personne qui joue le personnage.",
     }),
@@ -68,7 +68,7 @@ const ParametresDuJeu = z
  * malus, états encaissés, colonne « Actuel » des caractéristiques.
  */
 export const PersonnageJoueur = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)

@@ -9,10 +9,16 @@
     "validate": "tsx tools/validate-examples.ts",
     "audit": "tsx tools/audit-schemas.ts",
     "validate:handbook": "tsx tools/validate-handbook-pack.ts --self-test",
+    "validate:contract": "tsx tools/validate-contract.ts",
+    "validate:package": "tsx tools/validate-package.ts",
+    "validate:bundle": "tsx tools/validate-bundle.ts",
+    "validate:version": "tsx tools/validate-versioning.ts",
+    "validate:release": "tsx tools/prepare-release.ts --verify",
+    "release:prepare": "tsx tools/prepare-release.ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run build && npm run gen && npm run validate && npm run audit && npm run validate:handbook",
+    "check": "npm run typecheck && npm run build && npm run gen && npm run validate && npm run validate:contract && npm run audit && npm run validate:version && npm run validate:package && npm run validate:bundle && npm run validate:release && npm run validate:handbook",
     "toml:one": "tsx tools/toml2json.ts"
   },
   "repository": {
@@ -61,6 +67,7 @@
     "@types/node": "^24.5.2",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "esbuild": "^0.25.10",
     "prettier": "^3.9.6",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"

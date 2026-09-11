@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Kit de conformité et preuve du tarball
@@ -12,15 +12,33 @@ status: pending
 .
 ├── ✏️ package.json
 ├── ✏️ package-lock.json
+├── src/zod/
+│   ├── adrenaline/
+│   │   ├── ✏️ pj.ts
+│   │   ├── ✏️ pnj.ts
+│   │   └── ✏️ monstre.ts
+│   └── common/
+│       ├── ✏️ caracteristiques.ts
+│       ├── ✏️ contagion.ts
+│       ├── ✏️ equipement.ts
+│       ├── ✏️ formations.ts
+│       ├── ✏️ identite.ts
+│       ├── ✏️ meta.ts
+│       ├── ✏️ narratif.ts
+│       ├── ✏️ protections.ts
+│       └── ✏️ sante.ts
 ├── corpus/
 │   ├── ✏️ README.md
 │   ├── ✅ cases.json
+│   ├── refus/pnj/
+│   │   └── ✅ cle-inconnue-imbriquee.json
 │   └── contract/
 │       ├── valid/
 │       │   └── ✅ pnj-syntax-edge-values.toml
 │       └── invalid/
 │           └── ✅ pnj-unknown-field.toml
 └── tools/
+    ├── ✏️ audit-schemas.ts
     ├── ✅ validate-contract.ts
     ├── ✅ validate-bundle.ts
     ├── ✅ validate-package.ts
@@ -61,6 +79,8 @@ journey
     Bundler un consommateur minimal => API ESM incluse sans chemin privé: 5: cli
   section Edge case - cas de refus
     Charger chaque défaut indexé => codec correspondant => rejet observable: 1: cli
+  section Edge case - clé imbriquée inconnue
+    Ajouter une clé dans un sous-objet valide => codec Zod => rejet sans suppression silencieuse: 1: cli
   section Edge case - gel publié altéré
     Comparer un dossier versionné à son tag => différence => contrôle bloquant: 1: cli
   section Teardown
@@ -82,10 +102,13 @@ journey
 
 > Vérifier chaque cas avec l'API publique qui sera réellement consommée.
 
-1. Valider la structure du manifeste, l'unicité et la sûreté des chemins ainsi que la couverture accept/refuse par cible et la présence d'au moins un témoin TOML par cible.
-2. Pour JSON, prouver parseur puis sérialiseur puis parseur sur la valeur normalisée.
-3. Pour TOML, comparer le parseur d'exécution à `@iarna/toml`, puis prouver que sérialiser et reparcourir conserve récursivement objets, tableaux et scalaires.
-4. Ajouter les refus attendus et intégrer le validateur au `npm run check` existant.
+1. Remplacer chaque construction `z.object` de `src/zod/` par `z.strictObject`, à la racine comme dans les objets imbriqués, afin que Zod applique les mêmes fermetures que les JSON Schemas.
+2. Étendre l'audit des sources pour refuser toute réintroduction de `z.object`, y compris lorsque `z` et `.object` sont séparés par des retours à la ligne.
+3. Ajouter un refus avec clé inconnue dans un sous-objet autrement valide et vérifier que le codec lève une erreur au lieu de retourner une valeur amputée.
+4. Valider la structure du manifeste, l'unicité et la sûreté des chemins ainsi que la couverture accept/refuse par cible et la présence d'au moins un témoin TOML par cible.
+5. Pour JSON, prouver parseur puis sérialiseur puis parseur sur la valeur normalisée.
+6. Pour TOML, comparer le parseur d'exécution à `@iarna/toml`, puis prouver que sérialiser et reparcourir conserve récursivement objets, tableaux et scalaires.
+7. Ajouter les refus attendus et intégrer le validateur au `npm run check` existant.
 
 ### `3)` Vérifier la distribution et les versions
 
@@ -103,5 +126,5 @@ journey
 | Task | Acceptance criteria |
 | ---- | ------------------- |
 | 1 | Le manifeste distribué référence tous les cas JSON et exemples TOML existants, couvre chaque cible, et son cas syntaxique ciblé conserve `0`, liste vide et clé citée. |
-| 2 | Tous les témoins survivent à un aller-retour dans leur format après normalisation Zod, tous les refus échouent, et les deux parseurs TOML donnent la même valeur sur les témoins. |
+| 2 | Tous les objets Zod refusent les clés inconnues à chaque niveau, l'audit interdit les objets permissifs, tous les témoins survivent à leur aller-retour, tous les refus échouent et les deux parseurs TOML concordent. |
 | 3 | Des consommateurs Node et esbuild importent uniquement les entrées publiques depuis le `.tgz`, retrouvent tous les fichiers indexés, les gels tagués sont inchangés et deux préparations donnent le même contenu canonique. |

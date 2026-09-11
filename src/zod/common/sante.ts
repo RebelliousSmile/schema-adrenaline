@@ -14,7 +14,7 @@ import { Points } from "./primitives.js";
  * la valeur couverte est la base augmentée des points de protection.
  */
 const Seuil = z
-  .object({
+  .strictObject({
     base: Points.meta({
       description: "Valeur du seuil sur une localisation non couverte.",
       examples: [7, 16],
@@ -34,7 +34,7 @@ const Seuil = z
  * le socle pose entre eux une symétrie stricte, que deux définitions séparées
  * laisseraient diverger en silence.
  */
-const QuatreSeuils = z.object({
+const QuatreSeuils = z.strictObject({
   superficiel: Seuil.meta({
     description: "Seuil de dégât superficiel, le moins élevé des quatre.",
   }),
@@ -78,7 +78,7 @@ export const SeuilsMentaux = QuatreSeuils.meta({
  * caractéristiques.
  */
 export const Sante = z
-  .object({
+  .strictObject({
     physique: SeuilsPhysiques,
     mental: SeuilsMentaux,
   })
@@ -92,7 +92,7 @@ export const Sante = z
  * seulement si elle porte des caractéristiques mentales.
  */
 export const SanteDeCreature = z
-  .object({
+  .strictObject({
     physique: SeuilsPhysiques,
     mental: QuatreSeuils.partial().optional().meta({
       description:

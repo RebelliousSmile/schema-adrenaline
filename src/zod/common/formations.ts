@@ -26,7 +26,7 @@ export const AbreviationDeCaracteristique = z
  * la distinguent typographiquement du nom, par des parenthèses.
  */
 export const Competence = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)
@@ -88,7 +88,7 @@ export const TypeDeFormation = z.enum(["classe-sociale", "professionnelle", "per
  * qualifier.
  */
 export const Formation = z
-  .object({
+  .strictObject({
     type: TypeDeFormation.optional().meta({
       description:
         "Type de formation, imprimé en tête de colonne sur la feuille de PJ. Absent d'une fiche de PNJ, qui ne qualifie pas ses formations.",

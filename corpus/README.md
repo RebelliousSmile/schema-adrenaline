@@ -44,9 +44,20 @@ the other's would let them drift apart.
 ## Running
 
 ```bash
-npm run audit
+npm run validate:contract
 ```
 
-`tools/audit-schemas.ts` reads `corpus/temoins/<target>/` (must validate) and
-`corpus/refus/<target>/` (must be rejected) for every target declared in
-`src/zod/constants.ts`.
+`corpus/cases.json` is the public conformance manifest. Its paths are relative
+to the package root so a consumer can resolve every case through the exported
+`schema-adrenaline/corpus/*` and `schema-adrenaline/examples/*` subpaths. It
+indexes every existing JSON witness and refusal, every TOML example, and the
+small syntax fixtures under `corpus/contract/`.
+
+`npm run validate:contract` rejects unsafe, duplicate, missing, or unindexed
+paths. Every target must have accepted and rejected cases and at least one TOML
+witness. Accepted documents must survive parse/stringify/parse without changing
+their normalized value; rejected documents must fail through the same public
+codec a consumer imports.
+
+`npm run audit` still replays the JSON witness/refusal halves directly as part
+of the wider schema quality audit.

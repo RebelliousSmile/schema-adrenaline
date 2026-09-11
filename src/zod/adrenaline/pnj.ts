@@ -26,7 +26,7 @@ import { Sante } from "../common/sante.js";
  * par la procédure de création d'un PJ et n'accumule pas de PX.
  */
 export const PersonnageNonJoue = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)

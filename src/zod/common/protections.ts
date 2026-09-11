@@ -8,7 +8,7 @@ import { Points } from "./primitives.js";
  * catalogues éditoriaux, pas des mécaniques fermées.
  */
 const Bouclier = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)
@@ -37,13 +37,13 @@ const Bouclier = z
  * ininterprétable.
  */
 export const ProtectionsPhysiques = z
-  .object({
+  .strictObject({
     solidite: Points.meta({
       description: "PP de Solidité physique. Fixe le seuil superficiel.",
       examples: [7],
     }),
     armure: z
-      .object({
+      .strictObject({
         nom: z
           .string()
           .min(1)
@@ -80,13 +80,13 @@ export const ProtectionsPhysiques = z
  * catalogue des traits étant éditorial.
  */
 export const ProtectionsMentales = z
-  .object({
+  .strictObject({
     solidite: Points.meta({
       description: "PM de Solidité mentale. Fixe le seuil mental superficiel.",
       examples: [5],
     }),
     caractere: z
-      .object({
+      .strictObject({
         trait: z
           .string()
           .min(1)
@@ -117,7 +117,7 @@ export const ProtectionsMentales = z
   .meta({ description: "Protections mentales : solidité, trait de caractère, bouclier." });
 
 export const Protections = z
-  .object({
+  .strictObject({
     physiques: ProtectionsPhysiques,
     mentales: ProtectionsMentales,
   })

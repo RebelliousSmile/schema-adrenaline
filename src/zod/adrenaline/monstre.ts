@@ -36,7 +36,7 @@ const CaracteristiquesDeCreature = CaracteristiquesPhysiques.extend(
  * l'état de base.
  */
 const EtatAlternatif = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)
@@ -90,7 +90,7 @@ const EtatAlternatif = z
  * disparaîtrait sans trace du schéma généré.
  */
 export const Monstre = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)
