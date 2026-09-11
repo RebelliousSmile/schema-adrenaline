@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Compte, Pourcentage } from "./primitives";
+import { Compte, Pourcentage } from "./primitives.js";
 
 /**
  * Une arme, physique ou mentale.

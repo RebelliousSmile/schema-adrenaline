@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Pourcentage } from "./primitives";
+import { Pourcentage } from "./primitives.js";
 
 /**
  * Les huit caractéristiques, par leur abréviation de feuille.

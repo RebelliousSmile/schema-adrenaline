@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { LocalisationCorporelle, LocalisationEmotionnelle } from "./localisations";
-import { Points } from "./primitives";
+import { LocalisationCorporelle, LocalisationEmotionnelle } from "./localisations.js";
+import { Points } from "./primitives.js";
 
 /**
  * Un bouclier, physique ou mental. Ses propriétés — type de couvert côté

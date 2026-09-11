@@ -1,14 +1,14 @@
 import { z } from "zod";
-import { CaracteristiquesMentales, CaracteristiquesPhysiques } from "../common/caracteristiques";
-import { Contagion } from "../common/contagion";
-import { NiveauDeDanger } from "../common/danger";
-import { Equipement } from "../common/equipement";
-import { Competence } from "../common/formations";
-import { Meta } from "../common/meta";
-import { Narratif } from "../common/narratif";
-import { Compte } from "../common/primitives";
-import { Protections } from "../common/protections";
-import { SanteDeCreature } from "../common/sante";
+import { CaracteristiquesMentales, CaracteristiquesPhysiques } from "../common/caracteristiques.js";
+import { Contagion } from "../common/contagion.js";
+import { NiveauDeDanger } from "../common/danger.js";
+import { Equipement } from "../common/equipement.js";
+import { Competence } from "../common/formations.js";
+import { Meta } from "../common/meta.js";
+import { Narratif } from "../common/narratif.js";
+import { Compte } from "../common/primitives.js";
+import { Protections } from "../common/protections.js";
+import { SanteDeCreature } from "../common/sante.js";
 
 /**
  * Les caractéristiques d'une créature : les quatre physiques requises, les

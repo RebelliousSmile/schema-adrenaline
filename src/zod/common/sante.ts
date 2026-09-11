@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Points } from "./primitives";
+import { Points } from "./primitives.js";
 
 /**
  * Un seuil tel qu'il est imprimé : une valeur de base, et une seconde valeur
