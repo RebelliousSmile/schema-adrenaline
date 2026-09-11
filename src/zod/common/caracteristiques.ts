@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { Pourcentage } from "./primitives";
+import { Pourcentage } from "./primitives.js";
 
 /**
  * Les quatre caractéristiques physiques. Objet fermé : le socle en compte
  * quatre, ni plus ni moins.
  */
-export const CaracteristiquesPhysiques = z.object({
+export const CaracteristiquesPhysiques = z.strictObject({
   for: Pourcentage.meta({
     description: "Force. Pourcentage de d100.",
     examples: [40],
@@ -28,7 +28,7 @@ export const CaracteristiquesPhysiques = z.object({
  * Les quatre caractéristiques mentales. Exportées séparément : un profil de
  * corps d'infecté porte les quatre physiques et la seule PER.
  */
-export const CaracteristiquesMentales = z.object({
+export const CaracteristiquesMentales = z.strictObject({
   log: Pourcentage.meta({
     description: "Logique. Pourcentage de d100.",
     examples: [30],

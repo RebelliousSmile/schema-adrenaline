@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Compte } from "./primitives";
+import { Compte } from "./primitives.js";
 
 /**
  * Le Niveau de Danger, déclaré une fois pour toutes.

@@ -1,0 +1,216 @@
+{
+  "manifestVersion": 1,
+  "tomlVersion": "1.0.0",
+  "cases": [
+    {
+      "path": "corpus/temoins/pj/temoin.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/temoins/pnj/temoin.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/temoins/monstre/temoin.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/refus/pj/abreviation-de-caracteristique-inconnue.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/armure-sans-localisation.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/caracteristique-hors-borne.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/caracteristique-manquante.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/caracteristique-negative.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/cle-inconnue.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/localisation-inconnue.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/nom-vide.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/sante-absente.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/seuil-sans-base.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/type-de-formation-inconnu.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/type-de-publication-inconnu.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/type-de-scenario-inconnu.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/cle-inconnue.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/cle-inconnue-imbriquee.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/localisation-emotionnelle-inconnue.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/niveau-de-danger-negatif.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/nom-absent.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/nom-vide.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/monstre/actions-par-round-negatives.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/monstre/caracteristique-physique-manquante.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/monstre/formations-sur-creature.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/monstre/nom-absent.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/monstre/probabilite-hors-borne.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "examples/adrenaline/pj/figurant-minimal.toml",
+      "target": "pj",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "examples/adrenaline/pj/survivante-complete.toml",
+      "target": "pj",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "examples/adrenaline/pnj/pnj-majeur.toml",
+      "target": "pnj",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "examples/adrenaline/pnj/pnj-secondaire.toml",
+      "target": "pnj",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "examples/adrenaline/monstre/infecte-rodeur.toml",
+      "target": "monstre",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "examples/adrenaline/monstre/predateur-pensant.toml",
+      "target": "monstre",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/contract/valid/pnj-syntax-edge-values.toml",
+      "target": "pnj",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/contract/invalid/pnj-unknown-field.toml",
+      "target": "pnj",
+      "format": "toml",
+      "expect": "reject"
+    }
+  ]
+}

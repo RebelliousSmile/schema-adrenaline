@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { Caracteristiques } from "../common/caracteristiques";
-import { NiveauDeDanger } from "../common/danger";
-import { Equipement } from "../common/equipement";
-import { Competence, Formation } from "../common/formations";
-import { Identite } from "../common/identite";
-import { Meta } from "../common/meta";
-import { Narratif } from "../common/narratif";
-import { Protections } from "../common/protections";
-import { Sante } from "../common/sante";
+import { Caracteristiques } from "../common/caracteristiques.js";
+import { NiveauDeDanger } from "../common/danger.js";
+import { Equipement } from "../common/equipement.js";
+import { Competence, Formation } from "../common/formations.js";
+import { Identite } from "../common/identite.js";
+import { Meta } from "../common/meta.js";
+import { Narratif } from "../common/narratif.js";
+import { Protections } from "../common/protections.js";
+import { Sante } from "../common/sante.js";
 
 /**
  * Un humain non joué : le même socle qu'un personnage joueur, moins la
@@ -26,7 +26,7 @@ import { Sante } from "../common/sante";
  * par la procédure de création d'un PJ et n'accumule pas de PX.
  */
 export const PersonnageNonJoue = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)

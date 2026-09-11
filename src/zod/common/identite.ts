@@ -10,7 +10,7 @@ import { z } from "zod";
  * Tout y est facultatif : le livre laisse cette partie libre au joueur.
  */
 export const Identite = z
-  .object({
+  .strictObject({
     nationalite: z
       .string()
       .min(1)

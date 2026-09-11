@@ -8,7 +8,7 @@ import { z } from "zod";
  * socle. Une malédiction se transmet par un autre canal et doit tenir ici.
  */
 const Vecteur = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)
@@ -39,7 +39,7 @@ const Vecteur = z
  * varient d'une source à l'autre, et un autre agent en définirait d'autres.
  */
 const Modulation = z
-  .object({
+  .strictObject({
     profil: z
       .string()
       .min(1)
@@ -69,7 +69,7 @@ const Modulation = z
  * monstre valide.
  */
 export const Contagion = z
-  .object({
+  .strictObject({
     agent: z
       .string()
       .min(1)

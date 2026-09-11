@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Compte, Pourcentage } from "./primitives";
+import { Compte, Pourcentage } from "./primitives.js";
 
 /**
  * Une arme, physique ou mentale.
@@ -9,7 +9,7 @@ import { Compte, Pourcentage } from "./primitives";
  * le catalogue d'armes appartient à chaque jeu, pas au socle.
  */
 const Arme = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)
@@ -54,7 +54,7 @@ const Arme = z
  * règle.
  */
 export const Equipement = z
-  .object({
+  .strictObject({
     possessions: z
       .array(z.string().min(1).meta({ description: "Un objet possédé, en une ligne." }))
       .optional()

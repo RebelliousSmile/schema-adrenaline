@@ -7,7 +7,7 @@ import { TARGETS } from "../src/zod/constants";
 /**
  * Mesure la qualité des schémas générés, plutôt que de l'affirmer.
  *
- * Sur les sources, deux tournures qu'aucun autre contrôle n'attrape.
+ * Sur les sources, trois tournures qu'aucun autre contrôle n'attrape.
  *
  * Sur chaque schéma généré, cinq contrôles, tous bloquants :
  *
@@ -38,12 +38,15 @@ const VERSION: string = JSON.parse(fs.readFileSync("package.json", "utf-8")).ver
 type Compte = { total: number; decrits: number; nus: string[] };
 
 /**
- * Les deux tournures interdites dans `src/zod/`.
+ * Les trois tournures interdites dans `src/zod/`.
  *
  * `.refine()` rend un `ZodObject` en Zod 4 — `ZodEffects` n'existe plus —, donc
  * `tsc --noEmit --strict` sort 0 et la contrainte disparaît sans trace du JSON
  * Schema généré. `.default()` atterrit dans `required` en vue output et fait
  * inventer une valeur : un champ réellement optionnel prend `.optional()`.
+ * `z.object()` supprime par défaut les clés inconnues, alors que nos JSON
+ * Schemas ferment tous leurs objets avec `additionalProperties: false` : seul
+ * `z.strictObject()` garde les deux représentations du contrat alignées.
  */
 function controlerLesSources(): string[] {
   const fautes: string[] = [];
@@ -53,12 +56,18 @@ function controlerLesSources(): string[] {
       if (entree.isDirectory()) {
         parcourir(chemin);
       } else if (entree.name.endsWith(".ts")) {
-        const lignes = fs.readFileSync(chemin, "utf-8").split(/\r?\n/);
+        const source = fs.readFileSync(chemin, "utf-8");
+        const lignes = source.split(/\r?\n/);
         lignes.forEach((ligne, i) => {
           if (ligne.includes(".refine(") || ligne.includes(".default(")) {
             fautes.push(`${chemin}:${i + 1} ${ligne.trim()}`);
           }
         });
+        for (const correspondance of source.matchAll(/\bz\s*\.\s*object\s*\(/g)) {
+          const index = correspondance.index ?? 0;
+          const ligne = source.slice(0, index).split(/\r?\n/).length;
+          fautes.push(`${chemin}:${ligne} z.object() permissif`);
+        }
       }
     }
   };
@@ -126,7 +135,7 @@ function run(): void {
   console.log("-- sources --");
   const fautesSource = controlerLesSources();
   if (fautesSource.length === 0) {
-    console.log("  ✓ aucun .refine() ni .default() dans src/zod/");
+    console.log("  ✓ aucun .refine(), .default() ni z.object() permissif dans src/zod/");
   } else {
     for (const f of fautesSource) console.error(`  ✗ ${f}`);
     echecs += fautesSource.length;

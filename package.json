@@ -1,16 +1,24 @@
 {
   "name": "schema-adrenaline",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Open, versioned data schemas for the Adrenaline System (Zombiology and friends), to make digital tools interoperable.",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build && npm run gen",
     "gen": "tsx tools/gen-schemas.ts",
     "validate": "tsx tools/validate-examples.ts",
     "audit": "tsx tools/audit-schemas.ts",
     "validate:handbook": "tsx tools/validate-handbook-pack.ts --self-test",
+    "validate:contract": "tsx tools/validate-contract.ts",
+    "validate:package": "tsx tools/validate-package.ts",
+    "validate:bundle": "tsx tools/validate-bundle.ts",
+    "validate:version": "tsx tools/validate-versioning.ts",
+    "validate:release": "tsx tools/prepare-release.ts --verify",
+    "release:prepare": "tsx tools/prepare-release.ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run typecheck && npm run gen && npm run validate && npm run audit && npm run validate:handbook",
+    "check": "npm run typecheck && npm run build && npm run gen && npm run validate && npm run validate:contract && npm run audit && npm run validate:version && npm run validate:package && npm run validate:bundle && npm run validate:release && npm run validate:handbook",
     "toml:one": "tsx tools/toml2json.ts"
   },
   "repository": {
@@ -31,14 +39,37 @@
   },
   "homepage": "https://github.com/RebelliousSmile/schema-adrenaline#readme",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schemas/*": "./schemas/adrenaline/1.0.0/*",
+    "./corpus/*": "./corpus/*",
+    "./examples/*": "./examples/*"
+  },
+  "files": [
+    "dist",
+    "schemas/adrenaline/1.0.0",
+    "corpus",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "smol-toml": "^1.8.0",
+    "zod": "^4.1.11"
+  },
   "devDependencies": {
     "@iarna/toml": "^2.2.5",
     "@types/node": "^24.5.2",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "esbuild": "^0.25.10",
     "prettier": "^3.9.6",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.2",
-    "zod": "^4.1.11"
+    "typescript": "^5.9.2"
   }
 }

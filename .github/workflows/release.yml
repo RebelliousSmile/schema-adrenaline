@@ -1,0 +1,64 @@
+name: Release contract
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Verify tag matches package version
+        run: node -e 'const pkg=require("./package.json"); if(process.env.GITHUB_REF_NAME !== `v${pkg.version}`) process.exit(1)'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check contract
+        run: npm run check
+
+      - name: Prepare release assets
+        run: npm run release:prepare -- --output release
+
+      - name: Create or resume draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            test "$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft)" = "true"
+          else
+            gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "$GITHUB_REF_NAME" --generate-notes
+          fi
+          gh release upload "$GITHUB_REF_NAME" release/*.tgz release/*.sha256 --clobber
+
+      - name: Publish immutable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release edit "$GITHUB_REF_NAME" --draft=false
+          for attempt in {1..12}; do
+            immutable=$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq .immutable)
+            digest=$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.assets[] | select(.name | endswith(".tgz")) | .digest')
+            if test "$immutable" = "true" && test -n "$digest"; then break; fi
+            sleep 5
+          done
+          test "$immutable" = "true"
+          test "$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.assets | length')" = "2"
+          test "$digest" = "sha256:$(sha256sum release/*.tgz | cut -d ' ' -f 1)"

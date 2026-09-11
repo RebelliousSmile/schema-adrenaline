@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-09-11
+
+### Added
+
+- A stable ESM API exporting the three strict Zod schemas, their inferred
+  TypeScript types, JSON/TOML codecs and contract version constants.
+- Frozen `1.0.0` JSON Schemas and public package subpaths for schemas, examples
+  and the shared conformance corpus.
+- Installed-tarball, Node, esbuild, version immutability and reproducible release
+  checks, plus a release preparation command producing a tarball and SHA-256.
+- A tag workflow that assembles assets in a draft before publishing an immutable
+  GitHub Release.
+
+### Changed
+
+- Every Zod object is strict, matching the generated JSON Schemas' rejection of
+  unknown properties at both root and nested levels.
+- `npm run check` now proves the executable contract, package exports, consumer
+  bundle, frozen versions, reproducibility and Handbook pack in one gate.
+
 ## [0.2.0] - 2026-09-10
 
 ### Added

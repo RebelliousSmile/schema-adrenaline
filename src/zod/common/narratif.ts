@@ -9,7 +9,7 @@ import { z } from "zod";
  * figurant n'en porte aucun.
  */
 export const Narratif = z
-  .object({
+  .strictObject({
     role: z
       .string()
       .min(1)

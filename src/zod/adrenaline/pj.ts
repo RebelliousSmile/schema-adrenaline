@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { Caracteristiques } from "../common/caracteristiques";
-import { Equipement } from "../common/equipement";
-import { Formation } from "../common/formations";
-import { Identite } from "../common/identite";
-import { Meta } from "../common/meta";
-import { Cumul } from "../common/primitives";
-import { Protections } from "../common/protections";
-import { Sante } from "../common/sante";
+import { Caracteristiques } from "../common/caracteristiques.js";
+import { Equipement } from "../common/equipement.js";
+import { Formation } from "../common/formations.js";
+import { Identite } from "../common/identite.js";
+import { Meta } from "../common/meta.js";
+import { Cumul } from "../common/primitives.js";
+import { Protections } from "../common/protections.js";
+import { Sante } from "../common/sante.js";
 
 /**
  * Le bloc « Paramètres du jeu », en haut à droite de la feuille : qui joue le
@@ -18,7 +18,7 @@ import { Sante } from "../common/sante";
  * décrit le fichier et sa provenance.
  */
 const ParametresDuJeu = z
-  .object({
+  .strictObject({
     joueur: z.string().min(1).optional().meta({
       description: "Personne qui joue le personnage.",
     }),
@@ -68,7 +68,7 @@ const ParametresDuJeu = z
  * malus, états encaissés, colonne « Actuel » des caractéristiques.
  */
 export const PersonnageJoueur = z
-  .object({
+  .strictObject({
     nom: z
       .string()
       .min(1)
