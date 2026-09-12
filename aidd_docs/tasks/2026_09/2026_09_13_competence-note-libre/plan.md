@@ -1,6 +1,6 @@
 ---
 objective: "Une compétence peut porter une ligne de note libre, propagée jusqu'au rendu Handbook (PJ/PNJ/Monstre)."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Note libre sur Competence
