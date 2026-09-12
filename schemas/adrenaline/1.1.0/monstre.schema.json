@@ -5,96 +5,51 @@
     "nom": {
       "type": "string",
       "minLength": 1,
-      "description": "Nom du personnage, en en-tête de la feuille.",
+      "description": "Nom de la créature. Champ local et non bloc identité : elle n'a ni nationalité ni signes particuliers.",
       "examples": [
-        "Claire Vasseur"
+        "Zé lent",
+        "Traqueur"
       ]
     },
-    "identite": {
-      "description": "Bloc Identité de la feuille. Facultatif : le livre le laisse libre au joueur.",
-      "type": "object",
-      "properties": {
-        "nationalite": {
-          "description": "Nationalité, en clair.",
-          "examples": [
-            "Française"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "genre": {
-          "description": "Genre, en clair. Chaîne libre : la feuille n'impose aucune liste.",
-          "examples": [
-            "Femme"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "cheveux": {
-          "description": "Couleur ou aspect des cheveux.",
-          "examples": [
-            "Bruns, coupés court"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "age": {
-          "description": "Âge en années.",
-          "examples": [
-            34
-          ],
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200
-        },
-        "yeux": {
-          "description": "Couleur des yeux.",
-          "examples": [
-            "Verts"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "taille": {
-          "description": "Taille, telle qu'écrite sur la feuille, unité comprise. Chaîne libre et non un nombre : la feuille est manuscrite et n'impose pas d'unité, deux fiches ne sont donc pas comparables sur ce champ.",
-          "examples": [
-            "1,72 m"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "peau": {
-          "description": "Teint ou aspect de la peau.",
-          "examples": [
-            "Mate"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "poids": {
-          "description": "Poids, tel qu'écrit sur la feuille, unité comprise. Même réserve que la taille : chaîne libre, non comparable d'une fiche à l'autre.",
-          "examples": [
-            "64 kg"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "signesParticuliers": {
-          "description": "Signes particuliers : cicatrices, tatouages, tout ce qui se remarque.",
-          "examples": [
-            [
-              "Cicatrice à l'arcade gauche"
-            ]
-          ],
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Un signe particulier, en une ligne."
-          }
-        }
-      },
-      "additionalProperties": false
+    "typeDeCorps": {
+      "description": "Corps servant de base à la créature. Chaîne libre : le catalogue des corps appartient à chaque jeu.",
+      "examples": [
+        "Corps humain adulte"
+      ],
+      "type": "string",
+      "minLength": 1
+    },
+    "instinct": {
+      "description": "Instinct qui gouverne son comportement. Chaîne libre : un meneur en ajoute.",
+      "examples": [
+        "Dévorer"
+      ],
+      "type": "string",
+      "minLength": 1
+    },
+    "typeInfecte": {
+      "description": "Type d'infecté, quand le jeu en distingue plusieurs. Chaîne libre.",
+      "examples": [
+        "Type 1"
+      ],
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "description": "Ce qu'on perçoit de la créature au premier regard.",
+      "type": "string",
+      "minLength": 1
+    },
+    "niveauDeDanger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "ND, imprimé en en-tête de fiche. Mesure l'opposition représentée. Sur une créature, il s'obtient en additionnant les ND du corps, de l'instinct et du type ; il n'est donc pas borné par le 5 de chaque composant.",
+      "examples": [
+        1,
+        3,
+        8
+      ]
     },
     "caracteristiques": {
       "type": "object",
@@ -176,16 +131,13 @@
         "for",
         "con",
         "dex",
-        "rap",
-        "log",
-        "vol",
-        "per",
-        "cha"
+        "rap"
       ],
       "additionalProperties": false,
-      "description": "Les huit caractéristiques. La qualité — le chiffre des dizaines — se recalcule et n'est pas stockée ; la colonne « Actuel » de la feuille relève de l'état de partie."
+      "description": "Caractéristiques d'une créature : les quatre physiques toujours, les mentales seulement si elle en a. Un corps d'infecté ne porte souvent que PER."
     },
     "sante": {
+      "description": "Seuils de dégât. Les mentaux n'ont de sens que si la créature a des caractéristiques mentales.",
       "type": "object",
       "properties": {
         "physique": {
@@ -322,6 +274,7 @@
           "description": "Seuils physiques : superficiel, léger, grave, profond. Stockés tels que lus sur la feuille, jamais recalculés — deux fiches publiées s'écartent d'un point de la dérivation."
         },
         "mental": {
+          "description": "Seuils mentaux. Optionnels, et chacun d'eux facultatif : une créature sans caractéristiques mentales est insensible aux attaques mentales et n'en porte aucun.",
           "type": "object",
           "properties": {
             "superficiel": {
@@ -445,24 +398,16 @@
               "description": "Seuil de dégât profond, le plus élevé des quatre."
             }
           },
-          "required": [
-            "superficiel",
-            "leger",
-            "grave",
-            "profond"
-          ],
-          "additionalProperties": false,
-          "description": "Seuils mentaux : superficiel, léger, grave, profond. Symétriques des physiques, dérivés de la Solidité mentale et des qualités de LOG et VOL."
+          "additionalProperties": false
         }
       },
       "required": [
-        "physique",
-        "mental"
+        "physique"
       ],
-      "additionalProperties": false,
-      "description": "Bloc Santé. Ne porte que les seuils : les dés de stress, les malus et les blessures encaissées se remplissent en jeu et relèvent de l'état de partie."
+      "additionalProperties": false
     },
     "protections": {
+      "description": "Protections, chaque versant facultatif.",
       "type": "object",
       "properties": {
         "physiques": {
@@ -681,138 +626,271 @@
           "description": "Protections mentales : solidité, trait de caractère, bouclier."
         }
       },
-      "required": [
-        "physiques",
-        "mentales"
-      ],
-      "additionalProperties": false,
-      "description": "Les deux versants de la protection. Symétriques par construction : le socle traite le conflit mental comme le conflit physique."
+      "additionalProperties": false
     },
-    "formations": {
-      "description": "Formations du personnage. La feuille en imprime trois colonnes — classe sociale, professionnelle, personnelle — mais la liste n'est pas bornée : d'autres s'acquièrent en campagne.",
+    "zoneDeDetection": {
+      "description": "Distance à laquelle la créature repère une proie.",
+      "examples": [
+        "20 m"
+      ],
+      "type": "string",
+      "minLength": 1
+    },
+    "deplacement": {
+      "description": "Distance parcourue par action.",
+      "examples": [
+        "5 m par action"
+      ],
+      "type": "string",
+      "minLength": 1
+    },
+    "actionsParRound": {
+      "description": "Nombre d'actions par round.",
+      "examples": [
+        1
+      ],
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "etatAlternatif": {
+      "description": "État second de la créature, quand elle en a un.",
+      "type": "object",
+      "properties": {
+        "nom": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Nom de l'état, par exemple stimulé.",
+          "examples": [
+            "Stimulé"
+          ]
+        },
+        "declencheurs": {
+          "description": "Ce qui déclenche l'état, et ce qui y met fin.",
+          "examples": [
+            [
+              "Odeur de sang frais"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un déclencheur ou une condition de fin."
+          }
+        },
+        "caracteristiques": {
+          "description": "Caractéristiques modifiées par l'état. Ce qui n'est pas redéclaré garde la valeur de l'état de base.",
+          "type": "object",
+          "properties": {
+            "for": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Force. Pourcentage de d100.",
+              "examples": [
+                40
+              ]
+            },
+            "con": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Constitution. Pourcentage de d100.",
+              "examples": [
+                50
+              ]
+            },
+            "dex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Dextérité. Pourcentage de d100.",
+              "examples": [
+                45
+              ]
+            },
+            "rap": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Rapidité. Pourcentage de d100.",
+              "examples": [
+                35
+              ]
+            },
+            "log": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Logique. Pourcentage de d100.",
+              "examples": [
+                30
+              ]
+            },
+            "vol": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Volonté. Pourcentage de d100.",
+              "examples": [
+                40
+              ]
+            },
+            "per": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Perception. Pourcentage de d100.",
+              "examples": [
+                50
+              ]
+            },
+            "cha": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Charisme. Pourcentage de d100.",
+              "examples": [
+                25
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "zoneDeDetection": {
+          "description": "Distance de détection dans cet état, si elle change.",
+          "type": "string",
+          "minLength": 1
+        },
+        "deplacement": {
+          "description": "Distance parcourue par action dans cet état, si elle change.",
+          "type": "string",
+          "minLength": 1
+        },
+        "actionsParRound": {
+          "description": "Nombre d'actions par round dans cet état, s'il change.",
+          "examples": [
+            2
+          ],
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "notes": {
+          "description": "Ce que l'état change en plus des valeurs chiffrées.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "nom"
+      ],
+      "additionalProperties": false
+    },
+    "comportement": {
+      "description": "Comment la créature agit, un trait par entrée.",
+      "examples": [
+        [
+          "Suit le bruit",
+          "N'escalade pas"
+        ]
+      ],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Un trait de comportement."
+      }
+    },
+    "traitsSpeciaux": {
+      "description": "Insensibilités, immunités, capacités hors du commun. Liste non bornée.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Un trait spécial."
+      }
+    },
+    "competences": {
+      "description": "Compétences rattachées directement à la créature : elle ne passe par aucune formation.",
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "type": {
-            "description": "Type de formation, imprimé en tête de colonne sur la feuille de PJ. Absent d'une fiche de PNJ, qui ne qualifie pas ses formations.",
-            "type": "string",
-            "enum": [
-              "classe-sociale",
-              "professionnelle",
-              "personnelle"
-            ],
-            "examples": [
-              "professionnelle"
-            ]
-          },
           "nom": {
             "type": "string",
             "minLength": 1,
-            "description": "Nom de la formation, écrit à la main entre parenthèses sur la feuille.",
+            "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
             "examples": [
-              "Moyenne",
-              "Infirmière"
+              "Arme sociale",
+              "Athlétisme"
             ]
+          },
+          "specialite": {
+            "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
+            "examples": [
+              "Négociation"
+            ],
+            "type": "string",
+            "minLength": 1
           },
           "pourcentage": {
             "type": "integer",
             "minimum": 0,
             "maximum": 200,
-            "description": "Pourcentage de la formation.",
+            "description": "Pourcentage de la compétence seule, hors caractéristique.",
             "examples": [
-              15,
-              40
+              30
             ]
           },
-          "competences": {
-            "description": "Compétences rattachées à cette formation. La feuille de PJ les imprime sous la colonne de leur formation ; la fiche de PNJ les regroupe hors formation, et cette liste est alors absente.",
+          "caracteristique": {
+            "description": "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
+            "examples": [
+              "cha"
+            ],
+            "type": "string",
+            "enum": [
+              "for",
+              "con",
+              "dex",
+              "rap",
+              "log",
+              "vol",
+              "per",
+              "cha"
+            ]
+          },
+          "total": {
+            "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
+            "examples": [
+              50
+            ],
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200
+          },
+          "avantages": {
+            "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
+            "examples": [
+              [
+                "Gestion du stress"
+              ]
+            ],
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "nom": {
-                  "type": "string",
-                  "minLength": 1,
-                  "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
-                  "examples": [
-                    "Arme sociale",
-                    "Athlétisme"
-                  ]
-                },
-                "specialite": {
-                  "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
-                  "examples": [
-                    "Négociation"
-                  ],
-                  "type": "string",
-                  "minLength": 1
-                },
-                "pourcentage": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de la compétence seule, hors caractéristique.",
-                  "examples": [
-                    30
-                  ]
-                },
-                "caracteristique": {
-                  "description": "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
-                  "examples": [
-                    "cha"
-                  ],
-                  "type": "string",
-                  "enum": [
-                    "for",
-                    "con",
-                    "dex",
-                    "rap",
-                    "log",
-                    "vol",
-                    "per",
-                    "cha"
-                  ]
-                },
-                "total": {
-                  "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
-                  "examples": [
-                    50
-                  ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200
-                },
-                "avantages": {
-                  "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
-                  "examples": [
-                    [
-                      "Gestion du stress"
-                    ]
-                  ],
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Un avantage, en une ligne."
-                  }
-                },
-                "notes": {
-                  "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
-                  "examples": [
-                    "Judo"
-                  ],
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "required": [
-                "nom",
-                "pourcentage"
-              ],
-              "additionalProperties": false,
-              "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
+              "type": "string",
+              "minLength": 1,
+              "description": "Un avantage, en une ligne."
             }
+          },
+          "notes": {
+            "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+            "examples": [
+              "Judo"
+            ],
+            "type": "string",
+            "minLength": 1
           }
         },
         "required": [
@@ -820,11 +898,11 @@
           "pourcentage"
         ],
         "additionalProperties": false,
-        "description": "Une formation et les compétences qu'elle porte."
+        "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
       }
     },
     "equipement": {
-      "description": "Bloc Équipement de la feuille.",
+      "description": "Ce dont la créature se sert, quand elle se sert de quelque chose.",
       "type": "object",
       "properties": {
         "possessions": {
@@ -973,60 +1051,184 @@
       },
       "additionalProperties": false
     },
-    "parametresDuJeu": {
+    "contagion": {
+      "description": "Mécanique de transmission. Absente sur une créature non contagieuse.",
       "type": "object",
       "properties": {
-        "joueur": {
-          "description": "Personne qui joue le personnage.",
+        "agent": {
+          "description": "Nom de l'agent transmis.",
+          "examples": [
+            "Souche R-7"
+          ],
           "type": "string",
           "minLength": 1
         },
-        "typeDeCreation": {
-          "description": "Attribution distributive ou tirage aléatoire.",
+        "vecteurs": {
+          "description": "Par quoi l'agent se transmet, et avec quelle probabilité.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Canal de transmission, en clair. Chaîne libre.",
+                "examples": [
+                  "Morsure",
+                  "Regard soutenu"
+                ]
+              },
+              "probabilite": {
+                "description": "Probabilité de transmission, en pourcentage. Bornée à 100, contrairement aux pourcentages de d100 : c'est une probabilité.",
+                "examples": [
+                  80
+                ],
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "notes": {
+                "description": "Conditions ou réserves attachées à ce vecteur.",
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "nom"
+            ],
+            "additionalProperties": false,
+            "description": "Un vecteur de transmission et sa probabilité."
+          }
+        },
+        "delaiAvantEffet": {
+          "description": "Délai entre la transmission et le premier effet, en unité de temps libre.",
           "examples": [
-            "equitable"
+            "6 à 12 heures"
           ],
           "type": "string",
-          "enum": [
-            "equitable",
-            "aleatoire"
-          ]
+          "minLength": 1
         },
-        "typeDeScenario": {
-          "description": "Format de la partie pour laquelle la fiche a été produite.",
+        "issue": {
+          "description": "Ce que devient la victime au terme de l'infection.",
           "examples": [
-            "campagne"
+            "Bascule en infecté de type 1"
           ],
           "type": "string",
-          "enum": [
-            "one-shot",
-            "campagne"
-          ]
+          "minLength": 1
         },
-        "declinaisonDeCampagne": {
-          "description": "Déclinaison de la campagne. Proposée par le générateur officiel ; la feuille imprimée ne porte pas cette case.",
-          "examples": [
-            "storyline"
-          ],
-          "type": "string",
-          "enum": [
-            "bac-a-sable",
-            "storyline"
-          ]
-        },
-        "px": {
-          "description": "Points d'expérience accumulés depuis la création.",
-          "examples": [
-            0,
-            25
-          ],
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000
+        "modulations": {
+          "description": "Variations du délai ou de l'issue selon le profil de la victime.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "profil": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Tranche d'âge ou profil concerné, en clair.",
+                "examples": [
+                  "Enfant",
+                  "Personne âgée"
+                ]
+              },
+              "delaiAvantEffet": {
+                "description": "Délai propre à ce profil, en unité de temps libre.",
+                "examples": [
+                  "2 à 4 heures"
+                ],
+                "type": "string",
+                "minLength": 1
+              },
+              "issue": {
+                "description": "Issue propre à ce profil.",
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "profil"
+            ],
+            "additionalProperties": false,
+            "description": "Ce que le profil de la victime change au délai ou à l'issue."
+          }
         }
       },
-      "additionalProperties": false,
-      "description": "Bloc « Paramètres du jeu » de la feuille : qui joue, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier."
+      "additionalProperties": false
+    },
+    "narratif": {
+      "description": "Une créature nommée et jouée mérite le même traitement qu'un personnage non joué.",
+      "type": "object",
+      "properties": {
+        "role": {
+          "description": "Rôle du personnage dans le scénario.",
+          "examples": [
+            "Médecin du camp"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "attitude": {
+          "description": "Attitude envers les personnages joueurs. Chaîne libre et non ensemble fermé : les fiches la nuancent volontiers au-delà du triptyque favorable, neutre, hostile.",
+          "examples": [
+            "Méfiante, mais prête à soigner quiconque le demande"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "personnalite": {
+          "description": "Traits de personnalité, un par entrée.",
+          "examples": [
+            [
+              "Obstinée",
+              "Économe de ses mots"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un trait de personnalité."
+          }
+        },
+        "historique": {
+          "description": "D'où vient le personnage, en un paragraphe.",
+          "type": "string",
+          "minLength": 1
+        },
+        "evolutionPossible": {
+          "description": "Ce que le personnage peut devenir selon le tour que prend la partie.",
+          "type": "string",
+          "minLength": 1
+        },
+        "interpretation": {
+          "description": "Conseils de jeu : approche, tics et manières, réactions émotionnelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un conseil de jeu."
+          }
+        },
+        "repliques": {
+          "description": "Répliques types, à lancer telles quelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Une réplique, à lancer telle quelle."
+          }
+        },
+        "notesMj": {
+          "description": "Réservé au meneur : secrets, faiblesses, alliés, stratégies, réactions contextuelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Une note réservée au meneur."
+          }
+        }
+      },
+      "additionalProperties": false
     },
     "meta": {
       "description": "Attribution et catalogage : d'où vient cette fiche.",
@@ -1093,12 +1295,10 @@
   },
   "required": [
     "nom",
-    "caracteristiques",
-    "sante",
-    "protections"
+    "caracteristiques"
   ],
   "additionalProperties": false,
-  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pj.schema.json",
-  "title": "Personnage joueur — Adrenaline System",
-  "description": "Feuille de personnage joueur du socle Adrenaline System : nom, identité, huit caractéristiques en pourcentage, seuils de santé physiques et mentaux, protections, formations et équipement."
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/1.1.0/monstre.schema.json",
+  "title": "Créature — Adrenaline System",
+  "description": "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, état alternatif, contagion générique et bloc narratif facultatifs."
 }

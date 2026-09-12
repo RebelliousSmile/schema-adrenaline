@@ -102,6 +102,7 @@ pourcentage = 45
 caracteristique = "dex"
 total = 85
 avantages = ["Équipement favori"]
+notes = "Utilise sa clé à molette comme arme de fortune au contact."
 
 [[competences]]
 nom = "Conduite"

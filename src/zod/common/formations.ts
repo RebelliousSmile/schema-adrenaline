@@ -64,6 +64,15 @@ export const Competence = z
           "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
         examples: [["Gestion du stress"]],
       }),
+    notes: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description:
+          "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+        examples: ["Judo"],
+      }),
   })
   .meta({ description: "Une compétence de la fiche, avec sa spécialité et son total éventuel." });
 
