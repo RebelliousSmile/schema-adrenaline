@@ -251,6 +251,9 @@ export function validateHandbookPack(
       requireContrast(note, "--adrenaline-callout-ink", surface);
     }
     requireContrast(note, "--adrenaline-signal-ink", "--adrenaline-signal");
+    // --color-yellow est consommé comme texte (seuil 4.5), --adrenaline-signal comme liseré de callout (seuil UI 3).
+    requireContrast(note, "--color-yellow", "--background-primary");
+    requireContrast(note, "--adrenaline-signal", "--background-primary", 3);
     requireContrast(workspace, "--text-normal", "--background-primary");
     requireContrast(workspace, "--interactive-accent", "--background-primary", 3);
   }
