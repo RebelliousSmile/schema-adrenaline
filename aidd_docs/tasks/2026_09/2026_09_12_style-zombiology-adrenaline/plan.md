@@ -1,6 +1,6 @@
 ---
 objective: "Le pack Adrenaline restitue les repères visuels de Zombiology dans Handbook, en lecture et en Live Preview, sans introduire de contenu sous copyright ni modifier le contrat de données."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Rapprocher le style Adrenaline de Zombiology
