@@ -1,6 +1,6 @@
 ---
 objective: "En light, --color-yellow et --adrenaline-signal passent leur seuil AA respectif sans casser le contraste encre/signal déjà validé, et le validateur empêche la régression de revenir sans être détectée."
-status: in-progress
+status: implemented
 ---
 
 <!-- Fill or omit these sections; never add, rename, or reorder one. -->
