@@ -27,3 +27,37 @@ published book. Their generation prompts and provenance are recorded in
 `../../LICENSES/ADRENALINE-ASSETS.md`. Font licenses are stored beside the
 repository licenses. The current asset payload is reported by
 `npm run validate:handbook`.
+
+## Pack tokens vs. host selectors
+
+`pack.json` is the single source of truth for every Zombiology-aligned visual
+value: colors, weights, capitalization, decoration keywords and the list
+marker glyph, declared once in `style.base` (polarity-independent) and once
+per polarity in `style.light`/`style.dark`. Handbook only owns the CSS
+selectors that read these custom properties — it must never hardcode a
+Zombiology value, so another Adrenaline pack can restyle the same structural
+selectors without touching Handbook's code.
+
+Token groups introduced for the Zombiology alignment:
+
+- `--h4-*` (font, transform, weight, style, decoration, color): the red,
+  underlined, italic fourth heading level.
+- `--adrenaline-emphasis-*` (style, color): italic red narrative emphasis
+  used in example/callout body text.
+- `--adrenaline-list-marker-glyph`: the triangular bullet character; the
+  existing `--list-marker-color` still drives its color.
+- `--adrenaline-status-yellow-bg`/`-ink` and `--adrenaline-status-red-bg`/`-ink`:
+  filled status badges (e.g. malus severity), distinct from the plain
+  `--color-yellow`/`--color-red` text colors and from the pre-existing
+  `--adrenaline-signal`/`-ink` pair, which `--adrenaline-status-yellow-*`
+  reuses by value since both represent the same amber severity marker.
+- `--adrenaline-table-header-bg`/`-ink` and `--adrenaline-table-border`/
+  `--adrenaline-table-stripe`: table header band and row treatment.
+- `--adrenaline-callout-cartouche-bg`/`-ink`: the dark banner used for
+  labelled callout headers (e.g. "EXEMPLE"), reusing the `--adrenaline-cartouche`
+  pair's values under a callout-scoped name.
+
+If a future pack omits one of these tokens, Handbook's structural selectors
+must fall back to a neutral value (inherited color, no decoration, disc
+marker) rather than fail: the pack declares intent, it never becomes a hard
+dependency of the host renderer.
