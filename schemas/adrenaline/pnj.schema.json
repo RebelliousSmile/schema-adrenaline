@@ -799,6 +799,14 @@
                     "minLength": 1,
                     "description": "Un avantage, en une ligne."
                   }
+                },
+                "notes": {
+                  "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+                  "examples": [
+                    "Judo"
+                  ],
+                  "type": "string",
+                  "minLength": 1
                 }
               },
               "required": [
@@ -889,6 +897,14 @@
               "minLength": 1,
               "description": "Un avantage, en une ligne."
             }
+          },
+          "notes": {
+            "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+            "examples": [
+              "Judo"
+            ],
+            "type": "string",
+            "minLength": 1
           }
         },
         "required": [

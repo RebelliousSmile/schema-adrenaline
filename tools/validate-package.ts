@@ -39,7 +39,7 @@ try {
         file === "README.md" ||
         file === "package.json" ||
         file.startsWith("dist/") ||
-        file.startsWith("schemas/adrenaline/1.0.0/") ||
+        file.startsWith("schemas/adrenaline/1.1.0/") ||
         file.startsWith("corpus/") ||
         file.startsWith("examples/"),
       `unexpected packaged file: ${file}`,
@@ -71,12 +71,12 @@ import {
 } from "schema-adrenaline";
 
 assert.equal(ADRENALINE_CONTRACT_VERSION, 1);
-assert.equal(ADRENALINE_SCHEMA_VERSION, "1.0.0");
+assert.equal(ADRENALINE_SCHEMA_VERSION, "1.1.0");
 assert.equal(ADRENALINE_TOML_VERSION, "1.0.0");
 assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj", "pnj"]);
 
 const schema = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/schemas/pnj.schema.json")), "utf8"));
-assert.match(schema.$id, /\\/schemas\\/adrenaline\\/1\\.0\\.0\\/pnj\\.schema\\.json$/);
+assert.match(schema.$id, /\\/schemas\\/adrenaline\\/1\\.1\\.0\\/pnj\\.schema\\.json$/);
 const cases = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/corpus/cases.json")), "utf8"));
 for (const testCase of cases.cases) {
   const specifier = "schema-adrenaline/" + testCase.path;
@@ -88,7 +88,7 @@ await assert.rejects(import("schema-adrenaline/codecs/documents.js"), (error) =>
 `;
   fs.writeFileSync(path.join(consumerRoot, "check.mjs"), checkSource);
   run(process.execPath, ["check.mjs"], consumerRoot);
-  console.log("✓ schema-adrenaline@1.0.0 tarball installs with its public ESM contract");
+  console.log("✓ schema-adrenaline@1.1.0 tarball installs with its public ESM contract");
 } finally {
   fs.rmSync(temporaryRoot, { recursive: true, force: true });
 }
