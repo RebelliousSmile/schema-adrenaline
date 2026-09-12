@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Competence.notes` — a free-text note line on a skill entry (weapon
   reference, context), optional, no cross-schema link.
+- Handbook Adrenaline pack (`0.3.0`): Zombiology visual tokens for h4,
+  narrative emphasis, list marker glyph, status badges, table banner/border,
+  and callout cartouche, for light and dark, with matching contrast pairs in
+  `tools/validate-handbook-pack.ts`.
 
 ## [1.0.1] - 2026-09-12
 
