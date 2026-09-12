@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-09-12
+
+### Fixed
+
+- `--color-yellow` and `--adrenaline-signal` in the Handbook Adrenaline pack's
+  light palette now meet their respective AA contrast thresholds against
+  `--background-primary` (issue #5), without regressing the existing
+  `--adrenaline-signal-ink`/`--adrenaline-signal` pair.
+
+### Changed
+
+- `tools/validate-handbook-pack.ts` now asserts `--color-yellow` (4.5:1) and
+  `--adrenaline-signal` (3:1) against `--background-primary`, closing the gap
+  that let both tokens regress undetected.
+
 ## [1.0.0] - 2026-09-11
 
 ### Added
