@@ -63,7 +63,19 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pj/nom-absent.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
       "path": "corpus/refus/pj/nom-vide.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/protections-absentes.json",
       "target": "pj",
       "format": "json",
       "expect": "reject"
@@ -209,6 +221,18 @@
     {
       "path": "corpus/contract/invalid/pnj-unknown-field.toml",
       "target": "pnj",
+      "format": "toml",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/contract/invalid/pj-nom-absent.toml",
+      "target": "pj",
+      "format": "toml",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/contract/invalid/pj-protections-absentes.toml",
+      "target": "pj",
       "format": "toml",
       "expect": "reject"
     }
