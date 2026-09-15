@@ -1,6 +1,6 @@
 ---
 objective: "Le corpus Adrenaline distribué représente, en JSON et TOML, les refus PJ dont le nom ou les protections obligatoires sont absents."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Ajouter les refus PJ nom absent et protections absentes
