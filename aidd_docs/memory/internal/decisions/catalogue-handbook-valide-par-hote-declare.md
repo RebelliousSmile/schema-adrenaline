@@ -29,6 +29,12 @@ CI dérive ensuite la release hôte depuis `minimumHandbookVersion` et passe la
 source réelle dans l'installateur de cette release, y compris les scénarios de
 mise à jour réussie et d'échec avant promotion.
 
+Les assertions d'un consommateur qui contrôlent cette source ne figent jamais
+la version d'un pack. Elles lisent l'entrée correspondante de `handbook.json`,
+puis le `pack.json` désigné, et vérifient que leurs versions concordent. La
+version résolue devient l'attente de l'assertion : une hausse cohérente du pack
+ne doit pas casser le consommateur par simple duplication d'un littéral.
+
 ## Alternatives
 
 Ajouter une version globale au catalogue a été écarté : le lecteur strict de
@@ -55,3 +61,12 @@ entière sans perdre la version précédemment installée en cas d'échec. Cette
 preuve croisée coûte l'installation des dépendances Handbook dans la CI, mais
 évite de publier un catalogue valide uniquement selon une copie périmée du
 contrat.
+
+Un consommateur garde ses assertions et adaptateurs, mais en dérive les
+versions de contrat publiées : cela évite qu'une valeur attendue obsolète
+masque la cohérence déjà prouvée par le catalogue et le manifeste.
+
+Les blocs qu'un pack rend disponibles déclarent la même capacité `block:*` que
+son manifeste publie. Handbook évalue cette capacité pour activer le rendu,
+l'insertion contextuelle et les exports TOML : un simple `mode` statique ne
+suffit pas, car il ignorerait le retrait ciblé d'une capacité par le pack.

@@ -1,8 +1,8 @@
 ---
-status: pending
+status: done
 ---
 
-# Instruction: Projection des blocs publiés dans Handbook
+# Instruction: Activation Adrenaline par capacité publiée
 
 ## Architecture projection
 
@@ -10,22 +10,28 @@ status: pending
 
 ```txt
 handbook/
-├── src/
-│   ├── features/sources/                     ✏️ résoudre le manifeste publié du pack actif
-│   ├── features/blocks/registry.ts            ✏️ sélectionner les blocs déclarés par requires
-│   └── contextMenu/index.ts                   ✏️ composer les insertions du pack actif
-└── tests/
-    └── …                                     ✏️ couvrir la projection manifeste → menu
+├── src/features/
+│   ├── adrenalinePj/block.ts                 ✏️ déclarer block:adrenaline-pj
+│   ├── adrenalinePnj/block.ts                ✏️ déclarer block:adrenaline-pnj
+│   └── adrenalineMonstre/block.ts            ✏️ déclarer block:adrenaline-monstre
+├── tools/
+│   ├── customPacks.harness.mts                ✏️ sélectionner Adrenaline par capacité publiée
+│   ├── contextualPackBlocks.harness.mts      ✅ vérifier Menu et Editor avec capacités partielles
+│   └── assert-contextual-pack-blocks.mjs     ✅ bundler le harness avec un stub Obsidian
+└── package.json                              ✏️ exposer l’assertion dans les scripts
 ```
 
 ## User Journey
 
 ```mermaid
 flowchart TD
-  A[Utilisateur active un pack] --> B[Handbook lit son manifeste publié]
-  B --> C[requires déclare les blocs actifs]
-  C --> D[Le registre résout les blocs disponibles]
-  D --> E[Le menu propose leurs insertions]
+  A[Manifest Adrenaline publié] --> B[requires contient block:adrenaline-pj]
+  B --> C[Registre Handbook]
+  C --> D[Menu Brumes]
+  D --> E[Action Fiche PJ visible]
+  A --> F[requires sans block:adrenaline-pnj]
+  F --> C
+  C --> G[Aucune action Fiche PNJ]
 ```
 
 ## Test Scope
@@ -36,35 +42,43 @@ title: Test scope
 ---
 journey
   section Setup
-    system: charger le catalogue et le manifeste du pack actif => requires contient les blocs publiés: 5: cli
+    system: initialiser le registre avec un manifeste Adrenaline simulé et ses capacités de blocs => réglages Adrenaline configurés: 5: cli
   section Happy path
-    system: résoudre les blocs déclarés => liste ordonnée des insertions disponibles: 5: cli
-  section Edge case - bloc inconnu
-    system: charger un requires qui référence un bloc non enregistré => entrée ignorée avec diagnostic sans casser le menu: 5: cli
+    system: contribuer le menu avec les trois capacités publiées => PJ PNJ et monstre sont insérables et exportables: 5: cli
+  section Edge case - capacité absente
+    system: retirer une capacité block du manifeste simulé => seule l’action associée disparaît du menu et des exports: 5: cli
 ```
 
 ## Tasks to do
 
-### `1)` Établir la matrice des capacités existantes
+### `1)` Déclarer les capacités des blocs Adrenaline
 
-> Prouver les blocs et opérations réellement communs avant toute généralisation.
+> Faire porter à chaque bloc son identifiant de capacité publié, sans changer son rendu, son libellé ou son gabarit.
 
-1. Relever pour Adrenaline, schema-in-the-mist et schema-pbta les blocs publiés par leurs manifests.
-2. Distinguer insertion de bloc, export TOML et collage TOML selon les exécuteurs Handbook existants.
-3. Consigner les opérations qui ne sont pas représentables par `requires` comme candidats futurs, sans leur inventer de contrat.
+1. Remplacer `mode: "adrenaline"` par la capacité exacte dans les trois définitions de bloc.
+2. Vérifier la compatibilité avec le registre de capacités Handbook et le manifeste Adrenaline 0.3.0.
+3. Ne modifier ni les codecs ni les gabarits dépendants du contrat 2.0.0.
 
-### `2)` Dériver le registre actif du manifeste
+### `2)` Prouver la sélection dans le menu
 
-> Utiliser `requires` comme autorité de disponibilité des insertions du menu.
+> Vérifier que `requires` pilote réellement les insertions et exports contextuels Adrenaline.
 
-1. Résoudre le manifeste du pack sélectionné depuis son catalogue publié.
-2. Croiser ses exigences `block:*` avec le registre local de blocs rendables.
-3. Conserver le comportement actuel pour un pack sans bloc ou pour une référence inconnue.
+1. Initialiser `GAME_REGISTRATIONS` par `initGameRegistry` avec un manifeste Adrenaline simulé, puis créer un faux `Menu` et `Editor` sur le modèle de l’assertion TOML contextuelle existante.
+2. Vérifier les trois actions quand les capacités sont présentes, puis la disparition ciblée d’une action lorsque sa capacité manque.
+3. Vérifier que l’export TOML ne peut être proposé que pour un bloc actif sous le curseur.
+
+### `3)` Intégrer la vérification
+
+> Rendre le harness disponible dans les scripts Handbook et la suite de contrôles.
+
+1. Migrer le scénario Adrenaline de `customPacks.harness.mts` vers les capacités `block:adrenaline-*`.
+2. Ajouter le lanceur esbuild avec stub Obsidian et déclarer `assert:contextual-pack-blocks` dans `package.json`.
+3. Exécuter l’assertion avec les contrôles contextuels, de packs et contractuels Adrenaline existants.
 
 ## Test acceptance criteria
 
 | Task | Acceptance criteria |
 | ---- | ------------------- |
-| 1 | La matrice ne déclare aucune nouvelle métadonnée sans opération Handbook réelle qui la requiert. |
-| 2 | Les insertions visibles correspondent exactement aux blocs `requires` du pack actif et aux blocs enregistrés. |
-
+| 1 | Chaque bloc Adrenaline dépend uniquement de sa capacité `block:adrenaline-*` publiée. |
+| 2 | Les insertions et exports visibles correspondent exactement aux capacités de blocs présentes dans le manifeste simulé. |
+| 3 | Les scripts d’assertion échouent si une action apparaît sans capacité publiée ou disparaît malgré sa capacité. |
