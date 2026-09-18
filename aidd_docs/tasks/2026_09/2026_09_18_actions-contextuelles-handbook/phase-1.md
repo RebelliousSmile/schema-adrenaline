@@ -2,33 +2,30 @@
 status: pending
 ---
 
-# Instruction: Contrat déclaratif optionnel des actions
+# Instruction: Projection des blocs publiés dans Handbook
 
 ## Architecture projection
 
 > Tree of the final files. ✅ create · ✏️ modify · ❌ delete
 
 ```txt
-schema-adrenaline/
-├── handbook/
-│   └── adrenaline/
-│       └── pack.json                         ✏️ publier les actions contextuelles du pack
+handbook/
 ├── src/
-│   └── …                                    ✏️ exposer et valider les métadonnées de contrat si nécessaire
-├── schemas/adrenaline/2.0.0/
-│   └── …                                    ✏️ régénérer les artefacts contractuels concernés
-└── tools/
-    └── …                                    ✏️ vérifier catalogue, manifeste et métadonnées d’actions
+│   ├── features/sources/                     ✏️ résoudre le manifeste publié du pack actif
+│   ├── features/blocks/registry.ts            ✏️ sélectionner les blocs déclarés par requires
+│   └── contextMenu/index.ts                   ✏️ composer les insertions du pack actif
+└── tests/
+    └── …                                     ✏️ couvrir la projection manifeste → menu
 ```
 
 ## User Journey
 
 ```mermaid
 flowchart TD
-  A[Mainteneur d'un pack] --> B[Déclare ses actions contextuelles optionnelles]
-  B --> C[Le catalogue référence le manifeste du pack]
-  C --> D[Les contrôles valident les identifiants et les cibles]
-  D --> E[Le contrat est prêt à être publié]
+  A[Utilisateur active un pack] --> B[Handbook lit son manifeste publié]
+  B --> C[requires déclare les blocs actifs]
+  C --> D[Le registre résout les blocs disponibles]
+  D --> E[Le menu propose leurs insertions]
 ```
 
 ## Test Scope
@@ -39,35 +36,35 @@ title: Test scope
 ---
 journey
   section Setup
-    system: charger le catalogue et le manifeste Adrenaline => contrat 2.0.0 disponible: 5: cli
+    system: charger le catalogue et le manifeste du pack actif => requires contient les blocs publiés: 5: cli
   section Happy path
-    system: lire les actions contextuelles publiées => chaque action cible un bloc et une opération supportée: 5: cli
-  section Edge case - pack sans action
-    system: charger un pack qui ne déclare aucune action => contrat valide et liste vide: 5: cli
+    system: résoudre les blocs déclarés => liste ordonnée des insertions disponibles: 5: cli
+  section Edge case - bloc inconnu
+    system: charger un requires qui référence un bloc non enregistré => entrée ignorée avec diagnostic sans casser le menu: 5: cli
 ```
 
 ## Tasks to do
 
-### `1)` Modéliser les métadonnées publiées
+### `1)` Établir la matrice des capacités existantes
 
-> Définir une capacité optionnelle, indépendante de tout pack particulier, qui identifie l’action, le bloc cible, son libellé, son icône et son opération générique.
+> Prouver les blocs et opérations réellement communs avant toute généralisation.
 
-1. Relever les opérations déjà rendues pour schema-in-the-mist dans Handbook.
-2. Ajouter au manifeste Adrenaline les déclarations compatibles sans encoder d’adaptateur Obsidian.
-3. Documenter les invariants d’identifiant, de bloc cible et d’absence d’action.
+1. Relever pour Adrenaline, schema-in-the-mist et schema-pbta les blocs publiés par leurs manifests.
+2. Distinguer insertion de bloc, export TOML et collage TOML selon les exécuteurs Handbook existants.
+3. Consigner les opérations qui ne sont pas représentables par `requires` comme candidats futurs, sans leur inventer de contrat.
 
-### `2)` Verrouiller le contrat et ses artefacts
+### `2)` Dériver le registre actif du manifeste
 
-> Garantir que la capacité publiée est découverte depuis le catalogue et le manifeste référencé.
+> Utiliser `requires` comme autorité de disponibilité des insertions du menu.
 
-1. Étendre les contrôles de source pour lire les métadonnées via le manifeste du pack.
-2. Régénérer les artefacts gelés seulement lorsqu’ils sont concernés par le contrat.
-3. Couvrir les déclarations Adrenaline et l’absence de déclaration d’un autre pack.
+1. Résoudre le manifeste du pack sélectionné depuis son catalogue publié.
+2. Croiser ses exigences `block:*` avec le registre local de blocs rendables.
+3. Conserver le comportement actuel pour un pack sans bloc ou pour une référence inconnue.
 
 ## Test acceptance criteria
 
 | Task | Acceptance criteria |
 | ---- | ------------------- |
-| 1 | Un pack peut publier zéro ou plusieurs actions contextuelles sans dépendre de schema-in-the-mist. |
-| 2 | Les contrôles rejettent une action dont l’identifiant, l’opération ou le bloc cible ne correspond pas au manifeste publié. |
+| 1 | La matrice ne déclare aucune nouvelle métadonnée sans opération Handbook réelle qui la requiert. |
+| 2 | Les insertions visibles correspondent exactement aux blocs `requires` du pack actif et aux blocs enregistrés. |
 
