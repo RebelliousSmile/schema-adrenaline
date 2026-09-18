@@ -2,7 +2,7 @@
 status: pending
 ---
 
-# Instruction: Projection des blocs publiés dans Handbook
+# Instruction: Harness des capacités de blocs contextuelles
 
 ## Architecture projection
 
@@ -10,22 +10,22 @@ status: pending
 
 ```txt
 handbook/
-├── src/
-│   ├── features/sources/                     ✏️ résoudre le manifeste publié du pack actif
-│   ├── features/blocks/registry.ts            ✏️ sélectionner les blocs déclarés par requires
-│   └── contextMenu/index.ts                   ✏️ composer les insertions du pack actif
-└── tests/
-    └── …                                     ✏️ couvrir la projection manifeste → menu
+├── package.json                              ✏️ exposer le harness dans les scripts d’assertion
+├── tools/
+│   ├── contextualPackBlocks.harness.mts       ✅ simuler Menu et Editor pour les blocs publiés
+│   └── assert-contextual-pack-blocks.mjs      ✅ bundler le harness avec un stub Obsidian
+└── src/
+    └── features/blocks/                       ✏️ aucune modification attendue ; surface sous test
 ```
 
 ## User Journey
 
 ```mermaid
 flowchart TD
-  A[Utilisateur active un pack] --> B[Handbook lit son manifeste publié]
-  B --> C[requires déclare les blocs actifs]
-  C --> D[Le registre résout les blocs disponibles]
-  D --> E[Le menu propose leurs insertions]
+  A[Manifest actif avec block:adrenaline-pj] --> B[Réglages du pack Adrenaline]
+  B --> C[Registre de blocs]
+  C --> D[Menu contextuel Brumes]
+  D --> E[Insertion et export TOML du bloc actif]
 ```
 
 ## Test Scope
@@ -36,35 +36,35 @@ title: Test scope
 ---
 journey
   section Setup
-    system: charger le catalogue et le manifeste du pack actif => requires contient les blocs publiés: 5: cli
+    system: construire des réglages pour un pack dont requires contient des blocs Adrenaline => registre configuré: 5: cli
   section Happy path
-    system: résoudre les blocs déclarés => liste ordonnée des insertions disponibles: 5: cli
-  section Edge case - bloc inconnu
-    system: charger un requires qui référence un bloc non enregistré => entrée ignorée avec diagnostic sans casser le menu: 5: cli
+    system: contribuer les insertions puis l’export au menu simulé => seules les actions des blocs Adrenaline actifs sont proposées: 5: cli
+  section Edge case - pack inactif ou curseur hors bloc
+    system: changer de pack ou placer le curseur hors bloc => aucune insertion Adrenaline ou export TOML invalide: 5: cli
 ```
 
 ## Tasks to do
 
-### `1)` Établir la matrice des capacités existantes
+### `1)` Écrire le harness de menu
 
-> Prouver les blocs et opérations réellement communs avant toute généralisation.
+> Couvrir la chaîne de disponibilité commune sans ajouter de comportement productif.
 
-1. Relever pour Adrenaline, schema-in-the-mist et schema-pbta les blocs publiés par leurs manifests.
-2. Distinguer insertion de bloc, export TOML et collage TOML selon les exécuteurs Handbook existants.
-3. Consigner les opérations qui ne sont pas représentables par `requires` comme candidats futurs, sans leur inventer de contrat.
+1. Réutiliser le stub Obsidian et les faux `Menu`/`Editor` du harness d’export contextuel existant.
+2. Construire les réglages qui activent puis désactivent les capacités `block:adrenaline-*` publiées.
+3. Vérifier les titres, icônes, contenu inséré et export TOML pour PJ, PNJ et monstre.
 
-### `2)` Dériver le registre actif du manifeste
+### `2)` Intégrer l’assertion au contrôle Handbook
 
-> Utiliser `requires` comme autorité de disponibilité des insertions du menu.
+> Rendre la preuve exécutable localement et dans la suite de contrôles.
 
-1. Résoudre le manifeste du pack sélectionné depuis son catalogue publié.
-2. Croiser ses exigences `block:*` avec le registre local de blocs rendables.
-3. Conserver le comportement actuel pour un pack sans bloc ou pour une référence inconnue.
+1. Ajouter le lanceur qui bundle le harness avec le stub Obsidian.
+2. Exposer un script `assert:contextual-pack-blocks` dans `package.json`.
+3. Exécuter ce script avec les assertions contextuelles et contractuelles Adrenaline existantes.
 
 ## Test acceptance criteria
 
 | Task | Acceptance criteria |
 | ---- | ------------------- |
-| 1 | La matrice ne déclare aucune nouvelle métadonnée sans opération Handbook réelle qui la requiert. |
-| 2 | Les insertions visibles correspondent exactement aux blocs `requires` du pack actif et aux blocs enregistrés. |
+| 1 | Chaque bloc Adrenaline requis produit une insertion contextuelle avec son libellé, son icône et son gabarit attendus, et son export TOML n’est offert qu’au curseur dans ce bloc. |
+| 2 | Un pack inactif ou un curseur hors bloc ne produit aucune action Adrenaline, et le nouveau script échoue si cette sélection régresse. |
 
