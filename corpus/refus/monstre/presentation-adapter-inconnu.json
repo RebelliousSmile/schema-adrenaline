@@ -1,0 +1,12 @@
+{
+  "nom": "Fixture présentation",
+  "caracteristiques": {
+    "for": { "minimum": 0, "current": 0, "maximum": 0 },
+    "con": { "minimum": 0, "current": 0, "maximum": 0 },
+    "dex": { "minimum": 0, "current": 0, "maximum": 0 },
+    "rap": { "minimum": 0, "current": 0, "maximum": 0 }
+  },
+  "presentation": {
+    "adapter": "adrenaline-monstre"
+  }
+}

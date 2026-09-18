@@ -1,6 +1,6 @@
 ---
 objective: "Le contrat Adrenaline atteste qu'il ne publie encore aucun descripteur de présentation ni aucune clé d'adaptateur, refuse ces métadonnées dans son corpus, et documente que Lantern devra résoudre toute future clé dans son registre fermé."
-status: pending
+status: implemented
 ---
 
 # Plan: Fermer les clés d'adaptateur du consommateur

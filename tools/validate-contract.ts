@@ -120,11 +120,24 @@ for (const testCase of manifest.cases) {
   const label = `${testCase.path} [${testCase.target}/${testCase.format}]`;
 
   if (testCase.expect === "reject") {
+    const raw = testCase.format === "json" ? JSON.parse(source) : IarnaToml.parse(source);
     if (testCase.path.includes("plage-")) {
-      const raw = testCase.format === "json" ? JSON.parse(source) : IarnaToml.parse(source);
       assert.ok(
         structuralValidator(testCase.target)(raw),
         `${label}: the draft-7 schema must accept a structurally valid inverted range`,
+      );
+    }
+    if (testCase.path.includes("presentation-adapter-inconnu")) {
+      assert.equal(testCase.format, "json", `${label}: presentation fixture must be JSON`);
+      const { presentation: _presentation, ...withoutPresentation } = raw as Record<string, unknown>;
+      assert.ok(
+        structuralValidator(testCase.target)(withoutPresentation),
+        `${label}: fixture must otherwise satisfy the draft-7 schema`,
+      );
+      assert.equal(
+        structuralValidator(testCase.target)(raw),
+        false,
+        `${label}: the draft-7 schema must reject unpublished presentation metadata`,
       );
     }
     assert.throws(() => parse(source), `${label}: invalid fixture was accepted`);
