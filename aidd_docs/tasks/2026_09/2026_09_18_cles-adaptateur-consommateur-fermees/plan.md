@@ -22,6 +22,6 @@ status: pending
 
 | Decision | Why |
 | -------- | --- |
-| Publier explicitement un vocabulaire d'adaptateurs vide plutôt qu'un champ de présentation prématuré. | Aucun document Adrenaline ne requiert aujourd'hui d'éditeur spécialisé publié ; inventer une clé ou une structure créerait un faux contrat stable. |
+| Consigner explicitement qu'aucune métadonnée de présentation ni aucun vocabulaire d'adaptateurs ne s'applique encore. | Aucun document Adrenaline ne requiert aujourd'hui d'éditeur spécialisé publié ; inventer une clé ou une structure créerait un faux contrat stable. |
 | Prouver le refus de toute tentative de métadonnée d'adaptateur par le corpus des trois cibles et le validateur de contrat. | Les objets Zod et JSON Schema stricts ferment déjà cette surface ; les contre-exemples rendent cette garantie visible et empêchent une ouverture accidentelle. |
 | Réserver à Lantern le registre exhaustif clé → adaptateur React et son échec explicite. | Le package de schémas reste déclaratif, sans import, chemin, classe CSS ni configuration exécutable de consommateur ; une future clé ne peut être publiée qu'après coordination avec ce registre. |
