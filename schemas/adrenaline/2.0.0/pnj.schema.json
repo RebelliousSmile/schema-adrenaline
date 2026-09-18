@@ -5,40 +5,11 @@
     "nom": {
       "type": "string",
       "minLength": 1,
-      "description": "Nom de la créature. Champ local et non bloc identité : elle n'a ni nationalité ni signes particuliers.",
+      "description": "Nom ou rôle, tel qu'il est écrit en en-tête de la fiche.",
       "examples": [
-        "Zé lent",
-        "Traqueur"
+        "Sœur Madeleine",
+        "Le gardien du dépôt"
       ]
-    },
-    "typeDeCorps": {
-      "description": "Corps servant de base à la créature. Chaîne libre : le catalogue des corps appartient à chaque jeu.",
-      "examples": [
-        "Corps humain adulte"
-      ],
-      "type": "string",
-      "minLength": 1
-    },
-    "instinct": {
-      "description": "Instinct qui gouverne son comportement. Chaîne libre : un meneur en ajoute.",
-      "examples": [
-        "Dévorer"
-      ],
-      "type": "string",
-      "minLength": 1
-    },
-    "typeInfecte": {
-      "description": "Type d'infecté, quand le jeu en distingue plusieurs. Chaîne libre.",
-      "examples": [
-        "Type 1"
-      ],
-      "type": "string",
-      "minLength": 1
-    },
-    "description": {
-      "description": "Ce qu'on perçoit de la créature au premier regard.",
-      "type": "string",
-      "minLength": 1
     },
     "niveauDeDanger": {
       "type": "integer",
@@ -51,7 +22,99 @@
         8
       ]
     },
+    "description": {
+      "description": "Le paragraphe de présentation, tel qu'il est lu à la table : silhouette, allure, ce qu'on perçoit au premier regard.",
+      "type": "string",
+      "minLength": 1
+    },
+    "identite": {
+      "description": "Bloc Identité, quand la fiche en porte un.",
+      "type": "object",
+      "properties": {
+        "nationalite": {
+          "description": "Nationalité, en clair.",
+          "examples": [
+            "Française"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "genre": {
+          "description": "Genre, en clair. Chaîne libre : la feuille n'impose aucune liste.",
+          "examples": [
+            "Femme"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "cheveux": {
+          "description": "Couleur ou aspect des cheveux.",
+          "examples": [
+            "Bruns, coupés court"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "age": {
+          "description": "Âge en années.",
+          "examples": [
+            34
+          ],
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200
+        },
+        "yeux": {
+          "description": "Couleur des yeux.",
+          "examples": [
+            "Verts"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "taille": {
+          "description": "Taille, telle qu'écrite sur la feuille, unité comprise. Chaîne libre et non un nombre : la feuille est manuscrite et n'impose pas d'unité, deux fiches ne sont donc pas comparables sur ce champ.",
+          "examples": [
+            "1,72 m"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "peau": {
+          "description": "Teint ou aspect de la peau.",
+          "examples": [
+            "Mate"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "poids": {
+          "description": "Poids, tel qu'écrit sur la feuille, unité comprise. Même réserve que la taille : chaîne libre, non comparable d'une fiche à l'autre.",
+          "examples": [
+            "64 kg"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "signesParticuliers": {
+          "description": "Signes particuliers : cicatrices, tatouages, tout ce qui se remarque.",
+          "examples": [
+            [
+              "Cicatrice à l'arcade gauche"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un signe particulier, en une ligne."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "caracteristiques": {
+      "description": "Caractéristiques, chacune facultative : une fiche de figurant n'en chiffre qu'une ou deux, une fiche de personnage majeur les porte toutes les huit.",
       "type": "object",
       "properties": {
         "for": {
@@ -439,17 +502,10 @@
           ]
         }
       },
-      "required": [
-        "for",
-        "con",
-        "dex",
-        "rap"
-      ],
-      "additionalProperties": false,
-      "description": "Caractéristiques d'une créature : les quatre physiques toujours, les mentales seulement si elle en a. Un corps d'infecté ne porte souvent que PER."
+      "additionalProperties": false
     },
     "sante": {
-      "description": "Seuils de dégât. Les mentaux n'ont de sens que si la créature a des caractéristiques mentales.",
+      "description": "Bloc Santé. Absent ou complet : les fiches publiées portent leurs quatre seuils de chaque côté dès qu'elles en portent un.",
       "type": "object",
       "properties": {
         "physique": {
@@ -890,7 +946,6 @@
           "description": "Seuils physiques : superficiel, léger, grave, profond. Stockés tels que lus sur la feuille, jamais recalculés — deux fiches publiées s'écartent d'un point de la dérivation."
         },
         "mental": {
-          "description": "Seuils mentaux. Optionnels, et chacun d'eux facultatif : une créature sans caractéristiques mentales est insensible aux attaques mentales et n'en porte aucun.",
           "type": "object",
           "properties": {
             "superficiel": {
@@ -1318,16 +1373,24 @@
               "description": "Seuil de dégât profond, le plus élevé des quatre."
             }
           },
-          "additionalProperties": false
+          "required": [
+            "superficiel",
+            "leger",
+            "grave",
+            "profond"
+          ],
+          "additionalProperties": false,
+          "description": "Seuils mentaux : superficiel, léger, grave, profond. Symétriques des physiques, dérivés de la Solidité mentale et des qualités de LOG et VOL."
         }
       },
       "required": [
-        "physique"
+        "physique",
+        "mental"
       ],
       "additionalProperties": false
     },
     "protections": {
-      "description": "Protections, chaque versant facultatif.",
+      "description": "Protections, chaque versant facultatif : une fiche peut ne chiffrer que le physique.",
       "type": "object",
       "properties": {
         "physiques": {
@@ -1704,504 +1767,259 @@
       },
       "additionalProperties": false
     },
-    "zoneDeDetection": {
-      "description": "Distance à laquelle la créature repère une proie.",
-      "examples": [
-        "20 m"
-      ],
-      "type": "string",
-      "minLength": 1
-    },
-    "deplacement": {
-      "description": "Distance parcourue par action.",
-      "examples": [
-        "5 m par action"
-      ],
-      "type": "string",
-      "minLength": 1
-    },
-    "actionsParRound": {
-      "description": "Nombre d'actions par round.",
-      "examples": [
-        1
-      ],
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 100
-    },
-    "etatAlternatif": {
-      "description": "État second de la créature, quand elle en a un.",
-      "type": "object",
-      "properties": {
-        "nom": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Nom de l'état, par exemple stimulé.",
-          "examples": [
-            "Stimulé"
-          ]
-        },
-        "declencheurs": {
-          "description": "Ce qui déclenche l'état, et ce qui y met fin.",
-          "examples": [
-            [
-              "Odeur de sang frais"
+    "formations": {
+      "description": "Formations, quand la fiche les nomme. Souvent absentes : la fiche de PNJ liste plus volontiers les compétences seules.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Type de formation, imprimé en tête de colonne sur la feuille de PJ. Absent d'une fiche de PNJ, qui ne qualifie pas ses formations.",
+            "type": "string",
+            "enum": [
+              "classe-sociale",
+              "professionnelle",
+              "personnelle"
+            ],
+            "examples": [
+              "professionnelle"
             ]
-          ],
-          "type": "array",
-          "items": {
+          },
+          "nom": {
             "type": "string",
             "minLength": 1,
-            "description": "Un déclencheur ou une condition de fin."
+            "description": "Nom de la formation, écrit à la main entre parenthèses sur la feuille.",
+            "examples": [
+              "Moyenne",
+              "Infirmière"
+            ]
+          },
+          "pourcentage": {
+            "type": "object",
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne basse du pourcentage de d100.",
+                "examples": [
+                  0
+                ]
+              },
+              "current": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Pourcentage de d100 actuel.",
+                "examples": [
+                  40,
+                  80
+                ]
+              },
+              "maximum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne haute du pourcentage de d100.",
+                "examples": [
+                  100,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "minimum",
+              "current",
+              "maximum"
+            ],
+            "additionalProperties": false,
+            "description": "Pourcentage jouable de la formation.",
+            "examples": [
+              {
+                "minimum": 0,
+                "current": 15,
+                "maximum": 15
+              }
+            ]
+          },
+          "competences": {
+            "description": "Compétences rattachées à cette formation. La feuille de PJ les imprime sous la colonne de leur formation ; la fiche de PNJ les regroupe hors formation, et cette liste est alors absente.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
+                  "examples": [
+                    "Arme sociale",
+                    "Athlétisme"
+                  ]
+                },
+                "specialite": {
+                  "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
+                  "examples": [
+                    "Négociation"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pourcentage": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne basse du pourcentage de d100.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Pourcentage de d100 actuel.",
+                      "examples": [
+                        40,
+                        80
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne haute du pourcentage de d100.",
+                      "examples": [
+                        100,
+                        200
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Pourcentage jouable de la compétence seule, hors caractéristique.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 30,
+                      "maximum": 30
+                    }
+                  ]
+                },
+                "caracteristique": {
+                  "description": "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
+                  "examples": [
+                    "cha"
+                  ],
+                  "type": "string",
+                  "enum": [
+                    "for",
+                    "con",
+                    "dex",
+                    "rap",
+                    "log",
+                    "vol",
+                    "per",
+                    "cha"
+                  ]
+                },
+                "total": {
+                  "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 50,
+                      "maximum": 50
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne basse du pourcentage de d100.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Pourcentage de d100 actuel.",
+                      "examples": [
+                        40,
+                        80
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne haute du pourcentage de d100.",
+                      "examples": [
+                        100,
+                        200
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                },
+                "avantages": {
+                  "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
+                  "examples": [
+                    [
+                      "Gestion du stress"
+                    ]
+                  ],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Un avantage, en une ligne."
+                  }
+                },
+                "notes": {
+                  "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+                  "examples": [
+                    "Judo"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "nom",
+                "pourcentage"
+              ],
+              "additionalProperties": false,
+              "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
+            }
           }
         },
-        "caracteristiques": {
-          "description": "Caractéristiques modifiées par l'état. Ce qui n'est pas redéclaré garde la valeur de l'état de base.",
-          "type": "object",
-          "properties": {
-            "for": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Force. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 40,
-                  "maximum": 40
-                }
-              ]
-            },
-            "con": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Constitution. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 50,
-                  "maximum": 50
-                }
-              ]
-            },
-            "dex": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Dextérité. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 45,
-                  "maximum": 45
-                }
-              ]
-            },
-            "rap": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Rapidité. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 35,
-                  "maximum": 35
-                }
-              ]
-            },
-            "log": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Logique. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 30,
-                  "maximum": 30
-                }
-              ]
-            },
-            "vol": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Volonté. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 40,
-                  "maximum": 40
-                }
-              ]
-            },
-            "per": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Perception. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 50,
-                  "maximum": 50
-                }
-              ]
-            },
-            "cha": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Charisme. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 25,
-                  "maximum": 25
-                }
-              ]
-            }
-          },
-          "additionalProperties": false
-        },
-        "zoneDeDetection": {
-          "description": "Distance de détection dans cet état, si elle change.",
-          "type": "string",
-          "minLength": 1
-        },
-        "deplacement": {
-          "description": "Distance parcourue par action dans cet état, si elle change.",
-          "type": "string",
-          "minLength": 1
-        },
-        "actionsParRound": {
-          "description": "Nombre d'actions par round dans cet état, s'il change.",
-          "examples": [
-            2
-          ],
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 100
-        },
-        "notes": {
-          "description": "Ce que l'état change en plus des valeurs chiffrées.",
-          "type": "string",
-          "minLength": 1
-        }
-      },
-      "required": [
-        "nom"
-      ],
-      "additionalProperties": false
-    },
-    "comportement": {
-      "description": "Comment la créature agit, un trait par entrée.",
-      "examples": [
-        [
-          "Suit le bruit",
-          "N'escalade pas"
-        ]
-      ],
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Un trait de comportement."
-      }
-    },
-    "traitsSpeciaux": {
-      "description": "Insensibilités, immunités, capacités hors du commun. Liste non bornée.",
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1,
-        "description": "Un trait spécial."
+        "required": [
+          "nom",
+          "pourcentage"
+        ],
+        "additionalProperties": false,
+        "description": "Une formation et les compétences qu'elle porte."
       }
     },
     "competences": {
-      "description": "Compétences rattachées directement à la créature : elle ne passe par aucune formation.",
+      "description": "Compétences du personnage. La fiche publiée les regroupe sous un bloc unique, hors des formations, et note pour chacune sa caractéristique et son total.",
       "type": "array",
       "items": {
         "type": "object",
@@ -2368,7 +2186,7 @@
       }
     },
     "equipement": {
-      "description": "Ce dont la créature se sert, quand elle se sert de quelque chose.",
+      "description": "Ce que le personnage porte sur lui et ce dont il se sert.",
       "type": "object",
       "properties": {
         "possessions": {
@@ -2595,149 +2413,8 @@
       },
       "additionalProperties": false
     },
-    "contagion": {
-      "description": "Mécanique de transmission. Absente sur une créature non contagieuse.",
-      "type": "object",
-      "properties": {
-        "agent": {
-          "description": "Nom de l'agent transmis.",
-          "examples": [
-            "Souche R-7"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "vecteurs": {
-          "description": "Par quoi l'agent se transmet, et avec quelle probabilité.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "nom": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Canal de transmission, en clair. Chaîne libre.",
-                "examples": [
-                  "Morsure",
-                  "Regard soutenu"
-                ]
-              },
-              "probabilite": {
-                "description": "Probabilité de transmission, en pourcentage. Bornée à 100, contrairement aux pourcentages de d100 : c'est une probabilité.",
-                "examples": [
-                  {
-                    "minimum": 0,
-                    "current": 80,
-                    "maximum": 80
-                  }
-                ],
-                "type": "object",
-                "properties": {
-                  "minimum": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100,
-                    "description": "Borne basse de la probabilité de transmission.",
-                    "examples": [
-                      0
-                    ]
-                  },
-                  "current": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100,
-                    "description": "Probabilité de transmission actuelle.",
-                    "examples": [
-                      80
-                    ]
-                  },
-                  "maximum": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100,
-                    "description": "Borne haute de la probabilité de transmission.",
-                    "examples": [
-                      100
-                    ]
-                  }
-                },
-                "required": [
-                  "minimum",
-                  "current",
-                  "maximum"
-                ],
-                "additionalProperties": false
-              },
-              "notes": {
-                "description": "Conditions ou réserves attachées à ce vecteur.",
-                "type": "string",
-                "minLength": 1
-              }
-            },
-            "required": [
-              "nom"
-            ],
-            "additionalProperties": false,
-            "description": "Un vecteur de transmission et sa probabilité."
-          }
-        },
-        "delaiAvantEffet": {
-          "description": "Délai entre la transmission et le premier effet, en unité de temps libre.",
-          "examples": [
-            "6 à 12 heures"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "issue": {
-          "description": "Ce que devient la victime au terme de l'infection.",
-          "examples": [
-            "Bascule en infecté de type 1"
-          ],
-          "type": "string",
-          "minLength": 1
-        },
-        "modulations": {
-          "description": "Variations du délai ou de l'issue selon le profil de la victime.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "profil": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Tranche d'âge ou profil concerné, en clair.",
-                "examples": [
-                  "Enfant",
-                  "Personne âgée"
-                ]
-              },
-              "delaiAvantEffet": {
-                "description": "Délai propre à ce profil, en unité de temps libre.",
-                "examples": [
-                  "2 à 4 heures"
-                ],
-                "type": "string",
-                "minLength": 1
-              },
-              "issue": {
-                "description": "Issue propre à ce profil.",
-                "type": "string",
-                "minLength": 1
-              }
-            },
-            "required": [
-              "profil"
-            ],
-            "additionalProperties": false,
-            "description": "Ce que le profil de la victime change au délai ou à l'issue."
-          }
-        }
-      },
-      "additionalProperties": false
-    },
     "narratif": {
-      "description": "Une créature nommée et jouée mérite le même traitement qu'un personnage non joué.",
+      "description": "Bloc narratif : rôle, attitude, répliques, notes réservées au meneur.",
       "type": "object",
       "properties": {
         "role": {
@@ -2875,11 +2552,10 @@
     }
   },
   "required": [
-    "nom",
-    "caracteristiques"
+    "nom"
   ],
   "additionalProperties": false,
-  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/monstre.schema.json",
-  "title": "Créature — Adrenaline System",
-  "description": "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, état alternatif, contagion générique et bloc narratif facultatifs."
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/2.0.0/pnj.schema.json",
+  "title": "Personnage non joué — Adrenaline System",
+  "description": "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré."
 }

@@ -1,15 +1,3 @@
-# Fiche de PNJ complète, calquée sur l'anatomie des fiches publiées : en-tête
-# avec rôle et ND, paragraphe de présentation, puis caractéristiques, santé,
-# formations, compétences et équipement.
-#
-# Dérivations :
-#   Solidité physique 6, FOR 30 et CON 40 : 6, 6+3+4 = 13, 18, 23
-#   Solidité mentale 6, LOG 20 et VOL 40 : 6, 6+2+4 = 12, 17, 22
-#   Caractère 2 PM : colonne « + Caractère » = base + 2
-#
-# Chaque compétence est notée comme sur la fiche : pourcentage, caractéristique,
-# total, et les avantages dessous.
-
 nom = "Le mécanicien du dépôt"
 niveauDeDanger = 4
 description = "Massif, les mains noires jusqu'aux poignets, il répond aux questions sans lever les yeux de son moteur. On sent qu'il a déjà décidé qui, dans le groupe, mérite qu'il se lève."
@@ -19,124 +7,250 @@ nationalite = "Portugaise"
 genre = "Homme"
 age = 52
 taille = "1,80 m"
-signesParticuliers = ["Deux doigts manquants à la main gauche"]
+signesParticuliers = [ "Deux doigts manquants à la main gauche" ]
 
-[caracteristiques]
-for = 30
-con = 40
-dex = 40
-rap = 30
-log = 20
-vol = 40
-per = 30
-cha = 20
+[caracteristiques.for]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.physique.superficiel]
-base = 6
+[caracteristiques.con]
+minimum = 0
+current = 40
+maximum = 40
 
-[sante.physique.leger]
-base = 13
+[caracteristiques.dex]
+minimum = 0
+current = 40
+maximum = 40
 
-[sante.physique.grave]
-base = 18
+[caracteristiques.rap]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.physique.profond]
-base = 23
+[caracteristiques.log]
+minimum = 0
+current = 20
+maximum = 20
 
-[sante.mental.superficiel]
-base = 6
-couvert = 8
+[caracteristiques.vol]
+minimum = 0
+current = 40
+maximum = 40
 
-[sante.mental.leger]
-base = 12
-couvert = 14
+[caracteristiques.per]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.mental.grave]
-base = 17
-couvert = 19
+[caracteristiques.cha]
+minimum = 0
+current = 20
+maximum = 20
 
-[sante.mental.profond]
-base = 22
-couvert = 24
+[sante.physique.superficiel.base]
+minimum = 0
+current = 6
+maximum = 6
 
-[protections.physiques]
-solidite = 6
+[sante.physique.leger.base]
+minimum = 0
+current = 13
+maximum = 13
 
-[protections.mentales]
-solidite = 6
+[sante.physique.grave.base]
+minimum = 0
+current = 18
+maximum = 18
+
+[sante.physique.profond.base]
+minimum = 0
+current = 23
+maximum = 23
+
+[sante.mental.superficiel.base]
+minimum = 0
+current = 6
+maximum = 6
+
+[sante.mental.superficiel.couvert]
+minimum = 0
+current = 8
+maximum = 8
+
+[sante.mental.leger.base]
+minimum = 0
+current = 12
+maximum = 12
+
+[sante.mental.leger.couvert]
+minimum = 0
+current = 14
+maximum = 14
+
+[sante.mental.grave.base]
+minimum = 0
+current = 17
+maximum = 17
+
+[sante.mental.grave.couvert]
+minimum = 0
+current = 19
+maximum = 19
+
+[sante.mental.profond.base]
+minimum = 0
+current = 22
+maximum = 22
+
+[sante.mental.profond.couvert]
+minimum = 0
+current = 24
+maximum = 24
+
+[protections.physiques.solidite]
+minimum = 0
+current = 6
+maximum = 6
+
+[protections.mentales.solidite]
+minimum = 0
+current = 6
+maximum = 6
 
 [protections.mentales.caractere]
 trait = "Bourru"
-points = 2
-localisations = ["anxiete", "colere", "impuissance"]
+localisations = [ "anxiete", "colere", "impuissance" ]
+
+[protections.mentales.caractere.points]
+minimum = 0
+current = 2
+maximum = 2
 
 [equipement]
-possessions = ["Caisse à outils complète", "Vieux pick-up diesel", "Thermos"]
+possessions = [ "Caisse à outils complète", "Vieux pick-up diesel", "Thermos" ]
 equipementFavori = "Clé à molette de son père"
 
 [[equipement.armesPhysiques]]
 nom = "Clé à molette"
-pourcentage = 50
 desDeDegats = 2
 type = "Contact"
+
+[equipement.armesPhysiques.pourcentage]
+minimum = 0
+current = 50
+maximum = 50
 
 [[formations]]
 type = "classe-sociale"
 nom = "Classe pauvre"
-pourcentage = 20
+
+[formations.pourcentage]
+minimum = 0
+current = 20
+maximum = 20
 
 [[formations]]
 type = "professionnelle"
 nom = "Mécanique lourde"
-pourcentage = 25
+
+[formations.pourcentage]
+minimum = 0
+current = 25
+maximum = 25
 
 [[formations]]
 type = "personnelle"
 nom = "Loisirs"
-pourcentage = 15
+
+[formations.pourcentage]
+minimum = 0
+current = 15
+maximum = 15
 
 [[competences]]
 nom = "Bricolage"
 specialite = "Mécanique"
-pourcentage = 45
 caracteristique = "dex"
-total = 85
-avantages = ["Équipement favori"]
+avantages = [ "Équipement favori" ]
 notes = "Utilise sa clé à molette comme arme de fortune au contact."
+
+[competences.pourcentage]
+minimum = 0
+current = 45
+maximum = 45
+
+[competences.total]
+minimum = 0
+current = 85
+maximum = 85
 
 [[competences]]
 nom = "Conduite"
 specialite = "Poids lourd"
-pourcentage = 35
 caracteristique = "per"
-total = 65
+
+[competences.pourcentage]
+minimum = 0
+current = 35
+maximum = 35
+
+[competences.total]
+minimum = 0
+current = 65
+maximum = 65
 
 [[competences]]
 nom = "Sport"
 specialite = "Force athlétique"
-pourcentage = 30
 caracteristique = "for"
-total = 60
+
+[competences.pourcentage]
+minimum = 0
+current = 30
+maximum = 30
+
+[competences.total]
+minimum = 0
+current = 60
+maximum = 60
 
 [[competences]]
 nom = "Arme sociale"
 specialite = "Intimidation"
-pourcentage = 30
 caracteristique = "vol"
-total = 70
-avantages = ["Bouclier personnel"]
+avantages = [ "Bouclier personnel" ]
+
+[competences.pourcentage]
+minimum = 0
+current = 30
+maximum = 30
+
+[competences.total]
+minimum = 0
+current = 70
+maximum = 70
 
 [[competences]]
 nom = "Observation"
 specialite = "Comportement"
-pourcentage = 30
 caracteristique = "per"
-total = 60
+
+[competences.pourcentage]
+minimum = 0
+current = 30
+maximum = 30
+
+[competences.total]
+minimum = 0
+current = 60
+maximum = 60
 
 [narratif]
 role = "Ressource et obstacle : il détient le seul véhicule en état du secteur."
 attitude = "Méfiant, puis loyal une fois qu'on lui a rendu un service sans rien demander."
-personnalite = ["Taiseux", "Rancunier", "Fiable"]
+personnalite = [ "Taiseux", "Rancunier", "Fiable" ]
 evolutionPossible = "Suit le groupe s'il perd son dépôt ; devient hostile si on lui prend le pick-up."
-repliques = ["Vous le rendez plein.", "J'ai pas dit non. J'ai dit pas maintenant."]
-notesMj = ["Cache sa sœur contaminée dans l'arrière-boutique."]
+repliques = [ "Vous le rendez plein.", "J'ai pas dit non. J'ai dit pas maintenant." ]
+notesMj = [ "Cache sa sœur contaminée dans l'arrière-boutique." ]

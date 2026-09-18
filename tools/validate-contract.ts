@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import Ajv from "ajv";
 import IarnaToml from "@iarna/toml";
 import { parse as parseSmolToml } from "smol-toml";
 import {
@@ -28,6 +29,12 @@ const manifest = JSON.parse(
   fs.readFileSync(path.join(root, "corpus", "cases.json"), "utf8"),
 ) as ContractManifest;
 const targets = Object.keys(ADRENALINE_DOCUMENT_CODECS) as AdrenalineDocumentTarget[];
+
+function structuralValidator(target: AdrenalineDocumentTarget): ReturnType<Ajv["compile"]> {
+  const schemaPath = path.join(root, "schemas", "adrenaline", `${target}.schema.json`);
+  const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+  return new Ajv({ allErrors: true, strict: false }).compile(schema);
+}
 
 assert.equal(manifest.manifestVersion, 1, "contract manifest version must be 1");
 assert.equal(
@@ -113,6 +120,13 @@ for (const testCase of manifest.cases) {
   const label = `${testCase.path} [${testCase.target}/${testCase.format}]`;
 
   if (testCase.expect === "reject") {
+    if (testCase.path.includes("plage-")) {
+      const raw = testCase.format === "json" ? JSON.parse(source) : IarnaToml.parse(source);
+      assert.ok(
+        structuralValidator(testCase.target)(raw),
+        `${label}: the draft-7 schema must accept a structurally valid inverted range`,
+      );
+    }
     assert.throws(() => parse(source), `${label}: invalid fixture was accepted`);
     console.log(`✓ contract rejection: ${label}`);
     continue;

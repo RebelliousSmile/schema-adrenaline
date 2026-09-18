@@ -2,11 +2,21 @@
   "nom": "X",
   "protections": {
     "mentales": {
-      "solidite": 5,
+      "solidite": {
+        "minimum": 0,
+        "current": 5,
+        "maximum": 5
+      },
       "caractere": {
         "trait": "Froid",
-        "points": 2,
-        "localisations": ["ennui"]
+        "points": {
+          "minimum": 0,
+          "current": 2,
+          "maximum": 2
+        },
+        "localisations": [
+          "ennui"
+        ]
       }
     }
   }

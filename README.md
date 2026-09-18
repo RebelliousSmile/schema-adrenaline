@@ -159,19 +159,22 @@ Import the public contract; do not copy the Zod sources into a consumer:
 ```ts
 import {
   ADRENALINE_DOCUMENT_CODECS,
-  PersonnageJoueur,
+  parsePjJson,
   parsePnjToml,
   type PersonnageJoueurValeur,
 } from "schema-adrenaline";
 
-const pj: PersonnageJoueurValeur = PersonnageJoueur.parse(userInputJson);
+const pj: PersonnageJoueurValeur = parsePjJson(JSON.stringify(userInputJson));
 const pnj = parsePnjToml(tomlSource);
 const json = ADRENALINE_DOCUMENT_CODECS.monstre.parseJson(jsonSource);
 ```
 
 The registry keys are `pj`, `pnj` and `monstre`. Every codec parses and
-serializes JSON and TOML through the same strict Zod schema, so unknown keys are
-rejected rather than silently removed.
+serializes JSON and TOML through the same strict Zod schema, then verifies
+`minimum ≤ current ≤ maximum`, so unknown keys and inverted playable intervals
+are rejected rather than silently removed. Exported Zod schemas intentionally
+validate structure only; use a codec or `validatePlayableRanges` for the full
+portable contract.
 
 ### Validate data (language-agnostic)
 

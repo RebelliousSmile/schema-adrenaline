@@ -1,6 +1,10 @@
 {
   "nom": "X",
   "parametresDuJeu": {
-    "px": 10
+    "px": {
+      "minimum": 0,
+      "current": 10,
+      "maximum": 10
+    }
   }
 }

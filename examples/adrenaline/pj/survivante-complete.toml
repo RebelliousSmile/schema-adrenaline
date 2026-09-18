@@ -1,15 +1,3 @@
-# Feuille de PJ de campagne, tous les blocs de la feuille imprimée remplis.
-#
-# Dérivations vérifiées :
-#   Solidité physique 6, FOR 30 et CON 40 (qualités 3 et 4)
-#     superficiel 6, léger 6+3+4 = 13, grave 13+5 = 18, profond 13+10 = 23
-#   Armure 3 PP sur torse et bras fort : colonne « + Armure » = base + 3
-#   Solidité mentale 5, LOG 30 et VOL 40 (qualités 3 et 4)
-#     superficiel 5, léger 5+3+4 = 12, grave 17, profond 22
-#   Caractère 2 PM sur anxiété, peur, culpabilité : colonne « + Caractère » = base + 2
-#
-# Chaque compétence porte son pourcentage, sa caractéristique et leur total.
-
 nom = "Naïma Berthier"
 
 [identite]
@@ -21,160 +9,334 @@ yeux = "Bruns"
 taille = "1,68 m"
 peau = "Mate"
 poids = "61 kg"
-signesParticuliers = ["Cicatrice à l'avant-bras gauche", "Tatouage au poignet droit"]
+signesParticuliers = [ "Cicatrice à l'avant-bras gauche", "Tatouage au poignet droit" ]
 
-[caracteristiques]
-for = 30
-con = 40
-dex = 50
-rap = 40
-log = 30
-vol = 40
-per = 50
-cha = 30
+[caracteristiques.for]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.physique.superficiel]
-base = 6
-couvert = 9
+[caracteristiques.con]
+minimum = 0
+current = 40
+maximum = 40
 
-[sante.physique.leger]
-base = 13
-couvert = 16
+[caracteristiques.dex]
+minimum = 0
+current = 50
+maximum = 50
 
-[sante.physique.grave]
-base = 18
-couvert = 21
+[caracteristiques.rap]
+minimum = 0
+current = 40
+maximum = 40
 
-[sante.physique.profond]
-base = 23
-couvert = 26
+[caracteristiques.log]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.mental.superficiel]
-base = 5
-couvert = 7
+[caracteristiques.vol]
+minimum = 0
+current = 40
+maximum = 40
 
-[sante.mental.leger]
-base = 12
-couvert = 14
+[caracteristiques.per]
+minimum = 0
+current = 50
+maximum = 50
 
-[sante.mental.grave]
-base = 17
-couvert = 19
+[caracteristiques.cha]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.mental.profond]
-base = 22
-couvert = 24
+[sante.physique.superficiel.base]
+minimum = 0
+current = 6
+maximum = 6
 
-[protections.physiques]
-solidite = 6
+[sante.physique.superficiel.couvert]
+minimum = 0
+current = 9
+maximum = 9
+
+[sante.physique.leger.base]
+minimum = 0
+current = 13
+maximum = 13
+
+[sante.physique.leger.couvert]
+minimum = 0
+current = 16
+maximum = 16
+
+[sante.physique.grave.base]
+minimum = 0
+current = 18
+maximum = 18
+
+[sante.physique.grave.couvert]
+minimum = 0
+current = 21
+maximum = 21
+
+[sante.physique.profond.base]
+minimum = 0
+current = 23
+maximum = 23
+
+[sante.physique.profond.couvert]
+minimum = 0
+current = 26
+maximum = 26
+
+[sante.mental.superficiel.base]
+minimum = 0
+current = 5
+maximum = 5
+
+[sante.mental.superficiel.couvert]
+minimum = 0
+current = 7
+maximum = 7
+
+[sante.mental.leger.base]
+minimum = 0
+current = 12
+maximum = 12
+
+[sante.mental.leger.couvert]
+minimum = 0
+current = 14
+maximum = 14
+
+[sante.mental.grave.base]
+minimum = 0
+current = 17
+maximum = 17
+
+[sante.mental.grave.couvert]
+minimum = 0
+current = 19
+maximum = 19
+
+[sante.mental.profond.base]
+minimum = 0
+current = 22
+maximum = 22
+
+[sante.mental.profond.couvert]
+minimum = 0
+current = 24
+maximum = 24
+
+[protections.physiques.solidite]
+minimum = 0
+current = 6
+maximum = 6
 
 [protections.physiques.armure]
 nom = "Veste de chantier renforcée"
-points = 3
-localisations = ["torse", "bras-fort"]
+localisations = [ "torse", "bras-fort" ]
+
+[protections.physiques.armure.points]
+minimum = 0
+current = 3
+maximum = 3
 
 [protections.physiques.bouclier]
 nom = "Panneau de signalisation"
-proprietes = ["Couvert partiel"]
+proprietes = [ "Couvert partiel" ]
 
-[protections.mentales]
-solidite = 5
+[protections.mentales.solidite]
+minimum = 0
+current = 5
+maximum = 5
 
 [protections.mentales.caractere]
 trait = "Obstinée"
-points = 2
-localisations = ["anxiete", "peur", "culpabilite"]
+localisations = [ "anxiete", "peur", "culpabilite" ]
+
+[protections.mentales.caractere.points]
+minimum = 0
+current = 2
+maximum = 2
 
 [parametresDuJeu]
 joueur = "Camille"
 typeDeCreation = "equitable"
 typeDeScenario = "campagne"
-px = 12
+
+[parametresDuJeu.px]
+minimum = 0
+current = 12
+maximum = 12
 
 [equipement]
-possessions = ["Trousse de secours", "Radio à manivelle", "Carnet de relevés"]
+possessions = [ "Trousse de secours", "Radio à manivelle", "Carnet de relevés" ]
 equipementFavori = "Multitool héritée de son père"
 
 [[equipement.armesPhysiques]]
 nom = "Pied-de-biche"
-pourcentage = 55
 desDeDegats = 2
 type = "Contact"
 
+[equipement.armesPhysiques.pourcentage]
+minimum = 0
+current = 55
+maximum = 55
+
 [[equipement.armesPhysiques]]
 nom = "Carabine .22"
-pourcentage = 40
 desDeDegats = 3
 type = "Distance"
 
+[equipement.armesPhysiques.pourcentage]
+minimum = 0
+current = 40
+maximum = 40
+
 [[equipement.armesMentales]]
 nom = "Arme sociale (Apaisement)"
-pourcentage = 60
 desDeDegats = 1
 type = "Sociale"
+
+[equipement.armesMentales.pourcentage]
+minimum = 0
+current = 60
+maximum = 60
 
 [[formations]]
 type = "classe-sociale"
 nom = "Classe moyenne"
-pourcentage = 20
+
+[formations.pourcentage]
+minimum = 0
+current = 20
+maximum = 20
 
 [[formations.competences]]
 nom = "Étiquette"
 specialite = "Classe moyenne"
-pourcentage = 40
 caracteristique = "vol"
-total = 80
+
+[formations.competences.pourcentage]
+minimum = 0
+current = 40
+maximum = 40
+
+[formations.competences.total]
+minimum = 0
+current = 80
+maximum = 80
 
 [[formations.competences]]
 nom = "Bureaucratie"
-pourcentage = 35
 caracteristique = "log"
-total = 65
+
+[formations.competences.pourcentage]
+minimum = 0
+current = 35
+maximum = 35
+
+[formations.competences.total]
+minimum = 0
+current = 65
+maximum = 65
 
 [[formations]]
 type = "professionnelle"
 nom = "Secours et logistique"
-pourcentage = 25
+
+[formations.pourcentage]
+minimum = 0
+current = 25
+maximum = 25
 
 [[formations.competences]]
 nom = "Survie"
 specialite = "Premiers secours"
-pourcentage = 40
 caracteristique = "per"
-total = 90
-avantages = ["Gestion du stress"]
+avantages = [ "Gestion du stress" ]
+
+[formations.competences.pourcentage]
+minimum = 0
+current = 40
+maximum = 40
+
+[formations.competences.total]
+minimum = 0
+current = 90
+maximum = 90
 
 [[formations.competences]]
 nom = "Conduite"
 specialite = "Poids lourd"
-pourcentage = 35
 caracteristique = "per"
-total = 85
+
+[formations.competences.pourcentage]
+minimum = 0
+current = 35
+maximum = 35
+
+[formations.competences.total]
+minimum = 0
+current = 85
+maximum = 85
 
 [[formations.competences]]
 nom = "Gestion de ressources"
-pourcentage = 35
 caracteristique = "log"
-total = 65
+
+[formations.competences.pourcentage]
+minimum = 0
+current = 35
+maximum = 35
+
+[formations.competences.total]
+minimum = 0
+current = 65
+maximum = 65
 
 [[formations]]
 type = "personnelle"
 nom = "Loisirs"
-pourcentage = 15
+
+[formations.pourcentage]
+minimum = 0
+current = 15
+maximum = 15
 
 [[formations.competences]]
 nom = "Sport"
 specialite = "Escalade"
-pourcentage = 30
 caracteristique = "dex"
-total = 80
-avantages = ["Équipement favori"]
+avantages = [ "Équipement favori" ]
+
+[formations.competences.pourcentage]
+minimum = 0
+current = 30
+maximum = 30
+
+[formations.competences.total]
+minimum = 0
+current = 80
+maximum = 80
 
 [[formations.competences]]
 nom = "Arme sociale"
 specialite = "Apaisement"
-pourcentage = 30
 caracteristique = "cha"
-total = 60
-avantages = ["Bouclier personnel"]
+avantages = [ "Bouclier personnel" ]
 notes = "Arme mentale associée : Arme sociale (Apaisement), 60 %, 1 dé de dégâts"
+
+[formations.competences.pourcentage]
+minimum = 0
+current = 30
+maximum = 30
+
+[formations.competences.total]
+minimum = 0
+current = 60
+maximum = 60

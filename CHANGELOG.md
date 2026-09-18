@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-09-18
+
+### Changed
+
+- **Breaking:** playable numeric scalars are now `{ minimum, current, maximum }`
+  objects. This applies to characteristics, skills, formations, weapon
+  percentages, health thresholds, protections, experience and contagion
+  probabilities; structural and editorial numbers stay scalar.
+- The public codecs enforce `minimum <= current <= maximum`. Generated draft-7
+  schemas remain structural and the corpus proves the distinction with JSON and
+  TOML inverted-range fixtures.
+
+### Migration
+
+- Convert every legacy playable scalar `n` to `{ minimum: 0, current: n,
+  maximum: n }`. This preserves the recorded value without inventing a capacity.
+
 ## [1.1.1] - 2026-09-15
 
 ### Added

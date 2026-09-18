@@ -1,0 +1,10 @@
+{
+  "nom": "Intervalle inversé",
+  "caracteristiques": {
+    "for": {
+      "minimum": 0,
+      "current": 61,
+      "maximum": 60
+    }
+  }
+}

@@ -123,6 +123,12 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pnj/caracteristique-scalaire-heritee.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
       "path": "corpus/refus/pnj/localisation-emotionnelle-inconnue.json",
       "target": "pnj",
       "format": "json",
@@ -142,6 +148,18 @@
     },
     {
       "path": "corpus/refus/pnj/nom-vide.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/plage-current-superieur-maximum.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/plage-minimum-superieur-current.json",
       "target": "pnj",
       "format": "json",
       "expect": "reject"
@@ -220,6 +238,18 @@
     },
     {
       "path": "corpus/contract/invalid/pnj-unknown-field.toml",
+      "target": "pnj",
+      "format": "toml",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/contract/invalid/pnj-plage-current-superieur-maximum.toml",
+      "target": "pnj",
+      "format": "toml",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/contract/invalid/pnj-plage-minimum-superieur-current.toml",
       "target": "pnj",
       "format": "toml",
       "expect": "reject"

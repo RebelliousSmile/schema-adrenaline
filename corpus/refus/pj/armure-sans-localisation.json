@@ -1,63 +1,161 @@
 {
   "nom": "Témoin",
   "caracteristiques": {
-    "for": 40,
-    "con": 50,
-    "dex": 45,
-    "rap": 35,
-    "log": 30,
-    "vol": 40,
-    "per": 50,
-    "cha": 25
+    "for": {
+      "minimum": 0,
+      "current": 40,
+      "maximum": 40
+    },
+    "con": {
+      "minimum": 0,
+      "current": 50,
+      "maximum": 50
+    },
+    "dex": {
+      "minimum": 0,
+      "current": 45,
+      "maximum": 45
+    },
+    "rap": {
+      "minimum": 0,
+      "current": 35,
+      "maximum": 35
+    },
+    "log": {
+      "minimum": 0,
+      "current": 30,
+      "maximum": 30
+    },
+    "vol": {
+      "minimum": 0,
+      "current": 40,
+      "maximum": 40
+    },
+    "per": {
+      "minimum": 0,
+      "current": 50,
+      "maximum": 50
+    },
+    "cha": {
+      "minimum": 0,
+      "current": 25,
+      "maximum": 25
+    }
   },
   "sante": {
     "physique": {
       "superficiel": {
-        "base": 7
+        "base": {
+          "minimum": 0,
+          "current": 7,
+          "maximum": 7
+        }
       },
       "leger": {
-        "base": 16
+        "base": {
+          "minimum": 0,
+          "current": 16,
+          "maximum": 16
+        }
       },
       "grave": {
-        "base": 21
+        "base": {
+          "minimum": 0,
+          "current": 21,
+          "maximum": 21
+        }
       },
       "profond": {
-        "base": 26
+        "base": {
+          "minimum": 0,
+          "current": 26,
+          "maximum": 26
+        }
       }
     },
     "mental": {
       "superficiel": {
-        "base": 5,
-        "couvert": 7
+        "base": {
+          "minimum": 0,
+          "current": 5,
+          "maximum": 5
+        },
+        "couvert": {
+          "minimum": 0,
+          "current": 7,
+          "maximum": 7
+        }
       },
       "leger": {
-        "base": 10,
-        "couvert": 12
+        "base": {
+          "minimum": 0,
+          "current": 10,
+          "maximum": 10
+        },
+        "couvert": {
+          "minimum": 0,
+          "current": 12,
+          "maximum": 12
+        }
       },
       "grave": {
-        "base": 15,
-        "couvert": 17
+        "base": {
+          "minimum": 0,
+          "current": 15,
+          "maximum": 15
+        },
+        "couvert": {
+          "minimum": 0,
+          "current": 17,
+          "maximum": 17
+        }
       },
       "profond": {
-        "base": 20,
-        "couvert": 22
+        "base": {
+          "minimum": 0,
+          "current": 20,
+          "maximum": 20
+        },
+        "couvert": {
+          "minimum": 0,
+          "current": 22,
+          "maximum": 22
+        }
       }
     }
   },
   "protections": {
     "physiques": {
-      "solidite": 7,
+      "solidite": {
+        "minimum": 0,
+        "current": 7,
+        "maximum": 7
+      },
       "armure": {
-        "points": 2,
+        "points": {
+          "minimum": 0,
+          "current": 2,
+          "maximum": 2
+        },
         "localisations": []
       }
     },
     "mentales": {
-      "solidite": 5,
+      "solidite": {
+        "minimum": 0,
+        "current": 5,
+        "maximum": 5
+      },
       "caractere": {
         "trait": "Cynique",
-        "points": 2,
-        "localisations": ["peur"]
+        "points": {
+          "minimum": 0,
+          "current": 2,
+          "maximum": 2
+        },
+        "localisations": [
+          "peur"
+        ]
       }
     }
   }

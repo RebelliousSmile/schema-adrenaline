@@ -1,6 +1,3 @@
-# Un zé de base : aucune caractéristique mentale hors perception, un bloc
-# contagion, un état stimulé qui rejoue les valeurs modifiées.
-
 nom = "Rôdeur"
 typeDeCorps = "adulte moyen"
 instinct = "traque au bruit"
@@ -10,51 +7,76 @@ niveauDeDanger = 2
 zoneDeDetection = "15 m au bruit, 5 m à vue"
 deplacement = "6 m par action"
 actionsParRound = 1
-comportement = [
-  "Marche vers la source sonore la plus proche.",
-  "Ne contourne pas un obstacle : il le pousse ou s'y arrête.",
-]
-traitsSpeciaux = [
-  "Insensible aux attaques mentales.",
-  "Ne ressent ni douleur ni fatigue.",
-]
+comportement = [ "Marche vers la source sonore la plus proche.", "Ne contourne pas un obstacle : il le pousse ou s'y arrête." ]
+traitsSpeciaux = [ "Insensible aux attaques mentales.", "Ne ressent ni douleur ni fatigue." ]
 
-[caracteristiques]
-for = 45
-con = 60
-dex = 25
-rap = 30
-per = 40
+[caracteristiques.for]
+minimum = 0
+current = 45
+maximum = 45
 
-[sante.physique.superficiel]
-base = 5
+[caracteristiques.con]
+minimum = 0
+current = 60
+maximum = 60
 
-[sante.physique.leger]
-base = 15
+[caracteristiques.dex]
+minimum = 0
+current = 25
+maximum = 25
 
-[sante.physique.grave]
-base = 20
+[caracteristiques.rap]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.physique.profond]
-base = 25
+[caracteristiques.per]
+minimum = 0
+current = 40
+maximum = 40
 
-[protections.physiques]
-solidite = 5
+[sante.physique.superficiel.base]
+minimum = 0
+current = 5
+maximum = 5
+
+[sante.physique.leger.base]
+minimum = 0
+current = 15
+maximum = 15
+
+[sante.physique.grave.base]
+minimum = 0
+current = 20
+maximum = 20
+
+[sante.physique.profond.base]
+minimum = 0
+current = 25
+maximum = 25
+
+[protections.physiques.solidite]
+minimum = 0
+current = 5
+maximum = 5
 
 [etatAlternatif]
 nom = "stimulé"
-declencheurs = [
-  "Un cri, un coup de feu ou une lumière vive à portée de détection.",
-  "Retombe à l'état de base après deux rounds sans nouveau stimulus.",
-]
+declencheurs = [ "Un cri, un coup de feu ou une lumière vive à portée de détection.", "Retombe à l'état de base après deux rounds sans nouveau stimulus." ]
 zoneDeDetection = "30 m au bruit"
 deplacement = "12 m par action"
 actionsParRound = 2
 notes = "Ce qui n'est pas redéclaré ici reste celui de l'état de base."
 
-[etatAlternatif.caracteristiques]
-rap = 55
-per = 55
+[etatAlternatif.caracteristiques.rap]
+minimum = 0
+current = 55
+maximum = 55
+
+[etatAlternatif.caracteristiques.per]
+minimum = 0
+current = 55
+maximum = 55
 
 [contagion]
 agent = "agent viral de première génération"

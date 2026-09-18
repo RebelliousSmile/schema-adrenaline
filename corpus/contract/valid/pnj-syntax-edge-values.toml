@@ -1,4 +1,4 @@
-"nom" = "Témoin syntaxique"
+nom = "Témoin syntaxique"
 niveauDeDanger = 0
 formations = []
 competences = []

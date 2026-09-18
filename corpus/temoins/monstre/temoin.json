@@ -1,4 +1,30 @@
 {
   "nom": "Témoin",
-  "caracteristiques": { "for": 40, "con": 50, "dex": 20, "rap": 15, "per": 30 }
+  "caracteristiques": {
+    "for": {
+      "minimum": 0,
+      "current": 40,
+      "maximum": 40
+    },
+    "con": {
+      "minimum": 0,
+      "current": 50,
+      "maximum": 50
+    },
+    "dex": {
+      "minimum": 0,
+      "current": 20,
+      "maximum": 20
+    },
+    "rap": {
+      "minimum": 0,
+      "current": 15,
+      "maximum": 15
+    },
+    "per": {
+      "minimum": 0,
+      "current": 30,
+      "maximum": 30
+    }
+  }
 }

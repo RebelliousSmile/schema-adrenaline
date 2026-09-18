@@ -118,75 +118,387 @@
       "type": "object",
       "properties": {
         "for": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Force. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Force. Pourcentage de d100 jouable.",
           "examples": [
-            40
+            {
+              "minimum": 0,
+              "current": 40,
+              "maximum": 40
+            }
           ]
         },
         "con": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Constitution. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Constitution. Pourcentage de d100 jouable.",
           "examples": [
-            50
+            {
+              "minimum": 0,
+              "current": 50,
+              "maximum": 50
+            }
           ]
         },
         "dex": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Dextérité. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Dextérité. Pourcentage de d100 jouable.",
           "examples": [
-            45
+            {
+              "minimum": 0,
+              "current": 45,
+              "maximum": 45
+            }
           ]
         },
         "rap": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Rapidité. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Rapidité. Pourcentage de d100 jouable.",
           "examples": [
-            35
+            {
+              "minimum": 0,
+              "current": 35,
+              "maximum": 35
+            }
           ]
         },
         "log": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Logique. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Logique. Pourcentage de d100 jouable.",
           "examples": [
-            30
+            {
+              "minimum": 0,
+              "current": 30,
+              "maximum": 30
+            }
           ]
         },
         "vol": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Volonté. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Volonté. Pourcentage de d100 jouable.",
           "examples": [
-            40
+            {
+              "minimum": 0,
+              "current": 40,
+              "maximum": 40
+            }
           ]
         },
         "per": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Perception. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Perception. Pourcentage de d100 jouable.",
           "examples": [
-            50
+            {
+              "minimum": 0,
+              "current": 50,
+              "maximum": 50
+            }
           ]
         },
         "cha": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 200,
-          "description": "Charisme. Pourcentage de d100.",
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Charisme. Pourcentage de d100 jouable.",
           "examples": [
-            25
+            {
+              "minimum": 0,
+              "current": 25,
+              "maximum": 25
+            }
           ]
         }
       },
@@ -203,24 +515,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -233,24 +621,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -263,24 +727,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -293,24 +833,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -336,24 +952,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -366,24 +1058,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -396,24 +1164,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -426,24 +1270,100 @@
               "type": "object",
               "properties": {
                 "base": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "Valeur du seuil sur une localisation non couverte.",
                   "examples": [
-                    7,
-                    16
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
                   ]
                 },
                 "couvert": {
                   "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
                   "examples": [
-                    9,
-                    18
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 }
               },
               "required": [
@@ -477,12 +1397,51 @@
           "type": "object",
           "properties": {
             "solidite": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 100,
+              "type": "object",
+              "properties": {
+                "minimum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne basse des points.",
+                  "examples": [
+                    0
+                  ]
+                },
+                "current": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Nombre de points actuel.",
+                  "examples": [
+                    7,
+                    26
+                  ]
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne haute des points.",
+                  "examples": [
+                    10,
+                    30
+                  ]
+                }
+              },
+              "required": [
+                "minimum",
+                "current",
+                "maximum"
+              ],
+              "additionalProperties": false,
               "description": "PP de Solidité physique. Fixe le seuil superficiel.",
               "examples": [
-                7
+                {
+                  "minimum": 0,
+                  "current": 7,
+                  "maximum": 7
+                }
               ]
             },
             "armure": {
@@ -498,12 +1457,51 @@
                   "minLength": 1
                 },
                 "points": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "PP d'Armure. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
                   "examples": [
-                    2
+                    {
+                      "minimum": 0,
+                      "current": 2,
+                      "maximum": 2
+                    }
                   ]
                 },
                 "localisations": {
@@ -584,12 +1582,51 @@
           "type": "object",
           "properties": {
             "solidite": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 100,
+              "type": "object",
+              "properties": {
+                "minimum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne basse des points.",
+                  "examples": [
+                    0
+                  ]
+                },
+                "current": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Nombre de points actuel.",
+                  "examples": [
+                    7,
+                    26
+                  ]
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne haute des points.",
+                  "examples": [
+                    10,
+                    30
+                  ]
+                }
+              },
+              "required": [
+                "minimum",
+                "current",
+                "maximum"
+              ],
+              "additionalProperties": false,
               "description": "PM de Solidité mentale. Fixe le seuil mental superficiel.",
               "examples": [
-                5
+                {
+                  "minimum": 0,
+                  "current": 5,
+                  "maximum": 5
+                }
               ]
             },
             "caractere": {
@@ -605,12 +1642,51 @@
                   ]
                 },
                 "points": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
                   "description": "PM de Caractère. S'ajoutent à la base de chaque seuil mental couvert.",
                   "examples": [
-                    2
+                    {
+                      "minimum": 0,
+                      "current": 2,
+                      "maximum": 2
+                    }
                   ]
                 },
                 "localisations": {
@@ -719,13 +1795,51 @@
             ]
           },
           "pourcentage": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 200,
-            "description": "Pourcentage de la formation.",
+            "type": "object",
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne basse du pourcentage de d100.",
+                "examples": [
+                  0
+                ]
+              },
+              "current": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Pourcentage de d100 actuel.",
+                "examples": [
+                  40,
+                  80
+                ]
+              },
+              "maximum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne haute du pourcentage de d100.",
+                "examples": [
+                  100,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "minimum",
+              "current",
+              "maximum"
+            ],
+            "additionalProperties": false,
+            "description": "Pourcentage jouable de la formation.",
             "examples": [
-              15,
-              40
+              {
+                "minimum": 0,
+                "current": 15,
+                "maximum": 15
+              }
             ]
           },
           "competences": {
@@ -752,12 +1866,51 @@
                   "minLength": 1
                 },
                 "pourcentage": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de la compétence seule, hors caractéristique.",
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne basse du pourcentage de d100.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Pourcentage de d100 actuel.",
+                      "examples": [
+                        40,
+                        80
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne haute du pourcentage de d100.",
+                      "examples": [
+                        100,
+                        200
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Pourcentage jouable de la compétence seule, hors caractéristique.",
                   "examples": [
-                    30
+                    {
+                      "minimum": 0,
+                      "current": 30,
+                      "maximum": 30
+                    }
                   ]
                 },
                 "caracteristique": {
@@ -780,11 +1933,50 @@
                 "total": {
                   "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
                   "examples": [
-                    50
+                    {
+                      "minimum": 0,
+                      "current": 50,
+                      "maximum": 50
+                    }
                   ],
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne basse du pourcentage de d100.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Pourcentage de d100 actuel.",
+                      "examples": [
+                        40,
+                        80
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne haute du pourcentage de d100.",
+                      "examples": [
+                        100,
+                        200
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
                 },
                 "avantages": {
                   "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
@@ -850,12 +2042,51 @@
             "minLength": 1
           },
           "pourcentage": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 200,
-            "description": "Pourcentage de la compétence seule, hors caractéristique.",
+            "type": "object",
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne basse du pourcentage de d100.",
+                "examples": [
+                  0
+                ]
+              },
+              "current": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Pourcentage de d100 actuel.",
+                "examples": [
+                  40,
+                  80
+                ]
+              },
+              "maximum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne haute du pourcentage de d100.",
+                "examples": [
+                  100,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "minimum",
+              "current",
+              "maximum"
+            ],
+            "additionalProperties": false,
+            "description": "Pourcentage jouable de la compétence seule, hors caractéristique.",
             "examples": [
-              30
+              {
+                "minimum": 0,
+                "current": 30,
+                "maximum": 30
+              }
             ]
           },
           "caracteristique": {
@@ -878,11 +2109,50 @@
           "total": {
             "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
             "examples": [
-              50
+              {
+                "minimum": 0,
+                "current": 50,
+                "maximum": 50
+              }
             ],
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 200
+            "type": "object",
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne basse du pourcentage de d100.",
+                "examples": [
+                  0
+                ]
+              },
+              "current": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Pourcentage de d100 actuel.",
+                "examples": [
+                  40,
+                  80
+                ]
+              },
+              "maximum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne haute du pourcentage de d100.",
+                "examples": [
+                  100,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "minimum",
+              "current",
+              "maximum"
+            ],
+            "additionalProperties": false
           },
           "avantages": {
             "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
@@ -959,13 +2229,52 @@
                 ]
               },
               "pourcentage": {
-                "description": "Pourcentage auquel l'arme se manie, tel que noté sur la feuille.",
+                "description": "Pourcentage jouable auquel l'arme se manie, tel que noté sur la feuille.",
                 "examples": [
-                  30
+                  {
+                    "minimum": 0,
+                    "current": 30,
+                    "maximum": 30
+                  }
                 ],
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200
+                "type": "object",
+                "properties": {
+                  "minimum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne basse du pourcentage de d100.",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "current": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Pourcentage de d100 actuel.",
+                    "examples": [
+                      40,
+                      80
+                    ]
+                  },
+                  "maximum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne haute du pourcentage de d100.",
+                    "examples": [
+                      100,
+                      200
+                    ]
+                  }
+                },
+                "required": [
+                  "minimum",
+                  "current",
+                  "maximum"
+                ],
+                "additionalProperties": false
               },
               "desDeDegats": {
                 "description": "Nombre de d10 de dégâts.",
@@ -1019,13 +2328,52 @@
                 ]
               },
               "pourcentage": {
-                "description": "Pourcentage auquel l'arme se manie, tel que noté sur la feuille.",
+                "description": "Pourcentage jouable auquel l'arme se manie, tel que noté sur la feuille.",
                 "examples": [
-                  30
+                  {
+                    "minimum": 0,
+                    "current": 30,
+                    "maximum": 30
+                  }
                 ],
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200
+                "type": "object",
+                "properties": {
+                  "minimum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne basse du pourcentage de d100.",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "current": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Pourcentage de d100 actuel.",
+                    "examples": [
+                      40,
+                      80
+                    ]
+                  },
+                  "maximum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne haute du pourcentage de d100.",
+                    "examples": [
+                      100,
+                      200
+                    ]
+                  }
+                },
+                "required": [
+                  "minimum",
+                  "current",
+                  "maximum"
+                ],
+                "additionalProperties": false
               },
               "desDeDegats": {
                 "description": "Nombre de d10 de dégâts.",

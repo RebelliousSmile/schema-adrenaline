@@ -59,5 +59,11 @@ witness. Accepted documents must survive parse/stringify/parse without changing
 their normalized value; rejected documents must fail through the same public
 codec a consumer imports.
 
+Playable numeric values are structurally `{ minimum, current, maximum }` in the
+draft-7 schemas. The `plage-*` cases deliberately keep that shape while
+inverting an order: Ajv accepts their structure, and the public codec rejects
+their semantic interval. This proves the boundary between portable schema shape
+and the cross-field contract.
+
 `npm run audit` still replays the JSON witness/refusal halves directly as part
 of the wider schema quality audit.

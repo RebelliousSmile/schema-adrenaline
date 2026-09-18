@@ -1,39 +1,89 @@
-[caracteristiques]
-for = 20
-con = 30
-dex = 30
-rap = 20
-log = 20
-vol = 20
-per = 30
-cha = 30
+[caracteristiques.for]
+minimum = 0
+current = 20
+maximum = 20
 
-[sante.physique.superficiel]
-base = 5
+[caracteristiques.con]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.physique.leger]
-base = 10
+[caracteristiques.dex]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.physique.grave]
-base = 15
+[caracteristiques.rap]
+minimum = 0
+current = 20
+maximum = 20
 
-[sante.physique.profond]
-base = 20
+[caracteristiques.log]
+minimum = 0
+current = 20
+maximum = 20
 
-[sante.mental.superficiel]
-base = 4
+[caracteristiques.vol]
+minimum = 0
+current = 20
+maximum = 20
 
-[sante.mental.leger]
-base = 8
+[caracteristiques.per]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.mental.grave]
-base = 13
+[caracteristiques.cha]
+minimum = 0
+current = 30
+maximum = 30
 
-[sante.mental.profond]
-base = 18
+[sante.physique.superficiel.base]
+minimum = 0
+current = 5
+maximum = 5
 
-[protections.physiques]
-solidite = 5
+[sante.physique.leger.base]
+minimum = 0
+current = 10
+maximum = 10
 
-[protections.mentales]
-solidite = 4
+[sante.physique.grave.base]
+minimum = 0
+current = 15
+maximum = 15
+
+[sante.physique.profond.base]
+minimum = 0
+current = 20
+maximum = 20
+
+[sante.mental.superficiel.base]
+minimum = 0
+current = 4
+maximum = 4
+
+[sante.mental.leger.base]
+minimum = 0
+current = 8
+maximum = 8
+
+[sante.mental.grave.base]
+minimum = 0
+current = 13
+maximum = 13
+
+[sante.mental.profond.base]
+minimum = 0
+current = 18
+maximum = 18
+
+[protections.physiques.solidite]
+minimum = 0
+current = 5
+maximum = 5
+
+[protections.mentales.solidite]
+minimum = 0
+current = 4
+maximum = 4
