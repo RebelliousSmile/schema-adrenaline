@@ -1,0 +1,6 @@
+{
+  "nom": "Fixture présentation",
+  "presentation": {
+    "adapter": "adrenaline-pnj"
+  }
+}

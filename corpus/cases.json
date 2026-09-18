@@ -111,6 +111,12 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pj/presentation-adapter-inconnu.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
       "path": "corpus/refus/pnj/cle-inconnue.json",
       "target": "pnj",
       "format": "json",
@@ -165,6 +171,12 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pnj/presentation-adapter-inconnu.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
       "path": "corpus/refus/monstre/actions-par-round-negatives.json",
       "target": "monstre",
       "format": "json",
@@ -190,6 +202,12 @@
     },
     {
       "path": "corpus/refus/monstre/probabilite-hors-borne.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/monstre/presentation-adapter-inconnu.json",
       "target": "monstre",
       "format": "json",
       "expect": "reject"

@@ -45,6 +45,21 @@ name is a free string, because those catalogues belong to each game and to its
 publisher — not to the engine. What is closed is what the engine itself fixes:
 the eight characteristics, the twelve hit locations, the four damage thresholds.
 
+### Presentation and consumer adapters
+
+The current Adrenaline document contract publishes no presentation descriptor and
+no adapter-key vocabulary. A document must therefore not contain a
+`presentation` or `adapter` field: both are unknown keys under the strict
+schemas and codecs.
+
+If a later contract needs an editor-specific presentation descriptor, it must
+first publish a finite, stable, declarative vocabulary of keys. Keys never name
+React components, module paths, CSS classes, or executable consumer
+configuration. Lantern owns the exhaustive key-to-React-adapter registry and
+must fail explicitly for an unknown key rather than infer an editor. Coordinate
+the vocabulary and its Lantern registry before releasing the schema that uses
+it.
+
 ## What's in here
 
 - `src/zod/` contains the source Zod v4 definitions, each exporting its inferred
