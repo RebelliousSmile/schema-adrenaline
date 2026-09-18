@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-09-18
+
+### Added
+
+- An explicit closed boundary for future consumer adapter keys: Adrenaline
+  documents currently reject presentation metadata, the shared corpus proves it
+  for PJ, PNJ and monster documents, and Lantern owns any future exhaustive
+  adapter registry.
+
 ## [2.0.0] - 2026-09-18
 
 ### Changed
