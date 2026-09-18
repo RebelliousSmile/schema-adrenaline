@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { LocalisationCorporelle, LocalisationEmotionnelle } from "./localisations.js";
-import { Points } from "./primitives.js";
+import { PointsJouables } from "./primitives.js";
 
 /**
  * Un bouclier, physique ou mental. Ses propriétés — type de couvert côté
@@ -38,9 +38,9 @@ const Bouclier = z
  */
 export const ProtectionsPhysiques = z
   .strictObject({
-    solidite: Points.meta({
+    solidite: PointsJouables.meta({
       description: "PP de Solidité physique. Fixe le seuil superficiel.",
-      examples: [7],
+      examples: [{ minimum: 0, current: 7, maximum: 7 }],
     }),
     armure: z
       .strictObject({
@@ -52,10 +52,10 @@ export const ProtectionsPhysiques = z
             description: "Nom de l'armure, tel qu'écrit sur la fiche.",
             examples: ["Blouson de cuir"],
           }),
-        points: Points.meta({
+        points: PointsJouables.meta({
           description:
             "PP d'Armure. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
-          examples: [2],
+          examples: [{ minimum: 0, current: 2, maximum: 2 }],
         }),
         localisations: z
           .array(LocalisationCorporelle)
@@ -81,9 +81,9 @@ export const ProtectionsPhysiques = z
  */
 export const ProtectionsMentales = z
   .strictObject({
-    solidite: Points.meta({
+    solidite: PointsJouables.meta({
       description: "PM de Solidité mentale. Fixe le seuil mental superficiel.",
-      examples: [5],
+      examples: [{ minimum: 0, current: 5, maximum: 5 }],
     }),
     caractere: z
       .strictObject({
@@ -95,9 +95,9 @@ export const ProtectionsMentales = z
               "Trait de caractère qui protège. Chaîne libre : le catalogue est éditorial.",
             examples: ["Cynique"],
           }),
-        points: Points.meta({
+        points: PointsJouables.meta({
           description: "PM de Caractère. S'ajoutent à la base de chaque seuil mental couvert.",
-          examples: [2],
+          examples: [{ minimum: 0, current: 2, maximum: 2 }],
         }),
         localisations: z
           .array(LocalisationEmotionnelle)

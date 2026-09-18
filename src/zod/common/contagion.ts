@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ProbabiliteJouable } from "./primitives.js";
 
 /**
  * Un vecteur de transmission et sa probabilité.
@@ -16,15 +17,11 @@ const Vecteur = z
         description: "Canal de transmission, en clair. Chaîne libre.",
         examples: ["Morsure", "Regard soutenu"],
       }),
-    probabilite: z
-      .int()
-      .min(0)
-      .max(100)
-      .optional()
+    probabilite: ProbabiliteJouable.optional()
       .meta({
         description:
           "Probabilité de transmission, en pourcentage. Bornée à 100, contrairement aux pourcentages de d100 : c'est une probabilité.",
-        examples: [80],
+        examples: [{ minimum: 0, current: 80, maximum: 80 }],
       }),
     notes: z.string().min(1).optional().meta({
       description: "Conditions ou réserves attachées à ce vecteur.",

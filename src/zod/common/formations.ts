@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Pourcentage } from "./primitives.js";
+import { PourcentageJouable } from "./primitives.js";
 
 /**
  * Les huit caractéristiques, par leur abréviation de feuille.
@@ -42,19 +42,19 @@ export const Competence = z
         description: "Spécialité, notée entre parenthèses après le nom sur la fiche.",
         examples: ["Négociation"],
       }),
-    pourcentage: Pourcentage.meta({
-      description: "Pourcentage de la compétence seule, hors caractéristique.",
-      examples: [30],
+    pourcentage: PourcentageJouable.meta({
+      description: "Pourcentage jouable de la compétence seule, hors caractéristique.",
+      examples: [{ minimum: 0, current: 30, maximum: 30 }],
     }),
     caracteristique: AbreviationDeCaracteristique.optional().meta({
       description:
         "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
       examples: ["cha"],
     }),
-    total: Pourcentage.optional().meta({
+    total: PourcentageJouable.optional().meta({
       description:
         "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
-      examples: [50],
+      examples: [{ minimum: 0, current: 50, maximum: 50 }],
     }),
     avantages: z
       .array(z.string().min(1).meta({ description: "Un avantage, en une ligne." }))
@@ -109,9 +109,9 @@ export const Formation = z
         description: "Nom de la formation, écrit à la main entre parenthèses sur la feuille.",
         examples: ["Moyenne", "Infirmière"],
       }),
-    pourcentage: Pourcentage.meta({
-      description: "Pourcentage de la formation.",
-      examples: [15, 40],
+    pourcentage: PourcentageJouable.meta({
+      description: "Pourcentage jouable de la formation.",
+      examples: [{ minimum: 0, current: 15, maximum: 15 }],
     }),
     competences: z.array(Competence).optional().meta({
       description:

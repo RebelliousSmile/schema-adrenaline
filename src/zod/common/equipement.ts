@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Compte, Pourcentage } from "./primitives.js";
+import { Compte, PourcentageJouable } from "./primitives.js";
 
 /**
  * Une arme, physique ou mentale.
@@ -17,9 +17,9 @@ const Arme = z
         description: "Nom de l'arme, tel qu'écrit sur la feuille. Chaîne libre.",
         examples: ["Judo", "Batte de baseball", "Sarcasme"],
       }),
-    pourcentage: Pourcentage.optional().meta({
-      description: "Pourcentage auquel l'arme se manie, tel que noté sur la feuille.",
-      examples: [30],
+    pourcentage: PourcentageJouable.optional().meta({
+      description: "Pourcentage jouable auquel l'arme se manie, tel que noté sur la feuille.",
+      examples: [{ minimum: 0, current: 30, maximum: 30 }],
     }),
     desDeDegats: Compte.optional().meta({
       description: "Nombre de d10 de dégâts.",

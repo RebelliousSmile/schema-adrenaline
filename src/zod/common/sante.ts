@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Points } from "./primitives.js";
+import { PointsJouables } from "./primitives.js";
 
 /**
  * Un seuil tel qu'il est imprimé : une valeur de base, et une seconde valeur
@@ -15,14 +15,14 @@ import { Points } from "./primitives.js";
  */
 const Seuil = z
   .strictObject({
-    base: Points.meta({
+    base: PointsJouables.meta({
       description: "Valeur du seuil sur une localisation non couverte.",
-      examples: [7, 16],
+      examples: [{ minimum: 0, current: 7, maximum: 7 }],
     }),
-    couvert: Points.optional().meta({
+    couvert: PointsJouables.optional().meta({
       description:
         "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
-      examples: [9, 18],
+      examples: [{ minimum: 0, current: 9, maximum: 9 }],
     }),
   })
   .meta({
@@ -74,8 +74,8 @@ export const SeuilsMentaux = QuatreSeuils.meta({
  *
  * Les dés de stress, les malus et les états encaissés sont imprimés dans ce
  * bloc mais n'y sont pas stockés : ils se remplissent en jeu et relèvent de
- * l'état de partie, non de la fiche. Même raison pour la colonne « Actuel » des
- * caractéristiques.
+ * l'état de partie, non de la fiche. Les seuils eux-mêmes portent toutefois
+ * leur minimum, leur valeur actuelle et leur maximum.
  */
 export const Sante = z
   .strictObject({
@@ -84,7 +84,7 @@ export const Sante = z
   })
   .meta({
     description:
-      "Bloc Santé. Ne porte que les seuils : les dés de stress, les malus et les blessures encaissées se remplissent en jeu et relèvent de l'état de partie.",
+      "Bloc Santé. Chaque seuil jouable porte minimum, current et maximum ; les dés de stress, les malus et les blessures encaissées restent de l'état de partie.",
   });
 
 /**

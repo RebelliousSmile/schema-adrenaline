@@ -27,6 +27,24 @@ export type {
   Pj,
   Pnj,
 } from "./codecs/documents.js";
+export {
+  PlayableRangeValidationError,
+  validatePlayableRanges,
+} from "./validation/playable-ranges.js";
+export type {
+  CumulJouableValeur,
+  PointsJouablesValeur,
+  PourcentageJouableValeur,
+  ProbabiliteJouableValeur,
+  ValeurJouableValeur,
+} from "./zod/common/primitives.js";
+export {
+  CumulJouable,
+  PointsJouables,
+  PourcentageJouable,
+  ProbabiliteJouable,
+  ValeurJouable,
+} from "./zod/common/primitives.js";
 export { Monstre } from "./zod/adrenaline/monstre.js";
 export type { MonstreValeur } from "./zod/adrenaline/monstre.js";
 export { PersonnageJoueur } from "./zod/adrenaline/pj.js";

@@ -73,3 +73,88 @@ export const Cumul = z
     description: "Valeur cumulée sur la durée d'une campagne.",
     examples: [0, 25, 340],
   });
+
+/**
+ * Une valeur qui évolue en jeu, avec sa borne basse, son état actuel et sa
+ * borne haute. Les variantes ci-dessous resserrent les trois composantes selon
+ * leur unité ; ce socle commun donne une forme unique aux consommateurs.
+ */
+export const ValeurJouable = z
+  .strictObject({
+    minimum: Cumul.meta({
+      description: "Borne basse de la valeur jouable.",
+      examples: [0],
+    }),
+    current: Cumul.meta({
+      description: "Valeur jouable actuelle.",
+      examples: [30],
+    }),
+    maximum: Cumul.meta({
+      description: "Borne haute de la valeur jouable.",
+      examples: [100],
+    }),
+  })
+  .meta({
+    description:
+      "Valeur numérique jouable bornée. Les codecs vérifient minimum ≤ current ≤ maximum ; le JSON Schema publié vérifie seulement sa structure.",
+  });
+
+/** Valeur jouable exprimée en pourcentage de d100. */
+export const PourcentageJouable = ValeurJouable.extend({
+  minimum: Pourcentage.meta({
+    description: "Borne basse du pourcentage de d100.",
+    examples: [0],
+  }),
+  current: Pourcentage.meta({
+    description: "Pourcentage de d100 actuel.",
+    examples: [40, 80],
+  }),
+  maximum: Pourcentage.meta({
+    description: "Borne haute du pourcentage de d100.",
+    examples: [100, 200],
+  }),
+}).meta({
+  description:
+    "Pourcentage de d100 jouable. Peut dépasser 100 ; les codecs vérifient minimum ≤ current ≤ maximum.",
+});
+
+/** Valeur jouable exprimée en points de protection ou seuils de dégât. */
+export const PointsJouables = ValeurJouable.extend({
+  minimum: Points.meta({ description: "Borne basse des points.", examples: [0] }),
+  current: Points.meta({ description: "Nombre de points actuel.", examples: [7, 26] }),
+  maximum: Points.meta({ description: "Borne haute des points.", examples: [10, 30] }),
+}).meta({
+  description:
+    "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum.",
+});
+
+/** Ressource jouable cumulée sur une campagne. */
+export const CumulJouable = ValeurJouable.meta({
+  description:
+    "Ressource jouable cumulée. Les codecs vérifient minimum ≤ current ≤ maximum.",
+});
+
+/** Probabilité de transmission jouable, bornée à 100 %. */
+export const ProbabiliteJouable = ValeurJouable.extend({
+  minimum: z.int().min(0).max(100).meta({
+    description: "Borne basse de la probabilité de transmission.",
+    examples: [0],
+  }),
+  current: z.int().min(0).max(100).meta({
+    description: "Probabilité de transmission actuelle.",
+    examples: [80],
+  }),
+  maximum: z.int().min(0).max(100).meta({
+    description: "Borne haute de la probabilité de transmission.",
+    examples: [100],
+  }),
+}).meta({
+  description:
+    "Probabilité de transmission jouable. Les codecs vérifient minimum ≤ current ≤ maximum.",
+});
+
+export type ValeurJouableValeur = z.infer<typeof ValeurJouable>;
+export type PourcentageJouableValeur = z.infer<typeof PourcentageJouable>;
+export type PointsJouablesValeur = z.infer<typeof PointsJouables>;
+export type CumulJouableValeur = z.infer<typeof CumulJouable>;
+export type ProbabiliteJouableValeur = z.infer<typeof ProbabiliteJouable>;

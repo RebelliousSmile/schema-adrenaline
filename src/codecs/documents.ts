@@ -3,7 +3,12 @@ import { type ZodType, z } from "zod";
 import { Monstre } from "../zod/adrenaline/monstre.js";
 import { PersonnageJoueur } from "../zod/adrenaline/pj.js";
 import { PersonnageNonJoue } from "../zod/adrenaline/pnj.js";
+import { validatePlayableRanges } from "../validation/playable-ranges.js";
 
+/**
+ * Schémas Zod de forme seulement. Utiliser les codecs ou validatePlayableRanges
+ * pour vérifier l'ordre minimum ≤ current ≤ maximum du contrat complet.
+ */
 export const ADRENALINE_DOCUMENT_SCHEMAS = {
   pj: PersonnageJoueur,
   pnj: PersonnageNonJoue,
@@ -31,7 +36,7 @@ export interface AdrenalineDocumentCodec<T> {
 }
 
 function parseWith<T>(schema: ZodType<T>, value: unknown): T {
-  return schema.parse(value);
+  return validatePlayableRanges(schema.parse(value));
 }
 
 function parseJsonWith<T>(schema: ZodType<T>, source: string): T {

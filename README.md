@@ -10,7 +10,7 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-The stable contract is `schema-adrenaline@1.0.0`. Three character schemas are
+The current major contract is `schema-adrenaline@2.0.0`. Three character schemas are
 published under the `adrenaline` folder, each covered by JSON and TOML examples
 and a shared conformance corpus.
 
@@ -30,8 +30,9 @@ them, and a game folder holds only what is specific to it.
 
 A sheet records a character, not the state of a session. The printed page also
 holds stress dice, malus tracks, sustained wounds with their location and
-duration, and an "Actuel" column beside each characteristic: all of these are
-filled in during play and none of them is stored here.
+duration, and an "Actuel" column beside each characteristic. The playable
+numeric values stored here carry `minimum`, `current` and `maximum`; stress dice,
+malus tracks and sustained wounds remain session state rather than sheet data.
 
 Threshold values are stored as read, never recomputed. The engine derives them
 (light = base + the tens digit of two characteristics, serious = light + 5, deep
@@ -148,7 +149,7 @@ Install the immutable GitHub Release asset directly. npm records this complete
 URL and its SHA-512 SRI integrity in the consumer lockfile:
 
 ```sh
-npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v1.0.0/schema-adrenaline-1.0.0.tgz
+npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v2.0.0/schema-adrenaline-2.0.0.tgz
 ```
 
 ### Types and codecs (TypeScript apps)
@@ -215,7 +216,7 @@ version directories, tags and release assets are immutable.
 
 The Handbook catalogue and game pack have their own version (`0.2.0` here).
 Their version changes only when the pack changes and is deliberately independent
-from the `1.0.0` contract version.
+from the `2.0.0` contract version.
 
 ### Editor autocomplete for JSON and TOML
 

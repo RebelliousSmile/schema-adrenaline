@@ -1,26 +1,26 @@
 import { z } from "zod";
-import { Pourcentage } from "./primitives.js";
+import { PourcentageJouable } from "./primitives.js";
 
 /**
  * Les quatre caractéristiques physiques. Objet fermé : le socle en compte
  * quatre, ni plus ni moins.
  */
 export const CaracteristiquesPhysiques = z.strictObject({
-  for: Pourcentage.meta({
-    description: "Force. Pourcentage de d100.",
-    examples: [40],
+  for: PourcentageJouable.meta({
+    description: "Force. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 40, maximum: 40 }],
   }),
-  con: Pourcentage.meta({
-    description: "Constitution. Pourcentage de d100.",
-    examples: [50],
+  con: PourcentageJouable.meta({
+    description: "Constitution. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 50, maximum: 50 }],
   }),
-  dex: Pourcentage.meta({
-    description: "Dextérité. Pourcentage de d100.",
-    examples: [45],
+  dex: PourcentageJouable.meta({
+    description: "Dextérité. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 45, maximum: 45 }],
   }),
-  rap: Pourcentage.meta({
-    description: "Rapidité. Pourcentage de d100.",
-    examples: [35],
+  rap: PourcentageJouable.meta({
+    description: "Rapidité. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 35, maximum: 35 }],
   }),
 });
 
@@ -29,21 +29,21 @@ export const CaracteristiquesPhysiques = z.strictObject({
  * corps d'infecté porte les quatre physiques et la seule PER.
  */
 export const CaracteristiquesMentales = z.strictObject({
-  log: Pourcentage.meta({
-    description: "Logique. Pourcentage de d100.",
-    examples: [30],
+  log: PourcentageJouable.meta({
+    description: "Logique. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 30, maximum: 30 }],
   }),
-  vol: Pourcentage.meta({
-    description: "Volonté. Pourcentage de d100.",
-    examples: [40],
+  vol: PourcentageJouable.meta({
+    description: "Volonté. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 40, maximum: 40 }],
   }),
-  per: Pourcentage.meta({
-    description: "Perception. Pourcentage de d100.",
-    examples: [50],
+  per: PourcentageJouable.meta({
+    description: "Perception. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 50, maximum: 50 }],
   }),
-  cha: Pourcentage.meta({
-    description: "Charisme. Pourcentage de d100.",
-    examples: [25],
+  cha: PourcentageJouable.meta({
+    description: "Charisme. Pourcentage de d100 jouable.",
+    examples: [{ minimum: 0, current: 25, maximum: 25 }],
   }),
 });
 
@@ -55,17 +55,14 @@ export const CaracteristiquesMentales = z.strictObject({
  * document ne peut satisfaire. Vérifié sur Zod 4.3.6.
  *
  * La qualité d'une caractéristique — le chiffre de ses dizaines — se recalcule
- * à tout instant et n'est donc jamais stockée.
- *
- * La feuille imprime une colonne « Actuel » à droite du pourcentage : elle se
- * remplit en jeu, au même titre que les malus et les dés de stress, et relève
- * de l'état de partie et non de la fiche.
+ * à tout instant et n'est donc jamais stockée. Sa valeur jouable courante est
+ * en revanche portée par `current`, entre `minimum` et `maximum`.
  */
 export const Caracteristiques = CaracteristiquesPhysiques.extend(
   CaracteristiquesMentales.shape,
 ).meta({
   description:
-    "Les huit caractéristiques. La qualité — le chiffre des dizaines — se recalcule et n'est pas stockée ; la colonne « Actuel » de la feuille relève de l'état de partie.",
+    "Les huit caractéristiques jouables, chacune avec minimum, current et maximum. La qualité — le chiffre des dizaines — se recalcule et n'est pas stockée.",
 });
 
 export type CaracteristiquesPhysiquesValeur = z.infer<typeof CaracteristiquesPhysiques>;

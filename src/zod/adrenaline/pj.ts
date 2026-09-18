@@ -4,7 +4,7 @@ import { Equipement } from "../common/equipement.js";
 import { Formation } from "../common/formations.js";
 import { Identite } from "../common/identite.js";
 import { Meta } from "../common/meta.js";
-import { Cumul } from "../common/primitives.js";
+import { CumulJouable } from "../common/primitives.js";
 import { Protections } from "../common/protections.js";
 import { Sante } from "../common/sante.js";
 
@@ -44,9 +44,9 @@ const ParametresDuJeu = z
           "Déclinaison de la campagne. Proposée par le générateur officiel ; la feuille imprimée ne porte pas cette case.",
         examples: ["storyline"],
       }),
-    px: Cumul.optional().meta({
-      description: "Points d'expérience accumulés depuis la création.",
-      examples: [0, 25],
+    px: CumulJouable.optional().meta({
+      description: "Points d'expérience jouables accumulés depuis la création.",
+      examples: [{ minimum: 0, current: 25, maximum: 25 }],
     }),
   })
   .meta({
@@ -65,7 +65,8 @@ const ParametresDuJeu = z
  * facultatif, le livre le laissant libre au joueur.
  *
  * Ne sont pas stockés les compteurs qui se remplissent en jeu : dés de stress,
- * malus, états encaissés, colonne « Actuel » des caractéristiques.
+ * malus et états encaissés. Les valeurs numériques jouables de la fiche portent
+ * leur borne basse, leur état courant et leur borne haute.
  */
 export const PersonnageJoueur = z
   .strictObject({
