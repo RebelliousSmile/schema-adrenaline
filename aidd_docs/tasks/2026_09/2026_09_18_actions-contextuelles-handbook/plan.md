@@ -1,26 +1,26 @@
 ---
-objective: "Un harness Handbook prouve que les actions contextuelles Adrenaline suivent les capacités de blocs publiées, sans réimplémenter la logique déjà présente ni adopter le contrat 2.0.0 avant sa release."
+objective: "Les actions contextuelles Adrenaline sont activées uniquement par les capacités block publiées du manifeste, comme les actions PbtA, et un harness vérifie cette sélection."
 status: pending
 ---
 
-# Plan: Verrouiller les actions contextuelles des packs
+# Plan: Relier les actions Adrenaline aux capacités publiées
 
 ## Overview
 
 | Field | Value |
 | ----- | ----- |
-| **Goal** | Ajouter une preuve automatisée de la chaîne manifeste publié → disponibilité du bloc → insertion et export TOML dans le menu. |
-| **Source** | Demande utilisateur, puis constat : `registry.ts`, `contextMenu/index.ts` et `copyAsToml.ts` réalisent déjà le comportement attendu. |
+| **Goal** | Remplacer l’activation statique des trois blocs Adrenaline par leurs capacités `block:*` publiées et couvrir les insertions et exports contextuels résultants. |
+| **Source** | Demande utilisateur : mêmes actions que schema-in-the-mist ; constat : les blocs Adrenaline utilisent encore `mode`, tandis que les blocs PbtA comparables utilisent `capability`. |
 
 ## Phases
 
 | # | Phase | File |
 | --- | ----- | ---- |
-| 1 | Harness des capacités de blocs contextuelles | [`phase-1.md`](./phase-1.md) |
+| 1 | Activation Adrenaline par capacité publiée | [`phase-1.md`](./phase-1.md) |
 
 ## Decisions
 
 | Decision | Why |
 | -------- | --- |
-| Le présent lot ajoute une assertion, pas une nouvelle représentation des actions ni une modification de la logique du menu. | La chaîne `requires → isAvailableBlock → contributeBlockInsertions` et les exports filtrés existent déjà ; la couverture de régression manque. |
-| La migration des gabarits et codecs vers Adrenaline 2.0.0 reste un lot ultérieur. | Elle dépend d’une release immuable qui n’est pas encore publiée ; l’assertion porte donc sur la release actuellement adoptée. |
+| Les trois blocs Adrenaline portent chacun leur capacité `block:*` au lieu du mode historique. | `isBlockEnabled` donne priorité à `capability` et relie alors directement le manifeste publié aux insertions et exports du menu. |
+| Ce lot ne touche ni les gabarits ni les codecs Adrenaline 2.0.0. | La forme bornée attend encore une release immuable ; le manifeste 0.3.0 publié suffit aux capacités de blocs. |
