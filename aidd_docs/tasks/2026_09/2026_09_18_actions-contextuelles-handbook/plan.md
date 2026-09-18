@@ -1,6 +1,6 @@
 ---
 objective: "Les actions contextuelles Adrenaline sont activées uniquement par les capacités block publiées du manifeste, comme les actions PbtA, et un harness vérifie cette sélection."
-status: pending
+status: implemented
 ---
 
 # Plan: Relier les actions Adrenaline aux capacités publiées
