@@ -65,3 +65,8 @@ contrat.
 Un consommateur garde ses assertions et adaptateurs, mais en dérive les
 versions de contrat publiées : cela évite qu'une valeur attendue obsolète
 masque la cohérence déjà prouvée par le catalogue et le manifeste.
+
+Les blocs qu'un pack rend disponibles déclarent la même capacité `block:*` que
+son manifeste publie. Handbook évalue cette capacité pour activer le rendu,
+l'insertion contextuelle et les exports TOML : un simple `mode` statique ne
+suffit pas, car il ignorerait le retrait ciblé d'une capacité par le pack.
