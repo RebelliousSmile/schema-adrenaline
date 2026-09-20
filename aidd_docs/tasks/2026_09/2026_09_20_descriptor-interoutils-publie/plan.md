@@ -1,6 +1,6 @@
 ---
 objective: "Le descripteur inter-outils et le catalogue Handbook d'Adrenaline sont exacts, inclus dans le tarball de release et résolubles par leurs consommateurs."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Publier le descripteur inter-outils Adrenaline
