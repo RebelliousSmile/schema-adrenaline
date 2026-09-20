@@ -47,13 +47,19 @@ jobs:
         working-directory: handbook-host
         run: npm install
 
+      # Handbook's source-assertion script (tools/assert-adrenaline-source.mjs) is
+      # deliberately not run here. It only exists on the frozen 2.7.x tags, where its
+      # harness hardcodes the pack version it expects (`0.2.0`), so it fails on every
+      # pack bump and no upstream fix can ever reach it. Its manifest-shape coverage now
+      # lives in this repository, in tools/validate-handbook-pack.ts.
+      # `assert:adrenaline-theme` is kept on purpose: its value is not to test Handbook's
+      # frozen SCSS, but to prove that the minimum supported host can still read the
+      # current manifest. Do not drop it by the same reasoning as the source assertion.
       - name: Check package against declared Handbook release
         working-directory: handbook-host
         env:
           SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}/schema-adrenaline
-        run: |
-          npm run assert:adrenaline-source
-          npm run assert:adrenaline-theme
+        run: npm run assert:adrenaline-theme
 
       - name: Install catalogue through declared Handbook release
         working-directory: schema-adrenaline

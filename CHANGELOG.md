@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- The cross-repository CI gate no longer runs Handbook 2.7.0's
+  `assert:adrenaline-source`. That harness hardcodes the pack version it expects
+  (`0.2.0`), and it lives only on the frozen 2.7.x tags, so every pack bump
+  breaks it and no upstream fix can reach it. It was removed upstream on
+  2026-09-15 and is absent from `v2.10.0` onward.
+- Coverage that moved rather than disappeared: the manifest-shape assertions
+  (label, required style tokens, asset keys) are now enforced in this repository
+  by `npm run validate:pack`, read from `handbook/adrenaline/pack.json` instead
+  of being restated as literals.
+- Coverage that was abandoned: the Handbook block round-trip
+  (`block.parse` -> `exportSpec.toToml` -> target `safeParse`) needs the Handbook
+  codebase and cannot live here. It remains covered upstream by
+  `assert:adrenaline-contract`, against the published package - see
+  obsidian-handbook#36.
+- `assert:adrenaline-theme` is still run against the declared minimum Handbook
+  release: it proves that the oldest supported host can still read the current
+  manifest.
+
 ## [2.2.0] - 2026-09-20
 
 ### Added
