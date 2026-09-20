@@ -39,6 +39,29 @@ const ADRENALINE_CAPABILITIES = [
   "block:adrenaline-monstre",
   "style:adrenaline",
 ];
+/* Note tokens no contrast pair reaches: they paint surfaces, rules and bands rather than text,
+   so nothing else in this file would notice their absence. Polarity layers only. */
+const REQUIRED_NOTE_TOKENS = [
+  "--adrenaline-panel",
+  "--adrenaline-section-band",
+  "--adrenaline-section-band-ink",
+  "--adrenaline-band",
+  "--adrenaline-band-ink",
+  "--adrenaline-rule",
+  "--adrenaline-page-texture",
+];
+const REQUIRED_WORKSPACE_TOKENS = [
+  "--background-primary-alt",
+  "--background-secondary",
+  "--text-muted",
+  "--background-modifier-border",
+  "--background-modifier-hover",
+];
+const REQUIRED_IMAGE_KEYS = ["paper-grain", "dark-organic", "warning-stripe"];
+const REQUIRED_FONT_KEYS = ["Adrenaline Body", "Adrenaline Display"];
+/* This field declares the compatibility floor and drives the Handbook checkout ref in
+   .github/workflows/ci.yml. Lowering it would silently move the cross-repository test target. */
+const MINIMUM_HANDBOOK_FLOOR = "2.7.0";
 
 interface CataloguePack {
   id: string;
@@ -73,6 +96,21 @@ function semver(value: unknown, where: string): string {
   const version = text(value, where);
   if (!SEMVER_PATTERN.test(version)) throw new Error(`${where} must be valid SemVer`);
   return version;
+}
+
+/* Component-wise on integers: SEMVER_PATTERN only validates shape, and a string comparison
+   would order 2.10.0 before 2.7.0 — rejecting the very releases that carry the fix. */
+function compareSemver(left: string, right: string): number {
+  const parts = (value: string): number[] =>
+    value
+      .split("-")[0]
+      .split(".")
+      .map((part) => Number.parseInt(part, 10));
+  const [a, b] = [parts(left), parts(right)];
+  for (let index = 0; index < 3; index += 1) {
+    if (a[index] !== b[index]) return a[index] - b[index];
+  }
+  return 0;
 }
 
 function safeRelative(file: string, where: string): string {
@@ -141,8 +179,22 @@ function validateTokens(style: RecordValue): void {
       const slot = record(layer[slotName], `style.${layerName}.${slotName}`);
       for (const [name, value] of Object.entries(slot)) {
         if (!TOKEN_PATTERN.test(name)) throw new Error(`unsafe token name: ${name}`);
+        /* A texture belongs to the note surface. Leaking one into the workspace would paint
+           Obsidian's own chrome. Checked on every layer, base included — where the slot is
+           currently empty and the check passes trivially. */
+        if (slotName === "workspace" && name.includes("texture")) {
+          throw new Error(`texture token in workspace: style.${layerName}.workspace.${name}`);
+        }
         const declared = text(value, name);
         if (FORBIDDEN_VALUE.test(declared)) throw new Error(`unsafe token value: ${name}`);
+      }
+      /* Required tokens live in the polarity layers, never in `base`: base carries the shared
+         note tokens and no workspace token at all. */
+      if (layerName === "base") continue;
+      for (const token of slotName === "note" ? REQUIRED_NOTE_TOKENS : REQUIRED_WORKSPACE_TOKENS) {
+        if (slot[token] === undefined) {
+          throw new Error(`missing token: style.${layerName}.${slotName}.${token}`);
+        }
       }
     }
   }
@@ -154,8 +206,16 @@ function validateAssetMap(
   extensions: Set<string>,
   packRoot: string,
   assetRoot: string,
+  required: string[],
 ): void {
   const declarations = record(assets[field], `assets.${field}`);
+  /* The loop below proves every declared file exists; it cannot notice a role that was never
+     declared. Handbook resolves these roles by name, so a missing key is a silent theme hole. */
+  for (const role of required) {
+    if (declarations[role] === undefined) {
+      throw new Error(`missing asset declaration: assets.${field}.${role}`);
+    }
+  }
   for (const [role, declaration] of Object.entries(declarations)) {
     const file =
       typeof declaration === "string"
@@ -206,7 +266,10 @@ export function validateHandbookPack(
   knownFields(manifest, PACK_FIELDS, "manifest");
   if (manifest.manifestVersion !== 1) throw new Error("manifestVersion must be 1");
   const version = semver(manifest.version, "version");
-  semver(manifest.minimumHandbookVersion, "minimumHandbookVersion");
+  const minimumHandbook = semver(manifest.minimumHandbookVersion, "minimumHandbookVersion");
+  if (compareSemver(minimumHandbook, MINIMUM_HANDBOOK_FLOOR) < 0) {
+    throw new Error(`minimumHandbookVersion must be at least ${MINIMUM_HANDBOOK_FLOOR}`);
+  }
   const requirements = manifest.requires;
   if (
     !Array.isArray(requirements) ||
@@ -218,6 +281,9 @@ export function validateHandbookPack(
   const pack = record(manifest.pack, "pack");
   const id = text(pack.id, "pack.id");
   if (id !== "adrenaline") throw new Error("pack.id must be adrenaline");
+  /* Not the catalogue entry's optional `label` checked above — this one is the pack's own display
+     name, and Handbook has nothing to fall back on when it is empty. */
+  text(pack.label, "pack.label");
   const polarities = pack.polarities;
   if (!Array.isArray(polarities) || polarities.join(",") !== "light,dark") {
     throw new Error("pack.polarities must be light,dark");
@@ -229,8 +295,8 @@ export function validateHandbookPack(
     assets.root === undefined
       ? "assets"
       : safeRelative(text(assets.root, "assets.root"), "assets.root");
-  validateAssetMap(assets, "images", IMAGE_EXTENSIONS, packRoot, assetRoot);
-  validateAssetMap(assets, "fonts", FONT_EXTENSIONS, packRoot, assetRoot);
+  validateAssetMap(assets, "images", IMAGE_EXTENSIONS, packRoot, assetRoot, REQUIRED_IMAGE_KEYS);
+  validateAssetMap(assets, "fonts", FONT_EXTENSIONS, packRoot, assetRoot, REQUIRED_FONT_KEYS);
 
   for (const polarity of ["light", "dark"]) {
     const layer = record(style[polarity], `style.${polarity}`);
@@ -276,6 +342,19 @@ function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
+/* Derived, never written: a literal here would be a second floor to maintain, and it would
+   silently stop tracking MINIMUM_HANDBOOK_FLOOR the day that one is raised. */
+function justBelow(version: string): string {
+  const parts = version.split(".").map((part) => Number.parseInt(part, 10));
+  for (let index = parts.length - 1; index >= 0; index -= 1) {
+    if (parts[index] > 0) {
+      parts[index] -= 1;
+      return parts.join(".");
+    }
+  }
+  throw new Error(`no version below ${version}`);
+}
+
 function refused(name: string, run: () => void): void {
   try {
     run();
@@ -315,6 +394,26 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   const contrastLight = record(contrastStyle.light, "light");
   record(contrastLight.note, "note")["--text-normal"] = "#F4F0E8";
 
+  const missingNoteToken = clone(packSource) as RecordValue;
+  const noteTokenPack = record(missingNoteToken.pack, "pack");
+  const noteTokenStyle = record(noteTokenPack.style, "style");
+  const noteTokenLight = record(noteTokenStyle.light, "light");
+  delete record(noteTokenLight.note, "note")["--adrenaline-panel"];
+
+  const workspaceTexture = clone(packSource) as RecordValue;
+  const texturePack = record(workspaceTexture.pack, "pack");
+  const textureStyle = record(texturePack.style, "style");
+  const textureLight = record(textureStyle.light, "light");
+  record(textureLight.workspace, "workspace")["--adrenaline-page-texture"] = "none";
+
+  const missingFont = clone(packSource) as RecordValue;
+  const fontPack = record(missingFont.pack, "pack");
+  const fontAssets = record(fontPack.assets, "assets");
+  delete record(fontAssets.fonts, "fonts")["Adrenaline Display"];
+
+  const lowFloor = clone(packSource) as RecordValue;
+  lowFloor.minimumHandbookVersion = justBelow(MINIMUM_HANDBOOK_FLOOR);
+
   refused("catalogue version mismatch", () => {
     const [entry] = validateCatalogue(catalogueMismatch);
     const pack = validateHandbookPack(packSource);
@@ -325,6 +424,10 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   refused("missing asset", () => validateHandbookPack(missing));
   refused("unsafe token", () => validateHandbookPack(unsafe));
   refused("low contrast", () => validateHandbookPack(lowContrast));
+  refused("missing note token", () => validateHandbookPack(missingNoteToken));
+  refused("texture token in workspace", () => validateHandbookPack(workspaceTexture));
+  refused("missing font declaration", () => validateHandbookPack(missingFont));
+  refused("minimumHandbookVersion below floor", () => validateHandbookPack(lowFloor));
 }
 
 const catalogueSource = JSON.parse(fs.readFileSync(CATALOGUE_PATH, "utf8")) as unknown;

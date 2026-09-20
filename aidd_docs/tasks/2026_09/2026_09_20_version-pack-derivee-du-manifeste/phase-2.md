@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: combler l'écart mesuré dans le contrôle de pack

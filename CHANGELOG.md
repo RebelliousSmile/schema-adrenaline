@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `tools/validate-handbook-pack.ts` now checks the manifest facts the retired
+  Handbook harness used to cover: a non-empty `pack.label`, the presence in both
+  polarity layers of the seven `note` tokens and five `workspace` tokens that no
+  contrast pair reaches, and the exact key sets of `assets.images` and
+  `assets.fonts`.
+- A `workspace` token whose name carries `texture` is refused on every layer: a
+  page texture belongs to the note surface, never to Obsidian's own chrome.
+- `minimumHandbookVersion` is refused below `2.7.0`. The field drives the
+  Handbook checkout ref in CI, so lowering it would silently move the
+  cross-repository test target. The comparison is component-wise on integers,
+  not lexical, which would otherwise order 2.10.0 before 2.7.0.
+- Four degraded manifests were added to `npm run validate:handbook`, one per new
+  control that a fixture can express.
+
 ### Changed
 
 - The cross-repository CI gate no longer runs Handbook 2.7.0's
