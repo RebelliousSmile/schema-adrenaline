@@ -23,7 +23,7 @@ Aucun fichier du dépôt n'est modifié dans cette phase : elle solde une dette 
 1. Constat à consigner tel quel : le corps de #35 contient des `\n` littéraux, un caractère `^G` à la place d'un backtick, et s'arrête au milieu d'une phrase. Reproduit à l'identique via `gh issue view --json body` et `gh api`, donc ce n'est pas un artefact d'affichage.
 2. Rédiger un corps qui porte les quatre faits établis : la CI de `schema-adrenaline` dérive sa ref de checkout de `minimumHandbookVersion` (`2.7.0`) ; le harnais `assertAdrenalineSource` de cette balise fige `assert.equal(gamePlugin.version, "0.2.0")` ligne 21 ; le pack vaut désormais `0.3.0` ; le script a été supprimé en amont le 2026-09-15 par `7b374c3` et n'existe plus depuis `v2.10.0`.
 3. En tirer la conclusion explicite : la balise étant immuable, aucun correctif amont ne peut atteindre l'assertion — le correctif est dans `schema-adrenaline`, phases 1 et 2 de ce lot.
-4. Pointer `obsidian-handbook#36` comme défaut structurel jumeau, sans le fusionner avec #35 : #36 porte la passerelle qui teste la release publiée plutôt que le commit sous test, #35 porte l'assertion gelée. Deux causes, deux durées de vie.
+4. Signaler la dette voisine sans la confondre avec #35 : Handbook épingle `schema-adrenaline` sur le tarball **v1.0.0** quand ce dépôt est en 2.2.0, donc `assert:adrenaline-contract` valide un contrat périmé. `obsidian-handbook#36` est le **précédent** du même motif sur `schema-pbta`, déjà fermé par un bump de pin — ne pas le présenter comme un ticket jumeau ouvert sur Adrenaline. Vérifié le 2026-09-20 sur `main`.
 
 ### `2)` Fermer l'issue après vérification
 

@@ -37,8 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Coverage that was abandoned: the Handbook block round-trip
   (`block.parse` -> `exportSpec.toToml` -> target `safeParse`) needs the Handbook
   codebase and cannot live here. It remains covered upstream by
-  `assert:adrenaline-contract`, against the published package - see
-  obsidian-handbook#36.
+  `assert:adrenaline-contract`, which runs against the **published** package -
+  and Handbook still pins `schema-adrenaline` to the v1.0.0 tarball while this
+  repository is at 2.2.0, so that gate is green on a stale contract. Same shape
+  as obsidian-handbook#36, which fixed it for `schema-pbta` by moving the pin.
 - `assert:adrenaline-theme` is still run against the declared minimum Handbook
   release: it proves that the oldest supported host can still read the current
   manifest.

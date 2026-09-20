@@ -29,7 +29,7 @@ status: in-progress
 | `obsidian-handbook` — `git log --diff-filter=D -- tools/assert-adrenaline-source.mjs`       | Supprimé le 2026-09-15 par `7b374c3` (« refactor: use canonical Adrenaline corpus ») ; absent de `v2.10.0` et de toutes les balises suivantes.   |
 | `obsidian-handbook@2.7.0:tools/assert-adrenaline-theme.mjs` et son harnais                  | Ne code en dur aucune version de pack, et n'exige que `handbook/adrenaline/pack.json` à la racine source — pas de `tsx`, contrairement au harnais `source`. Rejouable en local. |
 | `obsidian-handbook@2.7.0` — `git ls-tree`                                                   | Le tag ne suit que `pnpm-lock.yaml` ; la CI y lance pourtant `npm install`. Dette consignée, hors périmètre.                                    |
-| Issue [obsidian-handbook#36](https://github.com/RebelliousSmile/obsidian-handbook/issues/36) | Confirme le défaut structurel jumeau : la passerelle inter-dépôts teste la release publiée, pas le commit sous test.                             |
+| `obsidian-handbook@main:package.json` et issue [#36](https://github.com/RebelliousSmile/obsidian-handbook/issues/36) | Handbook épingle `schema-adrenaline` sur le tarball **v1.0.0** alors que ce dépôt est en 2.2.0 : `assert:adrenaline-contract` teste donc un paquet périmé. #36 porte le **même motif sur `schema-pbta`**, pas sur Adrenaline, et il est **fermé** (corrigé par un bump de pin). À citer comme précédent, jamais comme le ticket jumeau ouvert. |
 
 ## Decisions
 
