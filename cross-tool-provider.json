@@ -4,5 +4,5 @@
   "corpus": "corpus/contract/cases.json",
   "packManifest": "handbook/*/pack.json",
   "capabilities": { "lantern": ["edit:adrenaline"], "handbook": ["render:adrenaline"] },
-  "commands": { "validatePack": ["npm", "run", "validate:contract", "--"] }
+  "commands": { "validatePack": ["npm", "run", "validate:pack", "--"] }
 }

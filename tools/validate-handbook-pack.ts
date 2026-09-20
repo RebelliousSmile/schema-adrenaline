@@ -5,6 +5,9 @@ type RecordValue = Record<string, unknown>;
 
 const CATALOGUE_PATH = "handbook.json";
 const PACK_PATH = path.join("handbook", "adrenaline", "pack.json");
+/* Cross-tool callers append one manifest path; flags such as --self-test are not manifests. */
+const argument = process.argv.slice(2).find((value) => !value.startsWith("--"));
+const requested = argument === undefined ? undefined : argument.split("\\").join("/");
 const CATALOGUE_FIELDS = [
   "manifestVersion",
   "repository",
@@ -326,7 +329,11 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
 
 const catalogueSource = JSON.parse(fs.readFileSync(CATALOGUE_PATH, "utf8")) as unknown;
 const entries = validateCatalogue(catalogueSource);
-const loadedPacks = entries.map((entry) => {
+const selected = entries.filter((entry) => requested === undefined || entry.path === requested);
+if (requested !== undefined && selected.length === 0) {
+  throw new Error(`no catalogue entry declares ${requested}`);
+}
+const loadedPacks = selected.map((entry) => {
   const source = JSON.parse(fs.readFileSync(entry.path, "utf8")) as unknown;
   const pack = validateHandbookPack(source, path.dirname(entry.path));
   if (entry.id !== pack.id || entry.version !== pack.version) {
@@ -345,5 +352,5 @@ const files = fs
   .map((entry) => path.join(entry.parentPath, entry.name));
 const bytes = files.reduce((total, file) => total + fs.statSync(file).size, 0);
 console.log(
-  `Handbook catalogue: green (${entries.length} pack, ${files.length} assets, ${bytes} bytes)`,
+  `Handbook catalogue: green (${selected.length} pack, ${files.length} assets, ${bytes} bytes)`,
 );
