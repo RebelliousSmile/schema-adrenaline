@@ -41,7 +41,10 @@ try {
         file.startsWith("dist/") ||
         file.startsWith("schemas/adrenaline/2.0.0/") ||
         file.startsWith("corpus/") ||
-        file.startsWith("examples/"),
+        file.startsWith("examples/") ||
+        file === "cross-tool-provider.json" ||
+        file === "handbook.json" ||
+        file.startsWith("handbook/"),
       `unexpected packaged file: ${file}`,
     );
   }
@@ -77,14 +80,41 @@ assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj
 
 const schema = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/schemas/pnj.schema.json")), "utf8"));
 assert.match(schema.$id, /\\/schemas\\/adrenaline\\/2\\.0\\.0\\/pnj\\.schema\\.json$/);
-const cases = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/corpus/cases.json")), "utf8"));
+const provider = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/cross-tool-provider.json")), "utf8"));
+assert.equal(provider.contractVersion, ADRENALINE_CONTRACT_VERSION);
+const cases = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/" + provider.corpus)), "utf8"));
 for (const testCase of cases.cases) {
   const specifier = "schema-adrenaline/" + testCase.path;
   assert.ok(fs.statSync(new URL(import.meta.resolve(specifier))).isFile(), "missing packaged case: " + testCase.path);
 }
+const catalogue = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/handbook.json")), "utf8"));
+const cataloguePack = catalogue.packs.find((entry) => entry.id === "adrenaline");
+assert.ok(cataloguePack, "Adrenaline pack is missing from the published catalogue");
+const pack = JSON.parse(
+  fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/" + cataloguePack.path)), "utf8"),
+);
+assert.equal(pack.pack.id, cataloguePack.id);
+assert.equal(pack.version, cataloguePack.version);
+const packDirectory = cataloguePack.path.slice(0, cataloguePack.path.lastIndexOf("/"));
+const assetRoot = pack.pack.assets.root ?? "assets";
+const assetFiles = [
+  ...Object.values(pack.pack.assets.images),
+  ...Object.values(pack.pack.assets.fonts).map((asset) =>
+    typeof asset === "string" ? asset : asset.file,
+  ),
+];
+for (const asset of assetFiles) {
+  assert.ok(
+    fs.statSync(
+      new URL(import.meta.resolve("schema-adrenaline/" + packDirectory + "/" + assetRoot + "/" + asset)),
+    ).isFile(),
+    "missing packaged Handbook asset: " + asset,
+  );
+}
 const source = fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/examples/adrenaline/pnj/pnj-secondaire.toml")), "utf8");
 assert.equal(parsePnjToml(source).nom, "Le veilleur de nuit");
 await assert.rejects(import("schema-adrenaline/codecs/documents.js"), (error) => error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED");
+await assert.rejects(import("schema-adrenaline/tools/validate-package.ts"), (error) => error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED");
 `;
   fs.writeFileSync(path.join(consumerRoot, "check.mjs"), checkSource);
   run(process.execPath, ["check.mjs"], consumerRoot);

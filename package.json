@@ -50,13 +50,19 @@
     },
     "./schemas/*": "./schemas/adrenaline/2.0.0/*",
     "./corpus/*": "./corpus/*",
-    "./examples/*": "./examples/*"
+    "./examples/*": "./examples/*",
+    "./cross-tool-provider.json": "./cross-tool-provider.json",
+    "./handbook.json": "./handbook.json",
+    "./handbook/*": "./handbook/*"
   },
   "files": [
     "dist",
     "schemas/adrenaline/2.0.0",
     "corpus",
     "examples",
+    "cross-tool-provider.json",
+    "handbook.json",
+    "handbook",
     "README.md",
     "LICENSE"
   ],

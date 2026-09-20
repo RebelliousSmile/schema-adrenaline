@@ -24,5 +24,5 @@ status: in-progress
 | Decision | Why |
 | -------- | --- |
 | Le corpus déclaré pointe vers `corpus/cases.json`, le manifeste réellement publié à la racine du corpus. | Le répertoire `corpus/contract/` ne contient que les fixtures TOML `valid/` et `invalid/`; annoncer un fichier absent ferait échouer le futur résolveur de fournisseur. |
-| Le package exporte explicitement le descripteur JSON et le sous-arbre `handbook/`, en plus de les inclure dans `files`. | Un fichier inclus mais non exporté reste inaccessible via `import.meta.resolve`, qui est le mécanisme de découverte consommateur visé par l'issue. |
+| Le package exporte explicitement le descripteur JSON, `handbook.json` et le sous-arbre `handbook/`, en plus de les inclure dans `files`. | Un fichier inclus mais non exporté reste inaccessible via `import.meta.resolve`; le catalogue publié est aussi la source de vérité pour dériver la version du pack référencé. |
 | `contractVersion` reste une valeur JSON explicite, mais le validateur attend la valeur dérivée de `ADRENALINE_CONTRACT_VERSION`. | Un fichier JSON ne peut pas importer la constante TypeScript ; la preuve locale évite néanmoins que les deux valeurs divergent silencieusement. |
