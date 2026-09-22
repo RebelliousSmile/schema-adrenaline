@@ -1,6 +1,6 @@
 ---
 objective: "Chaque release schema-adrenaline ne peut être promue qu'après des preuves Lantern et Handbook portant sur le même archive candidat immuable, et le tag final reçoit exactement ces octets sans reconstruction."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Promouvoir une release candidate immuable
