@@ -1,0 +1,56 @@
+name: Release train
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: Committed release-train manifest path
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  assert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+      - name: Validate committed candidate manifest
+        id: train
+        env:
+          MANIFEST: ${{ inputs.manifest }}
+        run: |
+          case "$MANIFEST" in release-train/schema-adrenaline-v*.json) ;; *) exit 1 ;; esac
+          test -f "$MANIFEST"
+          npm ci --ignore-scripts
+          npm run release-train:assert -- "$MANIFEST"
+          node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.env.MANIFEST));for(const n of ["lantern","handbook"]) console.log(`${n}=${m.consumers[n].commit}`)' >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: RebelliousSmile/lantern
+          ref: ${{ steps.train.outputs.lantern }}
+          path: lantern
+      - uses: actions/checkout@v4
+        with:
+          repository: RebelliousSmile/obsidian-handbook
+          ref: ${{ steps.train.outputs.handbook }}
+          path: handbook
+      - name: Run consumer-owned proofs
+        env:
+          MANIFEST: ${{ github.workspace }}/${{ inputs.manifest }}
+        run: |
+          (cd lantern && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > lantern-proof.json
+          (cd handbook && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > handbook-proof.json
+          npx tsx tools/verify-release-train-proofs.ts "$MANIFEST" lantern-proof.json handbook-proof.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-train-proofs
+          path: |
+            lantern-proof.json
+            handbook-proof.json

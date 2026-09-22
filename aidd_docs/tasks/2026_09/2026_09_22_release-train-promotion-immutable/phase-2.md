@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Orchestration des preuves consommateurs
@@ -84,4 +84,3 @@ journey
 | 2 | Les deux résultats machine-readable confirment la même URL, intégrité et version que l'archive candidate; Lantern couvre son build Vite et Handbook son installation/rendu. |
 | 2 | Une preuve absente ou divergente empêche la création d'un état de train promouvable. |
 | 3 | La CI quotidienne continue d'exécuter ses contrôles de contrat existants indépendamment du workflow release train. |
-
