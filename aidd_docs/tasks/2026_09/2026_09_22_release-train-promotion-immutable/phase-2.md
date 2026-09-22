@@ -1,5 +1,5 @@
 ---
-status: done
+status: pending
 ---
 
 # Instruction: Orchestration des preuves consommateurs
@@ -51,6 +51,8 @@ journey
 ```
 
 ## Tasks to do
+
+> État de reprise : Handbook ne possède aujourd'hui qu'une preuve schema-pbta et Lantern aucune preuve sur `main`. Cette phase ne passe à `in-progress` qu'après stabilisation du manifeste et de l'évidence communs.
 
 ### `1)` Exécuter uniquement les consommations déclarées
 

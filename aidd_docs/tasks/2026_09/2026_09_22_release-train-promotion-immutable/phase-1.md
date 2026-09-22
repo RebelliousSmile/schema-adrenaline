@@ -1,5 +1,5 @@
 ---
-status: done
+status: in-progress
 ---
 
 # Instruction: Contrat de train immuable et assertion locale
@@ -51,13 +51,16 @@ journey
 
 ## Tasks to do
 
+> État de reprise : le fournisseur possède une première assertion propriétaire, mais son format n'est pas encore le contrat commun. Les worktrees isolés `lantern-adrenaline-release-train` et `handbook-adrenaline-release-train` sont prêts; aucune preuve consommateur Adrenaline n'est encore validée.
+
 ### `1)` Définir l'entrée de train committée
 
 > Rendre l'identité de la candidate et des deux consommateurs lisible par machine et non ambiguë.
 
 1. Ajouter le format documenté d'un manifeste par tag final sous `release-train/`.
-2. Exiger l'URL HTTPS de l'archive staged, son SHA-256 hexadécimal, le SHA complet du commit fournisseur, le tag final SemVer et les SHAs complets Lantern et Handbook.
-3. Interdire clés inconnues, références mutables, URLs non attendues, chemins locaux, commandes et toute divergence entre tag final, URL et nom d'archive.
+2. Exiger `protocol: 1`, puis une candidate fournisseur-neutre avec `provider`, `releaseUrl`, `sha256`, `integrity`, `version`, `stagingTag`, `finalTag` et `providerCommit`.
+3. Exiger une liste de consommateurs, chacun avec `role`, `repository` et `ref` complet; conserver Handbook et Lantern comme les deux entrées requises du train Adrenaline.
+4. Interdire clés inconnues, références mutables, URLs non attendues, chemins locaux, commandes et toute divergence entre candidate, tags, version et archive.
 
 ### `2)` Outiller la validation avant orchestration
 
@@ -72,7 +75,7 @@ journey
 
 | Task | Acceptance criteria |
 | ---- | ------------------- |
-| 1 | Un manifeste commité décrit une candidate par URL, SHA-256, commit fournisseur, tag final et exactement un SHA complet pour Lantern et Handbook. |
+| 1 | Un manifeste commité porte `protocol: 1`, décrit une candidate avec son fournisseur, URL, SHA-256, SRI, version, tags et commit, puis exactement les consommateurs Lantern et Handbook avec leurs refs complètes. |
 | 1 | L'assertion refuse une branche, un tag, un SHA abrégé, une URL non HTTPS, un chemin local, une clé inconnue ou une commande déclarée. |
 | 2 | `npm run release-train:assert -- <manifest>` vérifie que les octets téléchargés correspondent au SHA déclaré et que leur package version correspond au tag final. |
 | 2 | Les cas négatifs échouent avant tout checkout de consommateur ou lancement de sous-processus externe. |

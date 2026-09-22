@@ -1,6 +1,6 @@
 ---
 objective: "Chaque release schema-adrenaline ne peut être promue qu'après des preuves Lantern et Handbook portant sur le même archive candidat immuable, et le tag final reçoit exactement ces octets sans reconstruction."
-status: implemented
+status: in-progress
 ---
 
 # Plan: Promouvoir une release candidate immuable
@@ -37,3 +37,5 @@ status: implemented
 | Les consommateurs conservent leurs assertions, appelées seulement via leur script `release-train:assert`. | Lantern et Handbook restent propriétaires de leurs lockfiles, rendus, builds et adaptateurs; le fournisseur coordonne et vérifie les preuves sans les réimplémenter. |
 | La CI quotidienne existante reste distincte du workflow de promotion. | La porte de contrat partagée surveille le baseline courant; elle ne prouve ni l'adoption d'une candidate choisie ni l'identité des octets promus. |
 | La promotion télécharge et vérifie l'archive candidate avant de l'attacher au tag final. | Réutiliser le fichier SHA-256 vérifié garantit qu'aucun `npm pack` ou préparation de release ne produit un artefact différent après les preuves consommateurs. |
+| Le plan est rouvert jusqu'à une convergence inter-dépôts réelle. | L'implémentation fournisseur seule ne prouve ni les lockfiles ni les parcours Lantern et Handbook; les phases restent ouvertes jusqu'au train complet. |
+| Le protocole commun commence à `1` et la candidate déclare son fournisseur. | L'enveloppe doit évoluer sans ambiguïté et l'orchestrateur doit distinguer PbtA, Mist et Adrenaline sans connaître leurs parcours internes. |

@@ -1,5 +1,5 @@
 ---
-status: done
+status: pending
 ---
 
 # Instruction: Promotion sans reconstruction
