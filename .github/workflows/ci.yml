@@ -47,12 +47,14 @@ jobs:
         working-directory: handbook-host
         run: npm install
 
-      - name: Check package against declared Handbook release
+      # The immutable 2.7.0 Handbook release hard-codes an older Adrenaline
+      # pack version in assert:adrenaline-source. Current Handbook CI checks
+      # source witnesses against this provider's manifest on every PR.
+      - name: Check package theme against declared Handbook release
         working-directory: handbook-host
         env:
           SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}/schema-adrenaline
         run: |
-          npm run assert:adrenaline-source
           npm run assert:adrenaline-theme
 
       - name: Install catalogue through declared Handbook release
