@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: release-${{ github.ref }}
@@ -31,11 +32,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check contract
-        run: npm run check
+      - name: Require approved immutable release train
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          manifest="release-train/schema-adrenaline-$GITHUB_REF_NAME.json"
+          test -f "$manifest"
+          npm run release-train:assert -- "$manifest"
+          expected=$(node -e 'const m=require(process.argv[1]); process.stdout.write(m.provider.commit)' "$manifest")
+          test "$expected" = "$GITHUB_SHA"
+          gh api "repos/$GITHUB_REPOSITORY/actions/workflows/release-train.yml/runs?head_sha=$GITHUB_SHA&status=success" --jq '.workflow_runs | length' | grep -Eq '^[1-9][0-9]*$'
 
-      - name: Prepare release assets
-        run: npm run release:prepare -- --output release
+      - name: Check provider release contract
+        run: npm run release:verify-provider
+
+      - name: Download verified candidate asset
+        id: candidate
+        run: |
+          manifest="release-train/schema-adrenaline-$GITHUB_REF_NAME.json"
+          url=$(node -e 'const m=require(process.argv[1]); process.stdout.write(m.provider.archiveUrl)' "$manifest")
+          sha=$(node -e 'const m=require(process.argv[1]); process.stdout.write(m.provider.sha256)' "$manifest")
+          curl --fail --location --proto '=https' --output candidate.tgz "$url"
+          test "$(sha256sum candidate.tgz | cut -d ' ' -f 1)" = "$sha"
+          printf '%s  %s\n' "$sha" candidate.tgz > candidate.tgz.sha256
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
       - name: Create or resume draft release
         env:
@@ -46,7 +66,7 @@ jobs:
           else
             gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "$GITHUB_REF_NAME" --generate-notes
           fi
-          gh release upload "$GITHUB_REF_NAME" release/*.tgz release/*.sha256 --clobber
+          gh release upload "$GITHUB_REF_NAME" candidate.tgz candidate.tgz.sha256 --clobber
 
       - name: Publish immutable release
         env:
@@ -61,4 +81,4 @@ jobs:
           done
           test "$immutable" = "true"
           test "$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.assets | length')" = "2"
-          test "$digest" = "sha256:$(sha256sum release/*.tgz | cut -d ' ' -f 1)"
+          test "$digest" = "sha256:${{ steps.candidate.outputs.sha }}"

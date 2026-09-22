@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `tools/validate-handbook-pack.ts` now checks the manifest facts the retired
+  Handbook harness used to cover: a non-empty `pack.label`, the presence in both
+  polarity layers of the seven `note` tokens and five `workspace` tokens that no
+  contrast pair reaches, and the exact key sets of `assets.images` and
+  `assets.fonts`.
+- A `workspace` token whose name carries `texture` is refused on every layer: a
+  page texture belongs to the note surface, never to Obsidian's own chrome.
+- `minimumHandbookVersion` is refused below `2.7.0`. The field drives the
+  Handbook checkout ref in CI, so lowering it would silently move the
+  cross-repository test target. The comparison is component-wise on integers,
+  not lexical, which would otherwise order 2.10.0 before 2.7.0.
+- Four degraded manifests were added to `npm run validate:handbook`, one per new
+  control that a fixture can express.
+
+### Changed
+
+- The cross-repository CI gate no longer runs Handbook 2.7.0's
+  `assert:adrenaline-source`. That harness hardcodes the pack version it expects
+  (`0.2.0`), and it lives only on the frozen 2.7.x tags, so every pack bump
+  breaks it and no upstream fix can reach it. It was removed upstream on
+  2026-09-15 and is absent from `v2.10.0` onward.
+- Coverage that moved rather than disappeared: the manifest-shape assertions
+  (label, required style tokens, asset keys) are now enforced in this repository
+  by `npm run validate:pack`, read from `handbook/adrenaline/pack.json` instead
+  of being restated as literals.
+- Coverage that was abandoned: the Handbook block round-trip
+  (`block.parse` -> `exportSpec.toToml` -> target `safeParse`) needs the Handbook
+  codebase and cannot live here. It remains covered upstream by
+  `assert:adrenaline-contract`, which runs against the **published** package -
+  and Handbook still pins `schema-adrenaline` to the v1.0.0 tarball while this
+  repository is at 2.2.0, so that gate is green on a stale contract. Same shape
+  as obsidian-handbook#36, which fixed it for `schema-pbta` by moving the pin.
+- `assert:adrenaline-theme` is still run against the declared minimum Handbook
+  release: it proves that the oldest supported host can still read the current
+  manifest.
+
 ## [2.2.0] - 2026-09-20
 
 ### Added
