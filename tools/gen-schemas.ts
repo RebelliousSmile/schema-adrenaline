@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import { z } from "zod";
+import { ADRENALINE_SCHEMA_VERSION } from "../src/contract-version.js";
 import { TARGETS } from "../src/zod/constants";
 
 /**
@@ -21,7 +22,7 @@ import { TARGETS } from "../src/zod/constants";
  * en crée un autre à côté.
  */
 
-const VERSION: string = JSON.parse(fs.readFileSync("package.json", "utf-8")).version;
+const VERSION = ADRENALINE_SCHEMA_VERSION;
 
 for (const t of TARGETS) {
   const json = z.toJSONSchema(t.zod, { target: "draft-7" }) as Record<string, unknown>;
