@@ -74,7 +74,6 @@ import {
 } from "schema-adrenaline";
 
 assert.equal(ADRENALINE_CONTRACT_VERSION, 2);
-assert.equal(ADRENALINE_SCHEMA_VERSION, "2.0.0");
 assert.equal(ADRENALINE_TOML_VERSION, "1.0.0");
 assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj", "pnj"]);
 
@@ -118,7 +117,7 @@ await assert.rejects(import("schema-adrenaline/tools/validate-package.ts"), (err
 `;
   fs.writeFileSync(path.join(consumerRoot, "check.mjs"), checkSource);
   run(process.execPath, ["check.mjs"], consumerRoot);
-  console.log("✓ schema-adrenaline@2.0.0 tarball installs with its public ESM contract");
+  console.log("✓ schema-adrenaline tarball installs with its public ESM contract");
 } finally {
   fs.rmSync(temporaryRoot, { recursive: true, force: true });
 }

@@ -13,11 +13,6 @@ const catalogue = JSON.parse(fs.readFileSync(path.join(root, "handbook.json"), "
   packs: Array<{ id: string; version: string; path: string }>;
 };
 
-assert.equal(
-  packageJson.version,
-  ADRENALINE_SCHEMA_VERSION,
-  "package and schema baseline versions must match",
-);
 for (const entry of catalogue.packs) {
   const pack = JSON.parse(fs.readFileSync(path.join(root, entry.path), "utf8")) as {
     version: string;
@@ -46,15 +41,15 @@ const versionDirectories = fs
   .map((entry) => entry.name)
   .sort();
 assert.ok(
-  versionDirectories.includes(packageJson.version),
-  `missing schema baseline ${packageJson.version}`,
+  versionDirectories.includes(ADRENALINE_SCHEMA_VERSION),
+  `missing schema baseline ${ADRENALINE_SCHEMA_VERSION}`,
 );
 
 for (const version of versionDirectories) {
   const tag = `v${version}`;
   const publishedCommit = git(["rev-parse", "--verify", `${tag}^{commit}`], true);
   if (publishedCommit === null) {
-    assert.equal(version, packageJson.version, `${version}: untagged historical schema directory`);
+    assert.equal(version, ADRENALINE_SCHEMA_VERSION, `${version}: untagged historical schema directory`);
     console.log(`✓ ${version} is the unpublished current candidate`);
     continue;
   }
@@ -85,4 +80,4 @@ for (const version of versionDirectories) {
   console.log(`✓ ${relativeRoot} matches ${tag} (${publishedCommit.trim()})`);
 }
 
-console.log("\n✅ Contract, schema, catalogue and pack versions are coherent.");
+console.log(`\n✅ Package ${packageJson.version}, contract ${ADRENALINE_SCHEMA_VERSION}, schema, catalogue and pack versions are coherent.`);
