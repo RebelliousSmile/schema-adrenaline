@@ -36,13 +36,17 @@ assert.match(
 );
 assert.match(
   workflow,
-  /--prerelease --target "\$GITHUB_SHA"/,
-  "candidate release must target dispatch SHA",
+  /--draft --prerelease --target "\$GITHUB_SHA"/,
+  "candidate release must remain draft until its assets are uploaded",
 );
-assert.doesNotMatch(
+assert.match(
   workflow,
-  /--draft=false|release edit/,
-  "candidate workflow must not publish a stable release",
+  /gh release edit "\$RELEASE_TAG" --draft=false/,
+  "candidate workflow must publish its prepared draft",
+);
+assert.ok(
+  workflow.indexOf("gh release upload") < workflow.indexOf("gh release edit \"$RELEASE_TAG\" --draft=false"),
+  "candidate assets must upload before the release becomes immutable",
 );
 assert.match(workflow, /\.assets \| length/, "candidate workflow must verify asset count");
 assert.match(
