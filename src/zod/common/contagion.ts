@@ -17,12 +17,11 @@ const Vecteur = z
         description: "Canal de transmission, en clair. Chaîne libre.",
         examples: ["Morsure", "Regard soutenu"],
       }),
-    probabilite: ProbabiliteJouable.optional()
-      .meta({
-        description:
-          "Probabilité de transmission, en pourcentage. Bornée à 100, contrairement aux pourcentages de d100 : c'est une probabilité.",
-        examples: [{ minimum: 0, current: 80, maximum: 80 }],
-      }),
+    probabilite: ProbabiliteJouable.optional().meta({
+      description:
+        "Probabilité de transmission, en pourcentage. Bornée à 100, contrairement aux pourcentages de d100 : c'est une probabilité.",
+      examples: [{ minimum: 0, current: 80, maximum: 80 }],
+    }),
     notes: z.string().min(1).optional().meta({
       description: "Conditions ou réserves attachées à ce vecteur.",
     }),

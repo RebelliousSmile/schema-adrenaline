@@ -27,7 +27,11 @@ function safeFilePath(value: unknown, field: string): string {
   return resolved;
 }
 
-function validateProvider(candidate: Provider): { command: string[]; directory: string; manifestName: string } {
+function validateProvider(candidate: Provider): {
+  command: string[];
+  directory: string;
+  manifestName: string;
+} {
   assert.equal(candidate.providerVersion, 1, "unsupported cross-tool provider");
   assert.equal(
     candidate.contractVersion,
@@ -82,7 +86,11 @@ for (const entry of fs.readdirSync(path.join(root, directory), { withFileTypes: 
   if (!entry.isDirectory()) continue;
   const manifest = path.join(directory, entry.name, manifestName);
   if (!fs.existsSync(path.join(root, manifest))) continue;
-  execFileSync(command[0], [...command.slice(1), manifest], { cwd: root, stdio: "inherit", shell: process.platform === "win32" });
+  execFileSync(command[0], [...command.slice(1), manifest], {
+    cwd: root,
+    stdio: "inherit",
+    shell: process.platform === "win32",
+  });
   validated += 1;
 }
 

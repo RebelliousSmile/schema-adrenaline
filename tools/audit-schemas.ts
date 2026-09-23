@@ -268,14 +268,9 @@ function run(): void {
       const data = JSON.parse(fs.readFileSync(f, "utf-8"));
       if (path.basename(f).startsWith("plage-")) {
         if (valider(data)) {
-          console.log(
-            `  ✓ structure acceptée, ordre délégué aux codecs : ${path.basename(f)}`,
-          );
+          console.log(`  ✓ structure acceptée, ordre délégué aux codecs : ${path.basename(f)}`);
         } else {
-          console.error(
-            `  ✗ structure refusée à tort : ${path.basename(f)}`,
-            valider.errors,
-          );
+          console.error(`  ✗ structure refusée à tort : ${path.basename(f)}`, valider.errors);
           echecs++;
         }
         continue;

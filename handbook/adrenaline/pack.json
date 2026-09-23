@@ -124,7 +124,7 @@
           "--color-pink-rgb": "155, 74, 89",
           "--bold-color": "#71170F",
           "--link-color": "#9D2416",
-          "--link-color-hover": "#C44925",
+          "--link-color-hover": "#71170F",
           "--list-marker-color": "#9D2416",
           "--checkbox-color": "#9D2416",
           "--table-header-color": "#71170F",

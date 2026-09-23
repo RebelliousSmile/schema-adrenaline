@@ -54,7 +54,9 @@ function releases(): Release[] {
           { cwd: root, encoding: "utf8", env: process.env },
         );
         if (result.status !== 0) {
-          throw new Error(`cannot list GitHub releases: ${result.stderr ?? result.error?.message ?? ""}`);
+          throw new Error(
+            `cannot list GitHub releases: ${result.stderr ?? result.error?.message ?? ""}`,
+          );
         }
         return result.stdout;
       })();
@@ -77,7 +79,8 @@ function releases(): Release[] {
         assert.ok(asset && typeof asset === "object", "GitHub release asset must be an object");
         const value = asset as Record<string, unknown>;
         assert.equal(typeof value.name, "string", "GitHub release asset name must be text");
-        if (value.digest !== undefined) assert.equal(typeof value.digest, "string", "GitHub release asset digest must be text");
+        if (value.digest !== undefined)
+          assert.equal(typeof value.digest, "string", "GitHub release asset digest must be text");
         return { name: value.name as string, digest: value.digest as string | undefined };
       }),
     };
@@ -146,7 +149,11 @@ for (const version of versionDirectories) {
   const tag = `v${version}`;
   const publishedCommit = git(["rev-parse", "--verify", `${tag}^{commit}`], true);
   if (publishedCommit === null) {
-    assert.equal(version, ADRENALINE_SCHEMA_VERSION, `${version}: untagged historical schema directory`);
+    assert.equal(
+      version,
+      ADRENALINE_SCHEMA_VERSION,
+      `${version}: untagged historical schema directory`,
+    );
     console.log(`✓ ${version} is the unpublished current candidate`);
     continue;
   }
@@ -177,4 +184,6 @@ for (const version of versionDirectories) {
   console.log(`✓ ${relativeRoot} matches ${tag} (${publishedCommit.trim()})`);
 }
 
-console.log(`\n✅ Package ${packageJson.version}, contract ${ADRENALINE_SCHEMA_VERSION}, schema, catalogue and pack versions are coherent.`);
+console.log(
+  `\n✅ Package ${packageJson.version}, contract ${ADRENALINE_SCHEMA_VERSION}, schema, catalogue and pack versions are coherent.`,
+);

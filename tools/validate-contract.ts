@@ -129,7 +129,10 @@ for (const testCase of manifest.cases) {
     }
     if (testCase.path.includes("presentation-adapter-inconnu")) {
       assert.equal(testCase.format, "json", `${label}: presentation fixture must be JSON`);
-      const { presentation: _presentation, ...withoutPresentation } = raw as Record<string, unknown>;
+      const { presentation: _presentation, ...withoutPresentation } = raw as Record<
+        string,
+        unknown
+      >;
       assert.ok(
         structuralValidator(testCase.target)(withoutPresentation),
         `${label}: fixture must otherwise satisfy the draft-7 schema`,

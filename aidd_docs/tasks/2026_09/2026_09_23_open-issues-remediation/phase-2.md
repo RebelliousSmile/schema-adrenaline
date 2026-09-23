@@ -1,5 +1,5 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Étendre la porte de qualité et protéger le contraste des liens
