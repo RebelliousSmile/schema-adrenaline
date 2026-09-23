@@ -51,7 +51,7 @@ assert.ok(
 );
 assert.match(
   workflow,
-  /git tag -a "\$RELEASE_TAG" "\$GITHUB_SHA"/,
+  /git tag "\$RELEASE_TAG" "\$GITHUB_SHA"/,
   "candidate workflow must create its tag before creating a draft release",
 );
 assert.match(
@@ -65,7 +65,7 @@ assert.match(
   "candidate draft must attach to the previously verified tag",
 );
 assert.ok(
-  workflow.indexOf("git tag -a") < workflow.indexOf("gh release create"),
+  workflow.indexOf('git tag "$RELEASE_TAG" "$GITHUB_SHA"') < workflow.indexOf("gh release create"),
   "candidate tag must exist before creating its draft release",
 );
 assert.match(workflow, /\.assets \| length/, "candidate workflow must verify asset count");

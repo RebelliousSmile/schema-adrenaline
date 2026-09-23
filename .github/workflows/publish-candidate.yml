@@ -87,7 +87,7 @@ jobs:
             tag_commit=$(git ls-remote origin "refs/tags/$RELEASE_TAG" | awk '{print $1}')
           fi
           if test -z "$tag_commit"; then
-            git tag -a "$RELEASE_TAG" "$GITHUB_SHA" -m "Candidate $RELEASE_TAG"
+            git tag "$RELEASE_TAG" "$GITHUB_SHA"
             git push origin "refs/tags/$RELEASE_TAG"
           fi
           git fetch origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
