@@ -82,14 +82,22 @@ jobs:
 
       - name: Create or resume candidate prerelease
         run: |
+          tag_commit=$(git ls-remote origin "refs/tags/$RELEASE_TAG^{}" | awk '{print $1}')
+          if test -z "$tag_commit"; then
+            tag_commit=$(git ls-remote origin "refs/tags/$RELEASE_TAG" | awk '{print $1}')
+          fi
+          if test -z "$tag_commit"; then
+            git tag -a "$RELEASE_TAG" "$GITHUB_SHA" -m "Candidate $RELEASE_TAG"
+            git push origin "refs/tags/$RELEASE_TAG"
+          fi
+          git fetch origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
+          test "$(git rev-parse "$RELEASE_TAG^{commit}")" = "$GITHUB_SHA"
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             test "$(gh release view "$RELEASE_TAG" --json isPrerelease --jq .isPrerelease)" = "true"
             test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = "true"
           else
-            gh release create "$RELEASE_TAG" --draft --prerelease --target "$GITHUB_SHA" --title "$RELEASE_TAG" --generate-notes
+            gh release create "$RELEASE_TAG" --draft --prerelease --verify-tag --title "$RELEASE_TAG" --generate-notes
           fi
-          git fetch origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
-          test "$(git rev-parse "$RELEASE_TAG^{commit}")" = "$GITHUB_SHA"
           gh release upload "$RELEASE_TAG" "${{ steps.candidate.outputs.archive }}" "${{ steps.candidate.outputs.checksum }}" --clobber
           gh release edit "$RELEASE_TAG" --draft=false --prerelease
 

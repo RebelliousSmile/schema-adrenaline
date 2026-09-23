@@ -36,7 +36,7 @@ assert.match(
 );
 assert.match(
   workflow,
-  /--draft --prerelease --target "\$GITHUB_SHA"/,
+  /--draft --prerelease --verify-tag/,
   "candidate release must remain draft until its assets are uploaded",
 );
 assert.match(
