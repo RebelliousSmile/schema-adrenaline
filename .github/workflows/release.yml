@@ -40,7 +40,7 @@ jobs:
           test -f "$manifest"
           npm run release-train:assert -- "$manifest"
           expected=$(node -e 'const m=require(process.argv[1]); process.stdout.write(m.provider.commit)' "$manifest")
-          test "$expected" = "$GITHUB_SHA"
+          git merge-base --is-ancestor "$expected" "$GITHUB_SHA"
           gh api "repos/$GITHUB_REPOSITORY/actions/workflows/release-train.yml/runs?head_sha=$GITHUB_SHA&status=success" --jq '.workflow_runs | length' | grep -Eq '^[1-9][0-9]*$'
 
       - name: Check provider release contract
@@ -54,6 +54,8 @@ jobs:
           sha=$(node -e 'const m=require(process.argv[1]); process.stdout.write(m.provider.sha256)' "$manifest")
           curl --fail --location --proto '=https' --output candidate.tgz "$url"
           test "$(sha256sum candidate.tgz | cut -d ' ' -f 1)" = "$sha"
+          packed=$(npm pack --json --silent | node -e 'let data=""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => process.stdout.write(JSON.parse(data)[0].filename))')
+          test "$(sha256sum "$packed" | cut -d ' ' -f 1)" = "$sha"
           printf '%s  %s\n' "$sha" candidate.tgz > candidate.tgz.sha256
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
