@@ -156,5 +156,22 @@
         "localisations": ["peur"]
       }
     }
+  },
+  "etatDePartie": {
+    "stress": {
+      "adrenaline": 1,
+      "panique": 0
+    },
+    "malus": {
+      "physique": 2
+    },
+    "etats": [
+      {
+        "nom": "Contusion",
+        "versant": "physique",
+        "localisation": "torse",
+        "duree": "Jusqu'aux soins"
+      }
+    ]
   }
 }

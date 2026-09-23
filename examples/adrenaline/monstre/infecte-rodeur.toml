@@ -101,3 +101,21 @@ delaiAvantEffet = "nettement raccourci"
 [[contagion.modulations]]
 profil = "personne âgée"
 issue = "Meurt souvent sans se relever."
+
+[defense]
+active = false
+bonus = 4
+
+[[actions]]
+nom = "Morsure"
+desDeDegats = 1
+effets = [ "Contagion" ]
+conditions = [ "Cible au contact" ]
+
+[etatDePartie.malus]
+physique = 1
+
+[[etatDePartie.etats]]
+nom = "Insensible"
+versant = "general"
+duree = "Pendant l'état actif"

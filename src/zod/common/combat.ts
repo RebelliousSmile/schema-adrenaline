@@ -38,6 +38,8 @@ export const ActionDeCreature = z
     }),
     modificateurDeDegats: z
       .int()
+      .min(-100)
+      .max(100)
       .optional()
       .meta({
         description: "Modificateur entier ajouté aux dégâts de l'action.",

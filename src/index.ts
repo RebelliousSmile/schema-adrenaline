@@ -18,12 +18,14 @@ export {
   stringifyPjToml,
   stringifyPnjJson,
   stringifyPnjToml,
+  resoudreEtatMonstre,
 } from "./codecs/documents.js";
 export type {
   AdrenalineDocumentByTarget,
   AdrenalineDocumentCodec,
   AdrenalineDocumentTarget,
   MonstreDocument,
+  MonstreResolu,
   Pj,
   Pnj,
 } from "./codecs/documents.js";
@@ -47,6 +49,20 @@ export {
 } from "./zod/common/primitives.js";
 export { Monstre } from "./zod/adrenaline/monstre.js";
 export type { MonstreValeur } from "./zod/adrenaline/monstre.js";
+export { ActionDeCreature, DefenseDeCreature } from "./zod/common/combat.js";
+export type { ActionDeCreatureValeur, DefenseDeCreatureValeur } from "./zod/common/combat.js";
+export { EtatDePartie, EtatEncaissé } from "./zod/common/etat-de-partie.js";
+export type { EtatDePartieValeur, EtatEncaisséValeur } from "./zod/common/etat-de-partie.js";
+export {
+  CaracteristiquesDeCreature,
+  DeltaEtatDeCreature,
+  EtatDeCreature,
+} from "./zod/common/etat-monstre.js";
+export type {
+  CaracteristiquesDeCreatureValeur,
+  DeltaEtatDeCreatureValeur,
+  EtatDeCreatureValeur,
+} from "./zod/common/etat-monstre.js";
 export { PersonnageJoueur } from "./zod/adrenaline/pj.js";
 export type { ParametresDuJeuValeur, PersonnageJoueurValeur } from "./zod/adrenaline/pj.js";
 export { PersonnageNonJoue } from "./zod/adrenaline/pnj.js";

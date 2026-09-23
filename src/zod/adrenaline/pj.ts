@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Caracteristiques } from "../common/caracteristiques.js";
 import { Equipement } from "../common/equipement.js";
+import { EtatDePartie } from "../common/etat-de-partie.js";
 import { Formation } from "../common/formations.js";
 import { Identite } from "../common/identite.js";
 import { Meta } from "../common/meta.js";
@@ -91,6 +92,9 @@ export const PersonnageJoueur = z
       description: "Bloc Équipement de la feuille.",
     }),
     parametresDuJeu: ParametresDuJeu.optional(),
+    etatDePartie: EtatDePartie.optional().meta({
+      description: "Compteurs et états temporaires de la scène, séparés du profil de référence.",
+    }),
     meta: Meta.optional().meta({
       description: "Attribution et catalogage : d'où vient cette fiche.",
     }),

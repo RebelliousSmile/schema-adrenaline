@@ -254,3 +254,11 @@ personnalite = [ "Taiseux", "Rancunier", "Fiable" ]
 evolutionPossible = "Suit le groupe s'il perd son dépôt ; devient hostile si on lui prend le pick-up."
 repliques = [ "Vous le rendez plein.", "J'ai pas dit non. J'ai dit pas maintenant." ]
 notesMj = [ "Cache sa sœur contaminée dans l'arrière-boutique." ]
+
+[etatDePartie.malus]
+mental = 1
+
+[[etatDePartie.etats]]
+nom = "Anxiété"
+versant = "mental"
+localisation = "anxiete"

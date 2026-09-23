@@ -8,6 +8,7 @@ import {
   DeltaEtatDeCreature,
   EtatDeCreature,
 } from "../common/etat-monstre.js";
+import { EtatDePartie } from "../common/etat-de-partie.js";
 import { Competence } from "../common/formations.js";
 import { Meta } from "../common/meta.js";
 import { Narratif } from "../common/narratif.js";
@@ -176,6 +177,9 @@ export const Monstre = z
     narratif: Narratif.optional().meta({
       description:
         "Une créature nommée et jouée mérite le même traitement qu'un personnage non joué.",
+    }),
+    etatDePartie: EtatDePartie.optional().meta({
+      description: "Compteurs et états temporaires de la scène, séparés du profil de référence.",
     }),
     meta: Meta.optional().meta({
       description: "Attribution et catalogage : d'où vient cette fiche.",
