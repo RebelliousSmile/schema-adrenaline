@@ -43,7 +43,14 @@ jobs:
           npm run release-train:assert -- "$manifest"
           expected=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.provider.commit)' "$manifest")
           git merge-base --is-ancestor "$expected" "$GITHUB_SHA"
-          gh api "repos/$GITHUB_REPOSITORY/actions/workflows/release-train.yml/runs?head_sha=$GITHUB_SHA&status=success" --jq '.workflow_runs | length' | grep -Eq '^[1-9][0-9]*$'
+          manifest_digest=$(sha256sum "$manifest" | cut -d ' ' -f 1)
+          approved_train=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/release-train.yml/runs?status=success&per_page=100" --paginate --jq '.workflow_runs[].head_sha' | while IFS= read -r run; do
+            if git merge-base --is-ancestor "$run" "$GITHUB_SHA" && test "$(git show "$run:$manifest" | sha256sum | cut -d ' ' -f 1)" = "$manifest_digest"; then
+              printf '%s' "$run"
+              break
+            fi
+          done)
+          test -n "$approved_train"
 
       - name: Check provider release contract
         run: npm run release:verify-provider
