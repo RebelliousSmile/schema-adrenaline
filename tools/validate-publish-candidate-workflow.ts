@@ -41,11 +41,12 @@ assert.match(
 );
 assert.match(
   workflow,
-  /gh release edit "\$RELEASE_TAG" --draft=false/,
+  /gh release edit "\$RELEASE_TAG" --draft=false --prerelease/,
   "candidate workflow must publish its prepared draft",
 );
 assert.ok(
-  workflow.indexOf("gh release upload") < workflow.indexOf("gh release edit \"$RELEASE_TAG\" --draft=false"),
+  workflow.indexOf("gh release upload") <
+    workflow.indexOf('gh release edit "$RELEASE_TAG" --draft=false --prerelease'),
   "candidate assets must upload before the release becomes immutable",
 );
 assert.match(workflow, /\.assets \| length/, "candidate workflow must verify asset count");
