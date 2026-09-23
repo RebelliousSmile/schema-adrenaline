@@ -5,6 +5,11 @@ on:
     tags:
       - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing stable tag to promote
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -16,8 +21,10 @@ concurrency:
 
 jobs:
   release:
-    if: ${{ !contains(github.ref_name, '-') }}
+    if: ${{ !contains(inputs.tag || github.ref_name, '-') }}
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,7 +36,7 @@ jobs:
           node-version: "20.x"
 
       - name: Verify tag matches package version
-        run: node -e 'const pkg=require("./package.json"); if(process.env.GITHUB_REF_NAME !== `v${pkg.version}`) process.exit(1)'
+        run: node -e 'const pkg=require("./package.json"); if(process.env.RELEASE_TAG !== `v${pkg.version}`) process.exit(1)'
 
       - name: Install dependencies
         run: npm ci
@@ -38,7 +45,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          manifest="release-train/schema-adrenaline-$GITHUB_REF_NAME.json"
+          manifest="release-train/schema-adrenaline-$RELEASE_TAG.json"
           test -f "$manifest"
           npm run release-train:assert -- "$manifest"
           expected=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.provider.commit)' "$manifest")
@@ -58,7 +65,7 @@ jobs:
       - name: Download verified candidate asset
         id: candidate
         run: |
-          manifest="release-train/schema-adrenaline-$GITHUB_REF_NAME.json"
+          manifest="release-train/schema-adrenaline-$RELEASE_TAG.json"
           url=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.provider.archiveUrl)' "$manifest")
           sha=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.provider.sha256)' "$manifest")
           curl --fail --location --proto '=https' --output candidate.tgz "$url"
@@ -72,24 +79,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            test "$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft)" = "true"
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = "true"
           else
-            gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "$GITHUB_REF_NAME" --generate-notes
+            gh release create "$RELEASE_TAG" --draft --verify-tag --title "$RELEASE_TAG" --generate-notes
           fi
-          gh release upload "$GITHUB_REF_NAME" candidate.tgz candidate.tgz.sha256 --clobber
+          gh release upload "$RELEASE_TAG" candidate.tgz candidate.tgz.sha256 --clobber
 
       - name: Publish immutable release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release edit "$GITHUB_REF_NAME" --draft=false
+          gh release edit "$RELEASE_TAG" --draft=false
           for attempt in {1..12}; do
-            immutable=$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq .immutable)
-            digest=$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.assets[] | select(.name | endswith(".tgz")) | .digest')
+            immutable=$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" --jq .immutable)
+            digest=$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" --jq '.assets[] | select(.name | endswith(".tgz")) | .digest')
             if test "$immutable" = "true" && test -n "$digest"; then break; fi
             sleep 5
           done
           test "$immutable" = "true"
-          test "$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.assets | length')" = "2"
+          test "$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" --jq '.assets | length')" = "2"
           test "$digest" = "sha256:${{ steps.candidate.outputs.sha }}"
