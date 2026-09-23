@@ -20,12 +20,13 @@ status: in-progress
 
 ```mermaid
 flowchart TD
-  A[Archive candidate] --> B[Preuve Lantern]
+  A[Commit fournisseur + archive candidate] --> B[Preuve Lantern]
   A --> C[Preuve Handbook]
   B --> D[Train approuvé]
   C --> D
-  D --> E[Tag final]
-  E --> F[Release avec mêmes octets]
+  D --> E[Manifeste final, descendant du commit fournisseur]
+  E --> F[Tag final]
+  F --> G[Release avec mêmes octets]
 ```
 
 ## Test Scope
@@ -64,7 +65,7 @@ journey
 > Obtenir les preuves propriétaires manquantes sans importer les adaptateurs dans ce dépôt.
 
 1. Faire ajouter dans Lantern et Handbook une commande Adrenaline `release-train:assert` qui produit la preuve JSON convenue.
-2. Épingler leurs commits complets dans le manifeste, lancer le workflow, puis promouvoir seulement l'archive SHA-vérifiée.
+2. Épingler le commit fournisseur qui a produit la candidate et les commits complets des consommateurs dans le manifeste final. Le tag final porte ce manifeste (il est donc un descendant du commit fournisseur); le workflow compare l'archive candidate au paquet produit à ce tag avant de promouvoir seulement les octets SHA-vérifiés.
 3. Fermer les issues uniquement après observation des preuves, de la release et des trois CI vertes.
 
 ## Test acceptance criteria
