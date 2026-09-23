@@ -124,30 +124,40 @@ export const PointsJouables = ValeurJouable.extend({
   current: Points.meta({ description: "Nombre de points actuel.", examples: [7, 26] }),
   maximum: Points.meta({ description: "Borne haute des points.", examples: [10, 30] }),
 }).meta({
-  description:
-    "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum.",
+  description: "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum.",
 });
 
 /** Ressource jouable cumulée sur une campagne. */
 export const CumulJouable = ValeurJouable.meta({
-  description:
-    "Ressource jouable cumulée. Les codecs vérifient minimum ≤ current ≤ maximum.",
+  description: "Ressource jouable cumulée. Les codecs vérifient minimum ≤ current ≤ maximum.",
 });
 
 /** Probabilité de transmission jouable, bornée à 100 %. */
 export const ProbabiliteJouable = ValeurJouable.extend({
-  minimum: z.int().min(0).max(100).meta({
-    description: "Borne basse de la probabilité de transmission.",
-    examples: [0],
-  }),
-  current: z.int().min(0).max(100).meta({
-    description: "Probabilité de transmission actuelle.",
-    examples: [80],
-  }),
-  maximum: z.int().min(0).max(100).meta({
-    description: "Borne haute de la probabilité de transmission.",
-    examples: [100],
-  }),
+  minimum: z
+    .int()
+    .min(0)
+    .max(100)
+    .meta({
+      description: "Borne basse de la probabilité de transmission.",
+      examples: [0],
+    }),
+  current: z
+    .int()
+    .min(0)
+    .max(100)
+    .meta({
+      description: "Probabilité de transmission actuelle.",
+      examples: [80],
+    }),
+  maximum: z
+    .int()
+    .min(0)
+    .max(100)
+    .meta({
+      description: "Borne haute de la probabilité de transmission.",
+      examples: [100],
+    }),
 }).meta({
   description:
     "Probabilité de transmission jouable. Les codecs vérifient minimum ≤ current ≤ maximum.",

@@ -84,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Migration
 
 - Convert every legacy playable scalar `n` to `{ minimum: 0, current: n,
-  maximum: n }`. This preserves the recorded value without inventing a capacity.
+maximum: n }`. This preserves the recorded value without inventing a capacity.
 
 ## [1.1.1] - 2026-09-15
 

@@ -258,6 +258,23 @@ function requireContrast(
     throw new Error(`contrast ${foreground}/${background} is ${ratio.toFixed(2)}:1`);
 }
 
+function requireStrongerHoverContrast(
+  tokens: RecordValue,
+  resting: string,
+  hover: string,
+  background: string,
+): void {
+  requireContrast(tokens, resting, background);
+  requireContrast(tokens, hover, background);
+  const restRatio = contrast(text(tokens[resting], resting), text(tokens[background], background));
+  const hoverRatio = contrast(text(tokens[hover], hover), text(tokens[background], background));
+  if (hoverRatio <= restRatio) {
+    throw new Error(
+      `contrast ${hover}/${background} is ${hoverRatio.toFixed(2)}:1 and must exceed ${resting} (${restRatio.toFixed(2)}:1)`,
+    );
+  }
+}
+
 export function validateHandbookPack(
   source: unknown,
   packRoot = path.dirname(PACK_PATH),
@@ -326,7 +343,17 @@ export function validateHandbookPack(
     requireContrast(note, "--adrenaline-status-yellow-ink", "--adrenaline-status-yellow-bg");
     requireContrast(note, "--adrenaline-status-red-ink", "--adrenaline-status-red-bg");
     requireContrast(note, "--adrenaline-table-header-ink", "--adrenaline-table-header-bg");
-    requireContrast(note, "--adrenaline-callout-cartouche-ink", "--adrenaline-callout-cartouche-bg");
+    requireContrast(
+      note,
+      "--adrenaline-callout-cartouche-ink",
+      "--adrenaline-callout-cartouche-bg",
+    );
+    requireStrongerHoverContrast(
+      note,
+      "--link-color",
+      "--link-color-hover",
+      "--background-primary",
+    );
     requireContrast(workspace, "--text-normal", "--background-primary");
     requireContrast(workspace, "--interactive-accent", "--background-primary", 3);
   }
@@ -394,6 +421,12 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   const contrastLight = record(contrastStyle.light, "light");
   record(contrastLight.note, "note")["--text-normal"] = "#F4F0E8";
 
+  const weakLinkHover = clone(packSource) as RecordValue;
+  const weakLinkPack = record(weakLinkHover.pack, "pack");
+  const weakLinkStyle = record(weakLinkPack.style, "style");
+  const weakLinkLight = record(weakLinkStyle.light, "light");
+  record(weakLinkLight.note, "note")["--link-color-hover"] = "#C44925";
+
   const missingNoteToken = clone(packSource) as RecordValue;
   const noteTokenPack = record(missingNoteToken.pack, "pack");
   const noteTokenStyle = record(noteTokenPack.style, "style");
@@ -424,6 +457,7 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   refused("missing asset", () => validateHandbookPack(missing));
   refused("unsafe token", () => validateHandbookPack(unsafe));
   refused("low contrast", () => validateHandbookPack(lowContrast));
+  refused("link hover weaker than rest", () => validateHandbookPack(weakLinkHover));
   refused("missing note token", () => validateHandbookPack(missingNoteToken));
   refused("texture token in workspace", () => validateHandbookPack(workspaceTexture));
   refused("missing font declaration", () => validateHandbookPack(missingFont));

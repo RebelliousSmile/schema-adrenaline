@@ -3,6 +3,7 @@ import path from "node:path";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import { TARGETS } from "../src/zod/constants";
+import { ADRENALINE_SCHEMA_VERSION } from "../src/contract-version.js";
 
 /**
  * Mesure la qualité des schémas générés, plutôt que de l'affirmer.
@@ -33,7 +34,8 @@ import { TARGETS } from "../src/zod/constants";
  */
 
 const MAX_SAFE = Number.MAX_SAFE_INTEGER;
-const VERSION: string = JSON.parse(fs.readFileSync("package.json", "utf-8")).version;
+/* npm releases can move independently. Only this cited contract baseline has a frozen schema tree. */
+const VERSION = ADRENALINE_SCHEMA_VERSION;
 
 type Compte = { total: number; decrits: number; nus: string[] };
 
@@ -266,14 +268,9 @@ function run(): void {
       const data = JSON.parse(fs.readFileSync(f, "utf-8"));
       if (path.basename(f).startsWith("plage-")) {
         if (valider(data)) {
-          console.log(
-            `  ✓ structure acceptée, ordre délégué aux codecs : ${path.basename(f)}`,
-          );
+          console.log(`  ✓ structure acceptée, ordre délégué aux codecs : ${path.basename(f)}`);
         } else {
-          console.error(
-            `  ✗ structure refusée à tort : ${path.basename(f)}`,
-            valider.errors,
-          );
+          console.error(`  ✗ structure refusée à tort : ${path.basename(f)}`, valider.errors);
           echecs++;
         }
         continue;

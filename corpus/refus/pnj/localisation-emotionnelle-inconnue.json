@@ -14,9 +14,7 @@
           "current": 2,
           "maximum": 2
         },
-        "localisations": [
-          "ennui"
-        ]
+        "localisations": ["ennui"]
       }
     }
   }

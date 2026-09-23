@@ -153,9 +153,7 @@
           "current": 2,
           "maximum": 2
         },
-        "localisations": [
-          "peur"
-        ]
+        "localisations": ["peur"]
       }
     }
   }

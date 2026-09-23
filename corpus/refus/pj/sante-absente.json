@@ -55,9 +55,7 @@
           "current": 2,
           "maximum": 2
         },
-        "localisations": [
-          "torse"
-        ]
+        "localisations": ["torse"]
       }
     },
     "mentales": {
@@ -73,9 +71,7 @@
           "current": 2,
           "maximum": 2
         },
-        "localisations": [
-          "peur"
-        ]
+        "localisations": ["peur"]
       }
     }
   }
