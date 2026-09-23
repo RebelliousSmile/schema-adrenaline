@@ -1,6 +1,6 @@
 ---
 objective: "Les issues ouvertes non obsolètes sont corrigées, vérifiées et clôturables : les contrôles locaux sont complets, la CI est à nouveau verte, et les publications suivent une preuve de promotion immuable."
-status: blocked
+status: in-progress
 ---
 
 # Plan: Remédier aux issues ouvertes d'Adrenaline

@@ -25,6 +25,8 @@ jobs:
 
       - name: Check schemas and Handbook package
         working-directory: schema-adrenaline
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: npm run check
 
       - name: Verify generated schemas are committed
