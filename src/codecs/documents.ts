@@ -19,6 +19,7 @@ export type AdrenalineDocumentTarget = keyof typeof ADRENALINE_DOCUMENT_SCHEMAS;
 export type Pj = z.infer<typeof PersonnageJoueur>;
 export type Pnj = z.infer<typeof PersonnageNonJoue>;
 export type MonstreDocument = z.infer<typeof Monstre>;
+export type MonstreResolu = Omit<MonstreDocument, "etatActif" | "etatAlternatif" | "etats">;
 
 export interface AdrenalineDocumentByTarget {
   pj: Pj;
@@ -66,12 +67,72 @@ function codec<T>(schema: ZodType<T>): AdrenalineDocumentCodec<T> {
   };
 }
 
+function normaliserEtatsMonstre(value: MonstreDocument): MonstreDocument {
+  if (!value.etatAlternatif) return value;
+  if (value.etats || value.etatActif) {
+    throw new Error("A monster cannot mix etatAlternatif with etats or etatActif");
+  }
+
+  const { etatAlternatif, ...base } = value;
+  const delta = {
+    ...(etatAlternatif.caracteristiques
+      ? { caracteristiques: { ...base.caracteristiques, ...etatAlternatif.caracteristiques } }
+      : {}),
+    ...(etatAlternatif.zoneDeDetection ? { zoneDeDetection: etatAlternatif.zoneDeDetection } : {}),
+    ...(etatAlternatif.deplacement ? { deplacement: etatAlternatif.deplacement } : {}),
+    ...(etatAlternatif.actionsParRound !== undefined
+      ? { actionsParRound: etatAlternatif.actionsParRound }
+      : {}),
+    ...(etatAlternatif.notes ? { notes: etatAlternatif.notes } : {}),
+  };
+
+  return {
+    ...base,
+    etats: [
+      {
+        id: "alternatif-historique",
+        nom: etatAlternatif.nom,
+        ...(etatAlternatif.declencheurs ? { declencheurs: etatAlternatif.declencheurs } : {}),
+        delta,
+      },
+    ],
+  };
+}
+
+function parseMonstre(value: unknown): MonstreDocument {
+  return normaliserEtatsMonstre(parseWith(Monstre, value));
+}
+
+function codecMonstre(): AdrenalineDocumentCodec<MonstreDocument> {
+  return {
+    schema: Monstre,
+    parse: parseMonstre,
+    parseJson: (source) => parseMonstre(JSON.parse(source) as unknown),
+    stringifyJson: (value) => `${JSON.stringify(parseMonstre(value), null, 2)}\n`,
+    parseToml: (source) => parseMonstre(parseToml(source)),
+    stringifyToml: (value) => stringifyToml(parseMonstre(value) as TomlTable),
+  };
+}
+
+/** Retourne le profil de base ou le remplacement complet de l'état demandé. */
+export function resoudreEtatMonstre(
+  value: MonstreDocument,
+  etatId = value.etatActif ?? "base",
+): MonstreResolu {
+  const monstre = normaliserEtatsMonstre(value);
+  const { etatActif: _etatActif, etatAlternatif: _etatAlternatif, etats, ...base } = monstre;
+  if (etatId === "base") return base;
+  const etat = etats?.find((candidate) => candidate.id === etatId);
+  if (!etat) throw new Error(`Unknown monster state: ${etatId}`);
+  return { ...base, ...etat.delta };
+}
+
 export const ADRENALINE_DOCUMENT_CODECS: {
   [Target in AdrenalineDocumentTarget]: AdrenalineDocumentCodec<AdrenalineDocumentByTarget[Target]>;
 } = {
   pj: codec(PersonnageJoueur),
   pnj: codec(PersonnageNonJoue),
-  monstre: codec(Monstre),
+  monstre: codecMonstre(),
 };
 
 export const parsePjJson = ADRENALINE_DOCUMENT_CODECS.pj.parseJson;
