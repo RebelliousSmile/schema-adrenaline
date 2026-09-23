@@ -60,6 +60,8 @@ jobs:
           test -n "$approved_train"
 
       - name: Check provider release contract
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: npm run release:verify-provider
 
       - name: Download verified candidate asset
