@@ -10,7 +10,7 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-The current major contract is `schema-adrenaline@2.0.0`. Three character schemas are
+The current major contract is `schema-adrenaline@2.1.0`. Three character schemas are
 published under the `adrenaline` folder, each covered by JSON and TOML examples
 and a shared conformance corpus.
 
@@ -28,11 +28,10 @@ them, and a game folder holds only what is specific to it.
 
 ### What they do not carry
 
-A sheet records a character, not the state of a session. The printed page also
-holds stress dice, malus tracks, sustained wounds with their location and
-duration, and an "Actuel" column beside each characteristic. The playable
-numeric values stored here carry `minimum`, `current` and `maximum`; stress dice,
-malus tracks and sustained wounds remain session state rather than sheet data.
+A sheet records a durable profile and may carry an optional `etatDePartie` block
+for the state of a session. It holds stress dice, malus tracks and sustained
+wounds with their location and duration without replacing the reference profile.
+The playable numeric values stored here carry `minimum`, `current` and `maximum`.
 
 Threshold values are stored as read, never recomputed. The engine derives them
 (light = base + the tens digit of two characteristics, serious = light + 5, deep
