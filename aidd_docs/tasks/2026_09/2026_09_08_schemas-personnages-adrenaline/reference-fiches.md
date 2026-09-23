@@ -366,3 +366,16 @@ VOL 30 en prédisent 9 ; l'agricultrice donne un léger physique de 14 là où S
 FOR 30 et CON 40 en prédisent 13. Trois autres cas tombent juste. Écart de 1 non
 expliqué — arrondi, règle non lue, ou coquille d'impression. Sans conséquence de
 schéma : les valeurs sont stockées telles que lues, jamais recalculées.
+
+## Révision du 2026-09-23 — parité des trois références Design
+
+Les captures `Design/pj.jpg`, `Design/pnj.jpg` et `Design/monstre.jpg` servent
+désormais aussi de contrôle de parité. Leur inventaire détaillé est dans
+`../2026_09_23_zombiology-schema-parity/ecarts-reference.md`.
+
+La révision confirme que les profils durables PJ et PNJ sont déjà couverts. Les
+dés de stress, malus et états encaissés restent des données de partie, distinctes
+du profil. Elle relève quatre manques de contrat Monstre : état actif, collection
+d'états, delta complet d'état, et combat structuré (défense/actions). La suite ne
+déduit aucune règle nouvelle de la seule présentation : tout terme ambigu doit
+être recoupé avec les sources d'autorité listées plus haut.
