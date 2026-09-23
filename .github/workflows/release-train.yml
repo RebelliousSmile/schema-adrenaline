@@ -35,21 +35,21 @@ jobs:
         with:
           repository: RebelliousSmile/lantern
           ref: ${{ steps.train.outputs.lantern }}
-          path: lantern
+          path: release-train-lantern
       - uses: actions/checkout@v4
         with:
           repository: RebelliousSmile/obsidian-handbook
           ref: ${{ steps.train.outputs.handbook }}
-          path: handbook
+          path: release-train-handbook
       - name: Run consumer-owned proofs
         env:
           MANIFEST: ${{ github.workspace }}/${{ inputs.manifest }}
           SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}
         run: |
-          (cd lantern && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
-          (cd handbook && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
-          (cd lantern && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > lantern-proof.json
-          (cd handbook && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > handbook-proof.json
+          (cd release-train-lantern && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
+          (cd release-train-handbook && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
+          (cd release-train-lantern && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > lantern-proof.json
+          (cd release-train-handbook && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > handbook-proof.json
           npx tsx tools/verify-release-train-proofs.ts "$MANIFEST" lantern-proof.json handbook-proof.json
       - uses: actions/upload-artifact@v4
         with:
