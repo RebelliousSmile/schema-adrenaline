@@ -1,0 +1,107 @@
+name: Publish candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Candidate tag to publish (vX.Y.Z-rc.N)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-candidate-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Verify dispatch and candidate tag
+        run: |
+          test "$GITHUB_REF" = "refs/heads/main"
+          git fetch origin main --tags
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+          case "$RELEASE_TAG" in
+            v[0-9]*.[0-9]*.[0-9]*-rc.[0-9]*) ;;
+            *) echo "candidate tag must be vX.Y.Z-rc.N" >&2; exit 1 ;;
+          esac
+          package_tag="v$(node -p 'require("./package.json").version')"
+          case "$RELEASE_TAG" in
+            "$package_tag"-rc.[0-9]*) ;;
+            *) echo "candidate tag does not match $package_tag" >&2; exit 1 ;;
+          esac
+          tag_commit=$(git ls-remote origin "refs/tags/$RELEASE_TAG^{}" | awk '{print $1}')
+          if test -z "$tag_commit"; then
+            tag_commit=$(git ls-remote origin "refs/tags/$RELEASE_TAG" | awk '{print $1}')
+          fi
+          if test -n "$tag_commit" && test "$tag_commit" != "$GITHUB_SHA"; then
+            echo "candidate tag already points outside this dispatch" >&2
+            exit 1
+          fi
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh release view "$RELEASE_TAG" --json isPrerelease --jq .isPrerelease)" = "true"
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check provider release contract
+        run: npm run release:verify-provider
+
+      - name: Prepare candidate archive
+        id: candidate
+        run: |
+          npm run release:prepare -- --output candidate
+          archive=$(find candidate -maxdepth 1 -type f -name '*.tgz')
+          test -n "$archive"
+          test "$(find candidate -maxdepth 1 -type f -name '*.tgz' | wc -l)" = "1"
+          checksum="$archive.sha256"
+          test -f "$checksum"
+          sha=$(sha256sum "$archive" | cut -d ' ' -f 1)
+          test "$(cat "$checksum")" = "$sha  $(basename "$archive")"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+          echo "checksum=$checksum" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Create or resume candidate prerelease
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            test "$(gh release view "$RELEASE_TAG" --json isPrerelease --jq .isPrerelease)" = "true"
+          else
+            gh release create "$RELEASE_TAG" --prerelease --target "$GITHUB_SHA" --title "$RELEASE_TAG" --generate-notes
+          fi
+          git fetch origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
+          test "$(git rev-parse "$RELEASE_TAG^{commit}")" = "$GITHUB_SHA"
+          gh release upload "$RELEASE_TAG" "${{ steps.candidate.outputs.archive }}" "${{ steps.candidate.outputs.checksum }}" --clobber
+
+      - name: Verify immutable candidate release
+        run: |
+          for attempt in {1..12}; do
+            release=$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG")
+            immutable=$(printf '%s' "$release" | jq -r .immutable)
+            assets=$(printf '%s' "$release" | jq -r '.assets | length')
+            digest=$(printf '%s' "$release" | jq -r '.assets[] | select(.name | endswith(".tgz")) | .digest')
+            prerelease=$(printf '%s' "$release" | jq -r .prerelease)
+            if test "$immutable" = "true" && test "$assets" = "2" && test "$digest" = "sha256:${{ steps.candidate.outputs.sha }}" && test "$prerelease" = "true"; then break; fi
+            sleep 5
+          done
+          test "$immutable" = "true"
+          test "$assets" = "2"
+          test "$prerelease" = "true"
+          test "$digest" = "sha256:${{ steps.candidate.outputs.sha }}"
