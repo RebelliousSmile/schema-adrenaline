@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { ADRENALINE_SCHEMA_VERSION } from "../src/contract-version.js";
 
 const root = process.cwd();
 const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "schema-adrenaline-package-"));
@@ -39,7 +40,7 @@ try {
         file === "README.md" ||
         file === "package.json" ||
         file.startsWith("dist/") ||
-        file.startsWith("schemas/adrenaline/2.0.0/") ||
+        file.startsWith(`schemas/adrenaline/${ADRENALINE_SCHEMA_VERSION}/`) ||
         file.startsWith("corpus/") ||
         file.startsWith("examples/") ||
         file === "cross-tool-provider.json" ||
@@ -78,7 +79,10 @@ assert.equal(ADRENALINE_TOML_VERSION, "1.0.0");
 assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj", "pnj"]);
 
 const schema = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/schemas/pnj.schema.json")), "utf8"));
-assert.match(schema.$id, /\\/schemas\\/adrenaline\\/2\\.0\\.0\\/pnj\\.schema\\.json$/);
+assert.match(
+  schema.$id,
+  new RegExp("/schemas/adrenaline/${ADRENALINE_SCHEMA_VERSION.replaceAll(".", "\\\\.")}/pnj\\.schema\\.json$"),
+);
 const provider = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/cross-tool-provider.json")), "utf8"));
 assert.equal(provider.contractVersion, ADRENALINE_CONTRACT_VERSION);
 const cases = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/" + provider.corpus)), "utf8"));
