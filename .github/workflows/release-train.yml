@@ -45,6 +45,8 @@ jobs:
         env:
           MANIFEST: ${{ github.workspace }}/${{ inputs.manifest }}
         run: |
+          (cd lantern && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
+          (cd handbook && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
           (cd lantern && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > lantern-proof.json
           (cd handbook && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > handbook-proof.json
           npx tsx tools/verify-release-train-proofs.ts "$MANIFEST" lantern-proof.json handbook-proof.json
