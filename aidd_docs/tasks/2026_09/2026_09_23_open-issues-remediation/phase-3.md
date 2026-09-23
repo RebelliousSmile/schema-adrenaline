@@ -12,7 +12,8 @@ status: in-progress
 .
 ├── .github/workflows/ci.yml       ✏️ ne redevient verte qu'avec les assertions locales réparées
 ├── release-train/                 ✏️ contient le manifeste de la candidate finale
-├── .github/workflows/release*.yml ✏️ prouve et promeut l'archive sans reconstruction
+├── .github/workflows/release.yml  ✏️ lit le manifeste du tag sans résolution Node ambiguë
+├── .github/workflows/release-train.yml ✏️ installe et isole les consommateurs avant leurs preuves
 └── aidd_docs/tasks/.../plan.md    ✏️ consigne les preuves observées et la clôture des tickets
 ```
 
@@ -25,8 +26,9 @@ flowchart TD
   B --> D[Train approuvé]
   C --> D
   D --> E[Manifeste final, descendant du commit fournisseur]
-  E --> F[Tag final]
-  F --> G[Release avec mêmes octets]
+  E --> F[Correction de promotion vérifiée]
+  F --> G[Tag final recréé avec autorisation]
+  G --> H[Release avec mêmes octets]
 ```
 
 ## Test Scope
@@ -40,38 +42,37 @@ journey
     system: publier une candidate avec manifeste et commits immuables => train prêt à être asserté: 5: system
   section Happy path
     system: exécuter le workflow de train puis le tag final => deux preuves et une release digest-identique sont publiés: 5: system
-  section Edge case - preuve ou historique manquant
-    system: omettre une preuve ou laisser un tag sans release => train ou validation échoue avant publication: 1: system
+  section Edge case - tag stable défaillant
+    system: corriger le workflow sans créer d'asset puis recréer le tag autorisé => la promotion reprend depuis l'archive candidate inchangée: 1: system
 ```
 
 ## Tasks to do
 
-### `1)` Finaliser les préconditions fournisseur
+### `1)` Corriger la reprise sûre de promotion
 
-> S'assurer que la CI de `main` est saine avant une nouvelle publication.
+> Rendre lisible depuis le workflow le manifeste déjà validé, sans modifier l'archive candidate ni créer un asset supplémentaire.
 
-1. Pousser les phases précédentes et observer trois runs CI successifs sur `main`.
-2. Vérifier qu'une violation locale volontaire continue d'être rejetée par `check`.
+1. Remplacer la résolution Node du manifeste par un chemin relatif explicite (`./release-train/...`).
+2. Valider la PR et confirmer que le workflow échoué n'a créé ni draft ni asset `v2.4.0`.
 
-### `2)` Réconcilier l'historique des tags et releases
+### `2)` Reprendre le tag final sous contrôle
 
-> Faire correspondre le catalogue GitHub aux tags réels sans publier des octets réécrits pour l'historique.
+> Après autorisation explicite, faire pointer `v2.4.0` vers le commit de correction, puis laisser le workflow promouvoir l'archive RC inchangée.
 
-1. Publier les releases complètes compatibles ou retirer les tags prématurés explicitement autorisés par l'issue.
-2. Vérifier que `git tag` et `gh release list` sont cohérents, puis publier une release comprenant `cross-tool-provider.json`.
+1. Supprimer localement et à distance le tag sans release, puis le recréer au commit approuvé et le pousser.
+2. Observer le workflow `release.yml` : train vert au même SHA, SHA-256 de l'asset candidat, tarball local équivalent, deux assets et release immuable.
 
-### `3)` Achever la convergence consommateur du train
+### `3)` Auditer la clôture des issues
 
-> Obtenir les preuves propriétaires manquantes sans importer les adaptateurs dans ce dépôt.
 
-1. Faire ajouter dans Lantern et Handbook une commande Adrenaline `release-train:assert` qui produit la preuve JSON convenue.
-2. Épingler le commit fournisseur qui a produit la candidate et les commits complets des consommateurs dans le manifeste final. Le tag final porte ce manifeste (il est donc un descendant du commit fournisseur); le workflow compare l'archive candidate au paquet produit à ce tag avant de promouvoir seulement les octets SHA-vérifiés.
-3. Fermer les issues uniquement après observation des preuves, de la release et des trois CI vertes.
+1. Vérifier le catalogue final : chaque tag conservé possède une release complète, et `v2.4.0` expose `cross-tool-provider.json`.
+2. Recueillir les preuves Lantern et Handbook de l'exécution de train, puis contrôler les trois CI `main` consécutives demandées.
+3. Vérifier issue par issue les critères #11, #13 à #19 et #21 ; fermer uniquement celles dont la preuve est complète.
 
 ## Test acceptance criteria
 
 | Task | Acceptance criteria |
 | ---- | ------------------- |
-| 1 | Trois exécutions CI consécutives de `main` réussissent et une violation de porte reste détectée. |
-| 2 | Tous les tags conservés possèdent une release complète et le tarball publié contient `cross-tool-provider.json`. |
-| 3 | Lantern et Handbook attestent à leurs commits immuables la même URL, intégrité et version; la release attache strictement ces octets. |
+| 1 | Le workflow de release peut lire le manifeste sur le tag et aucun asset n'est créé par le chemin de reprise. |
+| 2 | `v2.4.0` est immuable, comporte exactement le tarball candidat et son checksum, et leurs SHA-256 correspondent au manifeste. |
+| 3 | Toutes les issues ciblées ont une preuve d'acceptation actuelle; les issues satisfaites sont fermées seulement après cet audit. |
