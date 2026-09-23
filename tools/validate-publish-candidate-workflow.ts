@@ -49,6 +49,25 @@ assert.ok(
     workflow.indexOf('gh release edit "$RELEASE_TAG" --draft=false --prerelease'),
   "candidate assets must upload before the release becomes immutable",
 );
+assert.match(
+  workflow,
+  /git tag -a "\$RELEASE_TAG" "\$GITHUB_SHA"/,
+  "candidate workflow must create its tag before creating a draft release",
+);
+assert.match(
+  workflow,
+  /git push origin "refs\/tags\/\$RELEASE_TAG"/,
+  "candidate workflow must publish the exact candidate tag",
+);
+assert.match(
+  workflow,
+  /--verify-tag/,
+  "candidate draft must attach to the previously verified tag",
+);
+assert.ok(
+  workflow.indexOf("git tag -a") < workflow.indexOf("gh release create"),
+  "candidate tag must exist before creating its draft release",
+);
 assert.match(workflow, /\.assets \| length/, "candidate workflow must verify asset count");
 assert.match(
   workflow,
