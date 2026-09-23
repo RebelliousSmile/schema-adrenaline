@@ -26,5 +26,17 @@
       "current": 30,
       "maximum": 30
     }
+  },
+  "etatDePartie": {
+    "malus": {
+      "physique": 1
+    },
+    "etats": [
+      {
+        "nom": "Insensible",
+        "versant": "general",
+        "duree": "Pendant l'état actif"
+      }
+    ]
   }
 }

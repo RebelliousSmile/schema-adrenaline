@@ -185,4 +185,30 @@ for (const target of targets) {
   assert.ok(tomlWitnesses.has(target), `${target}: corpus must contain an accepted TOML case`);
 }
 
+for (const target of targets) {
+  const stateWitness = JSON.parse(
+    fs.readFileSync(path.join(root, "corpus", "temoins", target, "temoin.json"), "utf8"),
+  ) as Record<string, unknown>;
+  const codec = ADRENALINE_DOCUMENT_CODECS[target];
+  assert.doesNotThrow(
+    () => codec.parse(stateWitness),
+    `${target}: state-of-play witness must be accepted`,
+  );
+  assert.throws(
+    () =>
+      codec.parse({
+        ...stateWitness,
+        etatDePartie: {
+          etats: [{ nom: "État invalide", versant: "mental", localisation: "torse" }],
+        },
+      }),
+    `${target}: a mental state cannot use a physical location`,
+  );
+  assert.throws(
+    () => codec.parse({ ...stateWitness, etatDePartie: { inconnu: true } }),
+    `${target}: state-of-play must reject unknown properties`,
+  );
+  console.log(`✓ state-of-play witness and rejections: ${target}`);
+}
+
 console.log("\n✅ Canonical Adrenaline JSON/TOML contract passed all document targets.");

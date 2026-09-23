@@ -1,8 +1,14 @@
 import { z } from "zod";
-import { CaracteristiquesMentales, CaracteristiquesPhysiques } from "../common/caracteristiques.js";
+import { ActionDeCreature, DefenseDeCreature } from "../common/combat.js";
 import { Contagion } from "../common/contagion.js";
 import { NiveauDeDanger } from "../common/danger.js";
 import { Equipement } from "../common/equipement.js";
+import {
+  CaracteristiquesDeCreature,
+  DeltaEtatDeCreature,
+  EtatDeCreature,
+} from "../common/etat-monstre.js";
+import { EtatDePartie } from "../common/etat-de-partie.js";
 import { Competence } from "../common/formations.js";
 import { Meta } from "../common/meta.js";
 import { Narratif } from "../common/narratif.js";
@@ -10,32 +16,8 @@ import { Compte } from "../common/primitives.js";
 import { Protections } from "../common/protections.js";
 import { SanteDeCreature } from "../common/sante.js";
 
-/**
- * Les caractéristiques d'une créature : les quatre physiques requises, les
- * quatre mentales séparément optionnelles.
- *
- * Un profil de corps d'infecté porte les quatre physiques et la seule PER, qui
- * sert la détection des proies ; un prédateur pensant porte les huit et devient
- * cible d'attaques mentales.
- *
- * Composition par `extend` sur la forme partielle, jamais par `and` : une
- * intersection produirait un `allOf` de deux objets fermés qu'aucun document ne
- * satisfait. Vérifié sur Zod 4.3.6.
- */
-const CaracteristiquesDeCreature = CaracteristiquesPhysiques.extend(
-  CaracteristiquesMentales.partial().shape,
-).meta({
-  description:
-    "Caractéristiques d'une créature : les quatre physiques toujours, les mentales seulement si elle en a. Un corps d'infecté ne porte souvent que PER.",
-});
-
-/**
- * L'état alternatif d'une créature — le stimulé du générateur d'infectés.
- *
- * Rejoue les mêmes valeurs, modifiées. Ce qu'il ne redéclare pas reste celui de
- * l'état de base.
- */
-const EtatAlternatif = z
+/** Ancien état alternatif, lu pour compatibilité puis normalisé par les codecs. */
+const EtatAlternatifHistorique = z
   .strictObject({
     nom: z
       .string()
@@ -69,10 +51,7 @@ const EtatAlternatif = z
       description: "Ce que l'état change en plus des valeurs chiffrées.",
     }),
   })
-  .meta({
-    description:
-      "Un état alternatif : les mêmes valeurs, modifiées. Ce qu'il ne redéclare pas reste celui de l'état de base.",
-  });
+  .meta({ description: "Ancien format d'état alternatif, conservé pour lecture uniquement." });
 
 /**
  * Une créature du socle Adrenaline System.
@@ -156,8 +135,21 @@ export const Monstre = z
       description: "Nombre d'actions par round.",
       examples: [1],
     }),
-    etatAlternatif: EtatAlternatif.optional().meta({
-      description: "État second de la créature, quand elle en a un.",
+    defense: DefenseDeCreature.optional().meta({
+      description: "Défense de la créature quand elle en possède une.",
+    }),
+    actions: z.array(ActionDeCreature).optional().meta({
+      description: "Actions de combat ou capacités propres à la créature.",
+    }),
+    etatActif: z.string().min(1).optional().meta({
+      description:
+        "Identifiant de l'état actuellement actif. Absent ou `base` désigne le profil de base.",
+    }),
+    etats: z.array(EtatDeCreature).optional().meta({
+      description: "États identifiés de la créature, chacun portant un delta complet de profil.",
+    }),
+    etatAlternatif: EtatAlternatifHistorique.optional().meta({
+      description: "Ancien format lu pour compatibilité. Les nouveaux documents utilisent `etats`.",
     }),
     comportement: z
       .array(z.string().min(1).meta({ description: "Un trait de comportement." }))
@@ -186,6 +178,9 @@ export const Monstre = z
       description:
         "Une créature nommée et jouée mérite le même traitement qu'un personnage non joué.",
     }),
+    etatDePartie: EtatDePartie.optional().meta({
+      description: "Compteurs et états temporaires de la scène, séparés du profil de référence.",
+    }),
     meta: Meta.optional().meta({
       description: "Attribution et catalogage : d'où vient cette fiche.",
     }),
@@ -194,8 +189,7 @@ export const Monstre = z
     $id: "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/monstre.schema.json",
     title: "Créature — Adrenaline System",
     description:
-      "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, état alternatif, contagion générique et bloc narratif facultatifs.",
+      "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, états identifiés, combat structuré, contagion générique et bloc narratif facultatifs.",
   });
 
-export type EtatAlternatifValeur = z.infer<typeof EtatAlternatif>;
 export type MonstreValeur = z.infer<typeof Monstre>;

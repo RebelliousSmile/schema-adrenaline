@@ -1,3 +1,15 @@
 {
-  "nom": "Témoin"
+  "nom": "Témoin",
+  "etatDePartie": {
+    "malus": {
+      "mental": 1
+    },
+    "etats": [
+      {
+        "nom": "Anxiété",
+        "versant": "mental",
+        "localisation": "anxiete"
+      }
+    ]
+  }
 }

@@ -340,3 +340,16 @@ maximum = 30
 minimum = 0
 current = 60
 maximum = 60
+
+[etatDePartie.stress]
+adrenaline = 1
+panique = 0
+
+[etatDePartie.malus]
+physique = 2
+
+[[etatDePartie.etats]]
+nom = "Contusion"
+versant = "physique"
+localisation = "torse"
+duree = "Jusqu'aux soins"

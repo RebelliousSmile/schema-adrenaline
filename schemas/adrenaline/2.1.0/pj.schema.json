@@ -5,30 +5,13 @@
     "nom": {
       "type": "string",
       "minLength": 1,
-      "description": "Nom ou rôle, tel qu'il est écrit en en-tête de la fiche.",
+      "description": "Nom du personnage, en en-tête de la feuille.",
       "examples": [
-        "Sœur Madeleine",
-        "Le gardien du dépôt"
+        "Claire Vasseur"
       ]
-    },
-    "niveauDeDanger": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 100,
-      "description": "ND, imprimé en en-tête de fiche. Mesure l'opposition représentée. Sur une créature, il s'obtient en additionnant les ND du corps, de l'instinct et du type ; il n'est donc pas borné par le 5 de chaque composant.",
-      "examples": [
-        1,
-        3,
-        8
-      ]
-    },
-    "description": {
-      "description": "Le paragraphe de présentation, tel qu'il est lu à la table : silhouette, allure, ce qu'on perçoit au premier regard.",
-      "type": "string",
-      "minLength": 1
     },
     "identite": {
-      "description": "Bloc Identité, quand la fiche en porte un.",
+      "description": "Bloc Identité de la feuille. Facultatif : le livre le laisse libre au joueur.",
       "type": "object",
       "properties": {
         "nationalite": {
@@ -114,7 +97,6 @@
       "additionalProperties": false
     },
     "caracteristiques": {
-      "description": "Caractéristiques, chacune facultative : une fiche de figurant n'en chiffre qu'une ou deux, une fiche de personnage majeur les porte toutes les huit.",
       "type": "object",
       "properties": {
         "for": {
@@ -502,10 +484,20 @@
           ]
         }
       },
-      "additionalProperties": false
+      "required": [
+        "for",
+        "con",
+        "dex",
+        "rap",
+        "log",
+        "vol",
+        "per",
+        "cha"
+      ],
+      "additionalProperties": false,
+      "description": "Les huit caractéristiques jouables, chacune avec minimum, current et maximum. La qualité — le chiffre des dizaines — se recalcule et n'est pas stockée."
     },
     "sante": {
-      "description": "Bloc Santé. Absent ou complet : les fiches publiées portent leurs quatre seuils de chaque côté dès qu'elles en portent un.",
       "type": "object",
       "properties": {
         "physique": {
@@ -1387,10 +1379,10 @@
         "physique",
         "mental"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Bloc Santé. Chaque seuil jouable porte minimum, current et maximum ; les dés de stress, les malus et les blessures encaissées restent de l'état de partie."
     },
     "protections": {
-      "description": "Protections, chaque versant facultatif : une fiche peut ne chiffrer que le physique.",
       "type": "object",
       "properties": {
         "physiques": {
@@ -1765,10 +1757,15 @@
           "description": "Protections mentales : solidité, trait de caractère, bouclier."
         }
       },
-      "additionalProperties": false
+      "required": [
+        "physiques",
+        "mentales"
+      ],
+      "additionalProperties": false,
+      "description": "Les deux versants de la protection. Symétriques par construction : le socle traite le conflit mental comme le conflit physique."
     },
     "formations": {
-      "description": "Formations, quand la fiche les nomme. Souvent absentes : la fiche de PNJ liste plus volontiers les compétences seules.",
+      "description": "Formations du personnage. La feuille en imprime trois colonnes — classe sociale, professionnelle, personnelle — mais la liste n'est pas bornée : d'autres s'acquièrent en campagne.",
       "type": "array",
       "items": {
         "type": "object",
@@ -2018,175 +2015,8 @@
         "description": "Une formation et les compétences qu'elle porte."
       }
     },
-    "competences": {
-      "description": "Compétences du personnage. La fiche publiée les regroupe sous un bloc unique, hors des formations, et note pour chacune sa caractéristique et son total.",
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "nom": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
-            "examples": [
-              "Arme sociale",
-              "Athlétisme"
-            ]
-          },
-          "specialite": {
-            "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
-            "examples": [
-              "Négociation"
-            ],
-            "type": "string",
-            "minLength": 1
-          },
-          "pourcentage": {
-            "type": "object",
-            "properties": {
-              "minimum": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200,
-                "description": "Borne basse du pourcentage de d100.",
-                "examples": [
-                  0
-                ]
-              },
-              "current": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200,
-                "description": "Pourcentage de d100 actuel.",
-                "examples": [
-                  40,
-                  80
-                ]
-              },
-              "maximum": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200,
-                "description": "Borne haute du pourcentage de d100.",
-                "examples": [
-                  100,
-                  200
-                ]
-              }
-            },
-            "required": [
-              "minimum",
-              "current",
-              "maximum"
-            ],
-            "additionalProperties": false,
-            "description": "Pourcentage jouable de la compétence seule, hors caractéristique.",
-            "examples": [
-              {
-                "minimum": 0,
-                "current": 30,
-                "maximum": 30
-              }
-            ]
-          },
-          "caracteristique": {
-            "description": "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
-            "examples": [
-              "cha"
-            ],
-            "type": "string",
-            "enum": [
-              "for",
-              "con",
-              "dex",
-              "rap",
-              "log",
-              "vol",
-              "per",
-              "cha"
-            ]
-          },
-          "total": {
-            "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
-            "examples": [
-              {
-                "minimum": 0,
-                "current": 50,
-                "maximum": 50
-              }
-            ],
-            "type": "object",
-            "properties": {
-              "minimum": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200,
-                "description": "Borne basse du pourcentage de d100.",
-                "examples": [
-                  0
-                ]
-              },
-              "current": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200,
-                "description": "Pourcentage de d100 actuel.",
-                "examples": [
-                  40,
-                  80
-                ]
-              },
-              "maximum": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 200,
-                "description": "Borne haute du pourcentage de d100.",
-                "examples": [
-                  100,
-                  200
-                ]
-              }
-            },
-            "required": [
-              "minimum",
-              "current",
-              "maximum"
-            ],
-            "additionalProperties": false
-          },
-          "avantages": {
-            "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
-            "examples": [
-              [
-                "Gestion du stress"
-              ]
-            ],
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Un avantage, en une ligne."
-            }
-          },
-          "notes": {
-            "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
-            "examples": [
-              "Judo"
-            ],
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "nom",
-          "pourcentage"
-        ],
-        "additionalProperties": false,
-        "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
-      }
-    },
     "equipement": {
-      "description": "Ce que le personnage porte sur lui et ce dont il se sert.",
+      "description": "Bloc Équipement de la feuille.",
       "type": "object",
       "properties": {
         "possessions": {
@@ -2413,80 +2243,96 @@
       },
       "additionalProperties": false
     },
-    "narratif": {
-      "description": "Bloc narratif : rôle, attitude, répliques, notes réservées au meneur.",
+    "parametresDuJeu": {
       "type": "object",
       "properties": {
-        "role": {
-          "description": "Rôle du personnage dans le scénario.",
+        "joueur": {
+          "description": "Personne qui joue le personnage.",
+          "type": "string",
+          "minLength": 1
+        },
+        "typeDeCreation": {
+          "description": "Attribution distributive ou tirage aléatoire.",
           "examples": [
-            "Médecin du camp"
+            "equitable"
           ],
           "type": "string",
-          "minLength": 1
+          "enum": [
+            "equitable",
+            "aleatoire"
+          ]
         },
-        "attitude": {
-          "description": "Attitude envers les personnages joueurs. Chaîne libre et non ensemble fermé : les fiches la nuancent volontiers au-delà du triptyque favorable, neutre, hostile.",
+        "typeDeScenario": {
+          "description": "Format de la partie pour laquelle la fiche a été produite.",
           "examples": [
-            "Méfiante, mais prête à soigner quiconque le demande"
+            "campagne"
           ],
           "type": "string",
-          "minLength": 1
+          "enum": [
+            "one-shot",
+            "campagne"
+          ]
         },
-        "personnalite": {
-          "description": "Traits de personnalité, un par entrée.",
+        "declinaisonDeCampagne": {
+          "description": "Déclinaison de la campagne. Proposée par le générateur officiel ; la feuille imprimée ne porte pas cette case.",
           "examples": [
-            [
-              "Obstinée",
-              "Économe de ses mots"
-            ]
+            "storyline"
           ],
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Un trait de personnalité."
-          }
-        },
-        "historique": {
-          "description": "D'où vient le personnage, en un paragraphe.",
           "type": "string",
-          "minLength": 1
+          "enum": [
+            "bac-a-sable",
+            "storyline"
+          ]
         },
-        "evolutionPossible": {
-          "description": "Ce que le personnage peut devenir selon le tour que prend la partie.",
-          "type": "string",
-          "minLength": 1
-        },
-        "interpretation": {
-          "description": "Conseils de jeu : approche, tics et manières, réactions émotionnelles.",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Un conseil de jeu."
-          }
-        },
-        "repliques": {
-          "description": "Répliques types, à lancer telles quelles.",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Une réplique, à lancer telle quelle."
-          }
-        },
-        "notesMj": {
-          "description": "Réservé au meneur : secrets, faiblesses, alliés, stratégies, réactions contextuelles.",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Une note réservée au meneur."
-          }
+        "px": {
+          "description": "Points d'expérience jouables accumulés depuis la création.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 25,
+              "maximum": 25
+            }
+          ],
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000,
+              "description": "Borne basse de la valeur jouable.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000,
+              "description": "Valeur jouable actuelle.",
+              "examples": [
+                30
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000,
+              "description": "Borne haute de la valeur jouable.",
+              "examples": [
+                100
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Bloc « Paramètres du jeu » de la feuille : qui joue, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier."
     },
     "etatDePartie": {
       "description": "Compteurs et états temporaires de la scène, séparés du profil de référence.",
@@ -2743,10 +2589,13 @@
     }
   },
   "required": [
-    "nom"
+    "nom",
+    "caracteristiques",
+    "sante",
+    "protections"
   ],
   "additionalProperties": false,
-  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pnj.schema.json",
-  "title": "Personnage non joué — Adrenaline System",
-  "description": "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré."
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/2.1.0/pj.schema.json",
+  "title": "Personnage joueur — Adrenaline System",
+  "description": "Feuille de personnage joueur du socle Adrenaline System : nom, identité, huit caractéristiques en pourcentage, seuils de santé physiques et mentaux, protections, formations et équipement."
 }

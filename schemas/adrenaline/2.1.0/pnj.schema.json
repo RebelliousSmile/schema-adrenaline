@@ -2746,7 +2746,7 @@
     "nom"
   ],
   "additionalProperties": false,
-  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pnj.schema.json",
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/2.1.0/pnj.schema.json",
   "title": "Personnage non joué — Adrenaline System",
   "description": "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré."
 }

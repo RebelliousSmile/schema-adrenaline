@@ -2334,6 +2334,197 @@
       "additionalProperties": false,
       "description": "Bloc « Paramètres du jeu » de la feuille : qui joue, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier."
     },
+    "etatDePartie": {
+      "description": "Compteurs et états temporaires de la scène, séparés du profil de référence.",
+      "type": "object",
+      "properties": {
+        "stress": {
+          "description": "Compteurs de stress de la scène.",
+          "type": "object",
+          "properties": {
+            "adrenaline": {
+              "description": "Nombre de dés ou niveau de stress d'adrénaline en cours.",
+              "examples": [
+                1
+              ],
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "panique": {
+              "description": "Nombre de dés ou niveau de stress de panique en cours.",
+              "examples": [
+                0
+              ],
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "additionalProperties": false
+        },
+        "malus": {
+          "description": "Malus temporaires de la scène.",
+          "type": "object",
+          "properties": {
+            "physique": {
+              "description": "Niveau de malus physique actuellement encaissé.",
+              "examples": [
+                2
+              ],
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "mental": {
+              "description": "Niveau de malus mental actuellement encaissé.",
+              "examples": [
+                1
+              ],
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "additionalProperties": false
+        },
+        "etats": {
+          "description": "États encaissés ou temporaires actuellement applicables.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Nom de l'état encaissé."
+                  },
+                  "versant": {
+                    "type": "string",
+                    "const": "physique",
+                    "description": "Versant physique de l'état."
+                  },
+                  "localisation": {
+                    "description": "Localisation corporelle concernée, si la fiche la note.",
+                    "type": "string",
+                    "enum": [
+                      "jambe-droite",
+                      "jambe-gauche",
+                      "torse",
+                      "bras-faible",
+                      "bras-fort",
+                      "tete"
+                    ],
+                    "examples": [
+                      "torse",
+                      "tete"
+                    ]
+                  },
+                  "duree": {
+                    "description": "Durée ou condition de fin de l'état.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "notes": {
+                    "description": "Précision libre sur l'état encaissé.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "nom",
+                  "versant"
+                ],
+                "additionalProperties": false,
+                "description": "État de partie physique, éventuellement localisé."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Nom de l'état encaissé."
+                  },
+                  "versant": {
+                    "type": "string",
+                    "const": "mental",
+                    "description": "Versant mental de l'état."
+                  },
+                  "localisation": {
+                    "description": "Localisation émotionnelle concernée, si la fiche la note.",
+                    "type": "string",
+                    "enum": [
+                      "anxiete",
+                      "impuissance",
+                      "colere",
+                      "tristesse",
+                      "peur",
+                      "culpabilite"
+                    ],
+                    "examples": [
+                      "peur",
+                      "colere"
+                    ]
+                  },
+                  "duree": {
+                    "description": "Durée ou condition de fin de l'état.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "notes": {
+                    "description": "Précision libre sur l'état encaissé.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "nom",
+                  "versant"
+                ],
+                "additionalProperties": false,
+                "description": "État de partie mental, éventuellement localisé."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Nom de l'état de partie."
+                  },
+                  "versant": {
+                    "type": "string",
+                    "const": "general",
+                    "description": "État indépendant des deux versants."
+                  },
+                  "duree": {
+                    "description": "Durée ou condition de fin de l'état.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "notes": {
+                    "description": "Précision libre sur l'état de partie.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "nom",
+                  "versant"
+                ],
+                "additionalProperties": false,
+                "description": "État de partie général, par exemple une immunité temporaire."
+              }
+            ],
+            "description": "État de partie encaissé, physique, mental ou général. Chaque versant n'accepte que ses localisations publiées."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "meta": {
       "description": "Attribution et catalogage : d'où vient cette fiche.",
       "type": "object",
