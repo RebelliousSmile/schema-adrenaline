@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-09-23
+
+### Added
+
+- A release-train contract that verifies the same published package archive in
+  Lantern and Handbook before it can be promoted to a final immutable release.
+- Release validation now refuses tags without a complete immutable GitHub
+  release, including the package tarball and its SHA-256 digest.
+
+### Fixed
+
+- The schema audit uses the declared Adrenaline schema baseline rather than the
+  npm package version, and the CI provides the GitHub token required to inspect
+  release metadata.
+- Handbook link hover tokens must be stronger than the resting link contrast in
+  both supported polarities.
+
 ## [2.3.0] - 2026-09-22
 
 ### Added
