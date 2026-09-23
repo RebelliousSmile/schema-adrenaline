@@ -1,0 +1,20 @@
+{
+  "manifestVersion": 1,
+  "provider": {
+    "repository": "RebelliousSmile/schema-adrenaline",
+    "commit": "d0fdddfc37e5c5bcf5784aebcdf2d3159cccb8c2",
+    "finalTag": "v2.4.0",
+    "archiveUrl": "https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v2.4.0-rc.1/schema-adrenaline-2.4.0.tgz",
+    "sha256": "6063c36173d7f853248071b7feabd3b2cde924ea69a936d991fd89281e78a4f6"
+  },
+  "consumers": {
+    "lantern": {
+      "repository": "RebelliousSmile/lantern",
+      "commit": "d82cba1da2831846e5df87bfe5b7ac180a312dd5"
+    },
+    "handbook": {
+      "repository": "RebelliousSmile/obsidian-handbook",
+      "commit": "c0ba754e452b0c79533d93da8274dde47fce4700"
+    }
+  }
+}
