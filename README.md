@@ -235,6 +235,22 @@ The Handbook catalogue and game pack have their own version (`0.2.0` here).
 Their version changes only when the pack changes and is deliberately independent
 from the `2.0.0` contract version.
 
+### Creating a release-train candidate
+
+Candidates are created only from **Actions → Publish candidate → Run workflow**
+on `main`. Supply the package version with an RC suffix, for example
+`v2.5.0-rc.1`; the workflow rejects stable tags, another branch, an unrelated
+commit, or a version that does not match `package.json`.
+
+It verifies the provider contract on Ubuntu with Node 20, produces the tarball
+and its SHA-256 checksum from the same file, then publishes precisely those two
+assets in an immutable GitHub prerelease. Use that asset URL and SHA in the
+consumer proofs and the release-train manifest; consumers must never rebuild it.
+
+The release order is: candidate → Lantern and Handbook proof PRs → approved
+release-train manifest → stable promotion. The candidate workflow never creates
+or promotes a stable release.
+
 ### Editor autocomplete for JSON and TOML
 
 Configure the schema in your editor's settings (`json.schemas` in VS Code,
