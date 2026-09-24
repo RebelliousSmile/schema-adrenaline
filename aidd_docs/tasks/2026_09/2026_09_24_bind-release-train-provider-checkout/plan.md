@@ -1,6 +1,6 @@
 ---
 objective: "Le Release train transmet aux preuves consommateurs un checkout schema-adrenaline au SHA exact déclaré par la candidate, puis le train v2.5.0 produit les deux evidences protocol-1."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Lier le checkout fournisseur à la candidate du Release train
