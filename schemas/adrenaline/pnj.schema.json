@@ -2748,5 +2748,184 @@
   "additionalProperties": false,
   "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pnj.schema.json",
   "title": "Personnage non joué — Adrenaline System",
-  "description": "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré."
+  "description": "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré.",
+  "x-adrenaline-presentation": {
+    "version": 1,
+    "capability": "block:adrenaline-pnj",
+    "block": {
+      "id": "adrenaline-pnj",
+      "label": "Fiche PNJ"
+    },
+    "values": {
+      "scalarBounds": "json-schema",
+      "rangeFields": [
+        "minimum",
+        "current",
+        "maximum"
+      ],
+      "rangeLabels": [
+        "Minimum",
+        "Actuel",
+        "Maximum"
+      ]
+    },
+    "regions": [
+      {
+        "id": "entete",
+        "label": "En-tête",
+        "order": 10,
+        "layout": "banner",
+        "sections": [
+          {
+            "id": "identification",
+            "label": "PNJ",
+            "order": 10,
+            "layout": "columns",
+            "columns": 2,
+            "paths": [
+              "/nom",
+              "/niveauDeDanger"
+            ]
+          },
+          {
+            "id": "presentation",
+            "label": "Présentation",
+            "order": 20,
+            "layout": "stack",
+            "paths": [
+              "/description",
+              "/narratif"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "profil",
+        "label": "Profil",
+        "order": 20,
+        "layout": "stack",
+        "sections": [
+          {
+            "id": "identite",
+            "label": "Identité",
+            "order": 10,
+            "layout": "grid",
+            "columns": 2,
+            "paths": [
+              "/identite"
+            ]
+          },
+          {
+            "id": "caracteristiques",
+            "label": "Caractéristiques",
+            "order": 20,
+            "layout": "grid",
+            "columns": 4,
+            "paths": [
+              "/caracteristiques"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sante",
+        "label": "Santé et protections",
+        "order": 30,
+        "layout": "columns",
+        "columns": 2,
+        "sections": [
+          {
+            "id": "seuils",
+            "label": "Seuils",
+            "order": 10,
+            "layout": "columns",
+            "columns": 2,
+            "paths": [
+              "/sante"
+            ]
+          },
+          {
+            "id": "protections",
+            "label": "Protections",
+            "order": 20,
+            "layout": "columns",
+            "columns": 2,
+            "paths": [
+              "/protections"
+            ]
+          },
+          {
+            "id": "etat-partie",
+            "label": "État de partie",
+            "order": 30,
+            "layout": "stack",
+            "paths": [
+              "/etatDePartie"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "aptitudes",
+        "label": "Formations et compétences",
+        "order": 40,
+        "layout": "stack",
+        "sections": [
+          {
+            "id": "formations",
+            "label": "Formations",
+            "order": 10,
+            "layout": "grid",
+            "columns": 2,
+            "paths": [
+              "/formations"
+            ]
+          },
+          {
+            "id": "competences",
+            "label": "Compétences",
+            "order": 20,
+            "layout": "stack",
+            "paths": [
+              "/competences"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "equipement",
+        "label": "Équipement",
+        "order": 50,
+        "layout": "stack",
+        "sections": [
+          {
+            "id": "inventaire",
+            "label": "Équipement",
+            "order": 10,
+            "layout": "stack",
+            "paths": [
+              "/equipement"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "provenance",
+        "label": "Provenance",
+        "order": 60,
+        "layout": "stack",
+        "sections": [
+          {
+            "id": "meta",
+            "label": "Source",
+            "order": 10,
+            "layout": "stack",
+            "paths": [
+              "/meta"
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

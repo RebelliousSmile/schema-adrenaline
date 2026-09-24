@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PNJ_PRESENTATION } from "../../presentation.js";
 import { Caracteristiques } from "../common/caracteristiques.js";
 import { NiveauDeDanger } from "../common/danger.js";
 import { Equipement } from "../common/equipement.js";
@@ -81,6 +82,7 @@ export const PersonnageNonJoue = z
     title: "Personnage non joué — Adrenaline System",
     description:
       "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré.",
+    "x-adrenaline-presentation": PNJ_PRESENTATION,
   });
 
 export type PersonnageNonJoueValeur = z.infer<typeof PersonnageNonJoue>;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MONSTRE_PRESENTATION } from "../../presentation.js";
 import { ActionDeCreature, DefenseDeCreature } from "../common/combat.js";
 import { Contagion } from "../common/contagion.js";
 import { NiveauDeDanger } from "../common/danger.js";
@@ -190,6 +191,7 @@ export const Monstre = z
     title: "Créature — Adrenaline System",
     description:
       "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, états identifiés, combat structuré, contagion générique et bloc narratif facultatifs.",
+    "x-adrenaline-presentation": MONSTRE_PRESENTATION,
   });
 
 export type MonstreValeur = z.infer<typeof Monstre>;

@@ -53,7 +53,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./schemas/*": "./schemas/adrenaline/2.1.0/*",
+    "./schemas/*": "./schemas/adrenaline/2.2.0/*",
     "./corpus/*": "./corpus/*",
     "./examples/*": "./examples/*",
     "./cross-tool-provider.json": "./cross-tool-provider.json",
@@ -62,7 +62,7 @@
   },
   "files": [
     "dist",
-    "schemas/adrenaline/2.1.0",
+    "schemas/adrenaline/2.2.0",
     "corpus",
     "examples",
     "cross-tool-provider.json",

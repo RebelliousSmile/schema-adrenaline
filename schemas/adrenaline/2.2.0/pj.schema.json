@@ -2595,7 +2595,7 @@
     "protections"
   ],
   "additionalProperties": false,
-  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pj.schema.json",
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/2.2.0/pj.schema.json",
   "title": "Personnage joueur — Adrenaline System",
   "description": "Feuille de personnage joueur du socle Adrenaline System : nom, identité, huit caractéristiques en pourcentage, seuils de santé physiques et mentaux, protections, formations et équipement.",
   "x-adrenaline-presentation": {

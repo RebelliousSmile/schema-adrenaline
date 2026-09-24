@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PJ_PRESENTATION } from "../../presentation.js";
 import { Caracteristiques } from "../common/caracteristiques.js";
 import { Equipement } from "../common/equipement.js";
 import { EtatDePartie } from "../common/etat-de-partie.js";
@@ -104,6 +105,7 @@ export const PersonnageJoueur = z
     title: "Personnage joueur — Adrenaline System",
     description:
       "Feuille de personnage joueur du socle Adrenaline System : nom, identité, huit caractéristiques en pourcentage, seuils de santé physiques et mentaux, protections, formations et équipement.",
+    "x-adrenaline-presentation": PJ_PRESENTATION,
   });
 
 export type ParametresDuJeuValeur = z.infer<typeof ParametresDuJeu>;
