@@ -1,6 +1,6 @@
 ---
 objective: "La release GitHub immuable v2.5.0 attache exactement l'archive de la candidate v2.5.0-rc.2, après des preuves protocol-1 valides de Lantern et Handbook."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Promouvoir schema-adrenaline 2.5.0 depuis rc.2
