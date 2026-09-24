@@ -87,8 +87,13 @@ function releases(): Release[] {
   });
 }
 
-function validatePublishedReleases(tags: string[], published: Release[]): void {
+function validatePublishedReleases(
+  tags: string[],
+  published: Release[],
+  pendingTag?: string,
+): void {
   for (const tag of tags) {
+    if (tag === pendingTag) continue;
     const release = published.find((candidate) => candidate.tag_name === tag);
     assert.ok(release, `${tag}: tag has no GitHub release`);
     assert.equal(release.draft, false, `${tag}: release is still a draft`);
@@ -103,6 +108,32 @@ function validatePublishedReleases(tags: string[], published: Release[]): void {
       `${tag}: release lacks ${tarball}.sha256`,
     );
   }
+}
+
+function validatePendingRelease(
+  pendingTag: string | undefined,
+  packageVersion: string,
+  tags: string[],
+  published: Release[],
+  isAncestor: (tag: string) => boolean,
+): string | undefined {
+  if (pendingTag === undefined) return undefined;
+  assert.match(pendingTag, /^v\d+\.\d+\.\d+$/, "pending release tag must be stable SemVer");
+  assert.equal(
+    pendingTag,
+    `v${packageVersion}`,
+    "pending release tag must match the package version",
+  );
+  assert.ok(tags.includes(pendingTag), `${pendingTag}: pending release tag does not exist`);
+  assert.ok(
+    isAncestor(pendingTag),
+    `${pendingTag}: pending release tag is not an ancestor of HEAD`,
+  );
+  const release = published.find((candidate) => candidate.tag_name === pendingTag);
+  assert.ok(!release || release.draft, `${pendingTag}: pending release must be absent or draft`);
+  if (release)
+    assert.equal(release.prerelease, false, `${pendingTag}: pending release is prerelease`);
+  return pendingTag;
 }
 
 function selfTest(): void {
@@ -122,6 +153,35 @@ function selfTest(): void {
     /lacks schema-adrenaline-2\.3\.0\.tgz/,
   );
   assert.throws(() => validatePublishedReleases(["v2.3.1"], [valid]), /tag has no GitHub release/);
+  const pending = validatePendingRelease(
+    "v2.3.1",
+    "2.3.1",
+    ["v2.3.0", "v2.3.1"],
+    [valid],
+    () => true,
+  );
+  validatePublishedReleases(["v2.3.0", "v2.3.1"], [valid], pending);
+  const draft = { ...valid, tag_name: "v2.3.1", draft: true, immutable: false, assets: [] };
+  assert.equal(
+    validatePendingRelease("v2.3.1", "2.3.1", ["v2.3.1"], [draft], () => true),
+    "v2.3.1",
+  );
+  assert.throws(
+    () => validatePendingRelease("v2.3.1", "2.3.0", ["v2.3.1"], [], () => true),
+    /must match the package version/,
+  );
+  assert.throws(
+    () => validatePendingRelease("v2.3.1", "2.3.1", ["v2.3.1"], [], () => false),
+    /not an ancestor of HEAD/,
+  );
+  assert.throws(
+    () => validatePendingRelease("v2.3.0", "2.3.0", ["v2.3.0"], [valid], () => true),
+    /must be absent or draft/,
+  );
+  assert.throws(
+    () => validatePublishedReleases(["v2.3.0", "v2.3.1"], [], "v2.3.1"),
+    /v2\.3\.0: tag has no GitHub release/,
+  );
   console.log("✓ release completeness self-test passed");
 }
 
@@ -139,7 +199,15 @@ const versionTags = (git(["tag", "--list", "v*.*.*"]) ?? "")
   .trim()
   .split("\n")
   .filter((tag) => /^v\d+\.\d+\.\d+$/.test(tag));
-validatePublishedReleases(versionTags, releases());
+const publishedReleases = releases();
+const pendingRelease = validatePendingRelease(
+  process.env.SCHEMA_ADRENALINE_PENDING_RELEASE,
+  packageJson.version,
+  versionTags,
+  publishedReleases,
+  (tag) => git(["merge-base", "--is-ancestor", `${tag}^{commit}`, "HEAD"], true) !== null,
+);
+validatePublishedReleases(versionTags, publishedReleases, pendingRelease);
 assert.ok(
   versionDirectories.includes(ADRENALINE_SCHEMA_VERSION),
   `missing schema baseline ${ADRENALINE_SCHEMA_VERSION}`,

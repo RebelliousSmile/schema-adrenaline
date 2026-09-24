@@ -62,6 +62,7 @@ jobs:
       - name: Check provider release contract
         env:
           GH_TOKEN: ${{ github.token }}
+          SCHEMA_ADRENALINE_PENDING_RELEASE: ${{ env.RELEASE_TAG }}
         run: npm run release:verify-provider
 
       - name: Download verified candidate asset
