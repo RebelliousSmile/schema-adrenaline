@@ -2,25 +2,32 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 
-type Consumer = {
+export type ConsumerRole = "lantern" | "handbook";
+export type Candidate = {
+  provider: "schema-adrenaline";
+  releaseUrl: string;
+  sha256: string;
+  integrity: string;
+  version: string;
+  stagingTag: string;
+  finalTag: string;
+  providerCommit: string;
+};
+export type Consumer = {
+  role: ConsumerRole;
   repository: "RebelliousSmile/lantern" | "RebelliousSmile/obsidian-handbook";
-  commit: string;
+  ref: string;
 };
-type Train = {
-  manifestVersion: 1;
-  provider: {
-    repository: "RebelliousSmile/schema-adrenaline";
-    commit: string;
-    finalTag: string;
-    archiveUrl: string;
-    sha256: string;
-  };
-  consumers: { lantern: Consumer; handbook: Consumer };
-};
+export type Train = { protocol: 1; candidate: Candidate; consumers: Consumer[] };
 
-const SHA = /^[a-f0-9]{64}$/;
-const SEMVER_TAG = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+const SHA256 = /^[a-f0-9]{64}$/;
+const SHA512_SRI = /^sha512-[A-Za-z0-9+/]+={0,2}$/;
 const COMMIT = /^[a-f0-9]{40}$/;
+const VERSION = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+const REPOSITORIES = {
+  lantern: "RebelliousSmile/lantern",
+  handbook: "RebelliousSmile/obsidian-handbook",
+} as const;
 
 function fail(message: string): never {
   throw new Error(`release-train manifest: ${message}`);
@@ -36,87 +43,146 @@ function object(value: unknown, label: string): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 function text(value: unknown, label: string): string {
-  if (typeof value !== "string") fail(`${label} must be a string`);
+  if (typeof value !== "string" || value.length === 0) fail(`${label} must be non-empty text`);
   return value;
 }
 
-function parseTrain(rawValue: unknown): Train {
-  const raw = object(rawValue, "root");
-  exactKeys(raw, ["manifestVersion", "provider", "consumers"], "root");
-  if (raw.manifestVersion !== 1) fail("manifestVersion must be 1");
-  const provider = object(raw.provider, "provider");
-  exactKeys(provider, ["repository", "commit", "finalTag", "archiveUrl", "sha256"], "provider");
-  if (provider.repository !== "RebelliousSmile/schema-adrenaline")
-    fail("provider.repository is not schema-adrenaline");
-  if (!COMMIT.test(text(provider.commit, "provider.commit")))
-    fail("provider.commit must be a lowercase full Git commit");
-  if (!SHA.test(text(provider.sha256, "provider.sha256")))
-    fail("provider.sha256 must be a lowercase full SHA-256");
-  const tag = text(provider.finalTag, "provider.finalTag");
-  if (!SEMVER_TAG.test(tag)) fail("provider.finalTag must be a final SemVer tag");
-  const url = text(provider.archiveUrl, "provider.archiveUrl");
-  const parsed = new URL(url);
-  if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.hash)
-    fail("provider.archiveUrl must be a plain HTTPS URL");
-  if (!parsed.pathname.endsWith(`schema-adrenaline-${tag.slice(1)}.tgz`))
-    fail("provider.archiveUrl must name the final-version archive");
-  const consumers = object(raw.consumers, "consumers");
-  exactKeys(consumers, ["lantern", "handbook"], "consumers");
-  const consumer = (name: "lantern" | "handbook", repository: Consumer["repository"]): Consumer => {
-    const entry = object(consumers[name], `consumers.${name}`);
-    exactKeys(entry, ["repository", "commit"], `consumers.${name}`);
-    if (entry.repository !== repository) fail(`consumers.${name}.repository is incorrect`);
-    const commit = text(entry.commit, `consumers.${name}.commit`);
-    if (!COMMIT.test(commit)) fail(`consumers.${name}.commit must be a lowercase full Git commit`);
-    return { repository, commit };
-  };
+function parseCandidate(rawValue: unknown): Candidate {
+  const raw = object(rawValue, "candidate");
+  exactKeys(
+    raw,
+    [
+      "provider",
+      "releaseUrl",
+      "sha256",
+      "integrity",
+      "version",
+      "stagingTag",
+      "finalTag",
+      "providerCommit",
+    ],
+    "candidate",
+  );
+  if (raw.provider !== "schema-adrenaline") fail("candidate.provider must be schema-adrenaline");
+  const version = text(raw.version, "candidate.version");
+  if (!VERSION.test(version)) fail("candidate.version must be a final SemVer version");
+  const stagingTag = text(raw.stagingTag, "candidate.stagingTag");
+  if (!new RegExp(`^v${version.replaceAll(".", "\\.")}-rc\\.\\d+$`).test(stagingTag))
+    fail("candidate.stagingTag must name the versioned RC");
+  const finalTag = text(raw.finalTag, "candidate.finalTag");
+  if (finalTag !== `v${version}`) fail("candidate.finalTag must match candidate.version");
+  const releaseUrl = text(raw.releaseUrl, "candidate.releaseUrl");
+  const parsed = new URL(releaseUrl);
+  if (
+    parsed.protocol !== "https:" ||
+    parsed.hostname !== "github.com" ||
+    parsed.port ||
+    parsed.username ||
+    parsed.password ||
+    parsed.search ||
+    parsed.hash ||
+    parsed.pathname !==
+      `/RebelliousSmile/schema-adrenaline/releases/download/${stagingTag}/schema-adrenaline-${version}.tgz`
+  )
+    fail("candidate.releaseUrl must name the immutable GitHub candidate archive");
+  const sha256 = text(raw.sha256, "candidate.sha256");
+  if (!SHA256.test(sha256)) fail("candidate.sha256 must be a lowercase full SHA-256");
+  const integrity = text(raw.integrity, "candidate.integrity");
+  if (!SHA512_SRI.test(integrity)) fail("candidate.integrity must be an npm SHA-512 SRI value");
+  const providerCommit = text(raw.providerCommit, "candidate.providerCommit");
+  if (!COMMIT.test(providerCommit))
+    fail("candidate.providerCommit must be a lowercase full Git commit");
   return {
-    manifestVersion: 1,
-    provider: {
-      repository: "RebelliousSmile/schema-adrenaline",
-      commit: text(provider.commit, "provider.commit"),
-      finalTag: tag,
-      archiveUrl: url,
-      sha256: text(provider.sha256, "provider.sha256"),
-    },
-    consumers: {
-      lantern: consumer("lantern", "RebelliousSmile/lantern"),
-      handbook: consumer("handbook", "RebelliousSmile/obsidian-handbook"),
-    },
+    provider: "schema-adrenaline",
+    releaseUrl,
+    sha256,
+    integrity,
+    version,
+    stagingTag,
+    finalTag,
+    providerCommit,
   };
+}
+
+function parseConsumer(rawValue: unknown, index: number): Consumer {
+  const raw = object(rawValue, `consumers[${index}]`);
+  exactKeys(raw, ["role", "repository", "ref"], `consumers[${index}]`);
+  const role = text(raw.role, `consumers[${index}].role`);
+  if (role !== "lantern" && role !== "handbook") fail(`consumers[${index}].role is invalid`);
+  if (raw.repository !== REPOSITORIES[role]) fail(`consumers[${index}].repository is incorrect`);
+  const ref = text(raw.ref, `consumers[${index}].ref`);
+  if (!COMMIT.test(ref)) fail(`consumers[${index}].ref must be a lowercase full Git commit`);
+  return { role, repository: REPOSITORIES[role], ref };
+}
+
+export function parseTrain(rawValue: unknown): Train {
+  const raw = object(rawValue, "root");
+  exactKeys(raw, ["protocol", "candidate", "consumers"], "root");
+  if (raw.protocol !== 1) fail("protocol must be 1");
+  if (!Array.isArray(raw.consumers) || raw.consumers.length !== 2)
+    fail("consumers must name Lantern and Handbook exactly once");
+  const consumers = raw.consumers.map(parseConsumer);
+  if (
+    consumers
+      .map(({ role }) => role)
+      .sort()
+      .join(",") !== "handbook,lantern"
+  )
+    fail("consumers must name Lantern and Handbook exactly once");
+  return { protocol: 1, candidate: parseCandidate(raw.candidate), consumers };
 }
 
 export function readTrain(file: string): Train {
   return parseTrain(JSON.parse(fs.readFileSync(file, "utf8")));
 }
 
-function selfTest(): void {
+export async function assertCandidateArchive(candidate: Candidate): Promise<void> {
+  const response = await fetch(candidate.releaseUrl);
+  if (!response.ok) fail(`candidate download failed (${response.status})`);
+  const bytes = Buffer.from(await response.arrayBuffer());
+  assert.equal(
+    createHash("sha256").update(bytes).digest("hex"),
+    candidate.sha256,
+    "candidate bytes do not match candidate.sha256",
+  );
+  assert.equal(
+    `sha512-${createHash("sha512").update(bytes).digest("base64")}`,
+    candidate.integrity,
+    "candidate bytes do not match candidate.integrity",
+  );
+}
+
+export async function selfTest(): Promise<void> {
   const valid = {
-    manifestVersion: 1,
-    provider: {
-      repository: "RebelliousSmile/schema-adrenaline",
-      commit: "a".repeat(40),
-      finalTag: "v2.3.4",
-      archiveUrl: "https://example.test/schema-adrenaline-2.3.4.tgz",
-      sha256: "b".repeat(64),
+    protocol: 1,
+    candidate: {
+      provider: "schema-adrenaline",
+      releaseUrl:
+        "https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v2.5.0-rc.2/schema-adrenaline-2.5.0.tgz",
+      sha256: "a".repeat(64),
+      integrity: `sha512-${"A".repeat(86)}==`,
+      version: "2.5.0",
+      stagingTag: "v2.5.0-rc.2",
+      finalTag: "v2.5.0",
+      providerCommit: "b".repeat(40),
     },
-    consumers: {
-      lantern: { repository: "RebelliousSmile/lantern", commit: "c".repeat(40) },
-      handbook: { repository: "RebelliousSmile/obsidian-handbook", commit: "d".repeat(40) },
-    },
+    consumers: [
+      { role: "lantern", repository: REPOSITORIES.lantern, ref: "c".repeat(40) },
+      { role: "handbook", repository: REPOSITORIES.handbook, ref: "d".repeat(40) },
+    ],
   };
-  assert.equal(parseTrain(valid).provider.finalTag, "v2.3.4");
+  assert.deepEqual(parseTrain(valid), valid);
   for (const mutation of [
-    { ...valid, extra: true },
-    { ...valid, provider: { ...valid.provider, commit: "main" } },
-    {
-      ...valid,
-      provider: { ...valid.provider, archiveUrl: "file:///tmp/schema-adrenaline-2.3.4.tgz" },
-    },
-    { ...valid, provider: { ...valid.provider, command: "echo unsafe" } },
+    { ...valid, protocol: 2 },
+    { ...valid, command: "echo unsafe" },
+    { ...valid, candidate: { ...valid.candidate, releaseUrl: "file:///tmp/candidate.tgz" } },
+    { ...valid, candidate: { ...valid.candidate, integrity: "sha256-deadbeef" } },
+    { ...valid, consumers: [valid.consumers[0], { ...valid.consumers[1], ref: "main" }] },
   ])
     assert.throws(() => parseTrain(mutation), /release-train manifest/);
-  console.log("✓ release-train manifest self-test passed");
+  const { selfTestProofs } = await import("./verify-release-train-proofs.js");
+  selfTestProofs();
+  console.log("✓ release-train protocol-1 self-tests passed");
 }
 
 async function main(): Promise<void> {
@@ -124,21 +190,7 @@ async function main(): Promise<void> {
   const file = process.argv[2];
   if (!file) fail("usage: npm run release-train:assert -- <manifest>");
   const train = readTrain(file);
-  const response = await fetch(train.provider.archiveUrl);
-  if (!response.ok) fail(`candidate download failed (${response.status})`);
-  const bytes = Buffer.from(await response.arrayBuffer());
-  assert.equal(
-    createHash("sha256").update(bytes).digest("hex"),
-    train.provider.sha256,
-    "candidate bytes do not match provider.sha256",
-  );
-  console.log(
-    JSON.stringify({
-      status: "passed",
-      archiveUrl: train.provider.archiveUrl,
-      sha256: train.provider.sha256,
-      finalTag: train.provider.finalTag,
-    }),
-  );
+  await assertCandidateArchive(train.candidate);
+  console.log(JSON.stringify({ status: "passed", candidate: train.candidate }));
 }
 void main();

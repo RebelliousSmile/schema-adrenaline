@@ -1,0 +1,39 @@
+---
+objective: "La release GitHub immuable v2.5.0 attache exactement l'archive de la candidate v2.5.0-rc.2, après des preuves protocol-1 valides de Lantern et Handbook."
+status: in-progress
+---
+
+# Plan: Promouvoir schema-adrenaline 2.5.0 depuis rc.2
+
+## Overview
+
+| Field | Value |
+| ----- | ----- |
+| **Goal** | Converger le fournisseur vers le contrat de train `protocol: 1`, obtenir la preuve des deux consommateurs, puis publier les octets candidats sous `v2.5.0`. |
+| **Source** | Issue [RebelliousSmile/schema-adrenaline#32](https://github.com/RebelliousSmile/schema-adrenaline/issues/32) |
+
+## Phases
+
+| # | Phase | File |
+| --- | ----- | ---- |
+| 1 | Aligner le fournisseur sur protocol 1 | [`phase-1.md`](./phase-1.md) |
+| 2 | Figer et valider le train 2.5.0 | [`phase-2.md`](./phase-2.md) |
+| 3 | Promouvoir l'archive candidate identique | [`phase-3.md`](./phase-3.md) |
+
+## Resources
+
+| Source | Verified |
+| ------ | -------- |
+| [schema-adrenaline#32](https://github.com/RebelliousSmile/schema-adrenaline/issues/32) | La candidate, son SHA-256, le commit fournisseur, les dépendances Lantern/Handbook et la définition de fini de la release. |
+| [candidate v2.5.0-rc.2](https://github.com/RebelliousSmile/schema-adrenaline/releases/tag/v2.5.0-rc.2) | La prerelease est immuable et son asset `schema-adrenaline-2.5.0.tgz` a le SHA-256 `62033e75384f17ee21e4e5e76d231b84c25b3fdcb0d5de74ecdbc89c94be95cc`. |
+| [Lantern commit 4a63bf4](https://github.com/RebelliousSmile/lantern/commit/4a63bf40102120b9bda5b60b3a6396b4e243049e) | `release-train:assert` accepte une candidate Adrenaline protocol 1, contrôle les lockfiles et émet une evidence structurée. |
+| [Handbook commit 5f0b0f2](https://github.com/RebelliousSmile/obsidian-handbook/commit/5f0b0f262d789831ceb823a55df3284516ffe7b2) | `release-train:assert` accepte une candidate Adrenaline protocol 1, contrôle l'installation et le rendu, et émet une evidence structurée. |
+
+## Decisions
+
+| Decision | Why |
+| -------- | --- |
+| Le manifeste fournisseur adopte sans adaptation le format `protocol: 1` des deux consommateurs. | Les issues consommateurs fermées ont déjà fixé ce contrat strict (`candidate` et liste `consumers`); conserver le format local `manifestVersion` rendrait le train inexécutable. |
+| Les preuves sont lues depuis `*.evidence.json`, jamais déduites de la dernière ligne standard. | Lantern écrit son evidence complète; Handbook affiche seulement le chemin de son evidence. Les fichiers sont la sortie stable commune. |
+| Le train épingle Lantern `4a63bf40102120b9bda5b60b3a6396b4e243049e` et Handbook `5f0b0f262d789831ceb823a55df3284516ffe7b2`. | Ces commits complets suivent la clôture de #45/#60 et leurs deux lockfiles résolvent précisément la candidate RC. |
+| La stable télécharge l'asset RC contrôlé et ne l'upload qu'après égalité des digests. | Le tag final peut contenir le manifeste et les correctifs de pipeline, mais l'asset publié doit rester l'octet attesté par les consommateurs. |

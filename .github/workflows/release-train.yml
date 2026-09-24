@@ -30,7 +30,7 @@ jobs:
           test -f "$MANIFEST"
           npm ci --ignore-scripts
           npm run release-train:assert -- "$MANIFEST"
-          node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.env.MANIFEST));for(const n of ["lantern","handbook"]) console.log(`${n}=${m.consumers[n].commit}`)' >> "$GITHUB_OUTPUT"
+          node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.env.MANIFEST));for(const c of m.consumers) console.log(`${c.role}=${c.ref}`)' >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
           repository: RebelliousSmile/lantern
@@ -43,13 +43,16 @@ jobs:
           path: release-train-handbook
       - name: Run consumer-owned proofs
         env:
-          MANIFEST: ${{ github.workspace }}/${{ inputs.manifest }}
           SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}
         run: |
+          cp "${{ inputs.manifest }}" release-train-lantern/release-train.json
+          cp "${{ inputs.manifest }}" release-train-handbook/release-train.json
           (cd release-train-lantern && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
           (cd release-train-handbook && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
-          (cd release-train-lantern && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > lantern-proof.json
-          (cd release-train-handbook && npm run --silent release-train:assert -- "$MANIFEST") | tail -n 1 > handbook-proof.json
+          (cd release-train-lantern && npm run --silent release-train:assert -- release-train.json)
+          (cd release-train-handbook && npm run --silent release-train:assert -- release-train.json)
+          cp release-train-lantern/release-train.json.evidence.json lantern-proof.json
+          cp release-train-handbook/release-train.json.evidence.json handbook-proof.json
           npx tsx tools/verify-release-train-proofs.ts "$MANIFEST" lantern-proof.json handbook-proof.json
       - uses: actions/upload-artifact@v4
         with:
