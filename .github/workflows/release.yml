@@ -48,7 +48,7 @@ jobs:
           manifest="release-train/schema-adrenaline-$RELEASE_TAG.json"
           test -f "$manifest"
           npm run release-train:assert -- "$manifest"
-          expected=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.provider.commit)' "$manifest")
+          expected=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.candidate.providerCommit)' "$manifest")
           git merge-base --is-ancestor "$expected" "$GITHUB_SHA"
           manifest_digest=$(sha256sum "$manifest" | cut -d ' ' -f 1)
           approved_train=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/release-train.yml/runs?status=success&per_page=100" --paginate --jq '.workflow_runs[].head_sha' | while IFS= read -r run; do
@@ -68,8 +68,8 @@ jobs:
         id: candidate
         run: |
           manifest="release-train/schema-adrenaline-$RELEASE_TAG.json"
-          url=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.provider.archiveUrl)' "$manifest")
-          sha=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.provider.sha256)' "$manifest")
+          url=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.candidate.releaseUrl)' "$manifest")
+          sha=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.candidate.sha256)' "$manifest")
           curl --fail --location --proto '=https' --output candidate.tgz "$url"
           test "$(sha256sum candidate.tgz | cut -d ' ' -f 1)" = "$sha"
           packed=$(npm pack --json --silent | node -e 'let data=""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => process.stdout.write(JSON.parse(data)[0].filename))')
