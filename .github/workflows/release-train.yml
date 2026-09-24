@@ -30,7 +30,7 @@ jobs:
           test -f "$MANIFEST"
           npm ci --ignore-scripts
           npm run release-train:assert -- "$MANIFEST"
-          node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.env.MANIFEST));for(const c of m.consumers) console.log(`${c.role}=${c.ref}`)' >> "$GITHUB_OUTPUT"
+          node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.env.MANIFEST));for(const c of m.consumers) console.log(`${c.role}=${c.ref}`);console.log(`candidate_provider_commit=${m.candidate.providerCommit}`)' >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
           repository: RebelliousSmile/lantern
@@ -41,9 +41,16 @@ jobs:
           repository: RebelliousSmile/obsidian-handbook
           ref: ${{ steps.train.outputs.handbook }}
           path: release-train-handbook
+      - uses: actions/checkout@v4
+        with:
+          repository: RebelliousSmile/schema-adrenaline
+          ref: ${{ steps.train.outputs.candidate_provider_commit }}
+          path: release-train-adrenaline-source
+          fetch-depth: 0
       - name: Run consumer-owned proofs
         env:
-          SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}
+          MANIFEST: ${{ inputs.manifest }}
+          SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}/release-train-adrenaline-source
         run: |
           cp "${{ inputs.manifest }}" release-train-lantern/release-train.json
           cp "${{ inputs.manifest }}" release-train-handbook/release-train.json
