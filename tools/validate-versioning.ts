@@ -21,6 +21,11 @@ type Release = {
   assets: Array<{ name: string; digest?: string }>;
 };
 
+// v2.5.0 was published immutable before the workflow adopted canonical asset names.
+const legacyReleaseAssets = new Map([
+  ["v2.5.0", { archive: "candidate.tgz", checksum: "candidate.tgz.sha256" }],
+]);
+
 for (const entry of catalogue.packs) {
   const pack = JSON.parse(fs.readFileSync(path.join(root, entry.path), "utf8")) as {
     version: string;
@@ -99,13 +104,17 @@ function validatePublishedReleases(
     assert.equal(release.draft, false, `${tag}: release is still a draft`);
     assert.equal(release.prerelease, false, `${tag}: release is a prerelease`);
     assert.equal(release.immutable, true, `${tag}: release is not immutable`);
-    const tarball = `schema-adrenaline-${tag.slice(1)}.tgz`;
-    const archive = release.assets.find((asset) => asset.name === tarball);
-    assert.ok(archive, `${tag}: release lacks ${tarball}`);
+    const canonicalArchive = `schema-adrenaline-${tag.slice(1)}.tgz`;
+    const expectedAssets = legacyReleaseAssets.get(tag) ?? {
+      archive: canonicalArchive,
+      checksum: `${canonicalArchive}.sha256`,
+    };
+    const archive = release.assets.find((asset) => asset.name === expectedAssets.archive);
+    assert.ok(archive, `${tag}: release lacks ${expectedAssets.archive}`);
     assert.ok(archive.digest?.startsWith("sha256:"), `${tag}: archive lacks a SHA-256 digest`);
     assert.ok(
-      release.assets.some((asset) => asset.name === `${tarball}.sha256`),
-      `${tag}: release lacks ${tarball}.sha256`,
+      release.assets.some((asset) => asset.name === expectedAssets.checksum),
+      `${tag}: release lacks ${expectedAssets.checksum}`,
     );
   }
 }
@@ -148,6 +157,27 @@ function selfTest(): void {
     ],
   };
   validatePublishedReleases(["v2.3.0"], [valid]);
+  const legacyValid: Release = {
+    ...valid,
+    tag_name: "v2.5.0",
+    assets: [
+      { name: "candidate.tgz", digest: `sha256:${"b".repeat(64)}` },
+      { name: "candidate.tgz.sha256" },
+    ],
+  };
+  validatePublishedReleases(["v2.5.0"], [legacyValid]);
+  assert.throws(
+    () => validatePublishedReleases(["v2.4.0"], [{ ...legacyValid, tag_name: "v2.4.0" }]),
+    /lacks schema-adrenaline-2\.4\.0\.tgz/,
+  );
+  assert.throws(
+    () =>
+      validatePublishedReleases(
+        ["v2.5.0"],
+        [{ ...legacyValid, assets: legacyValid.assets.slice(0, 1) }],
+      ),
+    /lacks candidate\.tgz\.sha256/,
+  );
   assert.throws(
     () => validatePublishedReleases(["v2.3.0"], [{ ...valid, assets: [] }]),
     /lacks schema-adrenaline-2\.3\.0\.tgz/,
@@ -181,6 +211,24 @@ function selfTest(): void {
   assert.throws(
     () => validatePublishedReleases(["v2.3.0", "v2.3.1"], [], "v2.3.1"),
     /v2\.3\.0: tag has no GitHub release/,
+  );
+  const releaseWorkflow = fs.readFileSync(
+    path.join(root, ".github", "workflows", "release.yml"),
+    "utf8",
+  );
+  assert.ok(
+    releaseWorkflow.includes('archive="schema-adrenaline-${RELEASE_TAG#v}.tgz"'),
+    "release workflow must derive the canonical archive name",
+  );
+  assert.ok(
+    releaseWorkflow.includes(
+      'gh release upload "$RELEASE_TAG" "$RELEASE_ARCHIVE" "$RELEASE_CHECKSUM" --clobber',
+    ),
+    "release workflow must upload the named archive and checksum outputs",
+  );
+  assert.ok(
+    !releaseWorkflow.includes("--output candidate.tgz"),
+    "release workflow must not publish the legacy candidate asset name",
   );
   console.log("✓ release completeness self-test passed");
 }

@@ -69,25 +69,33 @@ jobs:
         id: candidate
         run: |
           manifest="release-train/schema-adrenaline-$RELEASE_TAG.json"
+          archive="schema-adrenaline-${RELEASE_TAG#v}.tgz"
+          checksum="$archive.sha256"
           url=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.candidate.releaseUrl)' "$manifest")
           sha=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.candidate.sha256)' "$manifest")
-          curl --fail --location --proto '=https' --output candidate.tgz "$url"
-          test "$(sha256sum candidate.tgz | cut -d ' ' -f 1)" = "$sha"
+          curl --fail --location --proto '=https' --output "$archive" "$url"
+          test "$(sha256sum "$archive" | cut -d ' ' -f 1)" = "$sha"
           packed=$(npm pack --json --silent --ignore-scripts | node -e 'let data=""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => process.stdout.write(JSON.parse(data)[0].filename))')
           test "$(sha256sum "$packed" | cut -d ' ' -f 1)" = "$sha"
-          printf '%s  %s\n' "$sha" candidate.tgz > candidate.tgz.sha256
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s  %s\n' "$sha" "$archive" > "$checksum"
+          {
+            echo "sha=$sha"
+            echo "archive=$archive"
+            echo "checksum=$checksum"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create or resume draft release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_ARCHIVE: ${{ steps.candidate.outputs.archive }}
+          RELEASE_CHECKSUM: ${{ steps.candidate.outputs.checksum }}
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             test "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" = "true"
           else
             gh release create "$RELEASE_TAG" --draft --verify-tag --title "$RELEASE_TAG" --generate-notes
           fi
-          gh release upload "$RELEASE_TAG" candidate.tgz candidate.tgz.sha256 --clobber
+          gh release upload "$RELEASE_TAG" "$RELEASE_ARCHIVE" "$RELEASE_CHECKSUM" --clobber
 
       - name: Publish immutable release
         env:

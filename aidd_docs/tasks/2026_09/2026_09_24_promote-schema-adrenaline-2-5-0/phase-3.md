@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: done
 ---
 
 # Instruction: Promouvoir l'archive candidate identique
@@ -11,9 +11,9 @@ status: in-progress
 ```txt
 .
 ├── .github/workflows/
-│   └── release.yml              ✏️ déclarer uniquement le tag courant comme release en attente pendant la prévalidation
+│   └── release.yml              ✏️ publier les prochaines promotions sous les noms d'assets canoniques
 └── tools/
-    └── validate-versioning.ts   ✏️ distinguer une promotion en cours des releases historiques obligatoirement complètes
+    └── validate-versioning.ts   ✏️ borner la compatibilité des noms d'assets à la release immuable v2.5.0
 ```
 
 ## User Journey
@@ -21,13 +21,12 @@ status: in-progress
 ```mermaid
 flowchart TD
   A[Train 2.5.0 approuvé] --> B[Tag v2.5.0 déjà poussé]
-  B --> C[Promotion initiale refusée avant création de release]
-  C --> D[Prévalidation bornée au tag courant en attente]
-  D --> E[Validation stricte des releases historiques]
-  E --> F[Télécharger et contrôler l'asset RC]
-  F --> G[Créer puis publier la release]
-  G --> H[Validation stricte sans exception]
-  H --> I[Digest final égal à la candidate]
+  B --> C[Release immuable publiée avec les octets candidats]
+  C --> D[Constater les noms d'assets candidate.*]
+  D --> E[Compatibilité explicite limitée à v2.5.0]
+  E --> F[Validation stricte sans contexte de promotion]
+  F --> G[Workflow futur aux noms canoniques]
+  G --> H[Clore issue 32 avec les preuves]
 ```
 
 ## Test Scope
@@ -38,53 +37,53 @@ title: Test scope
 ---
 journey
   section Setup
-    system: disposer du tag v2.5.0, du manifeste inchangé, du train vert et d'aucune release stable => récupération reproductible: 5: cli
+    system: conserver le tag et la release v2.5.0 immuables, avec exactement candidate.tgz et son checksum => récupération non destructive: 5: cli
   section Happy path
-    cli: lancer Release contract avec le tag courant déclaré en attente => release immuable avec deux assets et digest candidat: 5: cli
-  section Edge case - exemption trop large
-    cli: omettre une release historique ou déclarer un autre tag en attente => validation refusée avant création ou publication: 1: cli
-  section Edge case - train absent ou octets divergents
-    cli: lancer la promotion sans run correspondant ou avec une archive divergente => échec avant publication de la release stable: 1: cli
+    cli: valider v2.5.0 avec son alias historique borné => validation ordinaire verte et digest candidat inchangé: 5: cli
+  section Edge case - alias trop large
+    cli: présenter candidate.tgz sur tout autre tag stable => validation refusée et noms canoniques exigés: 1: cli
+  section Future promotion
+    cli: préparer une prochaine stable => assets nommés schema-adrenaline-version.tgz et .sha256: 5: cli
   section Teardown
-    cli: relancer la validation ordinaire après publication => tous les tags stables ont une release complète: 5: cli
+    cli: exécuter npm run check sans contexte de promotion => contrat complet validé avant clôture de issue 32: 5: cli
 ```
 
 ## Tasks to do
 
-### `1)` Casser la dépendance circulaire sans affaiblir la validation
+### `1)` Préserver la release publiée et borner sa compatibilité
 
-> Autoriser la prévalidation d'un seul tag en cours de promotion, tout en refusant tout autre tag stable incomplet.
+> Reconnaître honnêtement l'écart de nommage irréversible de `v2.5.0`, sans l'étendre au reste de l'historique.
 
-1. Étendre `validate-versioning.ts` avec un contexte explicite `SCHEMA_ADRENALINE_PENDING_RELEASE` qui ne peut désigner qu'un tag stable égal à `v${package.version}`.
-2. Exiger que ce tag existe, que son commit soit ancêtre du checkout exécuté, et que sa release soit absente ou encore brouillon ; toute release publique incomplète reste une erreur.
-3. Exclure uniquement ce tag de la vérification de complétude pendant la prévalidation ; tous les autres tags restent soumis aux contrôles de release non brouillon, non prerelease, immuable et dotée des deux assets.
-4. Étendre le self-test pour prouver le cas en attente absent ou brouillon, le refus d'un tag différent et le maintien de l'échec pour une release historique manquante ou publique incomplète.
+1. Conserver la validation de promotion déjà livrée : `SCHEMA_ADRENALINE_PENDING_RELEASE` ne peut désigner que le tag stable courant, existant, ancêtre du checkout et dont la release est absente ou brouillon.
+2. Déclarer dans `validate-versioning.ts` une compatibilité explicite à une entrée pour `v2.5.0`, associant exactement `candidate.tgz` et `candidate.tgz.sha256`; ne pas accepter ces noms pour une autre version.
+3. Continuer d'exiger pour chaque release stable une release publique, non-prerelease, immuable et une paire complète d'assets; utiliser les noms `schema-adrenaline-<version>.tgz` et `.sha256` hors de l'exception documentée.
+4. Étendre le self-test pour couvrir la paire canonique, l'alias accepté pour `v2.5.0`, le même alias refusé pour un autre tag, un asset manquant et une release publique incomplète.
 
-### `2)` Reprendre la promotion depuis le tag existant
+### `2)` Empêcher la réapparition de l'écart de nommage
 
-> Livrer le correctif d'outillage et relancer le workflow sans déplacer le tag ni modifier les octets candidats.
+> Aligner les prochaines promotions sur le contrat canonique déjà contrôlé par le validateur.
 
-1. Dans `release.yml`, fournir `SCHEMA_ADRENALINE_PENDING_RELEASE=$RELEASE_TAG` seulement à l'étape `Check provider release contract`; ne pas propager l'exception aux autres workflows ou validations.
-2. Vérifier sous ce contexte la porte fournisseur complète et prouver que `npm pack` produit toujours le SHA-256 `62033e75384f17ee21e4e5e76d231b84c25b3fdcb0d5de74ecdbc89c94be95cc`.
-3. Intégrer le correctif sur `main` sans déplacer, supprimer ni recréer `v2.5.0`, sans modifier le manifeste ou une dépendance consommateur.
-4. Déclencher `Release contract` par `workflow_dispatch` avec `tag: v2.5.0`, puis vérifier que la porte de train reconnaît toujours le run 35988789960 et que la création de release est atteinte.
+1. Dans `release.yml`, dériver le nom `schema-adrenaline-${RELEASE_TAG#v}.tgz`, télécharger l'archive candidate sous ce nom, puis produire le checksum homonyme `.sha256`.
+2. Faire circuler ces deux chemins explicites jusqu'à l'upload de release; conserver la comparaison avec `npm pack --ignore-scripts` et le SHA-256 du manifeste avant toute publication.
+3. Conserver `SCHEMA_ADRENALINE_PENDING_RELEASE=$RELEASE_TAG` uniquement sur la prévalidation fournisseur; une nouvelle exécution visant une release publique doit rester refusée.
+4. Vérifier statiquement le workflow et couvrir la construction des noms canoniques dans les assertions disponibles, sans relancer `v2.5.0` ni tenter de modifier ses assets immuables.
 
 ### `3)` Vérifier et clore la livraison
 
-> Confirmer depuis GitHub que la stable est l'archive attestée, puis rendre l'issue réellement clôturable.
+> Confirmer que l'exception est minimale, que le contrat ordinaire repasse, puis rendre l'issue réellement clôturable.
 
-1. Contrôler que le workflow a téléchargé l'asset de `v2.5.0-rc.2`, vérifié son SHA-256, et attaché seulement le tarball et son checksum à la release stable.
-2. Vérifier l'API de release : `v2.5.0` n'est ni brouillon ni prerelease, est immuable, possède exactement deux assets, et le digest de son `.tgz` vaut `sha256:62033e75384f17ee21e4e5e76d231b84c25b3fdcb0d5de74ecdbc89c94be95cc`.
-3. Relancer `validate:version` sans contexte de promotion et confirmer que `v2.5.0` passe désormais la validation stricte commune.
-4. Ajouter à #32 les liens du run de train, du run de promotion réparé et de la release stable, puis fermer l'issue seulement après ces contrôles.
+1. Vérifier de nouveau par l'API que `v2.5.0` n'est ni brouillon ni prerelease, est immuable, possède exactement `candidate.tgz` et `candidate.tgz.sha256`, et que le digest du tarball vaut `sha256:62033e75384f17ee21e4e5e76d231b84c25b3fdcb0d5de74ecdbc89c94be95cc`.
+2. Exécuter le self-test du validateur, `npm run validate:version`, puis `npm run check` sans `SCHEMA_ADRENALINE_PENDING_RELEASE`; confirmer que l'alias borné ne masque aucune autre release invalide.
+3. Intégrer les correctifs sur `main` sans déplacer ou supprimer `v2.5.0`, sans recréer sa release, et sans modifier le manifeste ou les pins consommateurs.
+4. Ajouter à #32 les liens du train 35988789960, de la promotion 35996024394 et de la release stable, expliquer la compatibilité de nommage immuable, puis fermer l'issue après le passage des contrôles.
 
 ## Test acceptance criteria
 
 | Task | Acceptance criteria |
 | ---- | -------------------------------- |
-| 1 | Sans contexte de promotion, tout tag stable sans release complète continue d'échouer ; avec ce contexte, seul le tag courant du package, existant et ancêtre du checkout, peut être absent ou brouillon. |
-| 1 | Un autre tag déclaré en attente, une release publique incomplète ou un tag non ancêtre est refusé par les self-tests et la validation réelle. |
-| 2 | Le tag distant `v2.5.0` pointe toujours sur `8276ddaa77d8c505f6a3d55b6d3167e8498d144d`, le manifeste et les pins consommateurs restent inchangés, et le workflow stable atteint la création de release après toutes les portes. |
-| 2 | Le workflow échoue avant publication lorsque le train, le manifeste, le tarball reconstruit ou l'archive candidate ne concorde pas. |
-| 3 | La release `v2.5.0` est immuable, non-prerelease, contient exactement le tarball et son checksum, et le digest de son tarball égale le SHA-256 de la candidate. |
-| 3 | Après publication, `validate:version` réussit sans exception et l'issue #32 contient les liens de provenance avant sa fermeture. |
+| 1 | Sans contexte de promotion, toute release stable reste soumise aux contrôles stricts; seule `v2.5.0` accepte la paire complète `candidate.tgz` / `candidate.tgz.sha256`. |
+| 1 | Le self-test refuse ces noms pour tout autre tag, ainsi qu'un alias partiel, une release publique incomplète, un autre tag en attente ou un tag non ancêtre. |
+| 2 | Pour toute promotion future, le workflow construit et uploade `schema-adrenaline-<version>.tgz` et `schema-adrenaline-<version>.tgz.sha256`, après égalité du tarball reconstruit et de la candidate. |
+| 2 | Une relance visant la release publique `v2.5.0` est refusée avant upload; le tag, la release immuable, le manifeste et les pins consommateurs restent inchangés. |
+| 3 | La release `v2.5.0` conserve exactement ses deux assets actuels et le digest du tarball égale le SHA-256 de la candidate. |
+| 3 | `npm run check` réussit sans contexte de promotion sur `main`, puis l'issue #32 contient les liens et l'explication de provenance avant sa fermeture. |
