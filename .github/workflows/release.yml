@@ -73,7 +73,7 @@ jobs:
           sha=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.candidate.sha256)' "$manifest")
           curl --fail --location --proto '=https' --output candidate.tgz "$url"
           test "$(sha256sum candidate.tgz | cut -d ' ' -f 1)" = "$sha"
-          packed=$(npm pack --json --silent | node -e 'let data=""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => process.stdout.write(JSON.parse(data)[0].filename))')
+          packed=$(npm pack --json --silent --ignore-scripts | node -e 'let data=""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => process.stdout.write(JSON.parse(data)[0].filename))')
           test "$(sha256sum "$packed" | cut -d ' ' -f 1)" = "$sha"
           printf '%s  %s\n' "$sha" candidate.tgz > candidate.tgz.sha256
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
