@@ -6,8 +6,11 @@ export {
 export { MONSTRE_PRESENTATION, PJ_PRESENTATION, PNJ_PRESENTATION } from "./presentation.js";
 export type {
   AdrenalinePresentation,
+  AdrenalinePresentationAppearance,
+  AdrenalinePresentationBlock,
+  AdrenalinePresentationDecoration,
+  AdrenalinePresentationForm,
   AdrenalinePresentationLayout,
-  AdrenalinePresentationRegion,
   AdrenalinePresentationSection,
 } from "./presentation.js";
 export {

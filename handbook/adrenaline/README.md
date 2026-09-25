@@ -12,14 +12,14 @@ release, tag or branch to follow. **Save and check** installs the Adrenaline
 pack. Choose **Adrenaline System** as the game mode after installation.
 
 Use **Check** on the source to update it. Handbook replaces the installed
-manifest, three backgrounds and two fonts atomically, so no manual directory
+manifest, three backgrounds and three fonts atomically, so no manual directory
 copy or restart is required.
 
 ## Visual package
 
 The package owns Adrenaline's values and static files: a restrained paper
 texture for light pages, a charcoal/organic texture for dark pages, a warning
-stripe, and two locally loaded typefaces. Handbook owns their selectors,
+stripe, and three locally loaded typefaces. Handbook owns their selectors,
 layout and fallbacks; Lantern may consume the same source files independently.
 
 The three textures are original generated assets, not scans or fragments of a
@@ -27,6 +27,11 @@ published book. Their generation prompts and provenance are recorded in
 `../../LICENSES/ADRENALINE-ASSETS.md`. Font licenses are stored beside the
 repository licenses. The current asset payload is reported by
 `npm run validate:handbook`.
+
+The handwriting face is [Caveat](https://github.com/googlefonts/caveat),
+downloaded from commit `59745e818ef7973e11e70cb1358d0e902b56c5fc`.
+Its unmodified font file is distributed under the SIL Open Font License 1.1,
+included at `assets/fonts/Caveat-OFL.txt`.
 
 ## Pack tokens vs. host selectors
 

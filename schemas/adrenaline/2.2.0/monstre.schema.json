@@ -5665,6 +5665,25 @@
           },
           "additionalProperties": false
         },
+        "fatigue": {
+          "description": "Cercles de fatigue rounds et heures.",
+          "type": "object",
+          "properties": {
+            "rounds": {
+              "description": "Cercles de fatigue cochés sur les cinq emplacements en rounds.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "heures": {
+              "description": "Cercles de fatigue cochés sur les cinq emplacements en heures.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            }
+          },
+          "additionalProperties": false
+        },
         "etats": {
           "description": "États encaissés ou temporaires actuellement applicables.",
           "type": "array",
@@ -5876,36 +5895,67 @@
   "x-adrenaline-presentation": {
     "version": 1,
     "capability": "block:adrenaline-monstre",
-    "block": {
+    "sheet": {
       "id": "adrenaline-monstre",
       "label": "Fiche monstre"
     },
-    "values": {
-      "scalarBounds": "json-schema",
-      "rangeFields": [
-        "minimum",
-        "current",
-        "maximum"
-      ],
-      "rangeLabels": [
-        "Minimum",
-        "Actuel",
-        "Maximum"
-      ]
+    "appearance": {
+      "variant": "zombiology",
+      "surface": "compact-card",
+      "outerRule": true,
+      "fonts": {
+        "body": "Adrenaline Body",
+        "heading": "Adrenaline Display",
+        "handwritten": "Adrenaline Handwriting"
+      },
+      "tokens": {
+        "paper": "--background-primary",
+        "card": "--adrenaline-card-surface",
+        "ink": "--text-normal",
+        "band": "--adrenaline-band",
+        "bandInk": "--adrenaline-band-ink",
+        "sectionBand": "--adrenaline-section-band",
+        "rule": "--adrenaline-rule",
+        "handwrittenInk": "--adrenaline-handwritten-ink",
+        "statusYellowBg": "--adrenaline-status-yellow-bg",
+        "statusYellowInk": "--adrenaline-status-yellow-ink",
+        "statusRedBg": "--adrenaline-status-red-bg",
+        "statusRedInk": "--adrenaline-status-red-ink"
+      },
+      "sectionTitles": {
+        "align": "center",
+        "font": "heading"
+      },
+      "values": {
+        "align": "end",
+        "font": "handwritten",
+        "color": "handwrittenInk",
+        "renderMaximum": false
+      }
     },
-    "regions": [
+    "values": {
+      "editorBounds": "json-schema",
+      "range": {
+        "minimum": "minimum",
+        "current": "current",
+        "maximum": "maximum",
+        "render": "current"
+      }
+    },
+    "sections": [
       {
         "id": "entete",
         "label": "En-tête",
         "order": 10,
         "layout": "banner",
-        "sections": [
+        "blocks": [
           {
             "id": "identification",
             "label": "Créature",
             "order": 10,
             "layout": "grid",
             "columns": 3,
+            "form": "name-card",
             "paths": [
               "/nom",
               "/typeDeCorps",
@@ -5918,46 +5968,57 @@
         ]
       },
       {
-        "id": "detection",
+        "id": "detection-deplacement",
         "label": "Détection et déplacement",
         "order": 20,
         "layout": "columns",
         "columns": 2,
-        "sections": [
+        "blocks": [
           {
-            "id": "mobilite",
-            "label": "Mobilité",
+            "id": "detection",
+            "label": "Détection",
             "order": 10,
-            "layout": "columns",
-            "columns": 2,
+            "layout": "stack",
+            "form": "compact-rows",
             "paths": [
-              "/zoneDeDetection",
+              "/zoneDeDetection"
+            ]
+          },
+          {
+            "id": "deplacement",
+            "label": "Déplacement",
+            "order": 20,
+            "layout": "stack",
+            "form": "compact-rows",
+            "paths": [
               "/deplacement"
             ]
           }
         ]
       },
       {
-        "id": "combat",
+        "id": "actions-comportement",
         "label": "Actions et comportement",
         "order": 30,
         "layout": "columns",
         "columns": 2,
-        "sections": [
+        "blocks": [
           {
             "id": "comportement",
             "label": "Comportement",
             "order": 10,
             "layout": "stack",
+            "form": "narrative",
             "paths": [
               "/comportement"
             ]
           },
           {
-            "id": "actions",
+            "id": "combat",
             "label": "Combat",
             "order": 20,
             "layout": "stack",
+            "form": "combat",
             "paths": [
               "/actionsParRound",
               "/defense",
@@ -5967,45 +6028,68 @@
         ]
       },
       {
-        "id": "profil",
-        "label": "Caractéristiques, santé et protections",
+        "id": "caracteristiques",
+        "label": "Caractéristiques",
         "order": 40,
-        "layout": "stack",
-        "sections": [
+        "layout": "grid",
+        "columns": 4,
+        "blocks": [
           {
             "id": "caracteristiques",
             "label": "Caractéristiques",
             "order": 10,
             "layout": "grid",
             "columns": 4,
+            "form": "compact-rows",
             "paths": [
               "/caracteristiques"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "id": "sante-protections",
+        "label": "Santé et protections",
+        "order": 50,
+        "layout": "columns",
+        "columns": 2,
+        "blocks": [
           {
             "id": "sante",
-            "label": "Santé et protections",
+            "label": "Santé",
+            "order": 10,
+            "layout": "columns",
+            "columns": 2,
+            "form": "threshold-rows",
+            "paths": [
+              "/sante"
+            ]
+          },
+          {
+            "id": "protections",
+            "label": "Protections",
             "order": 20,
             "layout": "columns",
             "columns": 2,
+            "form": "protection-lines",
             "paths": [
-              "/sante",
               "/protections"
             ]
           }
         ]
       },
       {
-        "id": "capacites",
-        "label": "Capacités",
-        "order": 50,
+        "id": "capacites-etats",
+        "label": "Capacités et états",
+        "order": 60,
         "layout": "stack",
-        "sections": [
+        "blocks": [
           {
             "id": "traits",
-            "label": "Traits spéciaux",
+            "label": "Traits",
             "order": 10,
             "layout": "stack",
+            "form": "narrative",
             "paths": [
               "/traitsSpeciaux"
             ]
@@ -6015,6 +6099,7 @@
             "label": "Compétences",
             "order": 20,
             "layout": "stack",
+            "form": "compact-rows",
             "paths": [
               "/competences"
             ]
@@ -6024,78 +6109,49 @@
             "label": "Contagion",
             "order": 30,
             "layout": "stack",
+            "form": "narrative",
             "paths": [
               "/contagion"
             ]
-          }
-        ]
-      },
-      {
-        "id": "etats",
-        "label": "États",
-        "order": 60,
-        "layout": "columns",
-        "columns": 2,
-        "sections": [
+          },
           {
-            "id": "profils-etat",
-            "label": "Profils d'état",
-            "order": 10,
+            "id": "etats",
+            "label": "États",
+            "order": 40,
             "layout": "columns",
             "columns": 2,
+            "form": "state-card",
             "paths": [
               "/etatActif",
               "/etats",
               "/etatAlternatif"
             ]
-          },
-          {
-            "id": "etat-partie",
-            "label": "État de partie",
-            "order": 20,
-            "layout": "stack",
-            "paths": [
-              "/etatDePartie"
-            ]
           }
         ]
       },
       {
-        "id": "complements",
-        "label": "Compléments",
+        "id": "equipement",
+        "label": "Équipement",
         "order": 70,
-        "layout": "columns",
-        "columns": 2,
-        "sections": [
+        "layout": "stack",
+        "blocks": [
           {
             "id": "equipement",
             "label": "Équipement",
             "order": 10,
             "layout": "stack",
+            "form": "ruled-list",
             "paths": [
               "/equipement"
-            ]
-          },
-          {
-            "id": "narratif",
-            "label": "Narratif",
-            "order": 20,
-            "layout": "stack",
-            "paths": [
-              "/narratif"
-            ]
-          },
-          {
-            "id": "meta",
-            "label": "Source",
-            "order": 30,
-            "layout": "stack",
-            "paths": [
-              "/meta"
             ]
           }
         ]
       }
+    ],
+    "hiddenPaths": [
+      "/narratif",
+      "/etatDePartie",
+      "/meta"
     ]
   }
 }

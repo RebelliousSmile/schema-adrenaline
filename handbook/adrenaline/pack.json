@@ -72,11 +72,13 @@
           "--blockquote-border-color": "#9D2416",
           "--text-highlight-bg": "#E46B463D",
           "--adrenaline-panel": "#F8F5EF",
+          "--adrenaline-card-surface": "#FFFDF9",
           "--adrenaline-section-band": "#CBC6BC",
           "--adrenaline-section-band-ink": "#3A211C",
           "--adrenaline-band": "#71170F",
           "--adrenaline-band-ink": "#FFF8F0",
           "--adrenaline-rule": "#9D2416",
+          "--adrenaline-handwritten-ink": "#285C94",
           "--adrenaline-page-texture": "var(--brumes-image-paper-grain, none)",
           "--adrenaline-page-texture-opacity": "0.32",
           "--adrenaline-cartouche": "#211A18",
@@ -169,11 +171,13 @@
           "--blockquote-border-color": "#F05A32",
           "--text-highlight-bg": "#F05A323D",
           "--adrenaline-panel": "#2B1210",
+          "--adrenaline-card-surface": "#2B1A16",
           "--adrenaline-section-band": "#51302A",
           "--adrenaline-section-band-ink": "#FFF4E9",
           "--adrenaline-band": "#71170F",
           "--adrenaline-band-ink": "#FFF4E9",
           "--adrenaline-rule": "#F05A32",
+          "--adrenaline-handwritten-ink": "#9DC7F0",
           "--adrenaline-page-texture": "var(--brumes-image-dark-organic, none)",
           "--adrenaline-page-texture-opacity": "0.2",
           "--adrenaline-cartouche": "#71170F",
@@ -257,6 +261,10 @@
         "Adrenaline Display": {
           "file": "fonts/adrenaline-display.woff2",
           "weight": "700"
+        },
+        "Adrenaline Handwriting": {
+          "file": "fonts/adrenaline-handwriting.ttf",
+          "weight": "400"
         }
       }
     }

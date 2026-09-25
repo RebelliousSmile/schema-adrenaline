@@ -28,6 +28,17 @@ const Malus = z
   })
   .meta({ description: "Niveaux de malus temporaires, séparés par versant." });
 
+const Fatigue = z
+  .strictObject({
+    rounds: z.int().min(0).max(5).optional().meta({
+      description: "Cercles de fatigue cochés sur les cinq emplacements en rounds.",
+    }),
+    heures: z.int().min(0).max(5).optional().meta({
+      description: "Cercles de fatigue cochés sur les cinq emplacements en heures.",
+    }),
+  })
+  .meta({ description: "Fatigue temporaire, notée sur deux séries de cinq cercles." });
+
 const EtatPhysique = z
   .strictObject({
     nom: z.string().min(1).meta({ description: "Nom de l'état encaissé." }),
@@ -85,6 +96,7 @@ export const EtatDePartie = z
   .strictObject({
     stress: Stress.optional().meta({ description: "Compteurs de stress de la scène." }),
     malus: Malus.optional().meta({ description: "Malus temporaires de la scène." }),
+    fatigue: Fatigue.optional().meta({ description: "Cercles de fatigue rounds et heures." }),
     etats: z.array(EtatEncaissé).optional().meta({
       description: "États encaissés ou temporaires actuellement applicables.",
     }),

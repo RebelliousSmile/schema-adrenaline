@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Draft schema baseline `2.2.0` adds `x-adrenaline-presentation` for PJ, PNJ and
+  monster sheets, with `block:*` capabilities, ordered sections and blocks,
+  JSON Pointer field membership, visual forms, tokens and font references.
+- PJ characteristics are capped at 50 % without lowering PNJ or monster
+  bounds; optional fatigue records rounds and hours in two five-circle groups.
+- The Handbook pack includes the OFL-licensed Caveat handwriting face and
+  card/ink tokens for the Zombiology presentation.
+- Presentation validation checks root-property coverage and refuses unknown
+  capabilities, paths and duplicate references.
+- Playable ranges reserve `maximum` for editing; `minimum` appears only in the
+  PJ characteristic creation column, while other ranges render `current`.
+  Scalar editor bounds come from JSON Schema.
+
 ## [2.5.0] - 2026-09-24
 
 ### Added

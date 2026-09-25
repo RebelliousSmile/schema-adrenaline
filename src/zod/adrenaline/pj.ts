@@ -7,6 +7,7 @@ import { Formation } from "../common/formations.js";
 import { Identite } from "../common/identite.js";
 import { Meta } from "../common/meta.js";
 import { CumulJouable } from "../common/primitives.js";
+import { PourcentageJouable } from "../common/primitives.js";
 import { Protections } from "../common/protections.js";
 import { Sante } from "../common/sante.js";
 
@@ -56,6 +57,33 @@ const ParametresDuJeu = z
       "Bloc « Paramètres du jeu » de la feuille : qui joue, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier.",
   });
 
+/** La limite de saisie de la feuille PJ ne s'applique pas aux PNJ ni aux créatures. */
+const CaracteristiqueJoueur = PourcentageJouable.extend({
+  minimum: z.int().min(0).max(50).meta({
+    description: "Valeur de création PJ, affichée dans la première colonne.",
+  }),
+  current: z.int().min(0).max(50).meta({
+    description: "Valeur actuelle PJ, affichée dans la seconde colonne.",
+  }),
+  maximum: z.int().min(0).max(50).meta({
+    description: "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche.",
+  }),
+}).meta({
+  description:
+    "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute.",
+});
+
+const CaracteristiquesJoueur = Caracteristiques.extend({
+  for: CaracteristiqueJoueur,
+  con: CaracteristiqueJoueur,
+  dex: CaracteristiqueJoueur,
+  rap: CaracteristiqueJoueur,
+  log: CaracteristiqueJoueur,
+  vol: CaracteristiqueJoueur,
+  per: CaracteristiqueJoueur,
+  cha: CaracteristiqueJoueur,
+}).meta({ description: "Les huit caractéristiques PJ bornées à 50 %." });
+
 /**
  * Un personnage joueur du socle Adrenaline System.
  *
@@ -82,7 +110,7 @@ export const PersonnageJoueur = z
     identite: Identite.optional().meta({
       description: "Bloc Identité de la feuille. Facultatif : le livre le laisse libre au joueur.",
     }),
-    caracteristiques: Caracteristiques,
+    caracteristiques: CaracteristiquesJoueur,
     sante: Sante,
     protections: Protections,
     formations: z.array(Formation).optional().meta({

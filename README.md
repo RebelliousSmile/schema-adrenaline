@@ -10,9 +10,10 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-The current major contract is `schema-adrenaline@2.1.0`. Three character schemas are
-published under the `adrenaline` folder, each covered by JSON and TOML examples
-and a shared conformance corpus.
+The released package is `schema-adrenaline@2.5.0`, whose immutable schema
+baseline is `2.1.0`. This branch drafts baseline `2.2.0`; it is not published.
+Three character schemas live under the `adrenaline` folder, each covered by
+JSON and TOML examples and a shared conformance corpus.
 
 ## Published schemas
 
@@ -46,18 +47,23 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
 
 ### Presentation and consumer adapters
 
-The current Adrenaline document contract publishes no presentation descriptor and
-no adapter-key vocabulary. A document must therefore not contain a
-`presentation` or `adapter` field: both are unknown keys under the strict
-schemas and codecs.
+The draft `2.2.0` baseline adds an `x-adrenaline-presentation` annotation at the
+root of each JSON Schema. It gives consumers the stable `block:adrenaline-*`
+capability, ordered sections and blocks, their document paths, finite layout
+forms, and a Zombiology appearance tied to the pack's tokens and font assets.
+The annotation is schema metadata:
+a user document must still not contain a `presentation` or `adapter` field, and
+the strict schemas and codecs continue to reject both.
 
-If a later contract needs an editor-specific presentation descriptor, it must
-first publish a finite, stable, declarative vocabulary of keys. Keys never name
-React components, module paths, CSS classes, or executable consumer
-configuration. Lantern owns the exhaustive key-to-React-adapter registry and
-must fail explicitly for an unknown key rather than infer an editor. Coordinate
-the vocabulary and its Lantern registry before releasing the schema that uses
-it.
+Playable ranges expose `minimum`, `current` and `maximum` to the editor. The
+visible sheet renders `current` by default; PJ characteristics additionally
+show `minimum` as the creation value. `maximum` is never displayed. Scalar
+input bounds come directly from each property's JSON Schema `minimum` and
+`maximum`; a renderer must not duplicate those values locally.
+The descriptor never names React components, module paths, CSS classes or
+executable configuration. Handbook activates each sheet through the same
+`block:*` capability declared by the installed pack, while Lantern keeps any
+runtime adapter registry consumer-owned and exhaustive.
 
 ## What's in here
 

@@ -43,11 +43,13 @@ const ADRENALINE_CAPABILITIES = [
    so nothing else in this file would notice their absence. Polarity layers only. */
 const REQUIRED_NOTE_TOKENS = [
   "--adrenaline-panel",
+  "--adrenaline-card-surface",
   "--adrenaline-section-band",
   "--adrenaline-section-band-ink",
   "--adrenaline-band",
   "--adrenaline-band-ink",
   "--adrenaline-rule",
+  "--adrenaline-handwritten-ink",
   "--adrenaline-page-texture",
 ];
 const REQUIRED_WORKSPACE_TOKENS = [
@@ -58,7 +60,7 @@ const REQUIRED_WORKSPACE_TOKENS = [
   "--background-modifier-hover",
 ];
 const REQUIRED_IMAGE_KEYS = ["paper-grain", "dark-organic", "warning-stripe"];
-const REQUIRED_FONT_KEYS = ["Adrenaline Body", "Adrenaline Display"];
+const REQUIRED_FONT_KEYS = ["Adrenaline Body", "Adrenaline Display", "Adrenaline Handwriting"];
 /* This field declares the compatibility floor and drives the Handbook checkout ref in
    .github/workflows/ci.yml. Lowering it would silently move the cross-repository test target. */
 const MINIMUM_HANDBOOK_FLOOR = "2.7.0";

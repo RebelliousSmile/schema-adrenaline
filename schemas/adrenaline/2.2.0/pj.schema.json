@@ -105,31 +105,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -138,14 +127,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Force. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 40,
-              "maximum": 40
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         },
         "con": {
           "type": "object",
@@ -153,31 +135,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -186,14 +157,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Constitution. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 50,
-              "maximum": 50
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         },
         "dex": {
           "type": "object",
@@ -201,31 +165,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -234,14 +187,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Dextérité. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 45,
-              "maximum": 45
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         },
         "rap": {
           "type": "object",
@@ -249,31 +195,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -282,14 +217,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Rapidité. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 35,
-              "maximum": 35
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         },
         "log": {
           "type": "object",
@@ -297,31 +225,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -330,14 +247,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Logique. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 30,
-              "maximum": 30
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         },
         "vol": {
           "type": "object",
@@ -345,31 +255,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -378,14 +277,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Volonté. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 40,
-              "maximum": 40
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         },
         "per": {
           "type": "object",
@@ -393,31 +285,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -426,14 +307,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Perception. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 50,
-              "maximum": 50
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         },
         "cha": {
           "type": "object",
@@ -441,31 +315,20 @@
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
+              "maximum": 50,
+              "description": "Valeur de création PJ, affichée dans la première colonne."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
+              "maximum": 50,
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
+              "maximum": 50,
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
             }
           },
           "required": [
@@ -474,14 +337,7 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Charisme. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 25,
-              "maximum": 25
-            }
-          ]
+          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
         }
       },
       "required": [
@@ -495,7 +351,7 @@
         "cha"
       ],
       "additionalProperties": false,
-      "description": "Les huit caractéristiques jouables, chacune avec minimum, current et maximum. La qualité — le chiffre des dizaines — se recalcule et n'est pas stockée."
+      "description": "Les huit caractéristiques PJ bornées à 50 %."
     },
     "sante": {
       "type": "object",
@@ -2388,6 +2244,25 @@
           },
           "additionalProperties": false
         },
+        "fatigue": {
+          "description": "Cercles de fatigue rounds et heures.",
+          "type": "object",
+          "properties": {
+            "rounds": {
+              "description": "Cercles de fatigue cochés sur les cinq emplacements en rounds.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "heures": {
+              "description": "Cercles de fatigue cochés sur les cinq emplacements en heures.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            }
+          },
+          "additionalProperties": false
+        },
         "etats": {
           "description": "États encaissés ou temporaires actuellement applicables.",
           "type": "array",
@@ -2601,65 +2476,126 @@
   "x-adrenaline-presentation": {
     "version": 1,
     "capability": "block:adrenaline-pj",
-    "block": {
+    "sheet": {
       "id": "adrenaline-pj",
       "label": "Fiche PJ"
     },
-    "values": {
-      "scalarBounds": "json-schema",
-      "rangeFields": [
-        "minimum",
-        "current",
-        "maximum"
-      ],
-      "rangeLabels": [
-        "Minimum",
-        "Actuel",
-        "Maximum"
-      ]
+    "appearance": {
+      "variant": "zombiology",
+      "surface": "paper-sheet",
+      "outerRule": true,
+      "fonts": {
+        "body": "Adrenaline Body",
+        "heading": "Adrenaline Display",
+        "handwritten": "Adrenaline Handwriting"
+      },
+      "tokens": {
+        "paper": "--background-primary",
+        "card": "--adrenaline-card-surface",
+        "ink": "--text-normal",
+        "band": "--adrenaline-band",
+        "bandInk": "--adrenaline-band-ink",
+        "sectionBand": "--adrenaline-section-band",
+        "rule": "--adrenaline-rule",
+        "handwrittenInk": "--adrenaline-handwritten-ink",
+        "statusYellowBg": "--adrenaline-status-yellow-bg",
+        "statusYellowInk": "--adrenaline-status-yellow-ink",
+        "statusRedBg": "--adrenaline-status-red-bg",
+        "statusRedInk": "--adrenaline-status-red-ink"
+      },
+      "sectionTitles": {
+        "align": "center",
+        "font": "heading"
+      },
+      "values": {
+        "align": "end",
+        "font": "handwritten",
+        "color": "handwrittenInk",
+        "renderMaximum": false
+      }
     },
-    "regions": [
+    "values": {
+      "editorBounds": "json-schema",
+      "range": {
+        "minimum": "minimum",
+        "current": "current",
+        "maximum": "maximum",
+        "render": "current"
+      }
+    },
+    "sections": [
       {
         "id": "entete",
         "label": "En-tête",
         "order": 10,
         "layout": "columns",
-        "columns": 2,
-        "sections": [
+        "columns": 3,
+        "showTitle": false,
+        "blocks": [
           {
-            "id": "personnage",
-            "label": "Personnage",
+            "id": "nom",
+            "label": "Nom du personnage",
             "order": 10,
             "layout": "stack",
+            "form": "name-card",
             "paths": [
               "/nom"
             ]
           },
           {
-            "id": "parametres",
+            "id": "parametres-jeu",
             "label": "Paramètres du jeu",
             "order": 20,
             "layout": "grid",
             "columns": 2,
+            "form": "game-parameters",
             "paths": [
-              "/parametresDuJeu"
+              "/parametresDuJeu/joueur",
+              "/parametresDuJeu/typeDeCreation",
+              "/parametresDuJeu/typeDeScenario",
+              "/parametresDuJeu/declinaisonDeCampagne"
+            ]
+          },
+          {
+            "id": "px",
+            "label": "PX",
+            "order": 30,
+            "layout": "stack",
+            "form": "name-card",
+            "valueSuffix": "PX",
+            "paths": [
+              "/parametresDuJeu/px"
             ]
           }
         ]
       },
       {
-        "id": "competences",
-        "label": "Formations et compétences",
+        "id": "competence",
+        "label": "Compétence",
         "order": 20,
         "layout": "columns",
         "columns": 3,
-        "sections": [
+        "blocks": [
           {
-            "id": "formations",
-            "label": "Formations",
+            "id": "formations-competences",
+            "label": "Formations et compétences",
             "order": 10,
             "layout": "columns",
             "columns": 3,
+            "form": "formation-columns",
+            "valueSuffix": "%",
+            "formationFields": {
+              "header": [
+                "type",
+                "nom",
+                "pourcentage"
+              ],
+              "competence": [
+                "nom",
+                "specialite",
+                "pourcentage"
+              ]
+            },
             "paths": [
               "/formations"
             ]
@@ -2668,29 +2604,82 @@
       },
       {
         "id": "profil",
-        "label": "Identité et caractéristiques",
+        "label": "Profil",
         "order": 30,
         "layout": "columns",
-        "columns": 2,
-        "sections": [
+        "columns": 3,
+        "blocks": [
           {
             "id": "identite",
             "label": "Identité",
             "order": 10,
             "layout": "grid",
             "columns": 2,
+            "form": "identity-fields",
+            "placement": {
+              "column": 1,
+              "row": 1
+            },
             "paths": [
               "/identite"
             ]
           },
           {
-            "id": "caracteristiques",
-            "label": "Caractéristiques",
+            "id": "caracteristiques-physiques",
+            "label": "Carac. physiques",
             "order": 20,
             "layout": "grid",
             "columns": 2,
+            "form": "characteristic-rows",
+            "rangeDisplay": [
+              "minimum",
+              "current"
+            ],
+            "rowLabels": [
+              "Force",
+              "Constitution",
+              "Dextérité",
+              "Rapidité"
+            ],
+            "valueSuffix": "%",
+            "placement": {
+              "column": 2,
+              "row": 1
+            },
             "paths": [
-              "/caracteristiques"
+              "/caracteristiques/for",
+              "/caracteristiques/con",
+              "/caracteristiques/dex",
+              "/caracteristiques/rap"
+            ]
+          },
+          {
+            "id": "caracteristiques-mentales",
+            "label": "Carac. mentales",
+            "order": 30,
+            "layout": "grid",
+            "columns": 2,
+            "form": "characteristic-rows",
+            "rangeDisplay": [
+              "minimum",
+              "current"
+            ],
+            "rowLabels": [
+              "Logique",
+              "Volonté",
+              "Perception",
+              "Charisme"
+            ],
+            "valueSuffix": "%",
+            "placement": {
+              "column": 3,
+              "row": 1
+            },
+            "paths": [
+              "/caracteristiques/log",
+              "/caracteristiques/vol",
+              "/caracteristiques/per",
+              "/caracteristiques/cha"
             ]
           }
         ]
@@ -2701,15 +2690,95 @@
         "order": 40,
         "layout": "columns",
         "columns": 3,
-        "sections": [
+        "blocks": [
           {
-            "id": "inventaire",
-            "label": "Équipement",
+            "id": "possessions",
+            "label": "Possessions",
             "order": 10,
-            "layout": "grid",
-            "columns": 3,
+            "layout": "stack",
+            "form": "ruled-list",
+            "placement": {
+              "column": 1,
+              "row": 1,
+              "rowSpan": 2
+            },
             "paths": [
-              "/equipement"
+              "/equipement/possessions",
+              "/equipement/equipementFavori"
+            ]
+          },
+          {
+            "id": "armes-physiques",
+            "label": "Armes physiques",
+            "order": 20,
+            "layout": "stack",
+            "form": "weapon-lines",
+            "decoration": {
+              "kind": "weapon-die",
+              "label": "d10"
+            },
+            "placement": {
+              "column": 2,
+              "row": 1
+            },
+            "paths": [
+              "/equipement/armesPhysiques"
+            ]
+          },
+          {
+            "id": "armes-mentales",
+            "label": "Armes mentales",
+            "order": 30,
+            "layout": "stack",
+            "form": "weapon-lines",
+            "decoration": {
+              "kind": "weapon-die",
+              "label": "d10"
+            },
+            "placement": {
+              "column": 3,
+              "row": 1
+            },
+            "paths": [
+              "/equipement/armesMentales"
+            ]
+          },
+          {
+            "id": "protections-physiques",
+            "label": "Protections physiques",
+            "order": 40,
+            "layout": "stack",
+            "form": "protection-lines",
+            "decoration": {
+              "kind": "protection-units",
+              "physical": "PP",
+              "mental": "PM"
+            },
+            "placement": {
+              "column": 2,
+              "row": 2
+            },
+            "paths": [
+              "/protections/physiques"
+            ]
+          },
+          {
+            "id": "protections-mentales",
+            "label": "Protections mentales",
+            "order": 50,
+            "layout": "stack",
+            "form": "protection-lines",
+            "decoration": {
+              "kind": "protection-units",
+              "physical": "PP",
+              "mental": "PM"
+            },
+            "placement": {
+              "column": 3,
+              "row": 2
+            },
+            "paths": [
+              "/protections/mentales"
             ]
           }
         ]
@@ -2720,56 +2789,96 @@
         "order": 50,
         "layout": "columns",
         "columns": 3,
-        "sections": [
+        "blocks": [
           {
-            "id": "seuils",
-            "label": "Seuils",
-            "order": 10,
-            "layout": "columns",
-            "columns": 2,
-            "paths": [
-              "/sante"
-            ]
-          },
-          {
-            "id": "protections",
-            "label": "Protections",
-            "order": 20,
-            "layout": "columns",
-            "columns": 2,
-            "paths": [
-              "/protections"
-            ]
-          },
-          {
-            "id": "etat-partie",
-            "label": "État de partie",
-            "order": 30,
-            "layout": "grid",
-            "columns": 2,
-            "paths": [
-              "/etatDePartie"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "provenance",
-        "label": "Provenance",
-        "order": 60,
-        "layout": "stack",
-        "sections": [
-          {
-            "id": "meta",
-            "label": "Source",
+            "id": "stress",
+            "label": "Dés de stress",
             "order": 10,
             "layout": "stack",
+            "form": "stress-dice",
+            "decoration": {
+              "kind": "dice-options",
+              "favorable": [
+                "+1d100",
+                "+2d100"
+              ],
+              "defavorable": [
+                "-1d100",
+                "-2d100"
+              ]
+            },
             "paths": [
-              "/meta"
+              "/etatDePartie/stress"
+            ]
+          },
+          {
+            "id": "seuils-physiques",
+            "label": "Seuils physiques",
+            "order": 20,
+            "layout": "stack",
+            "form": "threshold-rows",
+            "paths": [
+              "/sante/physique"
+            ]
+          },
+          {
+            "id": "seuils-mentaux",
+            "label": "Seuils mentaux",
+            "order": 30,
+            "layout": "stack",
+            "form": "threshold-rows",
+            "paths": [
+              "/sante/mental"
+            ]
+          },
+          {
+            "id": "malus",
+            "label": "Malus",
+            "order": 40,
+            "layout": "stack",
+            "form": "status-frames",
+            "paths": [
+              "/etatDePartie/malus"
+            ]
+          },
+          {
+            "id": "etats-encaisses",
+            "label": "États encaissés",
+            "order": 50,
+            "layout": "stack",
+            "form": "status-frames",
+            "paths": [
+              "/etatDePartie/etats"
+            ]
+          },
+          {
+            "id": "fatigue",
+            "label": "Fatigue",
+            "order": 60,
+            "layout": "stack",
+            "form": "fatigue-circles",
+            "decoration": {
+              "kind": "circle-groups",
+              "groups": [
+                {
+                  "label": "rounds",
+                  "count": 5
+                },
+                {
+                  "label": "heures",
+                  "count": 5
+                }
+              ]
+            },
+            "paths": [
+              "/etatDePartie/fatigue"
             ]
           }
         ]
       }
+    ],
+    "hiddenPaths": [
+      "/meta"
     ]
   }
 }

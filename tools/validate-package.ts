@@ -71,6 +71,7 @@ import {
   ADRENALINE_DOCUMENT_CODECS,
   ADRENALINE_SCHEMA_VERSION,
   ADRENALINE_TOML_VERSION,
+  PNJ_PRESENTATION,
   parsePnjToml,
 } from "schema-adrenaline";
 
@@ -83,6 +84,8 @@ assert.match(
   schema.$id,
   new RegExp("/schemas/adrenaline/${ADRENALINE_SCHEMA_VERSION.replaceAll(".", "\\\\.")}/pnj\\.schema\\.json$"),
 );
+assert.deepEqual(schema["x-adrenaline-presentation"], PNJ_PRESENTATION);
+assert.equal(PNJ_PRESENTATION.capability, "block:adrenaline-pnj");
 const provider = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/cross-tool-provider.json")), "utf8"));
 assert.equal(provider.contractVersion, ADRENALINE_CONTRACT_VERSION);
 const cases = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/" + provider.corpus)), "utf8"));
