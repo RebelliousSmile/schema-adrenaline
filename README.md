@@ -10,8 +10,8 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-The released package is `schema-adrenaline@2.5.0`, whose immutable schema
-baseline is `2.1.0`. This branch drafts baseline `2.2.0`; it is not published.
+This source declares `schema-adrenaline@2.6.0` and schema baseline `2.2.0`.
+Consumers should pin a published release archive rather than the moving branch.
 Three character schemas live under the `adrenaline` folder, each covered by
 JSON and TOML examples and a shared conformance corpus.
 
@@ -47,7 +47,7 @@ the eight characteristics, the twelve hit locations, the four damage thresholds.
 
 ### Presentation and consumer adapters
 
-The draft `2.2.0` baseline adds an `x-adrenaline-presentation` annotation at the
+The `2.2.0` baseline adds an `x-adrenaline-presentation` annotation at the
 root of each JSON Schema. It gives consumers the stable `block:adrenaline-*`
 capability, ordered sections and blocks, their document paths, finite layout
 forms, and a Zombiology appearance tied to the pack's tokens and font assets.

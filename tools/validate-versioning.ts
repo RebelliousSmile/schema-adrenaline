@@ -246,7 +246,23 @@ const versionDirectories = fs
 const versionTags = (git(["tag", "--list", "v*.*.*"]) ?? "")
   .trim()
   .split("\n")
-  .filter((tag) => /^v\d+\.\d+\.\d+$/.test(tag));
+  .filter((tag) => /^v\d+\.\d+\.\d+$/.test(tag))
+  .sort((left, right) => {
+    const a = left.slice(1).split(".").map(Number);
+    const b = right.slice(1).split(".").map(Number);
+    return a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+  });
+const filesByTag = new Map(
+  versionTags.map((tag) => [
+    tag,
+    new Set(
+      (git(["ls-tree", "-r", "--name-only", tag, schemaRoot]) ?? "")
+        .trim()
+        .split("\n")
+        .filter(Boolean),
+    ),
+  ]),
+);
 const publishedReleases = releases();
 const pendingRelease = validatePendingRelease(
   process.env.SCHEMA_ADRENALINE_PENDING_RELEASE,
@@ -262,9 +278,11 @@ assert.ok(
 );
 
 for (const version of versionDirectories) {
-  const tag = `v${version}`;
-  const publishedCommit = git(["rev-parse", "--verify", `${tag}^{commit}`], true);
-  if (publishedCommit === null) {
+  const relativeRoot = path.posix.join("schemas", "adrenaline", version);
+  const tag = versionTags.find((candidate) =>
+    [...(filesByTag.get(candidate) ?? [])].some((file) => file.startsWith(`${relativeRoot}/`)),
+  );
+  if (tag === undefined) {
     assert.equal(
       version,
       ADRENALINE_SCHEMA_VERSION,
@@ -274,11 +292,9 @@ for (const version of versionDirectories) {
     continue;
   }
 
-  const relativeRoot = path.posix.join("schemas", "adrenaline", version);
-  const publishedFiles = (git(["ls-tree", "-r", "--name-only", tag, relativeRoot]) ?? "")
-    .trim()
-    .split("\n")
-    .filter(Boolean)
+  const publishedCommit = git(["rev-parse", "--verify", `${tag}^{commit}`]);
+  const publishedFiles = [...(filesByTag.get(tag) ?? [])]
+    .filter((file) => file.startsWith(`${relativeRoot}/`))
     .sort();
   const currentFiles = fs
     .readdirSync(path.join(root, relativeRoot))
@@ -297,7 +313,7 @@ for (const version of versionDirectories) {
       `${relative} differs from immutable ${tag}`,
     );
   }
-  console.log(`✓ ${relativeRoot} matches ${tag} (${publishedCommit.trim()})`);
+  console.log(`✓ ${relativeRoot} matches ${tag} (${publishedCommit?.trim()})`);
 }
 
 console.log(

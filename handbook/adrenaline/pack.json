@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "version": "0.4.0",
+  "version": "0.5.0",
   "minimumHandbookVersion": "2.7.0",
   "requires": [
     "block:adrenaline-pj",

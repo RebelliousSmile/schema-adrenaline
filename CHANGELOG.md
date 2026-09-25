@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-09-26
+
 ### Added
 
-- Draft schema baseline `2.2.0` adds `x-adrenaline-presentation` for PJ, PNJ and
+- Schema baseline `2.2.0` adds `x-adrenaline-presentation` for PJ, PNJ and
   monster sheets, with `block:*` capabilities, ordered sections and blocks,
   JSON Pointer field membership, visual forms, tokens and font references.
 - PJ characteristics are capped at 50 % without lowering PNJ or monster
@@ -18,6 +20,14 @@ All notable changes to this project will be documented in this file.
 - Playable ranges reserve `maximum` for editing; `minimum` appears only in the
   PJ characteristic creation column, while other ranges render `current`.
   Scalar editor bounds come from JSON Schema.
+
+### Fixed
+
+- Schema baseline immutability now resolves the first published package tag
+  carrying each baseline, so baseline `2.1.0` is correctly attributed to
+  package `v2.5.0`.
+- Candidate workflow and release-train self-tests now participate in the
+  ordinary provider release gate.
 
 ## [2.5.0] - 2026-09-24
 
