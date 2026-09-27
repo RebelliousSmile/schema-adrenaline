@@ -2,7 +2,7 @@
 status: pending
 ---
 
-# Instruction: Enforce and record post-promotion convergence
+# Instruction: Record consumer commits and prove convergence
 
 ## Architecture projection
 
@@ -10,24 +10,18 @@ status: pending
 
 ```txt
 .
-├── package.json                         ✏️ validate committed final record in ordinary provider check
-├── .github/workflows/
-│   └── final-convergence.yml            ✅ explicit post-promotion gate for immutable consumer commits
-├── release-train/
-│   ├── README.md                         ✏️ describe required final handoff and evidence
-│   └── schema-adrenaline-v2.6.0-final.json ✅ record final tag, archive and consumer commits
-└── tools/
-    └── verify-final-convergence.ts      ✏️ validate final consumer evidence against the record
+└── release-train/
+    └── schema-adrenaline-v2.6.0-final.json ✅ pin the final artifact and two remote consumer commits
 ```
 
 ## User Journey
 
 ```mermaid
 flowchart TD
-  A[Final release and two consumer commits exist] --> B[Commit final convergence record]
-  B --> C[Keep verifier checkout and separately checkout provider tag and exact consumer SHAs]
-  C --> D[Run provider and consumer-owned assertions]
-  D --> E[Publish machine-readable evidence linked to run]
+  A[Consumer owners publish final adoption commits] --> B[Record exact Lantern and Handbook SHAs]
+  B --> C[Dispatch provider final-convergence gate]
+  C --> D[Verify final bytes, lockfiles and consumer-owned journeys]
+  D --> E[Publish evidence and update issue 36]
 ```
 
 ## Test Scope
@@ -38,38 +32,38 @@ title: Test scope
 ---
 journey
   section Setup
-    system: supply final record with provider tag and both full consumer SHAs => immutable inputs available: 5: cli
+    system: both consumer owners provide full commits on their main histories => immutable external inputs available: 5: cli
   section Happy path
-    cli: dispatch final convergence gate => final archive and both lockfile journeys pass with evidence naming exact commits: 5: cli
-  section Edge case - mutable ref
-    cli: replace a SHA with a branch or tag => gate rejects input before checkout: 1: cli
-  section Edge case - old URL
-    cli: point one consumer at RC archive => gate refuses convergence: 1: cli
+    cli: commit final record and dispatch provider gate => final archive and both consumer proofs pass with exact commits: 5: cli
+  section Edge case - incomplete handoff
+    cli: one consumer remains on RC URL or lacks a final proof => gate fails and final record is not accepted: 1: cli
+  section Edge case - identity mismatch
+    cli: change a consumer SHA or artifact SRI => gate fails with the mismatch: 1: cli
 ```
 
 ## Tasks to do
 
-### `1)` Fix the post-promotion handoff
+### `1)` Pin the delivered consumer identities
 
-> Make final consumer adoption a required, independently runnable release-train step.
+> Seal the final record only after external owners finish their issue #36 tasks.
 
-1. Fill the protocol-2 final record with the canonical URL, candidate SHA-256 and SRI, and both full consumer commits; derive the final tag and committed candidate manifest from its version.
-2. Check each recorded commit equals the exact checkout and reject any stale consumer pin or mismatched consumer proof.
-3. Keep the historical protocol-1 candidate manifest and its prerelease consumer refs unchanged.
+1. Read the full Lantern and Handbook commits supplied in issue #36; verify each is reachable remotely and included in that consumer's `main` history.
+2. Verify both published consumer lockfiles resolve the canonical v2.6.0 URL with the candidate's SRI, then commit the protocol-2 final record with those exact SHAs.
+3. Keep the protocol-1 candidate manifest and its historical prerelease consumer refs unchanged.
 
-### `2)` Verify and publish convergence evidence
+### `2)` Produce the final provenance chain
 
-> Tie the provider release and both final consumer journeys to one reproducible run.
+> Run the provider gate against the committed record and attach its evidence to the issue.
 
-1. Add a manually dispatched workflow that keeps its initial checkout at the commit carrying the final record and verification tools, separately checks out the exact provider tag and consumer commits, invokes the final archive verifier and consumer-owned proofs, then validates their machine-readable evidence.
-2. Emit an artifact containing the final tag commit, committed candidate-manifest digest, release URL, SHA-256, SRI, both consumer SHAs, their lockfile URLs and proof status.
-3. Once the final record is committed, make `npm run check` verify its final archive identity and both exact consumer lockfile pins at recorded SHAs; keep negative self-tests for mutable refs, mismatched SRI, wrong release URL and one missing consumer.
-4. Link the successful run and evidence from issue #36, noting that v2.5.0's canonical URL remains impossible under its immutable tag.
+1. Dispatch the provider workflow at the commit carrying the final record and verification tools; require both consumer-owned protocol-2 assertions to pass at the recorded commits.
+2. Retain the workflow artifact naming the final provider tag and tag commit, committed candidate-manifest digest, canonical archive URL, SHA-256, SRI, two consumer commits, lockfile URLs and journey statuses.
+3. Run the ordinary provider check with the committed record, then link the successful gate and evidence in issue #36; keep the immutable v2.5.0 naming exception explicit.
 
 ## Test acceptance criteria
 
 | Task | Acceptance criteria |
 | ---- | ------------------- |
-| 1 | The final record names both full consumer commits; validation resolves and records the exact provider tag commit and committed candidate-manifest digest without changing the historical manifest. |
-| 2 | A successful gate proves byte-identical final archive and both consumer-owned final journeys, and publishes machine-readable evidence. |
-| 2 | `npm run check` validates the committed final record against the final release and exact consumer lockfiles; a mutable ref, RC URL, missing consumer, wrong digest or SRI fails. |
+| 1 | The final record names the canonical v2.6.0 artifact and two full consumer commits that are reachable on their respective `main` histories. |
+| 1 | Both exact consumer lockfiles contain the final URL and published SRI; the historical candidate manifest is unchanged. |
+| 2 | The provider gate proves byte-identical final archive and both consumer-owned final journeys, and emits one machine-readable chain with the exact provider tag commit and both consumer SHAs. |
+| 2 | A missing final consumer proof, RC URL, wrong digest, SRI or commit fails; issue #36 receives links to the passing run and evidence only after success. |

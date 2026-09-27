@@ -1,0 +1,73 @@
+name: Final convergence
+
+on:
+  workflow_dispatch:
+    inputs:
+      record:
+        description: Committed protocol-2 final record path
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  assert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+      - name: Validate committed record and final release
+        id: train
+        env:
+          RECORD: ${{ inputs.record }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          case "$RECORD" in release-train/schema-adrenaline-v*-final.json) ;; *) exit 1 ;; esac
+          git ls-files --error-unmatch "$RECORD"
+          npm ci --ignore-scripts
+          npm run validate:final-convergence
+          npx tsx tools/verify-final-convergence.ts "$RECORD" > final-pins.json
+          node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync(process.env.RECORD));for(const c of m.consumers) console.log(`${c.role}=${c.ref}`);console.log(`final_tag=v${m.artifact.version}`)' >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: RebelliousSmile/lantern
+          ref: ${{ steps.train.outputs.lantern }}
+          path: release-train-lantern
+      - uses: actions/checkout@v4
+        with:
+          repository: RebelliousSmile/obsidian-handbook
+          ref: ${{ steps.train.outputs.handbook }}
+          path: release-train-handbook
+      - uses: actions/checkout@v4
+        with:
+          repository: RebelliousSmile/schema-adrenaline
+          ref: ${{ steps.train.outputs.final_tag }}
+          path: release-train-adrenaline-final
+          fetch-depth: 0
+      - name: Run consumer-owned final assertions
+        env:
+          RECORD: ${{ inputs.record }}
+          GH_TOKEN: ${{ github.token }}
+          SCHEMA_ADRENALINE_ROOT: ${{ github.workspace }}/release-train-adrenaline-final
+        run: |
+          cp "$RECORD" release-train-lantern/release-train.json
+          cp "$RECORD" release-train-handbook/release-train.json
+          (cd release-train-lantern && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
+          (cd release-train-handbook && corepack enable && pnpm install --frozen-lockfile --ignore-scripts)
+          (cd release-train-lantern && npm run --silent release-train:assert -- release-train.json)
+          (cd release-train-handbook && npm run --silent release-train:assert -- release-train.json)
+          cp release-train-lantern/release-train.json.evidence.json lantern-proof.json
+          cp release-train-handbook/release-train.json.evidence.json handbook-proof.json
+          npx tsx tools/verify-final-convergence.ts "$RECORD" lantern-proof.json handbook-proof.json > final-convergence.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: final-convergence
+          path: |
+            final-convergence.json
+            lantern-proof.json
+            handbook-proof.json

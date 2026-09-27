@@ -1,35 +1,32 @@
 ---
-status: pending
+status: done
 ---
 
-# Instruction: Adopt the final URL in both consumers
+# Instruction: Build the provider-owned final convergence gate
 
 ## Architecture projection
 
 > Tree of the final files. ✅ create · ✏️ modify · ❌ delete
 
 ```txt
-RebelliousSmile/lantern
+.
+├── package.json                         ✏️ include final convergence validation in the ordinary provider check
+├── .github/workflows/
+│   └── final-convergence.yml            ✅ checkout exact remote consumer commits and run their owned proofs
+├── release-train/
+│   └── README.md                         ✏️ document the provider handoff and external consumer prerequisites
 └── tools/
-    ├── release-train-protocol.mjs        ✏️ allow Adrenaline final artifact and canonical URL in existing final-proof parser
-    └── release-train-assert.mjs          ✏️ prove final Adrenaline installation and Vite journey at immutable commit
-
-RebelliousSmile/obsidian-handbook
-├── package.json                         ✏️ move dependency from v2.6.0-rc.1 to v2.6.0 final URL
-├── pnpm-lock.yaml                       ✏️ resolve the same final URL with unchanged published SRI
-└── tools/
-    ├── release-train-protocol.mjs        ✏️ accept the published Adrenaline final record
-    └── release-train-schema-adrenaline-assert.mjs ✏️ prove final package installation and Handbook rendering/TOML journey
+    └── verify-final-convergence.ts      ✏️ verify exact consumer evidence and final record rules
 ```
 
 ## User Journey
 
 ```mermaid
 flowchart TD
-  A[Provider final archive verified] --> B[Update consumer dependency URLs]
-  B --> C[Regenerate lockfiles]
-  C --> D[Run consumer-owned install and journey assertions]
-  D --> E[Record full passing consumer commits]
+  A[Canonical final archive verified] --> B[Provider validates a protocol-2 final record]
+  B --> C[Provider checks out exact remote consumer commits]
+  C --> D[Consumer-owned assertions return evidence]
+  D --> E[Provider accepts both proofs or fails the gate]
 ```
 
 ## Test Scope
@@ -40,38 +37,39 @@ title: Test scope
 ---
 journey
   section Setup
-    system: use published v2.6.0 final URL and manifest SRI => consumer inputs fixed: 5: cli
+    system: use a fixture final record and two fixture proofs => provider can test the gate before consumer delivery: 5: cli
   section Happy path
-    cli: run Lantern frozen install and Vite assertion => final URL and SRI resolve at full commit: 5: cli
-    cli: run Handbook frozen install and rendering/TOML assertion => final URL and SRI resolve at full commit: 5: cli
-  section Edge case - candidate pin remains
-    cli: leave RC URL in either lockfile => final adoption assertion fails: 1: cli
-  section Edge case - wrong integrity
-    cli: change lockfile SRI => final adoption assertion fails: 1: cli
+    cli: run provider check and final gate fixtures => canonical artifact and both exact consumer proofs accepted: 5: cli
+  section Edge case - stale pin
+    cli: provide RC URL in a consumer proof => provider rejects convergence: 1: cli
+  section Edge case - wrong identity
+    cli: provide mutable ref, wrong commit, missing consumer or wrong SRI => provider rejects convergence: 1: cli
 ```
 
 ## Tasks to do
 
-### `1)` Confirm Lantern final adoption
+### `1)` Complete provider-side evidence validation
 
-> Preserve its existing v2.6.0 final URL and make the final proof explicit.
+> Prove the published final archive and both consumer-owned results without editing either consumer repository.
 
-1. Verify Lantern's existing `package.json`, npm lockfile and pnpm lockfile resolve the canonical v2.6.0 URL and published SRI; change a pin only if that check finds drift.
-2. Generalize its existing Mist-only protocol-2 parser and evidence assertion to Adrenaline without changing Mist behavior; exercise frozen install, contract checks and Vite build using a final-artifact fixture.
-3. Record the full immutable Lantern commit SHA after those checks pass; phase 3 will run the combined final record against that commit.
+1. Extend `verify-final-convergence.ts` to validate the protocol-2 final record, exact consumer roles/repositories/commits, lockfile URLs and SRI, and required journey status.
+2. Require the final artifact to equal the candidate SHA-256 and SRI from the committed protocol-1 manifest; retain the exact provider tag commit and candidate-manifest digest in the output evidence.
+3. Add deterministic positive and negative self-tests for stale RC URL, wrong SRI, wrong consumer commit, missing consumer and unknown fields.
 
-### `2)` Move Handbook to the final archive
+### `2)` Provide an executable provider gate
 
-> Replace the RC URL while keeping the same proven package bytes and consumer behavior.
+> Make post-promotion verification runnable when consumer owners publish their commits.
 
-1. Change Handbook's dependency and lockfile to the v2.6.0 final URL; keep the manifest's SRI.
-2. Extend its owned protocol-2 assertion and parser to accept Adrenaline without changing Mist behavior, and check the installed package, rendering, contextual insertion and TOML export through published `block:*` capability, with pack version derived from the catalogue and referenced manifest.
-3. Run its frozen install and existing Handbook checks using a final-artifact fixture; record the full immutable Handbook commit SHA for phase 3.
+1. Add a manually dispatched workflow that keeps the verifier checkout at the commit containing the final record and tools, then checks out the provider tag and each consumer at the full SHA from that record.
+2. Invoke each consumer's own `release-train:assert` entry point and validate the two emitted protocol-2 evidence files; upload one provenance artifact.
+3. Include the gate's self-tests in `npm run check`; when a committed final record exists, check its provider identity and exact remote consumer lockfile pins as part of the ordinary provider check.
+4. Document that consumer migrations, final-proof code and immutable commits are tracked in issue #36 and must be delivered before phase 3.
 
 ## Test acceptance criteria
 
 | Task | Acceptance criteria |
 | ---- | ------------------- |
-| 1 | Lantern's existing declaration and both lockfiles resolve the final canonical URL with the manifest SRI, and its consumer-owned final install and Vite proof pass at a full commit. |
-| 2 | Handbook's declaration and lockfile resolve the same final URL and SRI, and its consumer-owned render, contextual insertion and TOML export proof passes at a full commit. |
-| 2 | Handbook derives pack version from published metadata and uses the declared `block:*` capability to activate pack blocks. |
+| 1 | Fixture proofs for both roles, exact commits, canonical URL and published SRI pass; stale RC URL, wrong SRI, mutable ref, wrong commit and absent consumer fail. |
+| 1 | Provider evidence names the exact final tag commit and committed candidate-manifest digest without changing the historical candidate manifest. |
+| 2 | The provider workflow accepts only committed final-record inputs and exact remote checkouts, delegates runtime assertions to consumers, and uploads combined evidence. |
+| 2 | The ordinary provider check exercises candidate publication, promotion, final provenance and convergence rules while retaining the packed-package esbuild proof. |
