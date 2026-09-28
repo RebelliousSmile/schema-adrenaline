@@ -16,6 +16,9 @@
     "validate:package": "tsx tools/validate-package.ts",
     "validate:bundle": "tsx tools/validate-bundle.ts",
     "validate:candidate-workflow": "tsx tools/validate-publish-candidate-workflow.ts",
+    "validate:final-release": "tsx tools/assert-final-release.ts --self-test",
+    "validate:final-convergence": "tsx tools/verify-final-convergence.ts --self-test",
+    "release-train:verify-final": "tsx tools/verify-final-convergence.ts --if-present",
     "validate:version": "tsx tools/validate-versioning.ts",
     "validate:release": "tsx tools/prepare-release.ts --verify",
     "release:verify-provider": "npm run typecheck && npm run build && npm run gen && npm run validate && npm run validate:contract && npm run audit && npm run validate:presentation && npm run validate:version && npm run validate:package && npm run validate:bundle && npm run validate:candidate-workflow && npm run release-train:self-test && npm run validate:release",
@@ -25,8 +28,8 @@
     "release:prepare": "tsx tools/prepare-release.ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "check": "npm run format:check && npm run typecheck && npm run build && npm run gen && npm run validate && npm run validate:contract && npm run audit && npm run validate:presentation && npm run validate:version && npm run validate:package && npm run validate:bundle && npm run validate:candidate-workflow && npm run release-train:self-test && npm run validate:release && npm run validate:packs && npm run validate:pack && npm run validate:handbook",
+    "format:check": "prettier --check . --end-of-line auto",
+    "check": "npm run format:check && npm run typecheck && npm run build && npm run gen && npm run validate && npm run validate:contract && npm run audit && npm run validate:presentation && npm run validate:version && npm run validate:package && npm run validate:bundle && npm run validate:candidate-workflow && npm run release-train:self-test && npm run validate:final-release && npm run validate:final-convergence && npm run release-train:verify-final && npm run validate:release && npm run validate:packs && npm run validate:pack && npm run validate:handbook",
     "toml:one": "tsx tools/toml2json.ts"
   },
   "repository": {
