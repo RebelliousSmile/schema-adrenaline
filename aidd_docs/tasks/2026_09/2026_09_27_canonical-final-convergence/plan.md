@@ -1,6 +1,6 @@
 ---
 objective: "The canonical v2.6.0 final archive is proven identical to its candidate, both consumers resolve its final URL and SRI, and immutable commits and the provider tag form a checked provenance chain."
-status: in-progress
+status: implemented
 ---
 
 # Plan: Converge consumers on the canonical final archive
@@ -31,6 +31,7 @@ status: in-progress
 | [Lantern `7935a9a`](https://github.com/RebelliousSmile/lantern/commit/7935a9a9e1decc7577dedc8b79aec11be4fce9b6) | The fresh `main` checkout still declares `v2.6.0-rc.1` in `package.json`, `package-lock.json` and `pnpm-lock.yaml`; its protocol-2 final parser accepts Mist only. |
 | [Handbook `12eb3ca`](https://github.com/RebelliousSmile/obsidian-handbook/commit/12eb3ca46bda5a12a5d6310fca3523c4a724d509) | The fresh `main` checkout already pins canonical v2.6.0 with the candidate SRI in `package.json` and `pnpm-lock.yaml`; its protocol-2 final parser accepts Mist only. |
 | [Issue #36 consumer handoff](https://github.com/RebelliousSmile/schema-adrenaline/issues/36#issuecomment-5857401993) | Tracks the Lantern migration and both consumer-owned final proofs outside this repository, including the required full commits and evidence links. |
+| [Final convergence proof](https://github.com/RebelliousSmile/schema-adrenaline/issues/36#issuecomment-5870412774) | Provider main CI and final workflow passed; both exact consumer commits, final tag provenance and archive integrity are retained in the combined JSON evidence. |
 | [GitHub immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases) | A published immutable release cannot gain or rename assets, and its tag name cannot be reused after deletion. |
 
 ## Decisions
