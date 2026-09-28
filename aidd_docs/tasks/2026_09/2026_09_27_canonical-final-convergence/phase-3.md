@@ -1,8 +1,15 @@
 ---
-status: pending
+status: done
 ---
 
 # Instruction: Record consumer commits and prove convergence
+
+## Verified delivery
+
+- Final record: `release-train/schema-adrenaline-v2.6.0-final.json`, committed in `cc6fac7a05801d3db7750dc5c445b8f2bfcccb9b` and merged by PR #37.
+- Provider check: `npm.cmd run check` passed locally; [main CI](https://github.com/RebelliousSmile/schema-adrenaline/actions/runs/36425153763) passed at `f0a4df0ef7995ac416eef00eb33e299644478c9c`.
+- [Final convergence workflow](https://github.com/RebelliousSmile/schema-adrenaline/actions/runs/36425159968) passed at the same provider commit with Lantern `66edca2f23c200e96ee56853216ef45a7021fb9a` and Handbook `f9f824838faa46c72966772d0c1df116411f0a80`.
+- [Evidence artifact](https://github.com/RebelliousSmile/schema-adrenaline/actions/runs/36425159968/artifacts/10971685921): `sha256:70ce31fb11ab8ca1fa9f7c8f30285b22995d1d4654206b351b4315c75c579371`; its combined JSON and proof links are retained in [issue #36](https://github.com/RebelliousSmile/schema-adrenaline/issues/36#issuecomment-5870412774).
 
 ## Architecture projection
 
