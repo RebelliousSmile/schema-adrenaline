@@ -95,7 +95,7 @@ export function verifyRemotePins(train: FinalTrain): void {
       `${consumer.role} main ancestry`,
     );
     assert.ok(
-      comparison.status === "behind" || comparison.status === "identical",
+      comparison.status === "ahead" || comparison.status === "identical",
       `${consumer.role} ref is not on main`,
     );
     const names =
