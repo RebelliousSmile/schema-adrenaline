@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- The Handbook pack `0.6.0` adds six colour tokens for the Zombiology PJ
+  sheet, in light and dark layers: `--adrenaline-field-border`,
+  `--adrenaline-track-mark`, `--adrenaline-fatigue`,
+  `--adrenaline-fatigue-ink`, `--adrenaline-condition` and
+  `--adrenaline-condition-border`. The presentation contract and schema
+  baseline are unchanged.
+
 ## [2.6.0] - 2026-09-26
 
 ### Added
