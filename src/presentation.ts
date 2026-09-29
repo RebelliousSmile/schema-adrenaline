@@ -168,7 +168,7 @@ function appearance(surface: "paper-sheet" | "compact-card"): AdrenalinePresenta
 export const PJ_PRESENTATION = definePresentation({
   version: 1,
   capability: "block:adrenaline-pj",
-  sheet: { id: "adrenaline-pj", label: "Fiche PJ" },
+  sheet: { id: "adrenaline-pj", label: "Feuille de personnage" },
   appearance: appearance("paper-sheet"),
   values: VALUES,
   sections: [
@@ -195,11 +195,11 @@ export const PJ_PRESENTATION = definePresentation({
           layout: "grid",
           columns: 2,
           form: "game-parameters",
+          rowLabels: ["Joueuse/Joueur", "Type de création", "Type de scénario"],
           paths: [
             "/parametresDuJeu/joueur",
             "/parametresDuJeu/typeDeCreation",
             "/parametresDuJeu/typeDeScenario",
-            "/parametresDuJeu/declinaisonDeCampagne",
           ],
         },
         {
@@ -237,11 +237,11 @@ export const PJ_PRESENTATION = definePresentation({
       ],
     },
     {
-      id: "profil",
-      label: "Profil",
+      id: "identite",
+      label: "Identité",
       order: 30,
-      layout: "columns",
-      columns: 3,
+      layout: "stack",
+      columns: 1,
       blocks: [
         {
           id: "identite",
@@ -253,6 +253,15 @@ export const PJ_PRESENTATION = definePresentation({
           placement: { column: 1, row: 1 },
           paths: ["/identite"],
         },
+      ],
+    },
+    {
+      id: "caracteristique",
+      label: "Caractéristique",
+      order: 35,
+      layout: "columns",
+      columns: 2,
+      blocks: [
         {
           id: "caracteristiques-physiques",
           label: "Carac. physiques",
@@ -263,7 +272,7 @@ export const PJ_PRESENTATION = definePresentation({
           rangeDisplay: ["minimum", "current"],
           rowLabels: ["Force", "Constitution", "Dextérité", "Rapidité"],
           valueSuffix: "%",
-          placement: { column: 2, row: 1 },
+          placement: { column: 1, row: 1 },
           paths: [
             "/caracteristiques/for",
             "/caracteristiques/con",
@@ -281,7 +290,7 @@ export const PJ_PRESENTATION = definePresentation({
           rangeDisplay: ["minimum", "current"],
           rowLabels: ["Logique", "Volonté", "Perception", "Charisme"],
           valueSuffix: "%",
-          placement: { column: 3, row: 1 },
+          placement: { column: 2, row: 1 },
           paths: [
             "/caracteristiques/log",
             "/caracteristiques/vol",
@@ -419,7 +428,7 @@ export const PJ_PRESENTATION = definePresentation({
       ],
     },
   ],
-  hiddenPaths: ["/meta"],
+  hiddenPaths: ["/meta", "/parametresDuJeu/declinaisonDeCampagne"],
 });
 
 export const PNJ_PRESENTATION = definePresentation({
