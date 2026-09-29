@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aperçu du contrat de présentation Adrenaline — maquette de référence</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #1F2A37; overflow: hidden; }
+
+  /* ===== Preview chrome — HIDDEN by the fidelity oracle before measuring ===== */
+  .preview-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 9999;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    background: #1F2A37; color: #fff; border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+  .preview-bar__brand { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+  .preview-bar__brand small { font-size: 12px; font-weight: 400; color: rgba(255,255,255,.5); letter-spacing: .04em; text-transform: uppercase; }
+  .preview-bar__controls { display: flex; gap: 12px; align-items: center; }
+  .page-select {
+    background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.15);
+    padding: 8px 32px 8px 14px; font-size: 13px; font-weight: 500; border-radius: 8px; cursor: pointer;
+    appearance: none; -webkit-appearance: none; min-width: 220px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .page-select option { background: #1F2A37; }
+  .page-select optgroup { font-weight: 600; }
+  .viewport-toggle { display: flex; gap: 4px; padding: 4px; background: rgba(255,255,255,.08); border-radius: 8px; }
+  .viewport-btn {
+    background: transparent; border: none; color: rgba(255,255,255,.7); padding: 6px 12px;
+    font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; transition: all .2s;
+  }
+  .viewport-btn svg { width: 14px; height: 14px; }
+  .viewport-btn:hover { color: #fff; }
+  .viewport-btn.active { background: #fff; color: #1F2A37; }
+
+  /* ===== Stage + device frame ===== */
+  .preview-stage { position: fixed; top: 56px; left: 0; right: 0; bottom: 0; overflow-y: auto; background: #f0f0f0; }
+  .preview-frame {
+    width: 100%; max-width: 100%; margin: 0 auto; position: relative; overflow-x: hidden;
+    background: #fff; transition: max-width .4s cubic-bezier(.22,1,.36,1);
+  }
+  .preview-frame.tablet { max-width: 834px; border-radius: 24px; outline: 10px solid #1F2A37; box-shadow: 0 30px 80px rgba(0,0,0,.25); margin: 34px auto; overflow: hidden; }
+  .preview-frame.mobile { max-width: 390px; border-radius: 32px; outline: 8px solid #1F2A37; box-shadow: 0 30px 80px rgba(0,0,0,.3); margin: 40px auto; overflow: hidden; }
+  /* 834 / 390 are fixed device samples, not contract breakpoints — see the RESPONSIVE note.
+     The bezel is an outline, never a border: a border would sit inside the box (box-sizing:
+     border-box) and shrink the content box below the sample width, charging the difference to
+     a conformant implementation when the fidelity oracle measures percentage-derived values.
+     The margins absorb the outline (24+10, 32+8) so the visual gap is unchanged. */
+  #page-container { display: block; width: 100%; }
+
+  /* Placeholder until a page function is filled in, and the render error state. */
+  .ph { padding: 80px 32px; text-align: center; color: #6B7280; }
+  .ph h1 { font-size: 28px; color: #1F2A37; margin-bottom: 12px; font-weight: 600; }
+  .ph p { font-size: 14px; line-height: 1.6; }
+  .ph p + p { margin-top: 12px; }
+  .ph code { background: #F4F4F4; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .ph--error h1 { color: #B42318; }
+  .ph--error .ph__message { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #B42318; }
+
+  /* Author responsive overrides: `.preview-frame.mobile <sel>` / `.preview-frame.tablet <sel>`
+     They fire both in manual preview (frame class) AND under the fidelity oracle, which
+     toggles the same class via window.setViewport. Viewport-dependent rules are class-based;
+     accessibility preference queries (reduced motion, contrast, forced colors) remain allowed.
+     The three frames are device samples (desktop fluid · tablet 834 · mobile 390),
+     not contract breakpoints: nothing here is derived from tokens.json § breakpoint.*. */
+
+  /* ===== AUTHOR PAGE STYLES — LLM MAY EDIT BETWEEN THESE MARKERS ===== */
+  .sheet {
+    min-height: 100vh;
+    padding: 28px;
+    color: #2a211e;
+    background:
+      linear-gradient(rgba(248, 244, 236, .94), rgba(248, 244, 236, .94)),
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(91, 58, 45, .04) 4px);
+    font-family: Georgia, "Times New Roman", serif;
+  }
+  .sheet__eyebrow { color: #8f1f15; font: 700 13px/1.2 "Segoe UI", sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+  .sheet__title { margin: 3px 0 18px; color: #71170f; font: 800 28px/1.1 "Arial Narrow", "Segoe UI", sans-serif; text-transform: uppercase; }
+  .sheet__note { margin: -10px 0 18px; color: #685a54; font: italic 14px/1.45 Georgia, serif; }
+  .identity-bar { display: grid; grid-template-columns: minmax(220px, 1.4fr) 2fr auto; gap: 12px; align-items: center; padding: 14px 16px; background: #71170f; color: #fff8f0; border: 1px solid #9d2416; }
+  .identity-bar__name { font: 800 20px/1.1 "Arial Narrow", "Segoe UI", sans-serif; text-transform: uppercase; }
+  .identity-bar__meta { font-size: 13px; line-height: 1.45; }
+  .identity-bar__badge { min-width: 58px; padding: 9px; color: #71170f; background: #fff8f0; text-align: center; font: 800 16px/1 "Segoe UI", sans-serif; }
+  .sheet-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  .region { grid-column: span 12; background: rgba(255,255,255,.5); border: 1px solid #b8ada4; box-shadow: 0 2px 8px rgba(58,33,28,.06); }
+  .region--6 { grid-column: span 6; }
+  .region--4 { grid-column: span 4; }
+  .region--8 { grid-column: span 8; }
+  .region__title { padding: 7px 10px 6px; color: #3a211c; background: #cbc6bc; border-bottom: 1px solid #9d2416; font: italic 700 13px/1.1 Georgia, serif; text-decoration: underline; text-transform: uppercase; }
+  .region__body { padding: 11px 12px 13px; }
+  .region__body--columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .region__body--three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .copy { color: #4d403b; font-size: 14px; line-height: 1.48; }
+  .copy em { color: #8b2115; }
+  .list { padding-left: 20px; color: #3a302c; font-size: 14px; line-height: 1.5; }
+  .list li::marker { color: #9d2416; }
+  .subhead { margin-bottom: 8px; color: #71170f; font: 800 13px/1.2 "Segoe UI", sans-serif; text-transform: uppercase; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+  .stat { display: grid; grid-template-columns: 42px 1fr; gap: 6px; align-items: center; }
+  .stat__key { color: #71170f; font: 800 13px/1 "Segoe UI", sans-serif; }
+  .value { min-width: 46px; padding: 4px 7px; color: #17110f; text-align: right; font: 800 13px/1.1 "Segoe UI", sans-serif; white-space: nowrap; }
+  .value--editable { color: #2d6c78; border-bottom: 1px solid #9eb7b9; background: rgba(237,245,244,.65); }
+  .metric-list { display: grid; gap: 7px; }
+  .metric { display: grid; grid-template-columns: minmax(115px, 1fr) auto; gap: 10px; align-items: center; }
+  .metric__name { font-size: 13px; line-height: 1.25; }
+  .metric__name strong { color: #71170f; }
+  .state-card { border: 1px solid #9d2416; background: #fffaf3; }
+  .state-card__title { padding: 8px 10px; color: #fff8f0; background: #8b2115; font: 800 15px/1.1 "Segoe UI", sans-serif; text-transform: uppercase; }
+  .state-card__body { padding: 10px; }
+  .status { display: inline-block; margin: 2px 5px 2px 0; padding: 3px 7px; background: #a6781f; color: #1a100d; font: 800 11px/1 "Segoe UI", sans-serif; text-transform: uppercase; }
+  .stress-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  .stress-card { border: 1px solid #74170f; background: rgba(255,255,255,.58); }
+  .stress-card__title { padding: 4px 5px; color: #fff8ef; background: #74170f; font: 800 9px/1 "Adrenaline Display", sans-serif; text-align: center; text-transform: uppercase; }
+  .stress-card__roll { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 4px 5px; border-top: 1px solid #d29a92; }
+  .stress-card__roll strong { color: #74170f; font: 800 11px/1 "Adrenaline Display", sans-serif; }
+  .stress-card__roll small { color: #655a55; font-size: 8px; text-transform: uppercase; }
+  .malus-tracks { display: grid; gap: 4px; margin-top: 5px; }
+  .malus-track { display: grid; grid-template-columns: 17px 1fr; min-height: 27px; border: 1px solid #a72b20; background: rgba(255,255,255,.62); }
+  .malus-track--fatigue { border-color: #d8a617; }
+  .malus-track__label { display: flex; align-items: center; justify-content: center; padding: 2px; color: #fff8ef; background: #8b2115; font: 800 7px/1 "Adrenaline Display", sans-serif; text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .malus-track--fatigue .malus-track__label { color: #271a17; background: #e2b620; }
+  .malus-track__body { display: flex; align-items: center; gap: 4px; padding: 4px 6px; }
+  .malus-track__body--fatigue { gap: 3px; padding-inline: 4px; }
+  .malus-track__period { color: #8b2115; font: 700 6px/1 "Adrenaline Display", sans-serif; text-transform: uppercase; }
+  .malus-track__dot { width: 10px; height: 10px; border: 1px solid #c55c50; border-radius: 50%; background: #fffaf3; }
+  .malus-track--fatigue .malus-track__dot { border-color: #d8a617; }
+  .malus-track__line { flex: 1; min-width: 18px; border-bottom: 1px dotted #b8ada4; }
+  .malus-track__levels { display: flex; gap: 8px; color: #8b2115; font: 800 10px/1 "Adrenaline Display", sans-serif; }
+  .condition-stack { display: grid; gap: 5px; }
+  .condition-card { display: grid; grid-template-columns: 20px 1fr; min-height: 52px; border: 1px solid #ed6c63; background: rgba(255,255,255,.58); }
+  .condition-card__label { display: flex; align-items: center; justify-content: center; color: #fff8ef; background: #d84036; font: 800 7px/1 "Adrenaline Display", sans-serif; letter-spacing: .03em; text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .condition-card__body { padding: 5px 7px; }
+  .condition-card__location { color: #8b2115; font-size: 8px; text-transform: uppercase; }
+  .condition-card__line { display: block; height: 11px; margin-bottom: 3px; border-bottom: 1px dotted #cbbdb4; }
+  .condition-card__duration { display: flex; flex-wrap: wrap; gap: 6px; color: #8f7f77; font-size: 7px; text-transform: uppercase; }
+  .condition-card__duration span::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 2px; border: 1px solid #ed6c63; border-radius: 50%; vertical-align: -1px; }
+  .preview-frame.tablet .sheet { padding: 20px; }
+  .preview-frame.tablet .region--4, .preview-frame.tablet .region--8 { grid-column: span 6; }
+  .preview-frame.tablet .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .preview-frame.mobile .sheet { padding: 14px; }
+  .preview-frame.mobile .identity-bar { grid-template-columns: 1fr auto; }
+  .preview-frame.mobile .identity-bar__meta { grid-column: 1 / -1; }
+  .preview-frame.mobile .region--4, .preview-frame.mobile .region--6, .preview-frame.mobile .region--8 { grid-column: span 12; }
+  .preview-frame.mobile .region__body--columns, .preview-frame.mobile .region__body--three { grid-template-columns: 1fr; }
+  .preview-frame.mobile .stat-grid { grid-template-columns: 1fr; }
+  .preview-frame.mobile .metric { grid-template-columns: 1fr; }
+
+  /* Zombiology reference alignment — visual layer only. */
+  @font-face {
+    font-family: "Adrenaline Body";
+    src: url("../../../../handbook/adrenaline/assets/fonts/adrenaline-body.woff2") format("woff2");
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: "Adrenaline Display";
+    src: url("../../../../handbook/adrenaline/assets/fonts/adrenaline-display.woff2") format("woff2");
+    font-weight: 700 900;
+  }
+  .preview-stage { background: #d8d2ca; }
+  .sheet {
+    width: min(100%, 820px);
+    min-height: 1120px;
+    margin: 0 auto;
+    padding: 24px 28px 30px;
+    color: #271a17;
+    background-color: #f4f0e8;
+    background-image:
+      linear-gradient(rgba(244,240,232,.90), rgba(244,240,232,.90)),
+      url("../../../../handbook/adrenaline/assets/paper-grain.webp");
+    background-size: auto, 420px auto;
+    box-shadow: 0 12px 35px rgba(49, 29, 23, .18);
+    font-family: "Adrenaline Body", "Arial Narrow", sans-serif;
+  }
+  .pj-header {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr 1.15fr;
+    gap: 10px;
+    align-items: stretch;
+    margin-bottom: 13px;
+  }
+  .pj-header__box { min-height: 70px; border: 1px solid #a72b20; background: rgba(255,255,255,.82); box-shadow: 0 2px 6px rgba(79,35,27,.12); }
+  .pj-header__character { display: flex; flex-direction: column; }
+  .pj-header__label {
+    display: block;
+    padding: 4px 7px;
+    color: #fff8ef;
+    background: #74170f;
+    font: 800 10px/1 "Adrenaline Display", sans-serif;
+    letter-spacing: .04em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .pj-header__name {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px 6px;
+    color: #2d6c78;
+    font: 700 19px/1.1 "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+    text-align: center;
+    transform: rotate(-1deg);
+  }
+  .pj-header__brand { display: flex; flex-direction: column; justify-content: center; align-items: center; color: #74170f; border: 1px solid #a72b20; background: #fff; text-align: center; }
+  .pj-header__brand strong { font: 900 25px/1 "Adrenaline Display", sans-serif; letter-spacing: -.03em; text-transform: uppercase; }
+  .pj-header__brand span { display: flex; width: 92%; align-items: center; gap: 6px; margin-top: 5px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+  .pj-header__brand span::before, .pj-header__brand span::after { content: ""; flex: 1; border-top: 1px solid #a72b20; }
+  .pj-header__params { position: relative; padding: 0 48px 5px 0; background: #fff; }
+  .pj-header__params p { display: grid; grid-template-columns: auto 1fr; gap: 5px; padding: 2px 7px 0; font-size: 10px; line-height: 1.2; }
+  .pj-header__params b { color: #74170f; text-transform: uppercase; }
+  .pj-header__params span { color: #2d6c78; border-bottom: 1px dotted #a99b91; }
+  .pj-header__px { position: absolute; top: 23px; right: 5px; bottom: 5px; width: 38px; display: grid; grid-template-rows: auto 1fr; border: 1px solid #a72b20; background: #fff; text-align: center; }
+  .pj-header__px b { padding: 3px 1px; color: #74170f; font: 800 9px/1 "Adrenaline Display", sans-serif; }
+  .pj-header__px span { display: flex; align-items: center; justify-content: center; color: #2d6c78; border: 0; font: 700 15px/1 "Segoe Print", "Bradley Hand", cursive; }
+  .sheet-grid { gap: 10px; margin-top: 0; }
+  .region { border: 1px solid #a72b20; background: rgba(255,255,255,.28); box-shadow: none; }
+  .region__title {
+    padding: 5px 8px 4px;
+    color: #fff8ef;
+    background: #74170f;
+    border: 0;
+    font: 800 12px/1.05 "Adrenaline Display", sans-serif;
+    letter-spacing: .025em;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .region__body { padding: 9px 10px 11px; }
+  .subhead {
+    margin: 0 0 5px;
+    padding-bottom: 3px;
+    color: #74170f;
+    border-bottom: 1px solid #c55c50;
+    font: 800 10px/1.15 "Adrenaline Display", sans-serif;
+    letter-spacing: .035em;
+  }
+  .subhead--value { display: flex; justify-content: space-between; align-items: baseline; }
+  .subhead--value span { color: #74170f; font-style: normal; text-decoration: none; }
+  .metric-list + .subhead { margin-top: 9px; }
+  .identity-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 12px; }
+  .identity-column { display: grid; align-content: start; gap: 5px; }
+  .identity-line { display: grid; grid-template-columns: auto 1fr; gap: 5px; align-items: end; font-size: 10px; }
+  .identity-line b { color: #74170f; font-family: "Adrenaline Display", sans-serif; text-transform: uppercase; }
+  .identity-line span { min-height: 15px; color: #2d6c78; border-bottom: 1px dotted #b8ada4; font-family: "Segoe Print", "Bradley Hand", cursive; }
+  .characteristic-list { display: grid; gap: 4px; }
+  .characteristic { display: grid; grid-template-columns: minmax(105px, 1fr) 42px 42px; gap: 4px; align-items: center; }
+  .characteristic__name { color: #74170f; font: 800 10px/1 "Adrenaline Display", sans-serif; text-transform: uppercase; }
+  .characteristic__value { padding: 4px 3px; color: #2d6c78; border: 1px solid #d29a92; background: rgba(255,255,255,.62); font: 700 12px/1 "Segoe Print", "Bradley Hand", cursive; text-align: center; }
+  .characteristic__value::after { content: "%"; }
+  .characteristic__head { color: #6d5d56; font: 700 7px/1 "Adrenaline Display", sans-serif; text-align: center; text-transform: uppercase; }
+  .write-stack { display: grid; gap: 5px; }
+  .write-line { display: grid; grid-template-columns: auto minmax(30px, 1fr) auto 32px; gap: 5px; align-items: end; min-height: 20px; font-size: 10px; }
+  .write-line__label { color: #3a2b27; white-space: nowrap; }
+  .write-line__field { min-height: 17px; color: #2d6c78; border-bottom: 1px dotted #a99b91; font: 700 11px/1.1 "Segoe Print", "Bradley Hand", cursive; }
+  .write-line__unit { color: #74170f; font: 800 8px/1 "Adrenaline Display", sans-serif; text-transform: uppercase; }
+  .write-line__value { min-height: 17px; color: #2d6c78; border: 1px solid #d29a92; background: rgba(255,255,255,.65); font: 700 11px/1.1 "Segoe Print", "Bradley Hand", cursive; text-align: center; }
+  .write-line--wide { grid-template-columns: auto minmax(60px, 1fr); }
+  .weapon-line { display: grid; grid-template-columns: auto minmax(70px, 1fr) 42px; gap: 5px; align-items: end; min-height: 22px; font-size: 10px; }
+  .weapon-line__field { min-height: 18px; color: #2d6c78; border-bottom: 1px dotted #a99b91; font: 700 11px/1.1 "Segoe Print", "Bradley Hand", cursive; }
+  .weapon-line__damage { color: #2d6c78; font: 700 11px/1.1 "Segoe Print", "Bradley Hand", cursive; text-align: right; white-space: nowrap; }
+  .copy, .list, .metric__name { font-family: "Adrenaline Body", "Arial Narrow", sans-serif; }
+  .copy, .list { font-size: 12px; line-height: 1.35; }
+  .metric-list { gap: 3px; }
+  .metric { grid-template-columns: minmax(90px, 1fr) 42px; gap: 5px; min-height: 22px; padding: 1px 3px; border: 1px solid #d29a92; background: rgba(255,255,255,.58); }
+  .metric__name { color: #2f211e; font-size: 11px; }
+  .value { width: 42px; min-width: 42px; padding: 2px 4px; justify-self: end; color: #2d6c78; font: 700 13px/1.05 "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive; }
+  .value--editable { color: #2d6c78; border: 0; border-left: 1px solid #d29a92; background: transparent; }
+  .stat-grid { gap: 3px 7px; }
+  .stat { grid-template-columns: 34px 1fr; gap: 3px; min-height: 22px; }
+  .stat__key { color: #fff8ef; background: #74170f; padding: 5px 4px; font: 800 10px/1 "Adrenaline Display", sans-serif; }
+  .stat .value { width: 100%; min-height: 22px; border: 1px solid #d29a92; text-align: center; }
+  .status { background: #74170f; color: #fff8ef; font-size: 9px; }
+  .preview-frame.mobile .pj-header { grid-template-columns: 1fr; }
+  .preview-frame.mobile .pj-header__brand { order: -1; min-height: 58px; }
+  .preview-frame.mobile .sheet { min-height: auto; }
+  /* ===== END AUTHOR PAGE STYLES ===== */
+</style>
+</head>
+<body>
+<!--
+  ============================================================================
+  MAQUETTE DE RÉFÉRENCE · Aperçu du contrat de présentation Adrenaline
+  Généré par : design:harness (adapters/harness/harness.py)
+  ============================================================================
+  À QUOI SERT CE FICHIER
+    Formaliser une maquette pour le plugin `design` : piloté par l'oracle de
+    fidélité (adapters/measure/measure.py) et par le fan-out `copycat`.
+    Contrat : window.setPage(key) · window.setViewport(mode) · barre .preview-bar.
+
+  COMMENT LE REMPLIR (1 page = 1 fonction)
+    1. Dans le 1er <script>, chaque page est une fonction `pageXxx()` qui RETOURNE
+       le HTML de la page (template literal). Remplace le corps :
+           function pageHome() { return placeholder('home', 'Accueil'); }
+       devient :
+           function pageHome() { return `
+             <header class="site-header">...</header>
+             <main>...</main>
+             <footer class="site-footer">...</footer>
+           `; }
+    2. Le HTML retourné est injecté dans #page-container : PAS de
+       <html>/<head>/<body> ni de <style> global dans la fonction.
+       Les styles vont dans le <style> du <head>.
+    3. La clé de page doit correspondre à la valeur de l'<option> ET
+       au champ "reference_page" du config measure. Trois branches, un seul
+       ensemble : renommer une clé sans renommer les deux autres produit une
+       page injoignable, ou une mesure d'un vide. Vérifiable :
+           node tools/harness-runtime-check.mjs <fichier.html> \
+             [--oracle-config <config.json>]
+
+  RÈGLES ORACLE (fidélité mesurée)
+    • Sélecteurs STABLES et sémantiques (BEM : .hero__title, .card__price).
+    • Un seul h1 par page ; hiérarchie de titres réelle (h2/h3 par section).
+    • NE PAS modifier .preview-bar, les registres ni le contrôle hors zones auteur.
+    • URLs absolues ou data: pour images / fonts (fichier servi en statique).
+
+  CONTEXTE DES PAGES (clé → route/source/thème)
+    • pj — Fiche PJ | source non fournie
+    • pnj — Fiche PNJ | source non fournie
+    • monstre — Fiche monstre | source non fournie
+    Inspecter la source exacte de la page avant de l'écrire. Ne pas inventer un
+    contenu absent de la source. Le runtime applique automatiquement `theme` sur
+    #page-container via data-theme avant chaque rendu.
+
+  RESPONSIVE
+    Écrire les variations device en CLASSE dans le <style> du <head> :
+        .preview-frame.mobile .hero__title { font-size: 28px; }
+        .preview-frame.tablet .hero__inner { grid-template-columns: 1fr; }
+    JAMAIS de media query de largeur/orientation : la classe bascule à l'aperçu manuel ET sous l'oracle
+    (qui appelle window.setViewport). Les trois cadres sont des ÉCHANTILLONS
+    device — desktop (fluide) · tablet 834 · mobile 390 — pas des breakpoints
+    du contrat : rien ici ne dérive de tokens.json § breakpoint.*.
+    Les media queries de préférence/accessibilité restent admises :
+    prefers-reduced-motion, prefers-contrast, forced-colors, prefers-color-scheme.
+
+  ============================================================================
+  PROMPT LLM (à copier pour faire remplir une page depuis sa source)
+  ============================================================================
+    « Voici une maquette de référence "Aperçu du contrat de présentation Adrenaline" (harness HTML auto-contenu avec
+      .preview-bar, registre `pages` de fonctions, responsive par classe
+      .preview-bar, registre `pages`, responsive par classe
+      .preview-frame.mobile|tablet). Pour la page "<CLÉ>", consulte sa route,
+      sa source et son thème dans CONTEXTE DES PAGES. Reproduis fidèlement la
+      source sans inventer de contenu. Modifie uniquement les zones auteur :
+      le corps de `pageXxx()` pour le HTML, AUTHOR PAGE STYLES pour son CSS,
+      AUTHOR SHARED HELPERS pour les helpers purs partagés et, seulement si le mode
+      interactif a été choisi, AUTHOR AFTER RENDER pour les comportements visibles.
+      Retourne du HTML sans <html>/<head>/<body>, avec classes STABLES BEM et un
+      seul h1. Écris les variations device avec .preview-frame.mobile / .tablet,
+      jamais avec des media queries de viewport. Ne modifie ni .preview-bar,
+      ni le registre, ni les métadonnées, ni le contrôle hors zones auteur. »
+  ============================================================================
+-->
+  <div class="preview-bar">
+    <div class="preview-bar__brand">
+      Aperçu du contrat de présentation Adrenaline <small>maquette</small>
+    </div>
+    <div class="preview-bar__controls">
+      <select class="page-select" id="page-select" aria-label="Page">
+        <option value="pj">Fiche PJ</option>
+        <option value="pnj">Fiche PNJ</option>
+        <option value="monstre">Fiche monstre</option>
+      </select>
+      <div class="viewport-toggle" role="group" aria-label="Device">
+        <button class="viewport-btn active" data-viewport="desktop" type="button" aria-pressed="true"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Desktop</button>
+        <button class="viewport-btn" data-viewport="tablet" type="button" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/></svg> Tablette</button>
+        <button class="viewport-btn" data-viewport="mobile" type="button" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/></svg> Mobile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-stage">
+    <div class="preview-frame" id="preview-frame">
+      <div id="page-container" class="site"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Page registry — one function per page, returning the page HTML string. =====
+    // FILL EACH PAGE: replace `placeholder(...)` body with the page markup:
+    //   function pageHome() { return `<header class="site-header">…</header><main>…</main>`; }
+    // Rules:
+    //   • return ONLY the page content (no <html>/<head>/<body>); global styles go in <head>.
+    //   • stable, semantic class names (BEM) — the fidelity oracle measures by CSS selector.
+    //   • device variations as `.preview-frame.mobile|tablet <sel>` in <head>, no viewport media queries.
+    //   • edit CSS only between the AUTHOR PAGE STYLES markers in <head>.
+    //   • never edit .preview-bar, registries, metadata, or control code outside author zones.
+    // ===== AUTHOR SHARED HELPERS — PURE ONLY; NO DOM, NETWORK, OR TIMERS =====
+    function range(value, min, max) {
+      return `<span class="value value--editable" data-editor-min="${min}" data-editor-max="${max}" title="Valeur actuelle">${value}</span>`;
+    }
+    function stat(key, value, max) {
+      return `<div class="stat"><span class="stat__key">${key}</span>${range(value, 0, max)}</div>`;
+    }
+    function characteristic(name, creation, current) {
+      return `<div class="characteristic"><span class="characteristic__name">${name}</span><span class="characteristic__value" data-editor-min="0">${creation}</span><span class="characteristic__value" data-editor-max="50">${current}</span></div>`;
+    }
+    function metric(name, value, max) {
+      return `<div class="metric"><span class="metric__name">${name}</span>${range(value, 0, max)}</div>`;
+    }
+    // ===== END AUTHOR SHARED HELPERS =====
+
+    function placeholder(key, label) {
+      return '<div class="ph"><h1>' + label + '</h1>'
+        + '<p>Page <code>' + key + '</code> — remplacez le corps de la fonction '
+        + 'dans le registre <code>pages</code> ci-dessous.</p></div>';
+    }
+
+  function pagePj() { return `
+    <main class="sheet">
+      <h1 class="ph" style="position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;overflow:hidden">Fiche PJ</h1>
+      <header class="pj-header">
+        <div class="pj-header__box pj-header__character"><span class="pj-header__label">Nom du personnage</span><strong class="pj-header__name">Naïma Berthier</strong></div>
+        <div class="pj-header__brand"><strong>☣ Zombiology</strong><span>Feuille de personnage</span></div>
+        <div class="pj-header__box pj-header__params"><span class="pj-header__label">Paramètres du jeu</span><p><b>Joueur</b><span>Camille</span></p><p><b>Création</b><span>Équitable</span></p><p><b>Scénario</b><span>Campagne · storyline</span></p><div class="pj-header__px"><b>PX</b><span>12</span></div></div>
+      </header>
+      <div class="sheet-grid">
+        <section class="region"><h2 class="region__title">Compétence</h2><div class="region__body region__body--three"><div><h3 class="subhead subhead--value">Formation <span>%</span></h3><div class="metric-list">${metric("Classe sociale (Moyenne)",15,200)}</div><h3 class="subhead subhead--value">Compétences <span>%</span></h3><div class="metric-list">${metric("Arme sociale · Apaisement",30,200)}${metric("Conduite · Moto",30,200)}${metric("Sport · Athlétisme",25,200)}</div></div><div><h3 class="subhead subhead--value">Formation <span>%</span></h3><div class="metric-list">${metric("Professionnelle (Sportive)",25,200)}</div><h3 class="subhead subhead--value">Compétences <span>%</span></h3><div class="metric-list">${metric("Sport · Forme",40,200)}${metric("Sport · Hygiène de vie",40,200)}${metric("Survie · Premiers secours",40,200)}${metric("Gestion de ressources",35,200)}</div></div><div><h3 class="subhead subhead--value">Formation <span>%</span></h3><div class="metric-list">${metric("Personnelle (Loisirs)",20,200)}</div><h3 class="subhead subhead--value">Compétences <span>%</span></h3><div class="metric-list">${metric("Art martial · Judo",35,200)}${metric("Bricolage · Réparation",35,200)}${metric("Culture générale · Japon",30,200)}${metric("Langue · Japon",30,200)}</div></div></div></section>
+        <section class="region region--4"><h2 class="region__title">Identité</h2><div class="region__body identity-grid"><div class="identity-column"><div class="identity-line"><b>Nationalité</b><span>Française</span></div><div class="identity-line"><b>Cheveux</b><span>Bruns</span></div><div class="identity-line"><b>Yeux</b><span>Verts</span></div><div class="identity-line"><b>Peau</b><span>Claire</span></div><div class="identity-line"><b>Signes particuliers</b><span>Cicatrice avant-bras gauche</span></div></div><div class="identity-column"><div class="identity-line"><b>Genre</b><span>Femme</span></div><div class="identity-line"><b>Âge</b><span>34 ans</span></div><div class="identity-line"><b>Taille</b><span>1,68 m</span></div><div class="identity-line"><b>Poids</b><span>62 kg</span></div></div></div></section>
+        <section class="region region--8"><h2 class="region__title">Caractéristique</h2><div class="region__body region__body--columns"><div><h3 class="subhead subhead--value">Caractéristiques physiques <span><i class="characteristic__head">Création</i>&nbsp;&nbsp;<i class="characteristic__head">Actuel</i></span></h3><div class="characteristic-list">${characteristic("Force",30,40)}${characteristic("Constitution",40,50)}${characteristic("Dextérité",30,30)}${characteristic("Rapidité",30,30)}</div></div><div><h3 class="subhead subhead--value">Caractéristiques mentales <span><i class="characteristic__head">Création</i>&nbsp;&nbsp;<i class="characteristic__head">Actuel</i></span></h3><div class="characteristic-list">${characteristic("Logique",10,10)}${characteristic("Volonté",30,40)}${characteristic("Perception",30,30)}${characteristic("Charisme",20,20)}</div></div></div></section>
+        <section class="region"><h2 class="region__title">Équipement</h2><div class="region__body region__body--three"><div><h3 class="subhead">Possessions</h3><ul class="list"><li>Trousse de secours</li><li>Radio</li><li>Multitool favori</li></ul></div><div><h3 class="subhead">Armes physiques</h3><div class="metric-list">${metric("Pied-de-biche · Contact",55,200)}</div><h3 class="subhead">Protections physiques</h3><p class="copy">Solidité physique : 6 PP<br>Armure : veste renforcée · 3 PP<br>Bouclier : —</p></div><div><h3 class="subhead">Armes mentales</h3><p class="copy">Aucune</p><h3 class="subhead">Protections mentales</h3><p class="copy">Solidité mentale : 5 PM<br>Caractère : obstinée · 2 PM<br>Bouclier mental : —</p></div></div></section>
+        <section class="region"><h2 class="region__title">Santé</h2><div class="region__body region__body--three"><div><h3 class="subhead">Dés de stress</h3><div class="stress-grid"><div class="stress-card"><div class="stress-card__title">Adrénaline</div><div class="stress-card__roll"><strong>+1d100</strong><small>Favorable</small></div><div class="stress-card__roll"><strong>+2d100</strong><small>Favorable</small></div></div><div class="stress-card"><div class="stress-card__title">Panique</div><div class="stress-card__roll"><strong>−1d100</strong><small>Défavorable</small></div><div class="stress-card__roll"><strong>−2d100</strong><small>Défavorable</small></div></div></div><h3 class="subhead">Malus</h3><div class="malus-tracks"><div class="malus-track malus-track--fatigue"><span class="malus-track__label">Fatigue</span><div class="malus-track__body"><i class="malus-track__dot"></i><i class="malus-track__dot"></i><i class="malus-track__dot"></i><span class="malus-track__line"></span><i class="malus-track__dot"></i><i class="malus-track__dot"></i><i class="malus-track__dot"></i></div></div><div class="malus-track"><span class="malus-track__label">Froid</span><div class="malus-track__body"><span class="malus-track__line"></span></div></div><div class="malus-track"><span class="malus-track__label">Faim</span><div class="malus-track__body"><span class="malus-track__line"></span></div></div><div class="malus-track"><span class="malus-track__label">Vie</span><div class="malus-track__body malus-track__levels"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div></div></div></div><div><h3 class="subhead">Seuils physiques</h3><div class="metric-list">${metric("Superficiel",6,100)}${metric("Léger",13,100)}${metric("Grave",18,100)}${metric("Profond",23,100)}</div><h3 class="subhead">États encaissés</h3><div class="condition-stack"><div class="condition-card"><span class="condition-card__label">Blessé</span><div class="condition-card__body"><span class="condition-card__location">Localisation</span><span class="condition-card__line"></span><div class="condition-card__duration"><span>Heure</span><span>Jour</span><span>Semaine</span><span>Mois</span></div></div></div><div class="condition-card"><span class="condition-card__label">Malade</span><div class="condition-card__body"><span class="condition-card__location">Localisation</span><span class="condition-card__line"></span><div class="condition-card__duration"><span>Heure</span><span>Jour</span><span>Semaine</span><span>Mois</span></div></div></div></div></div><div><h3 class="subhead">Seuils mentaux</h3><div class="metric-list">${metric("Superficiel",5,100)}${metric("Léger",12,100)}${metric("Grave",17,100)}${metric("Profond",22,100)}</div><h3 class="subhead">États encaissés</h3><div class="condition-stack"><div class="condition-card"><span class="condition-card__label">Traumatisé</span><div class="condition-card__body"><span class="condition-card__location">Localisation</span><span class="condition-card__line"></span><div class="condition-card__duration"><span>Heure</span><span>Jour</span><span>Semaine</span><span>Mois</span></div></div></div><div class="condition-card"><span class="condition-card__label">Répulsion</span><div class="condition-card__body"><span class="condition-card__location">Localisation</span><span class="condition-card__line"></span><div class="condition-card__duration"><span>Heure</span><span>Jour</span><span>Semaine</span><span>Mois</span></div></div></div></div></div></div></section>
+      </div>
+    </main>`; }
+  function pagePnj() { return `
+    <main class="sheet">
+      <p class="sheet__eyebrow">Aperçu du schéma · block:adrenaline-pnj</p>
+      <h1 class="sheet__title">Fiche PNJ</h1>
+      <div class="identity-bar"><strong class="identity-bar__name">Le mécanicien du dépôt</strong><span class="identity-bar__meta">Ressource et obstacle</span><span class="identity-bar__badge">ND 7</span></div>
+      <div class="sheet-grid">
+        <section class="region"><h2 class="region__title">Présentation</h2><div class="region__body copy"><em>Massif, les mains noires jusqu’aux poignets.</em><ul class="list"><li>Attitude : méfiant, puis loyal.</li><li>Historique : entretient le dernier moteur du secteur.</li><li>Note MJ : cache sa sœur dans l’arrière-boutique.</li></ul></div></section>
+        <section class="region"><h2 class="region__title">Caractéristiques</h2><div class="region__body stat-grid">${stat("FOR",30,200)}${stat("CON",40,200)}${stat("DEX",40,200)}${stat("RAP",30,200)}${stat("LOG",20,200)}${stat("VOL",40,200)}${stat("PER",30,200)}${stat("CHA",20,200)}</div></section>
+        <section class="region region--6"><h2 class="region__title">Santé et protections</h2><div class="region__body region__body--columns"><div><h3 class="subhead">Physique</h3><div class="metric-list">${metric("Superficiel",6,100)}${metric("Léger",13,100)}${metric("Grave",18,100)}${metric("Profond",23,100)}</div></div><div><h3 class="subhead">Mental</h3><div class="metric-list">${metric("Superficiel",5,100)}${metric("Léger",12,100)}${metric("Grave",17,100)}${metric("Profond",22,100)}</div></div></div></section>
+        <section class="region region--6"><h2 class="region__title">Formations et compétences</h2><div class="region__body metric-list">${metric("Mécanique lourde",25,200)}${metric("Bricolage · Mécanique",85,200)}${metric("Clé à molette · Contact",50,200)}</div></section>
+        <section class="region"><h2 class="region__title">Équipement</h2><div class="region__body"><ul class="list"><li>Caisse à outils</li><li>Thermos</li><li>Clé à molette</li></ul></div></section>
+      </div>
+    </main>`; }
+  function pageMonstre() { return `
+    <main class="sheet">
+      <p class="sheet__eyebrow">Aperçu du schéma · block:adrenaline-monstre</p>
+      <h1 class="sheet__title">Fiche monstre</h1>
+      <div class="identity-bar"><strong class="identity-bar__name">Le guetteur du silo</strong><span class="identity-bar__meta">Adulte athlétique · conscience résiduelle · embuscade</span><span class="identity-bar__badge">ND 6</span></div>
+      <div class="sheet-grid">
+        <section class="region region--6 state-card"><h2 class="state-card__title">État de base</h2><div class="state-card__body"><span class="status">Actif</span><div class="metric-list">${metric("Détection",50,100)}${metric("Déplacement / action",10,100)}${metric("Actions / round",2,100)}</div></div></section>
+        <section class="region region--6 state-card"><h2 class="state-card__title">État stimulé</h2><div class="state-card__body"><span class="status">Odeur de sang frais</span><div class="metric-list">${metric("Détection",80,100)}${metric("Déplacement / action",15,100)}${metric("Actions / round",3,100)}</div></div></section>
+        <section class="region"><h2 class="region__title">Caractéristiques</h2><div class="region__body stat-grid">${stat("FOR",70,200)}${stat("CON",65,200)}${stat("DEX",60,200)}${stat("RAP",55,200)}${stat("LOG",40,200)}${stat("VOL",50,200)}${stat("PER",75,200)}${stat("CHA",20,200)}</div></section>
+        <section class="region region--6"><h2 class="region__title">Actions et comportement</h2><div class="region__body"><ul class="list"><li>Observe avant d’attaquer.</li><li>Rompt le contact s’il est blessé.</li><li>Attend en hauteur et choisit sa proie.</li></ul></div></section>
+        <section class="region region--6"><h2 class="region__title">Santé et protections</h2><div class="region__body metric-list">${metric("Superficiel",9,100)}${metric("Léger",22,100)}${metric("Grave",27,100)}${metric("Profond",32,100)}</div></section>
+        <section class="region"><h2 class="region__title">Capacités</h2><div class="region__body region__body--columns"><ul class="list"><li>Escalade toute surface.</li><li>Reste immobile des heures.</li></ul><div class="metric-list">${metric("Discrétion",130,200)}${metric("Perception",90,200)}</div></div></section>
+      </div>
+    </main>`; }
+
+    const pages = {
+    "pj": pagePj,
+    "pnj": pagePnj,
+    "monstre": pageMonstre,
+    };
+
+    const pageMetadata = {
+    "pj": {},
+    "pnj": {},
+    "monstre": {},
+    };
+  </script>
+
+  <script>
+    let currentPage = "pj";
+    let currentViewport = 'desktop';
+    const container = document.getElementById('page-container');
+    const frame = document.getElementById('preview-frame');
+    const select = document.getElementById('page-select');
+
+    function esc(s) {
+      return String(s).replace(/[&<>]/g, function (c) {
+        return c === '&' ? '&amp;' : c === '<' ? '&lt;' : '&gt;';
+      });
+    }
+    function keyToFn(key) {
+      return 'page' + key.replace(/[-_]/g, ' ').split(/\s+/).filter(Boolean)
+        .map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join('');
+    }
+    function errorBlock(key, err) {
+      return '<div class="ph ph--error"><h1>⚠ La page « ' + esc(key) + ' » n\'a pas pu être rendue</h1>'
+        + '<p class="ph__message">' + esc(err && err.message ? err.message : err) + '</p>'
+        + '<p>Corrigez <code>' + esc(keyToFn(key)) + '()</code> dans ce fichier.</p></div>';
+    }
+
+    // ===== AUTHOR AFTER RENDER — INTERACTIVE MODE ONLY =====
+    // Bind page-local behaviour below. This hook runs after every page render.
+    function afterPageRender(root, page) {}
+    // ===== END AUTHOR AFTER RENDER =====
+
+    function render() {
+      let markup;
+      try {
+        const meta = pageMetadata[currentPage] || {};
+        if (meta.theme) container.setAttribute('data-theme', meta.theme);
+        else container.removeAttribute('data-theme');
+        // The lookup is inside the try: when the first <script> died, `pages` is not
+        // defined and THIS line throws — before any page function is even called.
+        const fn = pages[currentPage];
+        markup = fn ? fn()
+          : '<div class="ph"><h1>Page introuvable</h1><p>Aucune fonction n\'est enregistrée pour '
+            + '<code>' + esc(currentPage) + '</code>.</p></div>';
+      } catch (e) {
+        // Rendered state, never a propagated exception: the fidelity oracle calls
+        // window.setPage(key) unguarded and must get a DOM, not a stack trace.
+        console.error('[harness] page "' + currentPage + '" failed to render:', e);
+        markup = errorBlock(currentPage, e);
+      }
+      container.innerHTML = markup;
+      try {
+        afterPageRender(container, currentPage);
+      } catch (e) {
+        console.error('[harness] page "' + currentPage + '" behaviour failed:', e);
+        container.innerHTML = errorBlock(currentPage, e);
+      }
+      const stage = document.querySelector('.preview-stage');
+      if (stage) stage.scrollTop = 0;
+    }
+    function setPage(page) {
+      currentPage = page;
+      if (select && select.value !== page) select.value = page;
+      try { history.replaceState(null, '', '#' + encodeURIComponent(page)); } catch (e) {}
+      render();
+    }
+    function setViewport(vp) {
+      currentViewport = vp;
+      frame.classList.remove('tablet', 'mobile');
+      if (vp === 'tablet' || vp === 'mobile') frame.classList.add(vp);
+      document.querySelectorAll('.viewport-btn').forEach(b => {
+        // Visual state and exposed state move together — they cannot diverge.
+        const on = b.dataset.viewport === vp;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+
+    window.setPage = setPage;
+    window.setViewport = setViewport;
+
+    select.addEventListener('change', e => setPage(e.target.value));
+    document.querySelectorAll('.viewport-btn').forEach(
+      b => b.addEventListener('click', () => setViewport(b.dataset.viewport))
+    );
+
+    (function init() {
+      // decodeURIComponent THROWS on a malformed fragment (#%E0%A4%A), so it belongs
+      // inside the try: outside it, the URIError aborted init() before setViewport()
+      // and render(), leaving #page-container empty — a blank file with no error block.
+      // Same reason as in render(): reading the registry is what throws when the
+      // page-functions script died. Swallowing here lets render() report it on screen.
+      try {
+        const hash = decodeURIComponent((location.hash || '').slice(1));
+        if (hash && pages[hash]) { currentPage = hash; if (select) select.value = hash; }
+      } catch (e) {}
+      setViewport('desktop');
+      render();
+    })();
+  </script>
+</body>
+</html>
