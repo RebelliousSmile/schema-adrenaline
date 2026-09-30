@@ -57,6 +57,18 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pj/formation-en-trop.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/formation-sans-type.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
       "path": "corpus/refus/pj/localisation-inconnue.json",
       "target": "pj",
       "format": "json",

@@ -1677,19 +1677,20 @@
       "description": "Les deux versants de la protection. Symétriques par construction : le socle traite le conflit mental comme le conflit physique."
     },
     "formations": {
-      "description": "Formations du personnage. La feuille en imprime trois colonnes — classe sociale, professionnelle, personnelle — mais la liste n'est pas bornée : d'autres s'acquièrent en campagne.",
+      "description": "Formations du personnage : trois au plus, une par type — classe sociale, professionnelle, personnelle. La feuille en imprime toujours les trois colonnes ; le type est imprimé, seul l'intitulé s'écrit.",
+      "maxItems": 3,
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "type": {
-            "description": "Type de formation, imprimé en tête de colonne sur la feuille de PJ. Absent d'une fiche de PNJ, qui ne qualifie pas ses formations.",
             "type": "string",
             "enum": [
               "classe-sociale",
               "professionnelle",
               "personnelle"
             ],
+            "description": "Type de formation, imprimé en tête de colonne : il désigne la colonne de la feuille.",
             "examples": [
               "professionnelle"
             ]
@@ -1920,11 +1921,12 @@
           }
         },
         "required": [
+          "type",
           "nom",
           "pourcentage"
         ],
         "additionalProperties": false,
-        "description": "Une formation et les compétences qu'elle porte."
+        "description": "Une formation de PJ, rangée dans la colonne de son type."
       }
     },
     "equipement": {
@@ -2668,6 +2670,10 @@
         "order": 30,
         "layout": "stack",
         "columns": 1,
+        "row": {
+          "id": "profil",
+          "span": 1
+        },
         "blocks": [
           {
             "id": "identite",
@@ -2676,6 +2682,27 @@
             "layout": "grid",
             "columns": 2,
             "form": "identity-fields",
+            "fieldRows": [
+              [
+                "nationalite",
+                "genre"
+              ],
+              [
+                "cheveux",
+                "age"
+              ],
+              [
+                "yeux",
+                "taille"
+              ],
+              [
+                "peau",
+                "poids"
+              ],
+              [
+                "signesParticuliers"
+              ]
+            ],
             "placement": {
               "column": 1,
               "row": 1
@@ -2692,6 +2719,10 @@
         "order": 35,
         "layout": "columns",
         "columns": 2,
+        "row": {
+          "id": "profil",
+          "span": 2
+        },
         "blocks": [
           {
             "id": "caracteristiques-physiques",

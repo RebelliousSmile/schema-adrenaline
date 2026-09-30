@@ -81,6 +81,11 @@ export type AdrenalinePresentationBlock = {
     competence: readonly ["nom", "specialite", "pourcentage"];
   };
   placement?: { column: number; row: number; rowSpan?: number; columnSpan?: number };
+  /**
+   * Printed rows of a field grid, by property name under the block path. A row
+   * naming one field spans the whole block.
+   */
+  fieldRows?: readonly (readonly string[])[];
   decoration?: AdrenalinePresentationDecoration;
   /** JSON Pointers read by this visible block. */
   paths: string[];
@@ -93,6 +98,11 @@ export type AdrenalinePresentationSection = {
   layout: AdrenalinePresentationLayout;
   columns?: number;
   showTitle?: boolean;
+  /**
+   * Sheet row shared with the neighbouring sections of the same id, which sit
+   * side by side; `span` is the share of the sheet width, in thirds.
+   */
+  row?: { id: string; span: 1 | 2 | 3 };
   blocks: AdrenalinePresentationBlock[];
 };
 
@@ -242,6 +252,7 @@ export const PJ_PRESENTATION = definePresentation({
       order: 30,
       layout: "stack",
       columns: 1,
+      row: { id: "profil", span: 1 },
       blocks: [
         {
           id: "identite",
@@ -250,6 +261,13 @@ export const PJ_PRESENTATION = definePresentation({
           layout: "grid",
           columns: 2,
           form: "identity-fields",
+          fieldRows: [
+            ["nationalite", "genre"],
+            ["cheveux", "age"],
+            ["yeux", "taille"],
+            ["peau", "poids"],
+            ["signesParticuliers"],
+          ],
           placement: { column: 1, row: 1 },
           paths: ["/identite"],
         },
@@ -261,6 +279,7 @@ export const PJ_PRESENTATION = definePresentation({
       order: 35,
       layout: "columns",
       columns: 2,
+      row: { id: "profil", span: 2 },
       blocks: [
         {
           id: "caracteristiques-physiques",

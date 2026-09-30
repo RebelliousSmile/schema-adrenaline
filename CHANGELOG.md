@@ -10,13 +10,25 @@ All notable changes to this project will be documented in this file.
   sheet, in light and dark layers: `--adrenaline-field-border`,
   `--adrenaline-track-mark`, `--adrenaline-fatigue`,
   `--adrenaline-fatigue-ink`, `--adrenaline-condition` and
-  `--adrenaline-condition-border`. The presentation contract and schema
-  baseline are unchanged.
+  `--adrenaline-condition-border`.
 - `PJ_CARACTERISTIQUE_MAXIMUM` (50) and `caracteristiqueDeCreationPj(valeur)`
   publish how a PJ characteristic leaves character creation: the creation
   value is both its floor and its current value, and its upper bound is 50.
   The PJ schema describes that rule, and the PJ examples and witness follow
   it instead of `0 ≤ n ≤ n`.
+- The presentation contract gains two optional fields. A section `row`
+  (`{ id, span }`) sets neighbouring sections side by side, `span` in thirds of
+  the sheet: the PJ Identité (one third) and Caractéristique (two thirds) share
+  the `profil` row, as on the paper sheet. A block `fieldRows` publishes the
+  printed rows of a field grid: the PJ identity reads Nationalité | Genre,
+  Cheveux | Âge, Yeux | Taille, Peau | Poids, then Signes particuliers across.
+
+### Changed
+
+- A PJ holds at most three formations, one per type, and each names its type
+  (`FormationJoueur`): the sheet always prints the three columns, and only
+  their title is written. Two refusal witnesses prove it
+  (`formation-en-trop`, `formation-sans-type`). PNJ formations are unchanged.
 
 ## [2.6.0] - 2026-09-26
 

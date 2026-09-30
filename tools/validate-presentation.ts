@@ -235,6 +235,7 @@ export function validatePresentation(source: unknown, target: Target): void {
   const coverage = new Set<string>();
   const usedPaths: string[] = [];
   const forms = new Map<string, string>();
+  const rows: { id: string; span: number }[] = [];
   for (const section of entries(descriptor.sections, `${target}.sections`)) {
     const where = `${target}.sections.${section.id}`;
     keys(
@@ -246,12 +247,29 @@ export function validatePresentation(source: unknown, target: Target): void {
         "layout",
         ...(section.columns === undefined ? [] : ["columns"]),
         ...(section.showTitle === undefined ? [] : ["showTitle"]),
+        ...(section.row === undefined ? [] : ["row"]),
         "blocks",
       ],
       where,
     );
     layout(section, where);
     if (section.showTitle !== undefined) assert.equal(typeof section.showTitle, "boolean");
+    if (section.row !== undefined) {
+      const row = obj(section.row, `${where}.row`);
+      keys(row, ["id", "span"], `${where}.row`);
+      assert.ok(typeof row.id === "string" && row.id.length > 0, `${where}.row.id must be text`);
+      assert.ok(
+        Number.isInteger(row.span) && Number(row.span) >= 1 && Number(row.span) <= 3,
+        `${where}.row.span must be 1..3`,
+      );
+      const current = rows[rows.length - 1];
+      if (current && current.id === row.id) current.span += Number(row.span);
+      else {
+        assert.ok(!rows.some((seen) => seen.id === row.id), `${where}.row must follow its row`);
+        rows.push({ id: row.id as string, span: Number(row.span) });
+      }
+      assert.ok(rows[rows.length - 1].span <= 3, `${where}.row exceeds the sheet width`);
+    } else rows.push({ id: "", span: 3 });
     for (const block of entries(section.blocks, `${where}.blocks`)) {
       const blockWhere = `${where}.blocks.${block.id}`;
       keys(
@@ -268,6 +286,7 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.valueSuffix === undefined ? [] : ["valueSuffix"]),
           ...(block.formationFields === undefined ? [] : ["formationFields"]),
           ...(block.placement === undefined ? [] : ["placement"]),
+          ...(block.fieldRows === undefined ? [] : ["fieldRows"]),
           ...(block.decoration === undefined ? [] : ["decoration"]),
           "paths",
         ],
@@ -292,6 +311,30 @@ export function validatePresentation(source: unknown, target: Target): void {
         );
         assert.ok(
           block.rowLabels.every((label: unknown) => typeof label === "string" && label.length > 0),
+        );
+      }
+      if (block.fieldRows !== undefined) {
+        assert.equal(
+          block.form,
+          "identity-fields",
+          `${blockWhere}.fieldRows needs identity fields`,
+        );
+        const paths = block.paths as string[];
+        assert.equal(paths.length, 1, `${blockWhere}.fieldRows needs one path`);
+        const fields = obj(nodeAt(schema, paths[0], blockWhere).node.properties, blockWhere);
+        assert.ok(Array.isArray(block.fieldRows) && block.fieldRows.length > 0);
+        const named = (block.fieldRows as unknown[]).map((row, i) => {
+          assert.ok(
+            Array.isArray(row) && row.length >= 1 && row.length <= Number(block.columns ?? 1),
+            `${blockWhere}.fieldRows.${i} must fit the block columns`,
+          );
+          return row as unknown[];
+        });
+        const flat = named.reduce<unknown[]>((all, row) => all.concat(row), []);
+        assert.deepEqual(
+          [...flat].sort(),
+          Object.keys(fields).sort(),
+          `${blockWhere}.fieldRows must name each field once`,
         );
       }
       if (block.valueSuffix !== undefined)
@@ -457,5 +500,18 @@ if (process.argv.includes("--self-test")) {
   const bound: Obj = nodeAt(wrongBound, "/caracteristiques/for/current", "for.current").node;
   bound.maximum = 200;
   assert.throws(() => validatePresentation(wrongBound, "pj"));
+  const sectionsOf = (value: Obj) => obj(value[EXTENSION], EXTENSION).sections as Obj[];
+  const tooWide = clone(source);
+  for (const section of sectionsOf(tooWide)) if (section.row) obj(section.row, "row").span = 3;
+  assert.throws(() => validatePresentation(tooWide, "pj"));
+  const splitRow = clone(source);
+  const lastSection = sectionsOf(splitRow)[sectionsOf(splitRow).length - 1];
+  lastSection.row = { id: "profil", span: 1 };
+  assert.throws(() => validatePresentation(splitRow, "pj"));
+  const missingField = clone(source);
+  for (const section of sectionsOf(missingField))
+    for (const block of section.blocks as Obj[])
+      if (block.fieldRows) (block.fieldRows as string[][]).pop();
+  assert.throws(() => validatePresentation(missingField, "pj"));
   console.log("✓ presentation validator self-test passed");
 }

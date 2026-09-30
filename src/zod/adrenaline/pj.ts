@@ -3,7 +3,7 @@ import { PJ_PRESENTATION } from "../../presentation.js";
 import { Caracteristiques } from "../common/caracteristiques.js";
 import { Equipement } from "../common/equipement.js";
 import { EtatDePartie } from "../common/etat-de-partie.js";
-import { Formation } from "../common/formations.js";
+import { Formation, TypeDeFormation } from "../common/formations.js";
 import { Identite } from "../common/identite.js";
 import { Meta } from "../common/meta.js";
 import { CumulJouable } from "../common/primitives.js";
@@ -114,6 +114,17 @@ const CaracteristiquesJoueur = Caracteristiques.extend({
  * malus et états encaissés. Les valeurs numériques jouables de la fiche portent
  * leur borne basse, leur état courant et leur borne haute.
  */
+/**
+ * Une formation de PJ : son type est imprimé en tête de colonne, il est donc
+ * requis. La feuille en porte trois, une par type ; aucune ne s'ajoute.
+ */
+export const FormationJoueur = Formation.extend({
+  type: TypeDeFormation.meta({
+    description:
+      "Type de formation, imprimé en tête de colonne : il désigne la colonne de la feuille.",
+  }),
+}).meta({ description: "Une formation de PJ, rangée dans la colonne de son type." });
+
 export const PersonnageJoueur = z
   .strictObject({
     nom: z
@@ -129,9 +140,9 @@ export const PersonnageJoueur = z
     caracteristiques: CaracteristiquesJoueur,
     sante: Sante,
     protections: Protections,
-    formations: z.array(Formation).optional().meta({
+    formations: z.array(FormationJoueur).max(TypeDeFormation.options.length).optional().meta({
       description:
-        "Formations du personnage. La feuille en imprime trois colonnes — classe sociale, professionnelle, personnelle — mais la liste n'est pas bornée : d'autres s'acquièrent en campagne.",
+        "Formations du personnage : trois au plus, une par type — classe sociale, professionnelle, personnelle. La feuille en imprime toujours les trois colonnes ; le type est imprimé, seul l'intitulé s'écrit.",
     }),
     equipement: Equipement.optional().meta({
       description: "Bloc Équipement de la feuille.",

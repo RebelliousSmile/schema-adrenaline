@@ -75,6 +75,7 @@ export type {
 } from "./zod/common/etat-monstre.js";
 export {
   PJ_CARACTERISTIQUE_MAXIMUM,
+  FormationJoueur,
   PersonnageJoueur,
   caracteristiqueDeCreationPj,
 } from "./zod/adrenaline/pj.js";
