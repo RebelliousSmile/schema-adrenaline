@@ -57,20 +57,36 @@ const ParametresDuJeu = z
       "Bloc « Paramètres du jeu » de la feuille : qui joue, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier.",
   });
 
+/** Plafond d'une caractéristique PJ : la feuille ne dépasse jamais 50 %. */
+export const PJ_CARACTERISTIQUE_MAXIMUM = 50;
+
+/**
+ * Une caractéristique PJ telle qu'elle sort de la création : la valeur de
+ * création est à la fois le plancher et la valeur actuelle, et la borne haute
+ * est le plafond de la feuille — la caractéristique ne peut que progresser.
+ */
+export function caracteristiqueDeCreationPj(valeur: number) {
+  return { minimum: valeur, current: valeur, maximum: PJ_CARACTERISTIQUE_MAXIMUM };
+}
+
 /** La limite de saisie de la feuille PJ ne s'applique pas aux PNJ ni aux créatures. */
 const CaracteristiqueJoueur = PourcentageJouable.extend({
-  minimum: z.int().min(0).max(50).meta({
-    description: "Valeur de création PJ, affichée dans la première colonne.",
+  minimum: z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
+    description:
+      "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle.",
   }),
-  current: z.int().min(0).max(50).meta({
-    description: "Valeur actuelle PJ, affichée dans la seconde colonne.",
+  current: z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
+    description:
+      "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie.",
   }),
-  maximum: z.int().min(0).max(50).meta({
-    description: "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche.",
+  maximum: z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
+    description:
+      "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique.",
   }),
 }).meta({
   description:
-    "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute.",
+    "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+  examples: [caracteristiqueDeCreationPj(30)],
 });
 
 const CaracteristiquesJoueur = Caracteristiques.extend({

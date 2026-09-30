@@ -2,44 +2,44 @@
   "nom": "Témoin",
   "caracteristiques": {
     "for": {
-      "minimum": 0,
+      "minimum": 40,
       "current": 40,
-      "maximum": 40
+      "maximum": 50
     },
     "con": {
-      "minimum": 0,
+      "minimum": 50,
       "current": 50,
       "maximum": 50
     },
     "dex": {
-      "minimum": 0,
+      "minimum": 45,
       "current": 45,
-      "maximum": 45
+      "maximum": 50
     },
     "rap": {
-      "minimum": 0,
+      "minimum": 35,
       "current": 35,
-      "maximum": 35
+      "maximum": 50
     },
     "log": {
-      "minimum": 0,
+      "minimum": 30,
       "current": 30,
-      "maximum": 30
+      "maximum": 50
     },
     "vol": {
-      "minimum": 0,
+      "minimum": 40,
       "current": 40,
-      "maximum": 40
+      "maximum": 50
     },
     "per": {
-      "minimum": 0,
+      "minimum": 50,
       "current": 50,
       "maximum": 50
     },
     "cha": {
-      "minimum": 0,
+      "minimum": 25,
       "current": 25,
-      "maximum": 25
+      "maximum": 50
     }
   },
   "sante": {

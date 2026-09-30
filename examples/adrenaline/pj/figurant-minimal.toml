@@ -1,44 +1,44 @@
 nom = "Karim"
 
 [caracteristiques.for]
-minimum = 0
+minimum = 20
 current = 20
-maximum = 20
+maximum = 50
 
 [caracteristiques.con]
-minimum = 0
+minimum = 30
 current = 30
-maximum = 30
+maximum = 50
 
 [caracteristiques.dex]
-minimum = 0
+minimum = 30
 current = 30
-maximum = 30
+maximum = 50
 
 [caracteristiques.rap]
-minimum = 0
+minimum = 20
 current = 20
-maximum = 20
+maximum = 50
 
 [caracteristiques.log]
-minimum = 0
+minimum = 20
 current = 20
-maximum = 20
+maximum = 50
 
 [caracteristiques.vol]
-minimum = 0
+minimum = 20
 current = 20
-maximum = 20
+maximum = 50
 
 [caracteristiques.per]
-minimum = 0
+minimum = 30
 current = 30
-maximum = 30
+maximum = 50
 
 [caracteristiques.cha]
-minimum = 0
+minimum = 30
 current = 30
-maximum = 30
+maximum = 50
 
 [sante.physique.superficiel.base]
 minimum = 0

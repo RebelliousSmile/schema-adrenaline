@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
   `--adrenaline-fatigue-ink`, `--adrenaline-condition` and
   `--adrenaline-condition-border`. The presentation contract and schema
   baseline are unchanged.
+- `PJ_CARACTERISTIQUE_MAXIMUM` (50) and `caracteristiqueDeCreationPj(valeur)`
+  publish how a PJ characteristic leaves character creation: the creation
+  value is both its floor and its current value, and its upper bound is 50.
+  The PJ schema describes that rule, and the PJ examples and witness follow
+  it instead of `0 ≤ n ≤ n`.
 
 ## [2.6.0] - 2026-09-26
 

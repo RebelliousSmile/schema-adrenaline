@@ -73,7 +73,11 @@ export type {
   DeltaEtatDeCreatureValeur,
   EtatDeCreatureValeur,
 } from "./zod/common/etat-monstre.js";
-export { PersonnageJoueur } from "./zod/adrenaline/pj.js";
+export {
+  PJ_CARACTERISTIQUE_MAXIMUM,
+  PersonnageJoueur,
+  caracteristiqueDeCreationPj,
+} from "./zod/adrenaline/pj.js";
 export type { ParametresDuJeuValeur, PersonnageJoueurValeur } from "./zod/adrenaline/pj.js";
 export { PersonnageNonJoue } from "./zod/adrenaline/pnj.js";
 export type { PersonnageNonJoueValeur } from "./zod/adrenaline/pnj.js";

@@ -106,19 +106,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -127,7 +127,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         },
         "con": {
           "type": "object",
@@ -136,19 +143,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -157,7 +164,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         },
         "dex": {
           "type": "object",
@@ -166,19 +180,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -187,7 +201,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         },
         "rap": {
           "type": "object",
@@ -196,19 +217,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -217,7 +238,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         },
         "log": {
           "type": "object",
@@ -226,19 +254,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -247,7 +275,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         },
         "vol": {
           "type": "object",
@@ -256,19 +291,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -277,7 +312,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         },
         "per": {
           "type": "object",
@@ -286,19 +328,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -307,7 +349,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         },
         "cha": {
           "type": "object",
@@ -316,19 +365,19 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur de création PJ, affichée dans la première colonne."
+              "description": "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle."
             },
             "current": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Valeur actuelle PJ, affichée dans la seconde colonne."
+              "description": "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie."
             },
             "maximum": {
               "type": "integer",
               "minimum": 0,
               "maximum": 50,
-              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche."
+              "description": "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique."
             }
           },
           "required": [
@@ -337,7 +386,14 @@
             "maximum"
           ],
           "additionalProperties": false,
-          "description": "Caractéristique PJ : valeur de création, valeur actuelle et borne haute, chacune limitée à 50 %. La fiche n'affiche pas la borne haute."
+          "description": "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
+          "examples": [
+            {
+              "minimum": 30,
+              "current": 30,
+              "maximum": 50
+            }
+          ]
         }
       },
       "required": [
