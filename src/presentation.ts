@@ -78,8 +78,13 @@ export type AdrenalinePresentationBlock = {
   valueSuffix?: "%" | "PX";
   formationFields?: {
     header: readonly ["type", "nom", "pourcentage"];
-    competence: readonly ["nom", "specialite", "pourcentage"];
+    competence: readonly ["nom", "specialite", "caracteristique", "pourcentage"];
   };
+  /**
+   * Printed formation columns, one per type, in sheet order: the sheet keeps
+   * every column even when the document leaves it empty.
+   */
+  formationTypes?: readonly string[];
   placement?: { column: number; row: number; rowSpan?: number; columnSpan?: number };
   /**
    * Printed rows of a field grid, by property name under the block path. A row
@@ -240,8 +245,9 @@ export const PJ_PRESENTATION = definePresentation({
           valueSuffix: "%",
           formationFields: {
             header: ["type", "nom", "pourcentage"],
-            competence: ["nom", "specialite", "pourcentage"],
+            competence: ["nom", "specialite", "caracteristique", "pourcentage"],
           },
+          formationTypes: ["classe-sociale", "professionnelle", "personnelle"],
           paths: ["/formations"],
         },
       ],

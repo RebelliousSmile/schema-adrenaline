@@ -285,6 +285,7 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.rowLabels === undefined ? [] : ["rowLabels"]),
           ...(block.valueSuffix === undefined ? [] : ["valueSuffix"]),
           ...(block.formationFields === undefined ? [] : ["formationFields"]),
+          ...(block.formationTypes === undefined ? [] : ["formationTypes"]),
           ...(block.placement === undefined ? [] : ["placement"]),
           ...(block.fieldRows === undefined ? [] : ["fieldRows"]),
           ...(block.decoration === undefined ? [] : ["decoration"]),
@@ -339,11 +340,33 @@ export function validatePresentation(source: unknown, target: Target): void {
       }
       if (block.valueSuffix !== undefined)
         assert.ok(["%", "PX"].includes(block.valueSuffix as string));
+      if (block.formationTypes !== undefined) {
+        assert.equal(
+          block.form,
+          "formation-columns",
+          `${blockWhere}.formationTypes needs formation columns`,
+        );
+        const formation = nodeAt(schema, "/formations", blockWhere).node;
+        const item = obj(formation.items, `${blockWhere}.items`);
+        const type = obj(
+          obj(item.properties, `${blockWhere}.properties`).type,
+          `${blockWhere}.type`,
+        );
+        assert.deepEqual(
+          block.formationTypes,
+          type.enum,
+          `${blockWhere}.formationTypes must print every published formation type, in order`,
+        );
+        assert.ok(
+          Array.isArray(item.required) && item.required.includes("type"),
+          `${blockWhere}.formationTypes needs a required formation type`,
+        );
+      }
       if (block.formationFields !== undefined) {
         assert.equal(block.form, "formation-columns");
         assert.deepEqual(block.formationFields, {
           header: ["type", "nom", "pourcentage"],
-          competence: ["nom", "specialite", "pourcentage"],
+          competence: ["nom", "specialite", "caracteristique", "pourcentage"],
         });
         const formation = nodeAt(schema, "/formations", blockWhere).node;
         const item = obj(formation.items, `${blockWhere}.items`);
@@ -356,7 +379,7 @@ export function validatePresentation(source: unknown, target: Target): void {
           `${blockWhere}.competenceFields`,
         );
         for (const field of ["type", "nom", "pourcentage"]) assert.ok(Object.hasOwn(header, field));
-        for (const field of ["nom", "specialite", "pourcentage"])
+        for (const field of ["nom", "specialite", "caracteristique", "pourcentage"])
           assert.ok(Object.hasOwn(competence, field));
       }
       assert.ok(!forms.has(block.id as string), `${target} block id ${block.id} is duplicated`);
@@ -513,5 +536,10 @@ if (process.argv.includes("--self-test")) {
     for (const block of section.blocks as Obj[])
       if (block.fieldRows) (block.fieldRows as string[][]).pop();
   assert.throws(() => validatePresentation(missingField, "pj"));
+  const missingType = clone(source);
+  for (const section of sectionsOf(missingType))
+    for (const block of section.blocks as Obj[])
+      if (block.formationTypes) (block.formationTypes as string[]).pop();
+  assert.throws(() => validatePresentation(missingType, "pj"));
   console.log("✓ presentation validator self-test passed");
 }

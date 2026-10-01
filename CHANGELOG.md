@@ -22,6 +22,13 @@ All notable changes to this project will be documented in this file.
   the `profil` row, as on the paper sheet. A block `fieldRows` publishes the
   printed rows of a field grid: the PJ identity reads Nationalité | Genre,
   Cheveux | Âge, Yeux | Taille, Peau | Poids, then Signes particuliers across.
+- A `formation-columns` block may publish `formationTypes`, the printed
+  columns in sheet order. The PJ block names Classe sociale, Professionnelle
+  and Personnelle, so a consumer prints all three even when the document
+  leaves one empty; the validator holds it equal to the formation type enum.
+- A PJ competence prints its characteristic: `formationFields.competence` is
+  now `nom`, `specialite`, `caracteristique`, `pourcentage`, and the PJ sheet
+  reads « Tir (DEX) … 45 % ». The characteristic is no longer left to the roll.
 
 ### Changed
 

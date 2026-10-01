@@ -48,7 +48,7 @@ export const Competence = z
     }),
     caracteristique: AbreviationDeCaracteristique.optional().meta({
       description:
-        "Caractéristique qui s'ajoute au pourcentage. Notée sur la fiche de PNJ, laissée au jet sur la feuille de PJ.",
+        "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ comme sur la feuille de PJ.",
       examples: ["cha"],
     }),
     total: PourcentageJouable.optional().meta({
