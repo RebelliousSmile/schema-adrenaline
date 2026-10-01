@@ -1,6 +1,6 @@
 {
   "name": "schema-adrenaline",
-  "version": "2.7.0",
+  "version": "3.0.0",
   "description": "Open, versioned data schemas for the Adrenaline System (Zombiology and friends), to make digital tools interoperable.",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -61,7 +61,7 @@
       "types": "./dist/presentation.d.ts",
       "import": "./dist/presentation.js"
     },
-    "./schemas/*": "./schemas/adrenaline/2.3.0/*",
+    "./schemas/*": "./schemas/adrenaline/3.0.0/*",
     "./corpus/*": "./corpus/*",
     "./examples/*": "./examples/*",
     "./cross-tool-provider.json": "./cross-tool-provider.json",
@@ -70,7 +70,7 @@
   },
   "files": [
     "dist",
-    "schemas/adrenaline/2.3.0",
+    "schemas/adrenaline/3.0.0",
     "corpus",
     "examples",
     "cross-tool-provider.json",

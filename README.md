@@ -10,7 +10,7 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-This source declares `schema-adrenaline@2.6.0` and schema baseline `2.2.0`.
+This source declares `schema-adrenaline@3.0.0` and schema baseline `3.0.0`.
 Consumers should pin a published release archive rather than the moving branch.
 Three character schemas live under the `adrenaline` folder, each covered by
 JSON and TOML examples and a shared conformance corpus.
@@ -169,7 +169,7 @@ Install the immutable GitHub Release asset directly. npm records this complete
 URL and its SHA-512 SRI integrity in the consumer lockfile:
 
 ```sh
-npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v2.0.0/schema-adrenaline-2.0.0.tgz
+npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v3.0.0/schema-adrenaline-3.0.0.tgz
 ```
 
 ### Types and codecs (TypeScript apps)
@@ -239,7 +239,7 @@ version directories, tags and release assets are immutable.
 
 The Handbook catalogue and game pack have their own version (`0.2.0` here).
 Their version changes only when the pack changes and is deliberately independent
-from the `2.0.0` contract version.
+from the `3.0.0` contract version.
 
 ### Creating a release-train candidate
 

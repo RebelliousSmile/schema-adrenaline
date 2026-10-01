@@ -1,7 +1,7 @@
 {
   "providerVersion": 1,
   "provider": "schema-adrenaline",
-  "contractVersion": 2,
+  "contractVersion": 3,
   "corpus": "corpus/cases.json",
   "packManifest": "handbook/*/pack.json",
   "capabilities": { "lantern": ["edit:adrenaline"], "handbook": ["render:adrenaline"] },

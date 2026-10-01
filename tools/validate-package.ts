@@ -76,7 +76,7 @@ import {
 } from "schema-adrenaline";
 import { PNJ_PRESENTATION as PNJ_PRESENTATION_SUBPATH } from "schema-adrenaline/presentation";
 
-assert.equal(ADRENALINE_CONTRACT_VERSION, 2);
+assert.equal(ADRENALINE_CONTRACT_VERSION, 3);
 assert.equal(ADRENALINE_TOML_VERSION, "1.0.0");
 assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj", "pnj"]);
 
