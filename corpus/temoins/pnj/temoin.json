@@ -2,7 +2,7 @@
   "nom": "Témoin",
   "etatDePartie": {
     "malus": {
-      "mental": 1
+      "total": 1
     },
     "etats": [
       {

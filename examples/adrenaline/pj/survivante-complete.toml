@@ -346,7 +346,11 @@ adrenaline = 1
 panique = 0
 
 [etatDePartie.malus]
-physique = 2
+divers = "1 malus (froid), annulé à l'heure"
+total = 3
+
+[etatDePartie.malus.choc]
+rounds = 2
 
 [[etatDePartie.etats]]
 nom = "Contusion"

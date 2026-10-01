@@ -19,7 +19,8 @@ export type AdrenalinePresentationForm =
   | "stress-dice"
   | "threshold-rows"
   | "status-frames"
-  | "fatigue-circles"
+  | "shock-circles"
+  | "malus-scale"
   | "narrative"
   | "compact-rows"
   | "combat"
@@ -35,6 +36,7 @@ export type AdrenalinePresentationDecoration =
       kind: "circle-groups";
       groups: readonly [{ label: "rounds"; count: 5 }, { label: "heures"; count: 5 }];
     }
+  | { kind: "scale"; from: 1; to: 10 }
   | { kind: "weapon-die"; label: "d10" }
   | { kind: "protection-units"; physical: "PP"; mental: "PM" };
 
@@ -420,27 +422,11 @@ export const PJ_PRESENTATION = definePresentation({
           paths: ["/sante/mental"],
         },
         {
-          id: "malus",
-          label: "Malus",
+          id: "choc",
+          label: "Choc",
           order: 40,
           layout: "stack",
-          form: "status-frames",
-          paths: ["/etatDePartie/malus"],
-        },
-        {
-          id: "etats-encaisses",
-          label: "États encaissés",
-          order: 50,
-          layout: "stack",
-          form: "status-frames",
-          paths: ["/etatDePartie/etats"],
-        },
-        {
-          id: "fatigue",
-          label: "Fatigue",
-          order: 60,
-          layout: "stack",
-          form: "fatigue-circles",
+          form: "shock-circles",
           decoration: {
             kind: "circle-groups",
             groups: [
@@ -448,7 +434,32 @@ export const PJ_PRESENTATION = definePresentation({
               { label: "heures", count: 5 },
             ],
           },
-          paths: ["/etatDePartie/fatigue"],
+          paths: ["/etatDePartie/malus/choc"],
+        },
+        {
+          id: "divers",
+          label: "Divers",
+          order: 50,
+          layout: "stack",
+          form: "status-frames",
+          paths: ["/etatDePartie/malus/divers"],
+        },
+        {
+          id: "etats-encaisses",
+          label: "États",
+          order: 60,
+          layout: "stack",
+          form: "status-frames",
+          paths: ["/etatDePartie/etats"],
+        },
+        {
+          id: "total-malus",
+          label: "Total des malus",
+          order: 70,
+          layout: "stack",
+          form: "malus-scale",
+          decoration: { kind: "scale", from: 1, to: 10 },
+          paths: ["/etatDePartie/malus/total"],
         },
       ],
     },

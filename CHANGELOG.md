@@ -36,6 +36,16 @@ All notable changes to this project will be documented in this file.
   (`FormationJoueur`): the sheet always prints the three columns, and only
   their title is written. Two refusal witnesses prove it
   (`formation-en-trop`, `formation-sans-type`). PNJ formations are unchanged.
+- **Breaking:** `etatDePartie.malus` follows the Malus block of the paper PJ
+  sheet. `malus.physique` and `malus.mental`, two percentages the sheet never
+  prints, are removed, and so is `etatDePartie.fatigue`, which was the Choc
+  box under another name. `malus` now holds `choc` (`rounds` and `heures`,
+  five circles each), `divers` (free text) and `total` (0 to 10; 10 malus is
+  the HS state). The PJ presentation prints, in sheet order, the blocks
+  `choc` (form `shock-circles`, replacing `fatigue-circles`), `divers`,
+  `etats-encaisses` (now labelled « États ») and `total-malus` (new form
+  `malus-scale`, decoration `{ kind: "scale", from: 1, to: 10 }`). Two refusal
+  witnesses prove it (`malus-physique`, `total-des-malus-au-dela-de-hs`).
 
 ## [2.6.0] - 2026-09-26
 

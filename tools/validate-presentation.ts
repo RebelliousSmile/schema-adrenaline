@@ -19,7 +19,8 @@ const FORMS = new Set([
   "stress-dice",
   "threshold-rows",
   "status-frames",
-  "fatigue-circles",
+  "shock-circles",
+  "malus-scale",
   "narrative",
   "compact-rows",
   "combat",
@@ -176,6 +177,11 @@ function decoration(value: unknown, where: string): void {
         { label: "rounds", count: 5 },
         { label: "heures", count: 5 },
       ]);
+      break;
+    case "scale":
+      keys(rule, ["kind", "from", "to"], where);
+      assert.equal(rule.from, 1);
+      assert.equal(rule.to, 10);
       break;
     case "weapon-die":
       keys(rule, ["kind", "label"], where);
@@ -446,9 +452,10 @@ export function validatePresentation(source: unknown, target: Target): void {
       stress: "stress-dice",
       "seuils-physiques": "threshold-rows",
       "seuils-mentaux": "threshold-rows",
-      malus: "status-frames",
+      choc: "shock-circles",
+      divers: "status-frames",
       "etats-encaisses": "status-frames",
-      fatigue: "fatigue-circles",
+      "total-malus": "malus-scale",
     }))
       assert.equal(forms.get(id), expectedForm, `${target}.${id} has wrong form`);
     for (const name of ["for", "con", "dex", "rap", "log", "vol", "per", "cha"]) {
@@ -464,12 +471,15 @@ export function validatePresentation(source: unknown, target: Target): void {
     for (const field of ["rounds", "heures"]) {
       const numericField: Obj = nodeAt(
         schema,
-        `/etatDePartie/fatigue/${field}`,
-        `${target}.fatigue.${field}`,
+        `/etatDePartie/malus/choc/${field}`,
+        `${target}.malus.choc.${field}`,
       ).node;
       assert.equal(numericField.minimum, 0);
       assert.equal(numericField.maximum, 5);
     }
+    const total: Obj = nodeAt(schema, "/etatDePartie/malus/total", `${target}.malus.total`).node;
+    assert.equal(total.minimum, 0);
+    assert.equal(total.maximum, 10, `${target}.malus.total must stop at 10, the HS state`);
   }
   if (target === "monstre") {
     const numericField: Obj = nodeAt(

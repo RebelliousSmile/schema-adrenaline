@@ -113,7 +113,7 @@ effets = [ "Contagion" ]
 conditions = [ "Cible au contact" ]
 
 [etatDePartie.malus]
-physique = 1
+total = 1
 
 [[etatDePartie.etats]]
 nom = "Insensible"

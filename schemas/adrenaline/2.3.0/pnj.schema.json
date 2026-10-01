@@ -2518,45 +2518,44 @@
           "additionalProperties": false
         },
         "malus": {
-          "description": "Malus temporaires de la scène.",
+          "description": "Malus encaissés : Choc, Divers et Total.",
           "type": "object",
           "properties": {
-            "physique": {
-              "description": "Niveau de malus physique actuellement encaissé.",
+            "choc": {
+              "description": "Malus de choc de la case Choc.",
+              "type": "object",
+              "properties": {
+                "rounds": {
+                  "description": "Malus de choc cochés sur les cinq cercles « round », de haut en bas.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 5
+                },
+                "heures": {
+                  "description": "Malus de choc cochés sur les cinq cercles « heure », une fois les rounds pleins.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 5
+                }
+              },
+              "additionalProperties": false
+            },
+            "divers": {
+              "description": "Case Divers : malus de choc au-delà de la colonne et autres malus, notés librement avec leur fréquence d'annulation.",
+              "examples": [
+                "2 malus (froid), annulés à l'heure"
+              ],
+              "type": "string",
+              "minLength": 1
+            },
+            "total": {
+              "description": "Total des malus, de 1 à 10. À 10 malus, le personnage subit l'état HS.",
               "examples": [
                 2
               ],
               "type": "integer",
               "minimum": 0,
-              "maximum": 100
-            },
-            "mental": {
-              "description": "Niveau de malus mental actuellement encaissé.",
-              "examples": [
-                1
-              ],
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 100
-            }
-          },
-          "additionalProperties": false
-        },
-        "fatigue": {
-          "description": "Cercles de fatigue rounds et heures.",
-          "type": "object",
-          "properties": {
-            "rounds": {
-              "description": "Cercles de fatigue cochés sur les cinq emplacements en rounds.",
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 5
-            },
-            "heures": {
-              "description": "Cercles de fatigue cochés sur les cinq emplacements en heures.",
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 5
+              "maximum": 10
             }
           },
           "additionalProperties": false

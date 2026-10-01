@@ -15,29 +15,47 @@ const Stress = z
   })
   .meta({ description: "Compteurs de stress en cours de scène." });
 
-const Malus = z
-  .strictObject({
-    physique: Compte.optional().meta({
-      description: "Niveau de malus physique actuellement encaissé.",
-      examples: [2],
-    }),
-    mental: Compte.optional().meta({
-      description: "Niveau de malus mental actuellement encaissé.",
-      examples: [1],
-    }),
-  })
-  .meta({ description: "Niveaux de malus temporaires, séparés par versant." });
-
-const Fatigue = z
+const Choc = z
   .strictObject({
     rounds: z.int().min(0).max(5).optional().meta({
-      description: "Cercles de fatigue cochés sur les cinq emplacements en rounds.",
+      description: "Malus de choc cochés sur les cinq cercles « round », de haut en bas.",
     }),
     heures: z.int().min(0).max(5).optional().meta({
-      description: "Cercles de fatigue cochés sur les cinq emplacements en heures.",
+      description:
+        "Malus de choc cochés sur les cinq cercles « heure », une fois les rounds pleins.",
     }),
   })
-  .meta({ description: "Fatigue temporaire, notée sur deux séries de cinq cercles." });
+  .meta({
+    description:
+      "Case Choc (jaune) de la feuille de PJ : cinq cercles annulés au round, puis cinq annulés à l'heure.",
+  });
+
+const Malus = z
+  .strictObject({
+    choc: Choc.optional().meta({ description: "Malus de choc de la case Choc." }),
+    divers: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description:
+          "Case Divers : malus de choc au-delà de la colonne et autres malus, notés librement avec leur fréquence d'annulation.",
+        examples: ["2 malus (froid), annulés à l'heure"],
+      }),
+    total: z
+      .int()
+      .min(0)
+      .max(10)
+      .optional()
+      .meta({
+        description: "Total des malus, de 1 à 10. À 10 malus, le personnage subit l'état HS.",
+        examples: [2],
+      }),
+  })
+  .meta({
+    description:
+      "Malus encaissés, comme le bloc Malus de la feuille de PJ : Choc, Divers et Total des malus. Les blessures et les états ont leur propre emplacement.",
+  });
 
 const EtatPhysique = z
   .strictObject({
@@ -95,8 +113,7 @@ export const EtatEncaissé = z
 export const EtatDePartie = z
   .strictObject({
     stress: Stress.optional().meta({ description: "Compteurs de stress de la scène." }),
-    malus: Malus.optional().meta({ description: "Malus temporaires de la scène." }),
-    fatigue: Fatigue.optional().meta({ description: "Cercles de fatigue rounds et heures." }),
+    malus: Malus.optional().meta({ description: "Malus encaissés : Choc, Divers et Total." }),
     etats: z.array(EtatEncaissé).optional().meta({
       description: "États encaissés ou temporaires actuellement applicables.",
     }),

@@ -256,7 +256,7 @@ repliques = [ "Vous le rendez plein.", "J'ai pas dit non. J'ai dit pas maintenan
 notesMj = [ "Cache sa sœur contaminée dans l'arrière-boutique." ]
 
 [etatDePartie.malus]
-mental = 1
+total = 1
 
 [[etatDePartie.etats]]
 nom = "Anxiété"

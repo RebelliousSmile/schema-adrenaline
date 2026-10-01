@@ -163,10 +163,7 @@
       "panique": 0
     },
     "malus": {
-      "choc": {
-        "rounds": 2
-      },
-      "total": 2
+      "physique": 2
     },
     "etats": [
       {

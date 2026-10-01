@@ -69,6 +69,18 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pj/malus-physique.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/total-des-malus-au-dela-de-hs.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
       "path": "corpus/refus/pj/localisation-inconnue.json",
       "target": "pj",
       "format": "json",
