@@ -136,3 +136,44 @@ jobs:
               -f "client_payload[package]=schema-adrenaline" \
               -f "client_payload[tag]=$RELEASE_TAG"
           done
+
+  # The final bumps merge on their own, so no one is asked to record the end of the
+  # train: this waits for both consumers, writes the protocol-2 record and hands it
+  # to `Final convergence`, which stays its judge.
+  converge:
+    needs: notify-consumers
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: write
+      actions: write
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Record the final convergence
+        run: |
+          record=$(npx tsx tools/write-release-train.ts final "$RELEASE_TAG" --wait-minutes 120 | tail -n 1)
+          test -f "$record"
+          git add "$record"
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore(release): record the $RELEASE_TAG convergence" -- "$record"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          gh workflow run final-convergence.yml --ref main -f record="$record"

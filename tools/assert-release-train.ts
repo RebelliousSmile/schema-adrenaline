@@ -182,6 +182,8 @@ export async function selfTest(): Promise<void> {
     assert.throws(() => parseTrain(mutation), /release-train manifest/);
   const { selfTestProofs } = await import("./verify-release-train-proofs.js");
   selfTestProofs();
+  const { selfTestWriter } = await import("./write-release-train.js");
+  selfTestWriter();
   console.log("✓ release-train protocol-1 self-tests passed");
 }
 

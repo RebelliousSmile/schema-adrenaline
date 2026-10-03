@@ -1,0 +1,135 @@
+name: Promote candidate
+
+# Run by hand once both consumers have merged the candidate's bump pull request.
+# It records the train from what is published, then hands over to the existing
+# gates: `Release train` proves the manifest, `Release contract` publishes behind
+# the `release` environment. Nothing here replaces a gate of either workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Candidate tag to promote (vX.Y.Z-rc.N)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: promote
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    env:
+      CANDIDATE_TAG: ${{ inputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Verify dispatch and candidate tag
+        id: tags
+        run: |
+          git fetch origin main --tags
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          case "$CANDIDATE_TAG" in
+            v[0-9]*.[0-9]*.[0-9]*-rc.[0-9]*) ;;
+            *) echo "candidate tag must be vX.Y.Z-rc.N" >&2; exit 1 ;;
+          esac
+          final_tag="${CANDIDATE_TAG%-rc.*}"
+          test "$final_tag" = "v$(node -p 'require("./package.json").version')"
+          test "$(gh release view "$CANDIDATE_TAG" --json isPrerelease,isDraft --jq '"\(.isPrerelease) \(.isDraft)"')" = "true false"
+          if gh release view "$final_tag" >/dev/null 2>&1; then
+            test "$(gh release view "$final_tag" --json isDraft --jq .isDraft)" = "true"
+          fi
+          echo "final=$final_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Refused unless the `main` of both consumers pins exactly this candidate.
+      - name: Record the train
+        id: train
+        run: |
+          manifest=$(npx tsx tools/write-release-train.ts candidate "$CANDIDATE_TAG" | tail -n 1)
+          test -f "$manifest"
+          npm run release-train:assert -- "$manifest"
+          echo "manifest=$manifest" >> "$GITHUB_OUTPUT"
+
+      # The same proofs `Release contract` demands of the tagged commit, taken before
+      # anything is committed or tagged.
+      - name: Check provider release contract
+        run: npm run release:verify-provider
+
+      - name: Prove this commit packs the candidate
+        env:
+          MANIFEST: ${{ steps.train.outputs.manifest }}
+        run: |
+          sha=$(node -e 'const m=require(`./${process.argv[1]}`); process.stdout.write(m.candidate.sha256)' "$MANIFEST")
+          packed=$(npm pack --json --silent --ignore-scripts | node -e 'let data=""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => process.stdout.write(JSON.parse(data)[0].filename))')
+          test "$(sha256sum "$packed" | cut -d ' ' -f 1)" = "$sha"
+          rm "$packed"
+
+      - name: Commit the manifest on main
+        id: commit
+        env:
+          MANIFEST: ${{ steps.train.outputs.manifest }}
+          FINAL_TAG: ${{ steps.tags.outputs.final }}
+        run: |
+          git add "$MANIFEST"
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore(release): record the $FINAL_TAG train" -- "$MANIFEST"
+            git push origin HEAD:main
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Prove the train
+        env:
+          MANIFEST: ${{ steps.train.outputs.manifest }}
+          TRAIN_SHA: ${{ steps.commit.outputs.sha }}
+        run: |
+          runs() { gh run list --workflow release-train.yml --commit "$TRAIN_SHA" "$@" --json databaseId --jq '.[].databaseId'; }
+          if test -n "$(runs --status success)"; then exit 0; fi
+          runs > known-runs.txt
+          gh workflow run release-train.yml --ref main -f manifest="$MANIFEST"
+          run=""
+          for attempt in $(seq 1 30); do
+            run=$(runs | grep -vxFf known-runs.txt | head -n 1 || true)
+            if test -n "$run"; then break; fi
+            sleep 10
+          done
+          rm known-runs.txt
+          test -n "$run"
+          gh run watch "$run" --exit-status --interval 30
+
+      # A tag pushed with the workflow token starts no workflow, so the release is
+      # dispatched explicitly; it then waits for the `release` environment.
+      - name: Tag the final and hand over to the release
+        env:
+          FINAL_TAG: ${{ steps.tags.outputs.final }}
+          TRAIN_SHA: ${{ steps.commit.outputs.sha }}
+        run: |
+          tag_commit=$(git ls-remote origin "refs/tags/$FINAL_TAG^{}" | awk '{print $1}')
+          if test -z "$tag_commit"; then
+            tag_commit=$(git ls-remote origin "refs/tags/$FINAL_TAG" | awk '{print $1}')
+          fi
+          if test -z "$tag_commit"; then
+            git tag "$FINAL_TAG" "$TRAIN_SHA"
+            git push origin "refs/tags/$FINAL_TAG"
+          elif test "$tag_commit" != "$TRAIN_SHA"; then
+            echo "$FINAL_TAG already points outside this train" >&2
+            exit 1
+          fi
+          gh workflow run release.yml --ref "$FINAL_TAG" -f tag="$FINAL_TAG"

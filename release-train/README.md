@@ -2,6 +2,8 @@
 
 Commit one `protocol: 1` JSON manifest named `schema-adrenaline-vX.Y.Z.json` before promoting a release. Its `candidate` records the `schema-adrenaline` release URL, SHA-256, npm SHA-512 SRI, final version, RC tag, final tag and full provider commit. Its `consumers` array contains exactly Lantern and Handbook, each with its canonical repository and a full commit SHA.
 
+Neither record is typed by hand. `.github/workflows/promote.yml`, dispatched with the candidate tag once both consumers have merged its bump, writes the protocol-1 manifest from the published candidate and the `main` commits that pin it, commits it, proves it with the release-train workflow, tags the final on that commit and dispatches the release. The `converge` job of `.github/workflows/release.yml` writes the protocol-2 record once both `main` branches pin the final, then dispatches final convergence. Both use `tools/write-release-train.ts`, which only records facts and never rewrites a committed record with other ones; the gates described below judge them.
+
 The only accepted local runner entry point is:
 
 ```sh
