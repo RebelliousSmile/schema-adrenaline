@@ -23,6 +23,9 @@ jobs:
   release:
     if: ${{ !contains(inputs.tag || github.ref_name, '-') }}
     runs-on: ubuntu-latest
+    # The one human gate of a train: the environment's required reviewer approves
+    # the final from the Actions page, with no terminal involved.
+    environment: release
     env:
       RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
@@ -111,3 +114,25 @@ jobs:
           test "$immutable" = "true"
           test "$(gh api -H 'X-GitHub-Api-Version: 2026-03-10' "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" --jq '.assets | length')" = "2"
           test "$digest" = "sha256:${{ steps.candidate.outputs.sha }}"
+
+  # The consumers adopt the final through their own `Bump schema` workflow, which
+  # merges on its own once their CI is green.
+  notify-consumers:
+    needs: release
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ secrets.TRAIN_DISPATCH_TOKEN }}
+    steps:
+      - name: Ask each consumer to open its bump pull request
+        run: |
+          if test -z "$GH_TOKEN"; then
+            echo "::error::TRAIN_DISPATCH_TOKEN is not set: $RELEASE_TAG is published, but no consumer was notified"
+            exit 1
+          fi
+          for consumer in RebelliousSmile/obsidian-handbook RebelliousSmile/lantern; do
+            gh api "repos/$consumer/dispatches" \
+              -f event_type=schema-published \
+              -f "client_payload[package]=schema-adrenaline" \
+              -f "client_payload[tag]=$RELEASE_TAG"
+          done

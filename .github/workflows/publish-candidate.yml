@@ -116,3 +116,25 @@ jobs:
           test "$assets" = "2"
           test "$prerelease" = "true"
           test "$digest" = "sha256:${{ steps.candidate.outputs.sha }}"
+
+  # The consumers adopt the candidate through their own `Bump schema` workflow: the
+  # proof is the CI of the pull request each one opens, not a workstation run.
+  notify-consumers:
+    needs: candidate
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+      GH_TOKEN: ${{ secrets.TRAIN_DISPATCH_TOKEN }}
+    steps:
+      - name: Ask each consumer to open its bump pull request
+        run: |
+          if test -z "$GH_TOKEN"; then
+            echo "::error::TRAIN_DISPATCH_TOKEN is not set: $RELEASE_TAG is published, but no consumer was notified"
+            exit 1
+          fi
+          for consumer in RebelliousSmile/obsidian-handbook RebelliousSmile/lantern; do
+            gh api "repos/$consumer/dispatches" \
+              -f event_type=schema-published \
+              -f "client_payload[package]=schema-adrenaline" \
+              -f "client_payload[tag]=$RELEASE_TAG"
+          done
