@@ -1360,7 +1360,24 @@
                   "type": "string",
                   "minLength": 1
                 },
+                "des": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Dés retirés aux dégâts, tels qu'imprimés dans le badge gris.",
+                  "examples": [
+                    "-1d10",
+                    "-2d10"
+                  ]
+                },
                 "points": {
+                  "description": "PP d'Armure, sur la feuille de PJ. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 2,
+                      "maximum": 2
+                    }
+                  ],
                   "type": "object",
                   "properties": {
                     "minimum": {
@@ -1398,17 +1415,16 @@
                     "current",
                     "maximum"
                   ],
-                  "additionalProperties": false,
-                  "description": "PP d'Armure. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
-                  "examples": [
-                    {
-                      "minimum": 0,
-                      "current": 2,
-                      "maximum": 2
-                    }
-                  ]
+                  "additionalProperties": false
                 },
                 "localisations": {
+                  "description": "Localisations corporelles couvertes par l'armure, quand elles relèvent du catalogue publié.",
+                  "examples": [
+                    [
+                      "torse",
+                      "bras-fort"
+                    ]
+                  ],
                   "minItems": 1,
                   "type": "array",
                   "items": {
@@ -1426,20 +1442,68 @@
                       "torse",
                       "tete"
                     ]
+                  }
+                },
+                "couverture": {
+                  "description": "Couverture en texte libre, telle qu'imprimée sur une fiche de PNJ.",
+                  "examples": [
+                    "Torse, Bras, Jambe",
+                    "Pieds uniquement"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "proprietes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
                   },
-                  "description": "Localisations corporelles couvertes par l'armure. Au moins une : une armure ne couvrant rien rendrait la valeur couverte de chaque seuil ininterprétable.",
+                  "description": "Propriétés de la protection.",
                   "examples": [
                     [
-                      "torse",
-                      "bras-fort"
+                      "Discrète"
                     ]
                   ]
+                },
+                "reduction": {
+                  "type": "object",
+                  "properties": {
+                    "contre": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Un type de dégâts réduit."
+                      },
+                      "description": "Types de dégâts que la réduction concerne, imprimés entre parenthèses.",
+                      "examples": [
+                        [
+                          "Tranchante",
+                          "Perforante"
+                        ]
+                      ]
+                    },
+                    "valeur": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Points retirés, saisis positifs et imprimés précédés du signe moins.",
+                      "examples": [
+                        5
+                      ]
+                    }
+                  },
+                  "required": [
+                    "contre",
+                    "valeur"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Réduction fixe contre certains types de dégâts."
                 }
               },
-              "required": [
-                "points",
-                "localisations"
-              ],
               "additionalProperties": false
             },
             "bouclier": {
@@ -1538,14 +1602,32 @@
               "type": "object",
               "properties": {
                 "trait": {
+                  "description": "Trait de caractère qui protège. Chaîne libre : le catalogue est éditorial. Absent quand la fiche n'en nomme pas.",
+                  "examples": [
+                    "Cynique",
+                    "Calme"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "des": {
                   "type": "string",
                   "minLength": 1,
-                  "description": "Trait de caractère qui protège. Chaîne libre : le catalogue est éditorial.",
+                  "description": "Dés retirés aux dégâts, tels qu'imprimés dans le badge gris.",
                   "examples": [
-                    "Cynique"
+                    "-1d10",
+                    "-2d10"
                   ]
                 },
                 "points": {
+                  "description": "PM de Caractère, sur la feuille de PJ. S'ajoutent à la base de chaque seuil mental couvert.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 2,
+                      "maximum": 2
+                    }
+                  ],
                   "type": "object",
                   "properties": {
                     "minimum": {
@@ -1583,17 +1665,16 @@
                     "current",
                     "maximum"
                   ],
-                  "additionalProperties": false,
-                  "description": "PM de Caractère. S'ajoutent à la base de chaque seuil mental couvert.",
-                  "examples": [
-                    {
-                      "minimum": 0,
-                      "current": 2,
-                      "maximum": 2
-                    }
-                  ]
+                  "additionalProperties": false
                 },
                 "localisations": {
+                  "description": "Localisations émotionnelles couvertes, quand elles relèvent du catalogue publié.",
+                  "examples": [
+                    [
+                      "peur",
+                      "anxiete"
+                    ]
+                  ],
                   "minItems": 1,
                   "type": "array",
                   "items": {
@@ -1611,21 +1692,74 @@
                       "peur",
                       "colere"
                     ]
-                  },
-                  "description": "Localisations émotionnelles couvertes par le trait de caractère. Au moins une, pour la même raison que l'armure.",
+                  }
+                },
+                "emotions": {
+                  "description": "Émotions couvertes en texte libre, telles qu'imprimées sur une fiche de PNJ.",
                   "examples": [
                     [
-                      "peur",
-                      "anxiete"
+                      "Anxiété"
+                    ]
+                  ],
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une émotion couverte."
+                  }
+                },
+                "proprietes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
+                  },
+                  "description": "Propriétés de la protection.",
+                  "examples": [
+                    [
+                      "Discrète"
                     ]
                   ]
+                },
+                "reduction": {
+                  "type": "object",
+                  "properties": {
+                    "contre": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Un type de dégâts réduit."
+                      },
+                      "description": "Types de dégâts que la réduction concerne, imprimés entre parenthèses.",
+                      "examples": [
+                        [
+                          "Tranchante",
+                          "Perforante"
+                        ]
+                      ]
+                    },
+                    "valeur": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Points retirés, saisis positifs et imprimés précédés du signe moins.",
+                      "examples": [
+                        5
+                      ]
+                    }
+                  },
+                  "required": [
+                    "contre",
+                    "valeur"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Réduction fixe contre certains types de dégâts."
                 }
               },
-              "required": [
-                "trait",
-                "points",
-                "localisations"
-              ],
               "additionalProperties": false
             },
             "bouclier": {
@@ -1887,6 +2021,120 @@
                     "maximum"
                   ],
                   "additionalProperties": false
+                },
+                "degats": {
+                  "description": "Ligne d'arme de la compétence : dégâts, munitions et portée, imprimés sous elle sans retrait.",
+                  "type": "object",
+                  "properties": {
+                    "versant": {
+                      "type": "string",
+                      "enum": [
+                        "physique",
+                        "mental"
+                      ],
+                      "description": "Versant des dégâts : physique, imprimé DP, ou mental, imprimé DM.",
+                      "examples": [
+                        "physique"
+                      ]
+                    },
+                    "profils": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "des": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Expression des dégâts, telle qu'imprimée dans le badge.",
+                            "examples": [
+                              "1d10",
+                              "3d10 + 5"
+                            ]
+                          },
+                          "nature": {
+                            "type": "string",
+                            "enum": [
+                              "choquante",
+                              "blessante"
+                            ],
+                            "description": "Choquante (badge jaune) ou blessante (badge rouge).",
+                            "examples": [
+                              "blessante"
+                            ]
+                          },
+                          "condition": {
+                            "description": "Condition qui rend ce profil applicable, imprimée après le badge.",
+                            "examples": [
+                              "si la cible est au contact",
+                              "sur ✓✓"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "des"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Un profil de dégâts : dés, nature et condition éventuelle."
+                      },
+                      "description": "Profils de dégâts, dans l'ordre d'impression. Au moins un."
+                    },
+                    "liant": {
+                      "description": "Mot qui relie les profils successifs, imprimé entre deux badges.",
+                      "examples": [
+                        "ou",
+                        "mais"
+                      ],
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "proprietes": {
+                      "description": "Propriétés des dégâts. Chaînes libres : le catalogue est éditorial, pas une mécanique fermée.",
+                      "examples": [
+                        [
+                          "Perforante",
+                          "Fatale 9+"
+                        ]
+                      ],
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Une propriété, en un mot ou deux."
+                      }
+                    },
+                    "munitions": {
+                      "description": "Munitions de l'arme, telles qu'écrites sur la fiche.",
+                      "examples": [
+                        "12",
+                        "5 doses"
+                      ],
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "portee": {
+                      "description": "Portée de l'arme, telle qu'écrite sur la fiche.",
+                      "examples": [
+                        "60 m"
+                      ],
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "profils"
+                  ],
+                  "additionalProperties": false
+                },
+                "action": {
+                  "description": "Ligne d'action libre imprimée sous la compétence, précédée de « Action : ».",
+                  "examples": [
+                    "Charger, puis renverser sa cible"
+                  ],
+                  "type": "string",
+                  "minLength": 1
                 },
                 "avantages": {
                   "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",

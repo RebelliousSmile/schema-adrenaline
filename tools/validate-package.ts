@@ -71,10 +71,14 @@ import {
   ADRENALINE_DOCUMENT_CODECS,
   ADRENALINE_SCHEMA_VERSION,
   ADRENALINE_TOML_VERSION,
+  ADRENALINE_VISUAL_CALLOUTS,
   PNJ_PRESENTATION,
   parsePnjToml,
 } from "schema-adrenaline";
-import { PNJ_PRESENTATION as PNJ_PRESENTATION_SUBPATH } from "schema-adrenaline/presentation";
+import {
+  ADRENALINE_VISUAL_CALLOUTS as ADRENALINE_VISUAL_CALLOUTS_SUBPATH,
+  PNJ_PRESENTATION as PNJ_PRESENTATION_SUBPATH,
+} from "schema-adrenaline/presentation";
 
 assert.equal(ADRENALINE_CONTRACT_VERSION, 3);
 assert.equal(ADRENALINE_TOML_VERSION, "1.0.0");
@@ -88,6 +92,9 @@ assert.match(
 assert.deepEqual(schema["x-adrenaline-presentation"], PNJ_PRESENTATION);
 assert.deepEqual(PNJ_PRESENTATION_SUBPATH, PNJ_PRESENTATION);
 assert.equal(PNJ_PRESENTATION.capability, "block:adrenaline-pnj");
+assert.deepEqual(ADRENALINE_VISUAL_CALLOUTS_SUBPATH, ADRENALINE_VISUAL_CALLOUTS);
+assert.ok(ADRENALINE_VISUAL_CALLOUTS.every((entry) => entry.capability === "style:adrenaline"));
+assert.ok(fs.statSync(new URL(import.meta.resolve("schema-adrenaline/handbook/adrenaline/callout-contract.md"))).isFile());
 const provider = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/cross-tool-provider.json")), "utf8"));
 assert.equal(provider.contractVersion, ADRENALINE_CONTRACT_VERSION);
 const cases = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/" + provider.corpus)), "utf8"));

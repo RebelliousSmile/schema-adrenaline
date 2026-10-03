@@ -7,7 +7,7 @@
   "packs": [
     {
       "id": "adrenaline",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "path": "handbook/adrenaline/pack.json",
       "label": "Adrenaline System"
     }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { LocalisationCorporelle, LocalisationEmotionnelle } from "./localisations.js";
-import { PointsJouables } from "./primitives.js";
+import { Points, PointsJouables } from "./primitives.js";
 
 /**
  * Un bouclier, physique ou mental. Ses propriétés — type de couvert côté
@@ -29,6 +29,43 @@ const Bouclier = z
   });
 
 /**
+ * Le badge de dés d'une armure ou d'un trait de caractère, tel qu'imprimé
+ * (`-2d10`) : les dés que la protection retire aux dégâts encaissés.
+ */
+const DesDeProtection = z
+  .string()
+  .min(1)
+  .meta({
+    description: "Dés retirés aux dégâts, tels qu'imprimés dans le badge gris.",
+    examples: ["-1d10", "-2d10"],
+  });
+
+/**
+ * Une réduction fixe contre certains types de dégâts : `Réduction (Tranchante,
+ * Perforante) -5`. La valeur est saisie positive et imprimée précédée du signe
+ * moins.
+ */
+const Reduction = z
+  .strictObject({
+    contre: z
+      .array(z.string().min(1).meta({ description: "Un type de dégâts réduit." }))
+      .min(1)
+      .meta({
+        description: "Types de dégâts que la réduction concerne, imprimés entre parenthèses.",
+        examples: [["Tranchante", "Perforante"]],
+      }),
+    valeur: Points.meta({
+      description: "Points retirés, saisis positifs et imprimés précédés du signe moins.",
+      examples: [5],
+    }),
+  })
+  .meta({ description: "Réduction fixe contre certains types de dégâts." });
+
+const ProprietesDeProtection = z
+  .array(z.string().min(1).meta({ description: "Une propriété, en un mot ou deux." }))
+  .meta({ description: "Propriétés de la protection.", examples: [["Discrète"]] });
+
+/**
  * Protections physiques : solidité propre du personnage, armure éventuelle et
  * localisations qu'elle couvre, bouclier éventuel.
  *
@@ -52,19 +89,31 @@ export const ProtectionsPhysiques = z
             description: "Nom de l'armure, tel qu'écrit sur la fiche.",
             examples: ["Blouson de cuir"],
           }),
-        points: PointsJouables.meta({
+        des: DesDeProtection.optional(),
+        points: PointsJouables.optional().meta({
           description:
-            "PP d'Armure. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
+            "PP d'Armure, sur la feuille de PJ. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
           examples: [{ minimum: 0, current: 2, maximum: 2 }],
         }),
         localisations: z
           .array(LocalisationCorporelle)
           .min(1)
+          .optional()
           .meta({
             description:
-              "Localisations corporelles couvertes par l'armure. Au moins une : une armure ne couvrant rien rendrait la valeur couverte de chaque seuil ininterprétable.",
+              "Localisations corporelles couvertes par l'armure, quand elles relèvent du catalogue publié.",
             examples: [["torse", "bras-fort"]],
           }),
+        couverture: z
+          .string()
+          .min(1)
+          .optional()
+          .meta({
+            description: "Couverture en texte libre, telle qu'imprimée sur une fiche de PNJ.",
+            examples: ["Torse, Bras, Jambe", "Pieds uniquement"],
+          }),
+        proprietes: ProprietesDeProtection.optional(),
+        reduction: Reduction.optional(),
       })
       .optional()
       .meta({ description: "Armure portée, si le personnage en a une." }),
@@ -90,23 +139,38 @@ export const ProtectionsMentales = z
         trait: z
           .string()
           .min(1)
+          .optional()
           .meta({
             description:
-              "Trait de caractère qui protège. Chaîne libre : le catalogue est éditorial.",
-            examples: ["Cynique"],
+              "Trait de caractère qui protège. Chaîne libre : le catalogue est éditorial. Absent quand la fiche n'en nomme pas.",
+            examples: ["Cynique", "Calme"],
           }),
-        points: PointsJouables.meta({
-          description: "PM de Caractère. S'ajoutent à la base de chaque seuil mental couvert.",
+        des: DesDeProtection.optional(),
+        points: PointsJouables.optional().meta({
+          description:
+            "PM de Caractère, sur la feuille de PJ. S'ajoutent à la base de chaque seuil mental couvert.",
           examples: [{ minimum: 0, current: 2, maximum: 2 }],
         }),
         localisations: z
           .array(LocalisationEmotionnelle)
           .min(1)
+          .optional()
           .meta({
             description:
-              "Localisations émotionnelles couvertes par le trait de caractère. Au moins une, pour la même raison que l'armure.",
+              "Localisations émotionnelles couvertes, quand elles relèvent du catalogue publié.",
             examples: [["peur", "anxiete"]],
           }),
+        emotions: z
+          .array(z.string().min(1).meta({ description: "Une émotion couverte." }))
+          .min(1)
+          .optional()
+          .meta({
+            description:
+              "Émotions couvertes en texte libre, telles qu'imprimées sur une fiche de PNJ.",
+            examples: [["Anxiété"]],
+          }),
+        proprietes: ProprietesDeProtection.optional(),
+        reduction: Reduction.optional(),
       })
       .optional()
       .meta({ description: "Trait de caractère protecteur, si le personnage en a un." }),
@@ -126,5 +190,25 @@ export const Protections = z
       "Les deux versants de la protection. Symétriques par construction : le socle traite le conflit mental comme le conflit physique.",
   });
 
+/**
+ * Les protections d'une fiche abrégée — PNJ ou créature : chaque versant et
+ * chacun de ses champs est facultatif. Une fiche de PNJ n'imprime pas la
+ * Solidité, seulement les seuils qui en découlent.
+ */
+export const ProtectionsAbregees = z
+  .strictObject({
+    physiques: ProtectionsPhysiques.partial().optional().meta({
+      description: "Protections physiques, chaque champ facultatif.",
+    }),
+    mentales: ProtectionsMentales.partial().optional().meta({
+      description: "Protections mentales, chaque champ facultatif.",
+    }),
+  })
+  .meta({
+    description:
+      "Protections d'une fiche abrégée : chaque versant et chacun de ses champs facultatif, Solidité comprise.",
+  });
+
+export type ProtectionsAbregeesValeur = z.infer<typeof ProtectionsAbregees>;
 export type BouclierValeur = z.infer<typeof Bouclier>;
 export type ProtectionsValeur = z.infer<typeof Protections>;

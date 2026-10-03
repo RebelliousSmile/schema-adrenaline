@@ -6,6 +6,82 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- `ADRENALINE_VISUAL_CALLOUTS`, exported by the package root and by
+  `schema-adrenaline/presentation`, names six visual callouts read from the
+  Zombiology booklet: `adrenaline-exemple` (aliases `exemple`, `example`),
+  `adrenaline-description`, `adrenaline-encart`, `adrenaline-formation`
+  (modifier `fond`),
+  `adrenaline-action` and `adrenaline-table` (alias `table-aleatoire`). Each
+  entry requires the `style:adrenaline` capability.
+- Page styles of the Zombiology scenario booklet, as pack tokens: an
+  `--adrenaline-h2-rule`, an `--adrenaline-h3-band` with its
+  `--adrenaline-h3-rule`, `--adrenaline-inline-code-*` (font, transform,
+  weight, colour), `--adrenaline-description-*`, `--adrenaline-note-*` (the
+  handwritten sheet of the native `note` callout) and
+  `--adrenaline-callout-tip` with its ink and border.
+- Schema baseline `3.1.0` (additive within contract 3): the compact PNJ and
+  creature cards of the Zombiology _Livret PNJ et animaux_ (#41, #42). Every
+  printed value is entered as printed; nothing is derived from a rule.
+  - `Degats` (`versant`, `profils[{des, nature, condition}]`, `liant`,
+    `proprietes`, `munitions`, `portee`) on a `Competence` and on a creature
+    action; `Competence.action` for a free action line.
+  - `categorie` (free text), `niveauDeDangerAlternatif` and
+    `niveauDeDangerNote` on PNJ and creatures.
+  - `ProtectionsAbregees`, used by PNJ and creatures: each side and each field
+    optional, while the PJ keeps its required `solidite`. Armour gains `nom`,
+    `des`, `couverture`, `proprietes` and `reduction {contre, valeur}`;
+    character gains `des`, `emotions`, `proprietes` and `reduction`.
+  - PNJ `pistes {stress, malusChoquants, malusBlessants}`: bold circles, as
+    entered.
+  - Creature `etatsPermanents`, `malusAvantHs`, `etatDeBase {nom,
+declencheurs}` and `etatPrincipal` (the state printed on the large card);
+    the state delta accepts the first two. Actions gain `test`, `degats` and
+    one level of `suites`; `defense.niveau` (`oui`, `expose`, `non`).
+- Presentation: a `compact-card` appearance beside `paper-sheet`, with eight
+  more tokens; the forms `state-header`, `malus-tracks`, `inline-list`,
+  `skill-lines` and `action-lines`; sections may be `collapsible`, take their
+  title from a value (`labelFrom`) or sit on the creature's `principal` and
+  `secondaire` cards (`cards`); descriptors may map `categorie` to a banner
+  variant and icon (`categories`). `validate:presentation` checks each of
+  them, with new self-tests.
+- The Handbook pack declares `--adrenaline-banner-*`, `--adrenaline-trigger-*`
+  and `--adrenaline-dice-badge-*` in both layers; `validate:pack` measures
+  their contrast.
+- Examples `pnj/agent-de-securite.toml` and `monstre/infecte-zy-2.toml`, copied
+  from the booklet; the legacy `etatAlternatif` form stays covered by
+  `corpus/contract/valid/monstre-etat-alternatif-historique.toml`.
+- `handbook/adrenaline/callout-contract.md` documents each callout, its
+  modifiers, the inline marks and the tokens it reads;
+  `handbook/adrenaline/callouts-example.md` is a note that renders all of them.
+- The Handbook pack `0.7.0` adds the tokens behind them, in light and dark
+  layers: `--h5-*`, `--adrenaline-h4-rule`, `--adrenaline-keyword-*`,
+  `--adrenaline-result-success-*`, `--adrenaline-result-failure-*`,
+  `--adrenaline-example-rule`, `--adrenaline-formation-surface`,
+  `--adrenaline-action-title-*` and `--adrenaline-action-border`.
+- `validate:pack` checks every new ink/background pair (4.5:1) and every new
+  rule or border (3:1); `validate:presentation` checks that each callout, alias
+  and modifier is documented in the contract and rendered in the example.
+
+### Changed
+
+- The pack follows the scenario booklet: h1 and h2 are printed in the text
+  ink instead of garnet; h3 leaves the display face for the bold body serif in
+  normal case, on `--adrenaline-h3-band`; `--bold-color` and
+  `--list-marker-color` are the text ink.
+- The pack's h4 is upright and semibold, underlined by `--adrenaline-h4-rule`,
+  instead of italic.
+- `examples/adrenaline/monstre/infecte-rodeur.toml` uses `etats` and
+  `defense.niveau` instead of the legacy `etatAlternatif` and `defense.active`,
+  both still accepted.
+- `defense.active`, `desDeDegats` and `modificateurDeDegats` are documented as
+  legacy forms; prefer `defense.niveau` and `degats`.
+- The status badges are bright yellow and red, as in the booklet; their ink is
+  measured against their own background.
+
+## [3.0.0] - 2026-10-02
+
+### Added
+
 - The Handbook pack `0.6.0` adds six colour tokens for the Zombiology PJ
   sheet, in light and dark layers: `--adrenaline-field-border`,
   `--adrenaline-track-mark`, `--adrenaline-fatigue`,

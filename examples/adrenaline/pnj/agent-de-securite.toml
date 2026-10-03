@@ -1,0 +1,139 @@
+# Carte compacte de PNJ, d'après le Livret PNJ et animaux de Zombiology.
+# Tout ce qui est imprimé est saisi : la fiche ne calcule ni total ni piste.
+nom = "Agent de sécurité"
+categorie = "PNJ"
+niveauDeDanger = 17
+description = "Grand et robuste, cet homme à la peau foncée et aux traits marqués dégage une impression de calme malgré une expression peu démonstrative. Son uniforme sombre souligne sa carrure athlétique tandis que son regard attentif semble constamment balayer les gens alentour."
+
+[caracteristiques]
+for = { minimum = 0, current = 50, maximum = 50 }
+con = { minimum = 0, current = 40, maximum = 40 }
+dex = { minimum = 0, current = 30, maximum = 30 }
+rap = { minimum = 0, current = 10, maximum = 10 }
+log = { minimum = 0, current = 20, maximum = 20 }
+vol = { minimum = 0, current = 40, maximum = 40 }
+per = { minimum = 0, current = 30, maximum = 30 }
+cha = { minimum = 0, current = 30, maximum = 30 }
+
+[sante.physique]
+superficiel.base = { minimum = 0, current = 8, maximum = 8 }
+leger.base = { minimum = 0, current = 17, maximum = 17 }
+grave.base = { minimum = 0, current = 22, maximum = 22 }
+profond.base = { minimum = 0, current = 27, maximum = 27 }
+
+[sante.mental]
+superficiel.base = { minimum = 0, current = 7, maximum = 7 }
+leger.base = { minimum = 0, current = 13, maximum = 13 }
+grave.base = { minimum = 0, current = 18, maximum = 18 }
+profond.base = { minimum = 0, current = 23, maximum = 23 }
+
+[protections.physiques.armure]
+nom = "Chaussures"
+couverture = "Pieds uniquement"
+reduction = { contre = [ "Tranchante", "Perforante" ], valeur = 5 }
+
+[protections.mentales.caractere]
+trait = "Calme"
+des = "-1d10"
+emotions = [ "Anxiété", "Peur", "Colère" ]
+
+[pistes]
+stress = 2
+
+[[formations]]
+nom = "Classe populaire"
+pourcentage = { minimum = 0, current = 20, maximum = 20 }
+
+[[formations]]
+nom = "Sécurité"
+pourcentage = { minimum = 0, current = 25, maximum = 25 }
+
+[[formations]]
+nom = "Loisirs"
+pourcentage = { minimum = 0, current = 15, maximum = 15 }
+
+[[competences]]
+nom = "Arme à feu"
+specialite = "Pistolet"
+caracteristique = "dex"
+pourcentage = { minimum = 0, current = 40, maximum = 40 }
+total = { minimum = 0, current = 70, maximum = 70 }
+
+[competences.degats]
+versant = "physique"
+profils = [ { des = "3d10" } ]
+proprietes = [ "Perforante", "Fatale 9+" ]
+munitions = "12"
+portee = "60 m"
+
+[[competences]]
+nom = "Art martial"
+specialite = "Judo"
+caracteristique = "dex"
+avantages = [ "Gestion du stress" ]
+pourcentage = { minimum = 0, current = 40, maximum = 40 }
+total = { minimum = 0, current = 80, maximum = 80 }
+
+[competences.degats]
+versant = "physique"
+profils = [ { des = "1d10" } ]
+proprietes = [ "Contondante" ]
+
+[[competences]]
+nom = "Arme sociale"
+specialite = "Communauté"
+caracteristique = "cha"
+pourcentage = { minimum = 0, current = 35, maximum = 35 }
+total = { minimum = 0, current = 65, maximum = 65 }
+
+[[competences]]
+nom = "Arme sociale"
+specialite = "Intimidation"
+caracteristique = "cha"
+avantages = [ "Bouclier personnel" ]
+pourcentage = { minimum = 0, current = 40, maximum = 40 }
+total = { minimum = 0, current = 70, maximum = 70 }
+
+[[competences]]
+nom = "Arme sociale"
+specialite = "Négociation"
+caracteristique = "cha"
+pourcentage = { minimum = 0, current = 35, maximum = 35 }
+total = { minimum = 0, current = 65, maximum = 65 }
+
+[[competences]]
+nom = "Discrétion"
+caracteristique = "dex"
+pourcentage = { minimum = 0, current = 30, maximum = 30 }
+total = { minimum = 0, current = 60, maximum = 60 }
+
+[[competences]]
+nom = "Étiquette"
+specialite = "Autorité"
+caracteristique = "vol"
+pourcentage = { minimum = 0, current = 35, maximum = 35 }
+total = { minimum = 0, current = 65, maximum = 65 }
+
+[[competences]]
+nom = "Observation"
+specialite = "Comportement"
+caracteristique = "per"
+pourcentage = { minimum = 0, current = 30, maximum = 30 }
+total = { minimum = 0, current = 60, maximum = 60 }
+
+[[competences]]
+nom = "Sport"
+specialite = "Athlétisme"
+caracteristique = "for"
+pourcentage = { minimum = 0, current = 25, maximum = 25 }
+total = { minimum = 0, current = 75, maximum = 75 }
+
+[[competences]]
+nom = "Sport"
+specialite = "Musculation"
+caracteristique = "for"
+pourcentage = { minimum = 0, current = 35, maximum = 35 }
+total = { minimum = 0, current = 85, maximum = 85 }
+
+[equipement]
+possessions = [ "Chaussures tactiques", "Uniforme de sécurité (Représentation)", "Pistolet", "Smartphone", "Talkie-walkie", "Menottes plastiques" ]

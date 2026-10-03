@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { ADRENALINE_VISUAL_CALLOUTS } from "../src/callouts.js";
 
 type Obj = Record<string, unknown>;
 type Target = "pj" | "pnj" | "monstre";
@@ -25,7 +26,39 @@ const FORMS = new Set([
   "compact-rows",
   "combat",
   "state-card",
+  "state-header",
+  "malus-tracks",
+  "inline-list",
+  "skill-lines",
+  "action-lines",
 ]);
+const BASE_TOKENS = [
+  "paper",
+  "card",
+  "ink",
+  "band",
+  "bandInk",
+  "sectionBand",
+  "rule",
+  "handwrittenInk",
+  "statusYellowBg",
+  "statusYellowInk",
+  "statusRedBg",
+  "statusRedInk",
+];
+const COMPACT_CARD_TOKENS = [
+  "bannerGarnet",
+  "bannerBlue",
+  "bannerOrange",
+  "bannerInk",
+  "triggerBg",
+  "triggerInk",
+  "diceBadgeBg",
+  "diceBadgeInk",
+];
+const CARDS = ["principal", "secondaire"];
+const CATEGORY_VARIANTS = new Set(["garnet", "blue", "orange"]);
+const ICON = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const PACK = JSON.parse(
   fs.readFileSync(path.join("handbook", "adrenaline", "pack.json"), "utf8"),
 ) as Obj;
@@ -118,25 +151,9 @@ function appearance(value: unknown, where: string): void {
       Object.hasOwn(declaredFonts, font as string),
       `${where} font ${font} is absent from the pack`,
     );
+  const compact = visual.surface === "compact-card";
   const tokens = obj(visual.tokens, `${where}.tokens`);
-  keys(
-    tokens,
-    [
-      "paper",
-      "card",
-      "ink",
-      "band",
-      "bandInk",
-      "sectionBand",
-      "rule",
-      "handwrittenInk",
-      "statusYellowBg",
-      "statusYellowInk",
-      "statusRedBg",
-      "statusRedInk",
-    ],
-    `${where}.tokens`,
-  );
+  keys(tokens, compact ? [...BASE_TOKENS, ...COMPACT_CARD_TOKENS] : BASE_TOKENS, `${where}.tokens`);
   const style = obj(pack.style, "pack.style");
   for (const token of Object.values(tokens)) {
     assert.match(token as string, /^--[a-z0-9-]+$/, `${where} token is unsafe`);
@@ -154,13 +171,24 @@ function appearance(value: unknown, where: string): void {
         );
     }
   }
-  assert.deepEqual(visual.sectionTitles, { align: "center", font: "heading" });
-  assert.deepEqual(visual.values, {
-    align: "end",
-    font: "handwritten",
-    color: "handwrittenInk",
-    renderMaximum: false,
-  });
+  // The paper sheet is handwritten flush right; the compact card is typeset after its label.
+  if (compact) {
+    assert.deepEqual(visual.sectionTitles, { align: "start", font: "heading" });
+    assert.deepEqual(visual.values, {
+      align: "start",
+      font: "body",
+      color: "ink",
+      renderMaximum: false,
+    });
+  } else {
+    assert.deepEqual(visual.sectionTitles, { align: "center", font: "heading" });
+    assert.deepEqual(visual.values, {
+      align: "end",
+      font: "handwritten",
+      color: "handwrittenInk",
+      renderMaximum: false,
+    });
+  }
 }
 
 function decoration(value: unknown, where: string): void {
@@ -192,8 +220,38 @@ function decoration(value: unknown, where: string): void {
       assert.equal(rule.physical, "PP");
       assert.equal(rule.mental, "PM");
       break;
+    case "malus-tracks":
+      keys(rule, ["kind", "length", "stressDefault"], where);
+      assert.equal(rule.length, 10);
+      assert.equal(rule.stressDefault, 2);
+      break;
     default:
       assert.fail(`${where} decoration is unknown`);
+  }
+}
+
+function categories(schema: Obj, value: unknown, where: string): void {
+  const rule = obj(value, where);
+  keys(
+    rule,
+    ["path", "fallbackLabel", "defaultVariant", "defaultIcon", "variants", "icons"],
+    where,
+  );
+  assert.equal(rule.path, "/categorie", `${where}.path must read the category`);
+  nodeAt(schema, rule.path, `${where}.path`);
+  assert.ok(
+    typeof rule.fallbackLabel === "string" && rule.fallbackLabel.length > 0,
+    `${where}.fallbackLabel must be text`,
+  );
+  assert.ok(CATEGORY_VARIANTS.has(rule.defaultVariant as string), `${where}.defaultVariant`);
+  assert.match(String(rule.defaultIcon), ICON, `${where}.defaultIcon`);
+  for (const [name, variant] of Object.entries(obj(rule.variants, `${where}.variants`))) {
+    assert.ok(name.length > 0, `${where}.variants names must be text`);
+    assert.ok(CATEGORY_VARIANTS.has(variant as string), `${where}.variants.${name}`);
+  }
+  for (const [name, icon] of Object.entries(obj(rule.icons, `${where}.icons`))) {
+    assert.ok(name.length > 0, `${where}.icons names must be text`);
+    assert.match(String(icon), ICON, `${where}.icons.${name}`);
   }
 }
 
@@ -218,7 +276,16 @@ export function validatePresentation(source: unknown, target: Target): void {
   const descriptor = obj(schema[EXTENSION], `${target}.${EXTENSION}`);
   keys(
     descriptor,
-    ["version", "capability", "sheet", "appearance", "values", "sections", "hiddenPaths"],
+    [
+      "version",
+      "capability",
+      "sheet",
+      "appearance",
+      ...(descriptor.categories === undefined ? [] : ["categories"]),
+      "values",
+      "sections",
+      "hiddenPaths",
+    ],
     EXTENSION,
   );
   assert.equal(descriptor.version, 1);
@@ -228,6 +295,8 @@ export function validatePresentation(source: unknown, target: Target): void {
   assert.equal(sheet.id, `adrenaline-${target}`);
   assert.ok(typeof sheet.label === "string" && sheet.label.length > 0);
   appearance(descriptor.appearance, `${target}.appearance`);
+  if (descriptor.categories !== undefined)
+    categories(schema, descriptor.categories, `${target}.categories`);
   const values = obj(descriptor.values, `${target}.values`);
   keys(values, ["editorBounds", "range"], `${target}.values`);
   assert.equal(values.editorBounds, "json-schema");
@@ -254,12 +323,35 @@ export function validatePresentation(source: unknown, target: Target): void {
         ...(section.columns === undefined ? [] : ["columns"]),
         ...(section.showTitle === undefined ? [] : ["showTitle"]),
         ...(section.row === undefined ? [] : ["row"]),
+        ...(section.collapsible === undefined ? [] : ["collapsible"]),
+        ...(section.labelFrom === undefined ? [] : ["labelFrom"]),
+        ...(section.cards === undefined ? [] : ["cards"]),
         "blocks",
       ],
       where,
     );
     layout(section, where);
     if (section.showTitle !== undefined) assert.equal(typeof section.showTitle, "boolean");
+    if (section.collapsible !== undefined)
+      assert.equal(section.collapsible, true, `${where}.collapsible is either true or absent`);
+    // The label value is a visible path: it counts once, like a block path.
+    if (section.labelFrom !== undefined) {
+      coverage.add(nodeAt(schema, section.labelFrom, `${where}.labelFrom`).root);
+      usedPaths.push(section.labelFrom as string);
+    }
+    if (section.cards !== undefined) {
+      assert.equal(target, "monstre", `${where}.cards belongs to the creature card`);
+      assert.ok(
+        Array.isArray(section.cards) && section.cards.length > 0,
+        `${where}.cards must not be empty`,
+      );
+      assert.ok(
+        section.cards.every((card: unknown) => CARDS.includes(card as string)),
+        `${where}.cards names an unknown card`,
+      );
+      assert.equal(new Set(section.cards).size, section.cards.length, `${where}.cards repeat`);
+      assert.ok(section.collapsible === undefined, `${where} cannot fold inside a card`);
+    }
     if (section.row !== undefined) {
       const row = obj(section.row, `${where}.row`);
       keys(row, ["id", "span"], `${where}.row`);
@@ -413,6 +505,12 @@ export function validatePresentation(source: unknown, target: Target): void {
         );
       }
       if (block.decoration !== undefined) decoration(block.decoration, `${blockWhere}.decoration`);
+      const tracks = block.decoration !== undefined && obj(block.decoration, blockWhere).kind;
+      if (block.form === "malus-tracks" || tracks === "malus-tracks")
+        assert.ok(
+          block.form === "malus-tracks" && tracks === "malus-tracks",
+          `${blockWhere} malus tracks need both their form and their decoration`,
+        );
       assert.ok(
         Array.isArray(block.paths) && block.paths.length > 0,
         `${blockWhere}.paths must not be empty`,
@@ -508,6 +606,60 @@ for (const target of TARGETS) {
   console.log(`✓ ${target}: presentation descriptor valid`);
 }
 
+const CALLOUT_ID = /^adrenaline-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CALLOUT_WORD = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CALLOUT_CONTRACT = path.join("handbook", "adrenaline", "callout-contract.md");
+const CALLOUT_EXAMPLE = path.join("handbook", "adrenaline", "callouts-example.md");
+
+/* The callout list is the Markdown syntax authors type: every alias must stay unique across
+   entries, every capability must be one the pack requires, and both published notes must
+   name every id and alias — otherwise a consumer would offer a callout nobody documented. */
+function validateCallouts(callouts: readonly Obj[], contract: string, example: string): void {
+  const requires = PACK.requires as string[];
+  const ids = new Set<string>();
+  const aliases = new Set<string>();
+  for (const callout of callouts) {
+    keys(callout, ["id", "label", "aliases", "template", "capability", "modifiers"], "callout");
+    const id = String(callout.id);
+    assert.match(id, CALLOUT_ID, `callout id ${id}`);
+    assert.ok(!ids.has(id), `duplicate callout id ${id}`);
+    ids.add(id);
+    assert.ok(String(callout.label).trim().length > 0, `${id}.label must be text`);
+    assert.ok(["title-body", "body-only"].includes(String(callout.template)), `${id}.template`);
+    assert.ok(
+      requires.includes(String(callout.capability)),
+      `${id}.capability not required by the pack`,
+    );
+    assert.ok(contract.includes(`\`${id}\``), `${id} missing from callout-contract.md`);
+    const names = callout.aliases as string[];
+    assert.ok(Array.isArray(names) && names.length > 0, `${id}.aliases must not be empty`);
+    for (const alias of names) {
+      assert.match(alias, CALLOUT_WORD, `${id} alias ${alias}`);
+      assert.ok(!aliases.has(alias), `alias ${alias} used twice`);
+      aliases.add(alias);
+      assert.ok(
+        contract.includes(`\`${alias}\``),
+        `alias ${alias} missing from callout-contract.md`,
+      );
+    }
+    assert.ok(example.includes(`> [!${names[0]}`), `${id} has no example in callouts-example.md`);
+    for (const modifier of callout.modifiers as Obj[]) {
+      keys(modifier, ["id", "label"], `${id}.modifier`);
+      assert.match(String(modifier.id), CALLOUT_WORD, `${id} modifier`);
+      assert.ok(
+        example.includes(`> [!${names[0]}|${String(modifier.id)}]`),
+        `${id}|${String(modifier.id)} has no example in callouts-example.md`,
+      );
+    }
+  }
+}
+
+const calloutSource = ADRENALINE_VISUAL_CALLOUTS as unknown as readonly Obj[];
+const calloutContract = fs.readFileSync(CALLOUT_CONTRACT, "utf8");
+const calloutExample = fs.readFileSync(CALLOUT_EXAMPLE, "utf8");
+validateCallouts(calloutSource, calloutContract, calloutExample);
+console.log(`✓ callouts: ${calloutSource.length} visual callouts documented`);
+
 if (process.argv.includes("--self-test")) {
   const source = schemas.get("pj");
   assert.ok(source);
@@ -551,5 +703,44 @@ if (process.argv.includes("--self-test")) {
     for (const block of section.blocks as Obj[])
       if (block.formationTypes) (block.formationTypes as string[]).pop();
   assert.throws(() => validatePresentation(missingType, "pj"));
+  const monster = schemas.get("monstre");
+  assert.ok(monster);
+  const unknownCard = clone(monster);
+  for (const section of sectionsOf(unknownCard))
+    if (section.cards) (section.cards as string[]).push("tertiaire");
+  assert.throws(() => validatePresentation(unknownCard, "monstre"));
+  const labelTwice = clone(monster);
+  for (const section of sectionsOf(labelTwice))
+    if (section.labelFrom) section.labelFrom = "/caracteristiques";
+  assert.throws(() => validatePresentation(labelTwice, "monstre"));
+  const wrongVariant = clone(monster);
+  obj(obj(wrongVariant[EXTENSION], EXTENSION).categories, "categories").defaultVariant = "pink";
+  assert.throws(() => validatePresentation(wrongVariant, "monstre"));
+  const npc = schemas.get("pnj");
+  assert.ok(npc);
+  const bareTracks = clone(npc);
+  for (const section of sectionsOf(bareTracks))
+    for (const block of section.blocks as Obj[])
+      if (block.form === "malus-tracks") delete block.decoration;
+  assert.throws(() => validatePresentation(bareTracks, "pnj"));
+  const cardsOnNpc = clone(npc);
+  sectionsOf(cardsOnNpc)[1].cards = ["principal"];
+  assert.throws(() => validatePresentation(cardsOnNpc, "pnj"));
+  const handwrittenCard = clone(npc);
+  obj(obj(handwrittenCard[EXTENSION], EXTENSION).appearance, "appearance").values = {
+    align: "end",
+    font: "handwritten",
+    color: "handwrittenInk",
+    renderMaximum: false,
+  };
+  assert.throws(() => validatePresentation(handwrittenCard, "pnj"));
+  const twiceAliased = clone(calloutSource as unknown as Obj) as unknown as Obj[];
+  (twiceAliased[1].aliases as string[]).push((twiceAliased[0].aliases as string[])[0]);
+  assert.throws(() => validateCallouts(twiceAliased, calloutContract, calloutExample));
+  const foreignCapability = clone(calloutSource as unknown as Obj) as unknown as Obj[];
+  foreignCapability[0].capability = "style:pbta";
+  assert.throws(() => validateCallouts(foreignCapability, calloutContract, calloutExample));
+  const undocumented = calloutContract.replace("`adrenaline-encart`", "encart");
+  assert.throws(() => validateCallouts(calloutSource, undocumented, calloutExample));
   console.log("✓ presentation validator self-test passed");
 }

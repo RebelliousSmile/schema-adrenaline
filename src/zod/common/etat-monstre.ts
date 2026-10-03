@@ -5,7 +5,7 @@ import { Contagion } from "./contagion.js";
 import { Equipement } from "./equipement.js";
 import { Competence } from "./formations.js";
 import { Compte } from "./primitives.js";
-import { Protections } from "./protections.js";
+import { ProtectionsAbregees } from "./protections.js";
 import { SanteDeCreature } from "./sante.js";
 
 /** Caractéristiques permanentes d'une créature : physiques requises, mentales facultatives. */
@@ -14,6 +14,24 @@ export const CaracteristiquesDeCreature = CaracteristiquesPhysiques.extend(
 ).meta({
   description:
     "Caractéristiques d'une créature : les quatre physiques toujours, les mentales seulement si elle en a.",
+});
+
+/**
+ * États permanents imprimés dans la zone Santé d'une créature (`Insensible`).
+ * Chaînes libres : le catalogue des états est éditorial.
+ */
+export const EtatsPermanents = z
+  .array(z.string().min(1).meta({ description: "Un état permanent." }))
+  .min(1)
+  .meta({
+    description: "États permanents imprimés dans la zone Santé.",
+    examples: [["Insensible"]],
+  });
+
+/** Nombre de malus imprimé avant « HS » dans la zone Santé, tel que saisi. */
+export const MalusAvantHs = Compte.meta({
+  description: "Nombre de malus imprimé avant HS dans la zone Santé, tel que saisi.",
+  examples: [3],
 });
 
 /** Les remplacements complets appliqués par un état identifié de créature. */
@@ -25,8 +43,14 @@ export const DeltaEtatDeCreature = z
     sante: SanteDeCreature.optional().meta({
       description: "Santé complète qui remplace celle de l'état de base.",
     }),
-    protections: Protections.partial().optional().meta({
+    protections: ProtectionsAbregees.optional().meta({
       description: "Protections qui remplacent celles de l'état de base.",
+    }),
+    etatsPermanents: EtatsPermanents.optional().meta({
+      description: "États permanents qui remplacent ceux de l'état de base.",
+    }),
+    malusAvantHs: MalusAvantHs.optional().meta({
+      description: "Malus avant hors de combat qui remplace celui de l'état de base.",
     }),
     defense: DefenseDeCreature.optional().meta({
       description: "Défense qui remplace celle de l'état de base.",

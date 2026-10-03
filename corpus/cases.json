@@ -273,6 +273,24 @@
       "expect": "accept"
     },
     {
+      "path": "examples/adrenaline/pnj/agent-de-securite.toml",
+      "target": "pnj",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "examples/adrenaline/monstre/infecte-zy-2.toml",
+      "target": "monstre",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/contract/valid/monstre-etat-alternatif-historique.toml",
+      "target": "monstre",
+      "format": "toml",
+      "expect": "accept"
+    },
+    {
       "path": "corpus/contract/valid/pnj-syntax-edge-values.toml",
       "target": "pnj",
       "format": "toml",

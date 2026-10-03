@@ -1,14 +1,20 @@
 import { z } from "zod";
 import { PNJ_PRESENTATION } from "../../presentation.js";
 import { Caracteristiques } from "../common/caracteristiques.js";
-import { NiveauDeDanger } from "../common/danger.js";
+import { Categorie } from "../common/categorie.js";
+import {
+  NiveauDeDanger,
+  NiveauDeDangerAlternatif,
+  NoteDeNiveauDeDanger,
+} from "../common/danger.js";
 import { Equipement } from "../common/equipement.js";
 import { EtatDePartie } from "../common/etat-de-partie.js";
 import { Competence, Formation } from "../common/formations.js";
 import { Identite } from "../common/identite.js";
 import { Meta } from "../common/meta.js";
 import { Narratif } from "../common/narratif.js";
-import { Protections } from "../common/protections.js";
+import { Compte } from "../common/primitives.js";
+import { ProtectionsAbregees } from "../common/protections.js";
 import { Sante } from "../common/sante.js";
 
 /**
@@ -36,7 +42,10 @@ export const PersonnageNonJoue = z
         description: "Nom ou rôle, tel qu'il est écrit en en-tête de la fiche.",
         examples: ["Sœur Madeleine", "Le gardien du dépôt"],
       }),
+    categorie: Categorie.optional(),
     niveauDeDanger: NiveauDeDanger.optional(),
+    niveauDeDangerAlternatif: NiveauDeDangerAlternatif.optional(),
+    niveauDeDangerNote: NoteDeNiveauDeDanger.optional(),
     description: z.string().min(1).optional().meta({
       description:
         "Le paragraphe de présentation, tel qu'il est lu à la table : silhouette, allure, ce qu'on perçoit au premier regard.",
@@ -52,10 +61,28 @@ export const PersonnageNonJoue = z
       description:
         "Bloc Santé. Absent ou complet : les fiches publiées portent leurs quatre seuils de chaque côté dès qu'elles en portent un.",
     }),
-    protections: Protections.partial().optional().meta({
+    protections: ProtectionsAbregees.optional().meta({
       description:
-        "Protections, chaque versant facultatif : une fiche peut ne chiffrer que le physique.",
+        "Protections, chaque versant et chaque champ facultatif : une fiche de PNJ n'imprime pas la Solidité.",
     }),
+    pistes: z
+      .strictObject({
+        stress: Compte.optional().meta({
+          description: "Nombre de cercles de stress imprimés en gras, tel que saisi.",
+          examples: [2],
+        }),
+        malusChoquants: Compte.optional().meta({
+          description: "Nombre de cercles de malus choquants imprimés en gras, tel que saisi.",
+        }),
+        malusBlessants: Compte.optional().meta({
+          description: "Nombre de cercles de malus blessants imprimés en gras, tel que saisi.",
+        }),
+      })
+      .optional()
+      .meta({
+        description:
+          "Pistes de stress et de malus imprimées sous la santé : nombre de cercles en gras. Rien n'y est calculé.",
+      }),
     formations: z.array(Formation).optional().meta({
       description:
         "Formations, quand la fiche les nomme. Souvent absentes : la fiche de PNJ liste plus volontiers les compétences seules.",

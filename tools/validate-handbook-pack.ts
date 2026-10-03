@@ -350,6 +350,48 @@ export function validateHandbookPack(
       "--adrenaline-callout-cartouche-ink",
       "--adrenaline-callout-cartouche-bg",
     );
+    // Zombiology callouts, headings and inline marks (issue #40).
+    requireContrast(note, "--adrenaline-band-ink", "--adrenaline-band");
+    requireContrast(note, "--adrenaline-callout-ink", "--adrenaline-card-surface");
+    requireContrast(note, "--adrenaline-callout-ink", "--adrenaline-formation-surface");
+    requireContrast(note, "--adrenaline-emphasis-color", "--adrenaline-formation-surface");
+    requireContrast(note, "--adrenaline-action-title-ink", "--adrenaline-action-title-bg");
+    requireContrast(note, "--adrenaline-result-success-ink", "--adrenaline-result-success-bg");
+    requireContrast(note, "--adrenaline-result-failure-ink", "--adrenaline-result-failure-bg");
+    // Compact PNJ and monster cards (issues #41 and #42).
+    for (const banner of [
+      "--adrenaline-banner-garnet",
+      "--adrenaline-banner-blue",
+      "--adrenaline-banner-orange",
+    ]) {
+      requireContrast(note, "--adrenaline-banner-ink", banner);
+    }
+    requireContrast(note, "--adrenaline-trigger-ink", "--adrenaline-trigger-bg");
+    requireContrast(note, "--adrenaline-dice-badge-ink", "--adrenaline-dice-badge-bg");
+    requireContrast(note, "--h4-color", "--background-primary");
+    requireContrast(note, "--h5-color", "--background-primary");
+    requireContrast(note, "--adrenaline-keyword-color", "--background-primary");
+    // Scenario booklet page styles: headings, bold, inline code, description, note and tip.
+    requireContrast(note, "--h2-color", "--background-primary");
+    requireContrast(note, "--h3-color", "--adrenaline-h3-band");
+    requireContrast(note, "--bold-color", "--background-primary");
+    requireContrast(note, "--adrenaline-inline-code-color", "--background-primary");
+    requireContrast(
+      note,
+      "--adrenaline-description-label-ink",
+      "--adrenaline-description-label-bg",
+    );
+    requireContrast(note, "--adrenaline-note-ink", "--adrenaline-note-surface");
+    requireContrast(note, "--adrenaline-callout-tip-ink", "--adrenaline-callout-tip");
+    // Rules and borders: non-text UI, WCAG 1.4.11 threshold.
+    requireContrast(note, "--adrenaline-h2-rule", "--background-primary", 3);
+    requireContrast(note, "--adrenaline-h3-rule", "--background-primary", 3);
+    requireContrast(note, "--adrenaline-description-rule", "--background-primary", 3);
+    requireContrast(note, "--adrenaline-callout-tip-border", "--background-primary", 3);
+    requireContrast(note, "--list-marker-color", "--background-primary", 3);
+    requireContrast(note, "--adrenaline-h4-rule", "--background-primary", 3);
+    requireContrast(note, "--adrenaline-example-rule", "--background-primary", 3);
+    requireContrast(note, "--adrenaline-action-border", "--background-primary", 3);
     requireStrongerHoverContrast(
       note,
       "--link-color",
@@ -423,6 +465,13 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   const contrastLight = record(contrastStyle.light, "light");
   record(contrastLight.note, "note")["--text-normal"] = "#F4F0E8";
 
+  /* The dark layer, so the self-test also proves the second polarity is read. */
+  const lowCalloutContrast = clone(packSource) as RecordValue;
+  const calloutPack = record(lowCalloutContrast.pack, "pack");
+  const calloutStyle = record(calloutPack.style, "style");
+  const calloutDark = record(calloutStyle.dark, "dark");
+  record(calloutDark.note, "note")["--adrenaline-action-title-ink"] = "#6B4A3C";
+
   const weakLinkHover = clone(packSource) as RecordValue;
   const weakLinkPack = record(weakLinkHover.pack, "pack");
   const weakLinkStyle = record(weakLinkPack.style, "style");
@@ -459,6 +508,7 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   refused("missing asset", () => validateHandbookPack(missing));
   refused("unsafe token", () => validateHandbookPack(unsafe));
   refused("low contrast", () => validateHandbookPack(lowContrast));
+  refused("low callout contrast", () => validateHandbookPack(lowCalloutContrast));
   refused("link hover weaker than rest", () => validateHandbookPack(weakLinkHover));
   refused("missing note token", () => validateHandbookPack(missingNoteToken));
   refused("texture token in workspace", () => validateHandbookPack(workspaceTexture));

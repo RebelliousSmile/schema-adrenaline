@@ -18,4 +18,22 @@ export const NiveauDeDanger = Compte.meta({
   examples: [1, 3, 8],
 });
 
+/**
+ * Un second ND, quand la fiche en imprime deux (`ND 13* / 3`). L'entier principal
+ * reste `niveauDeDanger` : un consommateur qui ne lit que lui garde une valeur.
+ */
+export const NiveauDeDangerAlternatif = Compte.meta({
+  description: "Second ND imprimé après une barre oblique, quand la fiche en donne deux.",
+  examples: [3],
+});
+
+/** La note qui explique un ND alternatif ou conditionnel. */
+export const NoteDeNiveauDeDanger = z
+  .string()
+  .min(1)
+  .meta({
+    description: "Précision imprimée sur le ND, appelée par un astérisque.",
+    examples: ["13 s'il a son arc, sinon 3"],
+  });
+
 export type NiveauDeDangerValeur = z.infer<typeof NiveauDeDanger>;

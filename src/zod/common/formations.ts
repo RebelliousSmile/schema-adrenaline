@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Degats } from "./degats.js";
 import { PourcentageJouable } from "./primitives.js";
 
 /**
@@ -56,6 +57,18 @@ export const Competence = z
         "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
       examples: [{ minimum: 0, current: 50, maximum: 50 }],
     }),
+    degats: Degats.optional().meta({
+      description:
+        "Ligne d'arme de la compétence : dégâts, munitions et portée, imprimés sous elle sans retrait.",
+    }),
+    action: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description: "Ligne d'action libre imprimée sous la compétence, précédée de « Action : ».",
+        examples: ["Charger, puis renverser sa cible"],
+      }),
     avantages: z
       .array(z.string().min(1).meta({ description: "Un avantage, en une ligne." }))
       .optional()

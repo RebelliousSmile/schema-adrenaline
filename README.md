@@ -10,7 +10,8 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-This source declares `schema-adrenaline@3.0.0` and schema baseline `3.0.0`.
+This source declares `schema-adrenaline@3.1.0` and schema baseline `3.1.0`
+(additive to contract 3).
 Consumers should pin a published release archive rather than the moving branch.
 Three character schemas live under the `adrenaline` folder, each covered by
 JSON and TOML examples and a shared conformance corpus.
@@ -169,7 +170,7 @@ Install the immutable GitHub Release asset directly. npm records this complete
 URL and its SHA-512 SRI integrity in the consumer lockfile:
 
 ```sh
-npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v3.0.0/schema-adrenaline-3.0.0.tgz
+npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v3.1.0/schema-adrenaline-3.1.0.tgz
 ```
 
 ### Types and codecs (TypeScript apps)

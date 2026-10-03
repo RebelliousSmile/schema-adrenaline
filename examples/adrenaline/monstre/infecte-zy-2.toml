@@ -1,0 +1,103 @@
+# Carte de créature à deux états, d'après le Livret PNJ et animaux de Zombiology.
+# La grande carte imprime l'état `stimule` (`etatPrincipal`), la petite l'état
+# de base. Chaque valeur est saisie telle qu'imprimée : rien n'est déduit.
+nom = "Infecté Zy-2"
+categorie = "Zombie"
+typeInfecte = "Infecté Zy"
+instinct = "Rôdeur"
+typeDeCorps = "Corps faible"
+niveauDeDanger = 6
+description = "Un corps décharné aux vêtements en lambeaux, qui erre la bouche entrouverte tant que rien ne l'éveille."
+zoneDeDetection = "3 m"
+deplacement = "2 m"
+actionsParRound = 1
+etatsPermanents = [ "Insensible" ]
+etatPrincipal = "stimule"
+comportement = [ "Erre au hasard tant qu'il ne détecte aucune proie.", "Se rue sur la première proie détectée." ]
+
+[etatDeBase]
+nom = "Non stimulé"
+declencheurs = [ "1d10 min consécutives sans détecter de proie" ]
+
+[caracteristiques]
+for = { minimum = 0, current = 20, maximum = 20 }
+con = { minimum = 0, current = 30, maximum = 30 }
+dex = { minimum = 0, current = 30, maximum = 30 }
+rap = { minimum = 0, current = 20, maximum = 20 }
+per = { minimum = 0, current = 30, maximum = 30 }
+
+[sante.physique]
+superficiel.base = { minimum = 0, current = 4, maximum = 4 }
+leger.base = { minimum = 0, current = 9, maximum = 9 }
+grave.base = { minimum = 0, current = 14, maximum = 14 }
+profond.base = { minimum = 0, current = 19, maximum = 19 }
+
+[defense]
+niveau = "non"
+bonus = 4
+
+[equipement]
+possessions = [ "Vêtements déchirés et souillés" ]
+
+[contagion]
+agent = "Virus Y"
+
+[[etats]]
+id = "stimule"
+nom = "Stimulé"
+declencheurs = [ "Une proie détectée" ]
+
+[etats.delta]
+zoneDeDetection = "2 m"
+deplacement = "3 m"
+actionsParRound = 2
+malusAvantHs = 3
+
+[etats.delta.sante.physique]
+superficiel.base = { minimum = 0, current = 5, maximum = 5 }
+leger.base = { minimum = 0, current = 10, maximum = 10 }
+grave.base = { minimum = 0, current = 15, maximum = 15 }
+profond.base = { minimum = 0, current = 20, maximum = 20 }
+
+[[etats.delta.actions]]
+conditions = [ "Attaque gratuite PREMIÈRE FOIS" ]
+
+[etats.delta.actions.test]
+nom = "Arme psychologique"
+specialite = "Dégoût zombie"
+pourcentage = { minimum = 0, current = 50, maximum = 50 }
+
+[etats.delta.actions.degats]
+versant = "mental"
+liant = "ou"
+profils = [ { des = "1d10", nature = "choquante" }, { des = "2d10", nature = "choquante", condition = "si la cible est au contact" } ]
+proprietes = [ "Étourdissante", "Localisée (Peur)", "Fatale 9+" ]
+
+[[etats.delta.actions.suites]]
+effets = [ "Saisit sa cible et tente de la mordre." ]
+
+[etats.delta.actions.suites.test]
+nom = "Art martial"
+specialite = "Zombie"
+caracteristique = "for"
+pourcentage = { minimum = 0, current = 10, maximum = 10 }
+total = { minimum = 0, current = 40, maximum = 40 }
+
+[etats.delta.actions.suites.degats]
+versant = "physique"
+profils = [ { des = "1d10", nature = "blessante" } ]
+
+[[etats.delta.actions.suites]]
+notes = "Projette sa bave au visage de la cible."
+
+[etats.delta.actions.suites.test]
+nom = "Bave"
+specialite = "Infection respiratoire"
+pourcentage = { minimum = 0, current = 35, maximum = 35 }
+
+[[etats.delta.actions]]
+
+[etats.delta.actions.test]
+nom = "Observation"
+specialite = "Proie"
+pourcentage = { minimum = 0, current = 40, maximum = 40 }

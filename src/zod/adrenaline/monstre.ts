@@ -2,19 +2,25 @@ import { z } from "zod";
 import { MONSTRE_PRESENTATION } from "../../presentation.js";
 import { ActionDeCreature, DefenseDeCreature } from "../common/combat.js";
 import { Contagion } from "../common/contagion.js";
-import { NiveauDeDanger } from "../common/danger.js";
+import { Categorie } from "../common/categorie.js";
+import {
+  NiveauDeDanger,
+  NiveauDeDangerAlternatif,
+  NoteDeNiveauDeDanger,
+} from "../common/danger.js";
 import { Equipement } from "../common/equipement.js";
 import {
   CaracteristiquesDeCreature,
-  DeltaEtatDeCreature,
   EtatDeCreature,
+  EtatsPermanents,
+  MalusAvantHs,
 } from "../common/etat-monstre.js";
 import { EtatDePartie } from "../common/etat-de-partie.js";
 import { Competence } from "../common/formations.js";
 import { Meta } from "../common/meta.js";
 import { Narratif } from "../common/narratif.js";
 import { Compte } from "../common/primitives.js";
-import { Protections } from "../common/protections.js";
+import { ProtectionsAbregees } from "../common/protections.js";
 import { SanteDeCreature } from "../common/sante.js";
 
 /** Ancien état alternatif, lu pour compatibilité puis normalisé par les codecs. */
@@ -79,6 +85,7 @@ export const Monstre = z
           "Nom de la créature. Champ local et non bloc identité : elle n'a ni nationalité ni signes particuliers.",
         examples: ["Zé lent", "Traqueur"],
       }),
+    categorie: Categorie.optional(),
     typeDeCorps: z
       .string()
       .min(1)
@@ -108,13 +115,17 @@ export const Monstre = z
       description: "Ce qu'on perçoit de la créature au premier regard.",
     }),
     niveauDeDanger: NiveauDeDanger.optional(),
+    niveauDeDangerAlternatif: NiveauDeDangerAlternatif.optional(),
+    niveauDeDangerNote: NoteDeNiveauDeDanger.optional(),
     caracteristiques: CaracteristiquesDeCreature,
     sante: SanteDeCreature.optional().meta({
       description:
         "Seuils de dégât. Les mentaux n'ont de sens que si la créature a des caractéristiques mentales.",
     }),
-    protections: Protections.partial().optional().meta({
-      description: "Protections, chaque versant facultatif.",
+    etatsPermanents: EtatsPermanents.optional(),
+    malusAvantHs: MalusAvantHs.optional(),
+    protections: ProtectionsAbregees.optional().meta({
+      description: "Protections, chaque versant et chaque champ facultatif.",
     }),
     zoneDeDetection: z
       .string()
@@ -142,6 +153,33 @@ export const Monstre = z
     actions: z.array(ActionDeCreature).optional().meta({
       description: "Actions de combat ou capacités propres à la créature.",
     }),
+    etatDeBase: z
+      .strictObject({
+        nom: z
+          .string()
+          .min(1)
+          .meta({
+            description: "Nom imprimé sur la carte de l'état de base.",
+            examples: ["Non stimulé"],
+          }),
+        declencheurs: z
+          .array(z.string().min(1).meta({ description: "Un déclencheur ou une condition de fin." }))
+          .optional()
+          .meta({ description: "Ce qui ramène la créature à son état de base." }),
+      })
+      .optional()
+      .meta({
+        description: "Nom et déclencheurs de l'état de base, imprimés en tête de sa carte.",
+      }),
+    etatPrincipal: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description:
+          "Identifiant de l'état imprimé sur la grande carte. Absent : la grande carte est l'état de base.",
+        examples: ["stimule"],
+      }),
     etatActif: z.string().min(1).optional().meta({
       description:
         "Identifiant de l'état actuellement actif. Absent ou `base` désigne le profil de base.",

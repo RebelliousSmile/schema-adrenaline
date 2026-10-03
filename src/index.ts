@@ -4,6 +4,8 @@ export {
   ADRENALINE_TOML_VERSION,
 } from "./contract-version.js";
 export { MONSTRE_PRESENTATION, PJ_PRESENTATION, PNJ_PRESENTATION } from "./presentation.js";
+export { ADRENALINE_VISUAL_CALLOUTS } from "./callouts.js";
+export type { AdrenalineVisualCallout } from "./callouts.js";
 export type {
   AdrenalinePresentation,
   AdrenalinePresentationAppearance,

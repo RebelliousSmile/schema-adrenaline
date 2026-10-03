@@ -1,5 +1,4 @@
 nom = "Rôdeur"
-categorie = "Zombie"
 typeDeCorps = "adulte moyen"
 instinct = "traque au bruit"
 typeInfecte = "première génération"
@@ -61,23 +60,23 @@ minimum = 0
 current = 5
 maximum = 5
 
-[[etats]]
-id = "stimule"
-nom = "Stimulé"
+[etatAlternatif]
+nom = "stimulé"
 declencheurs = [ "Un cri, un coup de feu ou une lumière vive à portée de détection.", "Retombe à l'état de base après deux rounds sans nouveau stimulus." ]
-
-[etats.delta]
 zoneDeDetection = "30 m au bruit"
 deplacement = "12 m par action"
 actionsParRound = 2
-notes = "Ce qui n'est pas redéclaré ici reste celui de l'état de base ; une propriété redéclarée remplace la sienne entière."
+notes = "Ce qui n'est pas redéclaré ici reste celui de l'état de base."
 
-[etats.delta.caracteristiques]
-for = { minimum = 0, current = 45, maximum = 45 }
-con = { minimum = 0, current = 60, maximum = 60 }
-dex = { minimum = 0, current = 25, maximum = 25 }
-rap = { minimum = 0, current = 55, maximum = 55 }
-per = { minimum = 0, current = 55, maximum = 55 }
+[etatAlternatif.caracteristiques.rap]
+minimum = 0
+current = 55
+maximum = 55
+
+[etatAlternatif.caracteristiques.per]
+minimum = 0
+current = 55
+maximum = 55
 
 [contagion]
 agent = "agent viral de première génération"
@@ -104,7 +103,7 @@ profil = "personne âgée"
 issue = "Meurt souvent sans se relever."
 
 [defense]
-niveau = "non"
+active = false
 bonus = 4
 
 [[actions]]

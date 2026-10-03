@@ -24,7 +24,12 @@ export type AdrenalinePresentationForm =
   | "narrative"
   | "compact-rows"
   | "combat"
-  | "state-card";
+  | "state-card"
+  | "state-header"
+  | "malus-tracks"
+  | "inline-list"
+  | "skill-lines"
+  | "action-lines";
 
 export type AdrenalinePresentationDecoration =
   | {
@@ -38,34 +43,70 @@ export type AdrenalinePresentationDecoration =
     }
   | { kind: "scale"; from: 1; to: 10 }
   | { kind: "weapon-die"; label: "d10" }
-  | { kind: "protection-units"; physical: "PP"; mental: "PM" };
+  | { kind: "protection-units"; physical: "PP"; mental: "PM" }
+  /**
+   * Stress and malus tracks of a compact card: `length` circles per track, the
+   * first `stressDefault` stress circles bold when the document gives no count.
+   */
+  | { kind: "malus-tracks"; length: 10; stressDefault: 2 };
 
-export type AdrenalinePresentationAppearance = {
-  variant: "zombiology";
-  surface: "paper-sheet" | "compact-card";
-  outerRule: true;
-  fonts: {
-    body: "Adrenaline Body";
-    heading: "Adrenaline Display";
-    handwritten: "Adrenaline Handwriting";
-  };
-  tokens: {
-    paper: "--background-primary";
-    card: "--adrenaline-card-surface";
-    ink: "--text-normal";
-    band: "--adrenaline-band";
-    bandInk: "--adrenaline-band-ink";
-    sectionBand: "--adrenaline-section-band";
-    rule: "--adrenaline-rule";
-    handwrittenInk: "--adrenaline-handwritten-ink";
-    statusYellowBg: "--adrenaline-status-yellow-bg";
-    statusYellowInk: "--adrenaline-status-yellow-ink";
-    statusRedBg: "--adrenaline-status-red-bg";
-    statusRedInk: "--adrenaline-status-red-ink";
-  };
-  sectionTitles: { align: "center"; font: "heading" };
-  values: { align: "end"; font: "handwritten"; color: "handwrittenInk"; renderMaximum: false };
+type AdrenalinePresentationFonts = {
+  body: "Adrenaline Body";
+  heading: "Adrenaline Display";
+  handwritten: "Adrenaline Handwriting";
 };
+
+type AdrenalinePresentationTokens = {
+  paper: "--background-primary";
+  card: "--adrenaline-card-surface";
+  ink: "--text-normal";
+  band: "--adrenaline-band";
+  bandInk: "--adrenaline-band-ink";
+  sectionBand: "--adrenaline-section-band";
+  rule: "--adrenaline-rule";
+  handwrittenInk: "--adrenaline-handwritten-ink";
+  statusYellowBg: "--adrenaline-status-yellow-bg";
+  statusYellowInk: "--adrenaline-status-yellow-ink";
+  statusRedBg: "--adrenaline-status-red-bg";
+  statusRedInk: "--adrenaline-status-red-ink";
+};
+
+/** Extra tokens of a compact card: category banners, state triggers, dice badges. */
+type AdrenalineCompactCardTokens = AdrenalinePresentationTokens & {
+  bannerGarnet: "--adrenaline-banner-garnet";
+  bannerBlue: "--adrenaline-banner-blue";
+  bannerOrange: "--adrenaline-banner-orange";
+  bannerInk: "--adrenaline-banner-ink";
+  triggerBg: "--adrenaline-trigger-bg";
+  triggerInk: "--adrenaline-trigger-ink";
+  diceBadgeBg: "--adrenaline-dice-badge-bg";
+  diceBadgeInk: "--adrenaline-dice-badge-ink";
+};
+
+/**
+ * The paper sheet prints handwritten values flush right under centred titles;
+ * the compact card of a PNJ or a creature prints typeset values after their
+ * label, under titles aligned to the start.
+ */
+export type AdrenalinePresentationAppearance =
+  | {
+      variant: "zombiology";
+      surface: "paper-sheet";
+      outerRule: true;
+      fonts: AdrenalinePresentationFonts;
+      tokens: AdrenalinePresentationTokens;
+      sectionTitles: { align: "center"; font: "heading" };
+      values: { align: "end"; font: "handwritten"; color: "handwrittenInk"; renderMaximum: false };
+    }
+  | {
+      variant: "zombiology";
+      surface: "compact-card";
+      outerRule: true;
+      fonts: AdrenalinePresentationFonts;
+      tokens: AdrenalineCompactCardTokens;
+      sectionTitles: { align: "start"; font: "heading" };
+      values: { align: "start"; font: "body"; color: "ink"; renderMaximum: false };
+    };
 
 export type AdrenalinePresentationBlock = {
   id: string;
@@ -110,7 +151,33 @@ export type AdrenalinePresentationSection = {
    * side by side; `span` is the share of the sheet width, in thirds.
    */
   row?: { id: string; span: 1 | 2 | 3 };
+  /** Folded by default: game-master material, such as the narrative block. */
+  collapsible?: true;
+  /** JSON Pointer whose value is printed after the label: `Comportement (Rôdeur)`. */
+  labelFrom?: string;
+  /**
+   * Creature only: the state cards this section is printed on. The `principal`
+   * card shows the state named by `etatPrincipal`, or the base state; the
+   * `secondaire` card shows the other one. A section without `cards` is printed
+   * once, outside the cards.
+   */
+  cards?: readonly ("principal" | "secondaire")[];
   blocks: AdrenalinePresentationBlock[];
+};
+
+export type AdrenalineCategoryVariant = "garnet" | "blue" | "orange";
+
+/**
+ * Banner colour and icon by category. Free category strings fall back to the
+ * default variant and icon; icons are Lucide identifiers.
+ */
+export type AdrenalinePresentationCategories = {
+  path: "/categorie";
+  fallbackLabel: string;
+  defaultVariant: AdrenalineCategoryVariant;
+  defaultIcon: string;
+  variants: Readonly<Record<string, AdrenalineCategoryVariant>>;
+  icons: Readonly<Record<string, string>>;
 };
 
 export type AdrenalinePresentation = {
@@ -121,6 +188,7 @@ export type AdrenalinePresentation = {
     label: string;
   };
   appearance: AdrenalinePresentationAppearance;
+  categories?: AdrenalinePresentationCategories;
   values: {
     /** Lantern reads scalar input limits from JSON Schema minimum/maximum. */
     editorBounds: "json-schema";
@@ -151,6 +219,12 @@ const VALUES = {
   },
 } as const;
 
+const FONTS = {
+  body: "Adrenaline Body",
+  heading: "Adrenaline Display",
+  handwritten: "Adrenaline Handwriting",
+} as const;
+
 const TOKENS = {
   paper: "--background-primary",
   card: "--adrenaline-card-surface",
@@ -166,27 +240,43 @@ const TOKENS = {
   statusRedInk: "--adrenaline-status-red-ink",
 } as const;
 
-function appearance(surface: "paper-sheet" | "compact-card"): AdrenalinePresentationAppearance {
-  return {
-    variant: "zombiology",
-    surface,
-    outerRule: true,
-    fonts: {
-      body: "Adrenaline Body",
-      heading: "Adrenaline Display",
-      handwritten: "Adrenaline Handwriting",
-    },
-    tokens: TOKENS,
-    sectionTitles: { align: "center", font: "heading" },
-    values: { align: "end", font: "handwritten", color: "handwrittenInk", renderMaximum: false },
-  };
-}
+const COMPACT_CARD_TOKENS = {
+  ...TOKENS,
+  bannerGarnet: "--adrenaline-banner-garnet",
+  bannerBlue: "--adrenaline-banner-blue",
+  bannerOrange: "--adrenaline-banner-orange",
+  bannerInk: "--adrenaline-banner-ink",
+  triggerBg: "--adrenaline-trigger-bg",
+  triggerInk: "--adrenaline-trigger-ink",
+  diceBadgeBg: "--adrenaline-dice-badge-bg",
+  diceBadgeInk: "--adrenaline-dice-badge-ink",
+} as const;
+
+const PAPER_SHEET = {
+  variant: "zombiology",
+  surface: "paper-sheet",
+  outerRule: true,
+  fonts: FONTS,
+  tokens: TOKENS,
+  sectionTitles: { align: "center", font: "heading" },
+  values: { align: "end", font: "handwritten", color: "handwrittenInk", renderMaximum: false },
+} as const satisfies AdrenalinePresentationAppearance;
+
+const COMPACT_CARD = {
+  variant: "zombiology",
+  surface: "compact-card",
+  outerRule: true,
+  fonts: FONTS,
+  tokens: COMPACT_CARD_TOKENS,
+  sectionTitles: { align: "start", font: "heading" },
+  values: { align: "start", font: "body", color: "ink", renderMaximum: false },
+} as const satisfies AdrenalinePresentationAppearance;
 
 export const PJ_PRESENTATION = definePresentation({
   version: 1,
   capability: "block:adrenaline-pj",
   sheet: { id: "adrenaline-pj", label: "Feuille de personnage" },
-  appearance: appearance("paper-sheet"),
+  appearance: PAPER_SHEET,
   values: VALUES,
   sections: [
     {
@@ -467,11 +557,32 @@ export const PJ_PRESENTATION = definePresentation({
   hiddenPaths: ["/meta", "/parametresDuJeu/declinaisonDeCampagne"],
 });
 
+const HEADER_PATHS = [
+  "/nom",
+  "/categorie",
+  "/niveauDeDanger",
+  "/niveauDeDangerAlternatif",
+  "/niveauDeDangerNote",
+] as const;
+
+/**
+ * The compact PNJ card of the booklets: a coloured banner (category, name,
+ * ND), the description paragraph, then characteristics, health and its tracks,
+ * formations, skill lines and equipment. Game-master notes fold away.
+ */
 export const PNJ_PRESENTATION = definePresentation({
   version: 1,
   capability: "block:adrenaline-pnj",
   sheet: { id: "adrenaline-pnj", label: "Fiche PNJ" },
-  appearance: appearance("compact-card"),
+  appearance: COMPACT_CARD,
+  categories: {
+    path: "/categorie",
+    fallbackLabel: "PNJ",
+    defaultVariant: "garnet",
+    defaultIcon: "user",
+    variants: { PNJ: "garnet", Police: "blue", Animal: "orange" },
+    icons: { Police: "shield", Animal: "paw-print" },
+  },
   values: VALUES,
   sections: [
     {
@@ -487,15 +598,16 @@ export const PNJ_PRESENTATION = definePresentation({
           layout: "columns",
           columns: 2,
           form: "name-card",
-          paths: ["/nom", "/niveauDeDanger"],
+          paths: [...HEADER_PATHS],
         },
       ],
     },
     {
-      id: "presentation",
-      label: "Présentation",
+      id: "description",
+      label: "Description",
       order: 20,
       layout: "stack",
+      showTitle: false,
       blocks: [
         {
           id: "description",
@@ -503,7 +615,7 @@ export const PNJ_PRESENTATION = definePresentation({
           order: 10,
           layout: "stack",
           form: "narrative",
-          paths: ["/description", "/narratif"],
+          paths: ["/description"],
         },
       ],
     },
@@ -526,15 +638,14 @@ export const PNJ_PRESENTATION = definePresentation({
       ],
     },
     {
-      id: "sante-protections",
-      label: "Santé et protections",
+      id: "sante",
+      label: "Santé",
       order: 40,
-      layout: "columns",
-      columns: 2,
+      layout: "stack",
       blocks: [
         {
           id: "sante",
-          label: "Santé",
+          label: "Seuils",
           order: 10,
           layout: "columns",
           columns: 2,
@@ -551,9 +662,18 @@ export const PNJ_PRESENTATION = definePresentation({
           paths: ["/protections"],
         },
         {
+          id: "pistes",
+          label: "Stress et malus",
+          order: 30,
+          layout: "stack",
+          form: "malus-tracks",
+          decoration: { kind: "malus-tracks", length: 10, stressDefault: 2 },
+          paths: ["/pistes"],
+        },
+        {
           id: "etat-partie",
           label: "État de partie",
-          order: 30,
+          order: 40,
           layout: "stack",
           form: "status-frames",
           paths: ["/etatDePartie"],
@@ -561,8 +681,8 @@ export const PNJ_PRESENTATION = definePresentation({
       ],
     },
     {
-      id: "formations-competences",
-      label: "Formations et compétences",
+      id: "formations",
+      label: "Formations",
       order: 50,
       layout: "stack",
       blocks: [
@@ -574,200 +694,21 @@ export const PNJ_PRESENTATION = definePresentation({
           form: "compact-rows",
           paths: ["/formations"],
         },
-        {
-          id: "competences",
-          label: "Compétences",
-          order: 20,
-          layout: "stack",
-          form: "compact-rows",
-          paths: ["/competences"],
-        },
       ],
     },
     {
-      id: "equipement",
-      label: "Équipement",
+      id: "competences",
+      label: "Compétences",
       order: 60,
       layout: "stack",
       blocks: [
         {
-          id: "equipement",
-          label: "Équipement",
-          order: 10,
-          layout: "stack",
-          form: "ruled-list",
-          paths: ["/equipement"],
-        },
-      ],
-    },
-  ],
-  hiddenPaths: ["/identite", "/meta"],
-});
-
-export const MONSTRE_PRESENTATION = definePresentation({
-  version: 1,
-  capability: "block:adrenaline-monstre",
-  sheet: { id: "adrenaline-monstre", label: "Fiche monstre" },
-  appearance: appearance("compact-card"),
-  values: VALUES,
-  sections: [
-    {
-      id: "entete",
-      label: "En-tête",
-      order: 10,
-      layout: "banner",
-      blocks: [
-        {
-          id: "identification",
-          label: "Créature",
-          order: 10,
-          layout: "grid",
-          columns: 3,
-          form: "name-card",
-          paths: [
-            "/nom",
-            "/typeDeCorps",
-            "/instinct",
-            "/typeInfecte",
-            "/niveauDeDanger",
-            "/description",
-          ],
-        },
-      ],
-    },
-    {
-      id: "detection-deplacement",
-      label: "Détection et déplacement",
-      order: 20,
-      layout: "columns",
-      columns: 2,
-      blocks: [
-        {
-          id: "detection",
-          label: "Détection",
-          order: 10,
-          layout: "stack",
-          form: "compact-rows",
-          paths: ["/zoneDeDetection"],
-        },
-        {
-          id: "deplacement",
-          label: "Déplacement",
-          order: 20,
-          layout: "stack",
-          form: "compact-rows",
-          paths: ["/deplacement"],
-        },
-      ],
-    },
-    {
-      id: "actions-comportement",
-      label: "Actions et comportement",
-      order: 30,
-      layout: "columns",
-      columns: 2,
-      blocks: [
-        {
-          id: "comportement",
-          label: "Comportement",
-          order: 10,
-          layout: "stack",
-          form: "narrative",
-          paths: ["/comportement"],
-        },
-        {
-          id: "combat",
-          label: "Combat",
-          order: 20,
-          layout: "stack",
-          form: "combat",
-          paths: ["/actionsParRound", "/defense", "/actions"],
-        },
-      ],
-    },
-    {
-      id: "caracteristiques",
-      label: "Caractéristiques",
-      order: 40,
-      layout: "grid",
-      columns: 4,
-      blocks: [
-        {
-          id: "caracteristiques",
-          label: "Caractéristiques",
-          order: 10,
-          layout: "grid",
-          columns: 4,
-          form: "compact-rows",
-          paths: ["/caracteristiques"],
-        },
-      ],
-    },
-    {
-      id: "sante-protections",
-      label: "Santé et protections",
-      order: 50,
-      layout: "columns",
-      columns: 2,
-      blocks: [
-        {
-          id: "sante",
-          label: "Santé",
-          order: 10,
-          layout: "columns",
-          columns: 2,
-          form: "threshold-rows",
-          paths: ["/sante"],
-        },
-        {
-          id: "protections",
-          label: "Protections",
-          order: 20,
-          layout: "columns",
-          columns: 2,
-          form: "protection-lines",
-          paths: ["/protections"],
-        },
-      ],
-    },
-    {
-      id: "capacites-etats",
-      label: "Capacités et états",
-      order: 60,
-      layout: "stack",
-      blocks: [
-        {
-          id: "traits",
-          label: "Traits",
-          order: 10,
-          layout: "stack",
-          form: "narrative",
-          paths: ["/traitsSpeciaux"],
-        },
-        {
           id: "competences",
           label: "Compétences",
-          order: 20,
+          order: 10,
           layout: "stack",
-          form: "compact-rows",
+          form: "skill-lines",
           paths: ["/competences"],
-        },
-        {
-          id: "contagion",
-          label: "Contagion",
-          order: 30,
-          layout: "stack",
-          form: "narrative",
-          paths: ["/contagion"],
-        },
-        {
-          id: "etats",
-          label: "États",
-          order: 40,
-          layout: "columns",
-          columns: 2,
-          form: "state-card",
-          paths: ["/etatActif", "/etats", "/etatAlternatif"],
         },
       ],
     },
@@ -782,11 +723,289 @@ export const MONSTRE_PRESENTATION = definePresentation({
           label: "Équipement",
           order: 10,
           layout: "stack",
-          form: "ruled-list",
+          form: "inline-list",
           paths: ["/equipement"],
         },
       ],
     },
+    {
+      id: "meneur",
+      label: "Meneur",
+      order: 80,
+      layout: "stack",
+      collapsible: true,
+      blocks: [
+        {
+          id: "narratif",
+          label: "Notes du meneur",
+          order: 10,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/narratif"],
+        },
+      ],
+    },
   ],
-  hiddenPaths: ["/narratif", "/etatDePartie", "/meta"],
+  hiddenPaths: ["/identite", "/meta"],
 });
+
+/**
+ * The creature card of the booklets: a banner, the description, then two
+ * state cards side by side — the large `principal` card and the small
+ * `secondaire` one — each printing the profile of its state, resolved from the
+ * base and the state's delta. Game-master material folds away below.
+ */
+export const MONSTRE_PRESENTATION = definePresentation({
+  version: 1,
+  capability: "block:adrenaline-monstre",
+  sheet: { id: "adrenaline-monstre", label: "Fiche monstre" },
+  appearance: COMPACT_CARD,
+  categories: {
+    path: "/categorie",
+    fallbackLabel: "Créature",
+    defaultVariant: "garnet",
+    defaultIcon: "skull",
+    variants: { Zombie: "garnet", Animal: "orange" },
+    icons: { Zombie: "biohazard", Animal: "paw-print" },
+  },
+  values: VALUES,
+  sections: [
+    {
+      id: "entete",
+      label: "En-tête",
+      order: 10,
+      layout: "banner",
+      blocks: [
+        {
+          id: "identification",
+          label: "Créature",
+          order: 10,
+          layout: "columns",
+          columns: 2,
+          form: "name-card",
+          paths: [...HEADER_PATHS],
+        },
+      ],
+    },
+    {
+      id: "description",
+      label: "Description",
+      order: 20,
+      layout: "stack",
+      showTitle: false,
+      blocks: [
+        {
+          id: "description",
+          label: "Description",
+          order: 10,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/description"],
+        },
+      ],
+    },
+    {
+      id: "etat",
+      label: "État",
+      order: 30,
+      layout: "stack",
+      showTitle: false,
+      cards: ["principal", "secondaire"],
+      blocks: [
+        {
+          id: "etat",
+          label: "État",
+          order: 10,
+          layout: "stack",
+          form: "state-header",
+          paths: ["/etatPrincipal", "/etatActif", "/etatDeBase", "/etats", "/etatAlternatif"],
+        },
+      ],
+    },
+    {
+      id: "corps",
+      label: "Corps",
+      order: 40,
+      layout: "stack",
+      labelFrom: "/typeDeCorps",
+      cards: ["principal", "secondaire"],
+      blocks: [
+        {
+          id: "caracteristiques",
+          label: "Caractéristiques",
+          order: 10,
+          layout: "grid",
+          columns: 4,
+          form: "compact-rows",
+          paths: ["/caracteristiques"],
+        },
+        {
+          id: "detection",
+          label: "Détection",
+          order: 20,
+          layout: "stack",
+          form: "compact-rows",
+          paths: ["/zoneDeDetection"],
+        },
+        {
+          id: "deplacement",
+          label: "Déplacement",
+          order: 30,
+          layout: "stack",
+          form: "compact-rows",
+          paths: ["/deplacement"],
+        },
+      ],
+    },
+    {
+      id: "sante",
+      label: "Santé",
+      order: 50,
+      layout: "stack",
+      cards: ["principal", "secondaire"],
+      blocks: [
+        {
+          id: "sante",
+          label: "Seuils",
+          order: 10,
+          layout: "columns",
+          columns: 2,
+          form: "threshold-rows",
+          paths: ["/sante"],
+        },
+        {
+          id: "etats-permanents",
+          label: "États permanents",
+          order: 20,
+          layout: "stack",
+          form: "inline-list",
+          paths: ["/etatsPermanents"],
+        },
+        {
+          id: "malus",
+          label: "Malus avant HS",
+          order: 30,
+          layout: "stack",
+          form: "compact-rows",
+          paths: ["/malusAvantHs"],
+        },
+        {
+          id: "protections",
+          label: "Protections",
+          order: 40,
+          layout: "columns",
+          columns: 2,
+          form: "protection-lines",
+          paths: ["/protections"],
+        },
+      ],
+    },
+    {
+      id: "comportement",
+      label: "Comportement",
+      order: 60,
+      layout: "stack",
+      labelFrom: "/instinct",
+      cards: ["principal", "secondaire"],
+      blocks: [
+        {
+          id: "combat",
+          label: "Combat",
+          order: 10,
+          layout: "columns",
+          columns: 2,
+          form: "combat",
+          paths: ["/actionsParRound", "/defense"],
+        },
+      ],
+    },
+    {
+      id: "agir",
+      label: "Agir",
+      order: 70,
+      layout: "stack",
+      labelFrom: "/typeInfecte",
+      cards: ["principal"],
+      blocks: [
+        {
+          id: "actions",
+          label: "Actions",
+          order: 10,
+          layout: "stack",
+          form: "action-lines",
+          paths: ["/actions"],
+        },
+      ],
+    },
+    {
+      id: "equipement",
+      label: "Équipement",
+      order: 80,
+      layout: "stack",
+      cards: ["secondaire"],
+      blocks: [
+        {
+          id: "equipement",
+          label: "Équipement",
+          order: 10,
+          layout: "stack",
+          form: "inline-list",
+          paths: ["/equipement"],
+        },
+      ],
+    },
+    {
+      id: "meneur",
+      label: "Meneur",
+      order: 90,
+      layout: "stack",
+      collapsible: true,
+      blocks: [
+        {
+          id: "comportement-notes",
+          label: "Comportement",
+          order: 10,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/comportement"],
+        },
+        {
+          id: "traits",
+          label: "Traits",
+          order: 20,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/traitsSpeciaux"],
+        },
+        {
+          id: "competences",
+          label: "Compétences",
+          order: 30,
+          layout: "stack",
+          form: "skill-lines",
+          paths: ["/competences"],
+        },
+        {
+          id: "contagion",
+          label: "Contagion",
+          order: 40,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/contagion"],
+        },
+        {
+          id: "narratif",
+          label: "Notes du meneur",
+          order: 50,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/narratif"],
+        },
+      ],
+    },
+  ],
+  hiddenPaths: ["/etatDePartie", "/meta"],
+});
+
+export { ADRENALINE_VISUAL_CALLOUTS } from "./callouts.js";
+export type { AdrenalineVisualCallout } from "./callouts.js";

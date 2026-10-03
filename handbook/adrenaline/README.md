@@ -45,8 +45,11 @@ selectors without touching Handbook's code.
 
 Token groups introduced for the Zombiology alignment:
 
-- `--h4-*` (font, transform, weight, style, decoration, color): the red,
-  underlined, italic fourth heading level.
+- `--h4-*` (font, transform, weight, style, decoration, color) and
+  `--adrenaline-h4-rule`: the upright serif fourth heading level over a
+  full-width garnet rule (the rule is a border, not a text underline).
+- `--h5-*` (font, transform, weight, style, color): the bold brown-garnet
+  serif fifth level, without a rule.
 - `--adrenaline-emphasis-*` (style, color): italic red narrative emphasis
   used in example/callout body text.
 - `--adrenaline-list-marker-glyph`: the triangular bullet character; the
@@ -54,13 +57,24 @@ Token groups introduced for the Zombiology alignment:
 - `--adrenaline-status-yellow-bg`/`-ink` and `--adrenaline-status-red-bg`/`-ink`:
   filled status badges (e.g. malus severity), distinct from the plain
   `--color-yellow`/`--color-red` text colors and from the pre-existing
-  `--adrenaline-signal`/`-ink` pair, which `--adrenaline-status-yellow-*`
-  reuses by value since both represent the same amber severity marker.
+  `--adrenaline-signal`/`-ink` pair. A badge is measured ink against its own
+  fill, so the yellow badge uses a vivid yellow with dark ink rather than the
+  darkened signal amber, which is measured against the page.
 - `--adrenaline-table-header-bg`/`-ink` and `--adrenaline-table-border`/
   `--adrenaline-table-stripe`: table header band and row treatment.
 - `--adrenaline-callout-cartouche-bg`/`-ink`: the dark banner used for
   labelled callout headers (e.g. "EXEMPLE"), reusing the `--adrenaline-cartouche`
   pair's values under a callout-scoped name.
+
+- `--adrenaline-keyword-*` (color, transform, weight): the bold capitalised
+  keyword that opens a paragraph (`<span class="adrenaline-keyword">`).
+- `--adrenaline-result-success-*`/`-failure-*`: square result badges of an
+  action (`<mark class="adrenaline-result-…">`).
+- `--adrenaline-example-rule`, `--adrenaline-formation-surface`,
+  `--adrenaline-action-title-bg`/`-ink` and `--adrenaline-action-border`: the
+  Zombiology callouts declared by `ADRENALINE_VISUAL_CALLOUTS`. Their syntax,
+  modifiers and token map are in `callout-contract.md`; `callouts-example.md`
+  is a note covering every callout, heading level and list.
 
 If a future pack omits one of these tokens, Handbook's structural selectors
 must fall back to a neutral value (inherited color, no decoration, disc
