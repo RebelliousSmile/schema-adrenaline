@@ -1,10 +1,14 @@
 name: Promote candidate
 
-# Run by hand once both consumers have merged the candidate's bump pull request.
+# Merging the candidate's bump pull request is the read of that candidate: each
+# consumer then dispatches `candidate-adopted` here, and the promotion starts by
+# itself once both have merged. The dispatch by hand only resumes a stopped run.
 # It records the train from what is published, then hands over to the existing
 # gates: `Release train` proves the manifest, `Release contract` publishes behind
 # the `release` environment. Nothing here replaces a gate of either workflow.
 on:
+  repository_dispatch:
+    types: [candidate-adopted]
   workflow_dispatch:
     inputs:
       tag:
@@ -21,11 +25,55 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  promote:
+  # A consumer reports each merge, so the first report of a train finds the other
+  # consumer still on the previous pin: that is a wait, not a failure.
+  gate:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      ready: ${{ steps.ready.outputs.ready }}
     env:
-      CANDIDATE_TAG: ${{ inputs.tag }}
+      CANDIDATE_TAG: ${{ github.event.client_payload.tag || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ask whether both consumers pin the candidate
+        id: ready
+        run: |
+          case "$CANDIDATE_TAG" in
+            v[0-9]*.[0-9]*.[0-9]*-rc.[0-9]*) ;;
+            *) echo "candidate tag must be vX.Y.Z-rc.N" >&2; exit 1 ;;
+          esac
+          final_tag="${CANDIDATE_TAG%-rc.*}"
+          if test "$GITHUB_EVENT_NAME" = "repository_dispatch" && test -n "$(git ls-remote origin "refs/tags/$final_tag")"; then
+            echo "::notice::$final_tag is already tagged: nothing to promote"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          state=$(npx tsx tools/write-release-train.ts ready "$CANDIDATE_TAG" | tail -n 1)
+          if test "$state" = "ready"; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::$CANDIDATE_TAG waits: $state"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  promote:
+    needs: gate
+    if: ${{ needs.gate.outputs.ready == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      CANDIDATE_TAG: ${{ github.event.client_payload.tag || inputs.tag }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4

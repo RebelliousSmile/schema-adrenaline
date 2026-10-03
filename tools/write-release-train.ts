@@ -127,6 +127,14 @@ async function awaitedRefs(url: string, minutes: number): Promise<Refs> {
   }
 }
 
+/** `ready` once both consumers pin the candidate `stagingTag` on `main`, else what is missing. */
+async function candidateReadiness(stagingTag: string): Promise<string> {
+  const version = STAGING_TAG.exec(stagingTag)?.[1];
+  assert.ok(version, `candidate tag must be vX.Y.Z-rc.N, found ${stagingTag}`);
+  const refs = await pinningRefs(assetUrl(stagingTag, version));
+  return typeof refs === "string" ? refs : "ready";
+}
+
 async function writeCandidate(stagingTag: string, minutes: number): Promise<string> {
   const version = STAGING_TAG.exec(stagingTag)?.[1];
   assert.ok(version, `candidate tag must be vX.Y.Z-rc.N, found ${stagingTag}`);
@@ -219,9 +227,12 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const at = flags.indexOf("--wait-minutes");
     const minutes = at < 0 ? 0 : Number(flags[at + 1]);
     assert.ok(Number.isInteger(minutes) && minutes >= 0, "--wait-minutes takes a whole number");
-    if (mode !== "candidate" && mode !== "final")
-      throw new Error("usage: write-release-train <candidate|final> <tag> [--wait-minutes N]");
+    if (mode !== "candidate" && mode !== "final" && mode !== "ready")
+      throw new Error(
+        "usage: write-release-train <candidate|final|ready> <tag> [--wait-minutes N]",
+      );
     assert.ok(tag, "a tag is required");
-    console.log(await (mode === "candidate" ? writeCandidate : writeFinal)(tag, minutes));
+    if (mode === "ready") console.log(await candidateReadiness(tag));
+    else console.log(await (mode === "candidate" ? writeCandidate : writeFinal)(tag, minutes));
   }
 }
