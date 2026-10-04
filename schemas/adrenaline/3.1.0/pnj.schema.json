@@ -3218,6 +3218,8 @@
         "statusYellowInk": "--adrenaline-status-yellow-ink",
         "statusRedBg": "--adrenaline-status-red-bg",
         "statusRedInk": "--adrenaline-status-red-ink",
+        "malusShock": "--adrenaline-malus-shock",
+        "malusWound": "--adrenaline-malus-wound",
         "bannerGarnet": "--adrenaline-banner-garnet",
         "bannerBlue": "--adrenaline-banner-blue",
         "bannerOrange": "--adrenaline-banner-orange",
@@ -3232,7 +3234,7 @@
         "font": "heading"
       },
       "values": {
-        "align": "start",
+        "align": "end",
         "font": "body",
         "color": "ink",
         "renderMaximum": false

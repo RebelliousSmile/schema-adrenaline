@@ -28,6 +28,14 @@ published book. Their generation prompts and provenance are recorded in
 repository licenses. The current asset payload is reported by
 `npm run validate:handbook`.
 
+The text and title faces are freely redistributable substitutes, taken
+unmodified from Fontsource; they are not claimed to be the typefaces of the
+original game. `Adrenaline Body` is EB Garamond (variable, weights 400 to 800,
+`@fontsource-variable/eb-garamond@5.3.0`) and `Adrenaline Display` is Rubik
+Dirt (`@fontsource/rubik-dirt@5.3.0`), both Latin subsets under the SIL Open
+Font License 1.1, included at `assets/fonts/EBGaramond-OFL.txt` and
+`assets/fonts/RubikDirt-OFL.txt`.
+
 The handwriting face is [Caveat](https://github.com/googlefonts/caveat),
 downloaded from commit `59745e818ef7973e11e70cb1358d0e902b56c5fc`.
 Its unmodified font file is distributed under the SIL Open Font License 1.1,
@@ -45,11 +53,12 @@ selectors without touching Handbook's code.
 
 Token groups introduced for the Zombiology alignment:
 
-- `--h4-*` (font, transform, weight, style, decoration, color) and
-  `--adrenaline-h4-rule`: the upright serif fourth heading level over a
-  full-width garnet rule (the rule is a border, not a text underline).
-- `--h5-*` (font, transform, weight, style, color): the bold brown-garnet
-  serif fifth level, without a rule.
+- `--h3-*` and `--adrenaline-h3-rule`: the semibold garnet serif third
+  heading level over a full-width garnet rule (the rule is a border, not a
+  text underline).
+- `--h4-*` (font, transform, weight, style, decoration, color) and `--h5-*`
+  (font, transform, weight, style, color): the bold brown-garnet serif fourth
+  and fifth levels, without a rule.
 - `--adrenaline-emphasis-*` (style, color): italic red narrative emphasis
   used in example/callout body text.
 - `--adrenaline-list-marker-glyph`: the triangular bullet character; the
@@ -75,6 +84,10 @@ Token groups introduced for the Zombiology alignment:
   Zombiology callouts declared by `ADRENALINE_VISUAL_CALLOUTS`. Their syntax,
   modifiers and token map are in `callout-contract.md`; `callouts-example.md`
   is a note covering every callout, heading level and list.
+- `--adrenaline-mention-border`, `--adrenaline-mention-title` and
+  `--adrenaline-mention-icon` with one `--adrenaline-mention-icon-<modifier>`
+  per modifier: the one-line `adrenaline-mention` callout. An icon token holds
+  an Obsidian icon name (`lucide-…`).
 
 If a future pack omits one of these tokens, Handbook's structural selectors
 must fall back to a neutral value (inherited color, no decoration, disc

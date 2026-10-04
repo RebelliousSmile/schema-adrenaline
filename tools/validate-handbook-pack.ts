@@ -373,7 +373,7 @@ export function validateHandbookPack(
     requireContrast(note, "--adrenaline-keyword-color", "--background-primary");
     // Scenario booklet page styles: headings, bold, inline code, description, note and tip.
     requireContrast(note, "--h2-color", "--background-primary");
-    requireContrast(note, "--h3-color", "--adrenaline-h3-band");
+    requireContrast(note, "--h3-color", "--background-primary");
     requireContrast(note, "--bold-color", "--background-primary");
     requireContrast(note, "--adrenaline-inline-code-color", "--background-primary");
     requireContrast(
@@ -381,15 +381,21 @@ export function validateHandbookPack(
       "--adrenaline-description-label-ink",
       "--adrenaline-description-label-bg",
     );
+    requireContrast(note, "--text-normal", "--adrenaline-description-surface");
     requireContrast(note, "--adrenaline-note-ink", "--adrenaline-note-surface");
     requireContrast(note, "--adrenaline-callout-tip-ink", "--adrenaline-callout-tip");
+    requireContrast(note, "--adrenaline-mention-title", "--adrenaline-mention-surface");
+    requireContrast(note, "--text-normal", "--adrenaline-mention-surface");
+    requireContrast(note, "--adrenaline-mention-border", "--adrenaline-mention-surface", 3);
+    requireContrast(note, "--adrenaline-mention-border", "--background-primary", 3);
     // Rules and borders: non-text UI, WCAG 1.4.11 threshold.
+    requireContrast(note, "--h1-color", "--adrenaline-h1-surface");
+    requireContrast(note, "--adrenaline-h1-rule", "--adrenaline-h1-surface", 3);
     requireContrast(note, "--adrenaline-h2-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-h3-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-description-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-callout-tip-border", "--background-primary", 3);
     requireContrast(note, "--list-marker-color", "--background-primary", 3);
-    requireContrast(note, "--adrenaline-h4-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-example-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-action-border", "--background-primary", 3);
     requireStrongerHoverContrast(

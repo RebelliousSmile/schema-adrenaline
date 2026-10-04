@@ -48,12 +48,27 @@ export const ADRENALINE_VISUAL_CALLOUTS = [
     modifiers: [],
   },
   {
-    id: "adrenaline-table",
-    label: "Table aléatoire",
-    aliases: ["table-aleatoire"],
+    id: "adrenaline-roller",
+    label: "Roller",
+    aliases: ["roller"],
     template: "title-body",
     capability: "style:adrenaline",
     modifiers: [],
+  },
+  // A one-line reference to a medium: an icon, a bold label, then the body on
+  // the same line. A modifier picks the icon.
+  {
+    id: "adrenaline-mention",
+    label: "Mention en ligne",
+    aliases: ["mention"],
+    template: "title-body",
+    capability: "style:adrenaline",
+    modifiers: [
+      { id: "video", label: "Icône vidéo" },
+      { id: "audio", label: "Icône audio" },
+      { id: "livre", label: "Icône livre" },
+      { id: "lien", label: "Icône lien" },
+    ],
   },
 ] as const;
 

@@ -47,6 +47,8 @@ const BASE_TOKENS = [
   "statusRedInk",
 ];
 const COMPACT_CARD_TOKENS = [
+  "malusShock",
+  "malusWound",
   "bannerGarnet",
   "bannerBlue",
   "bannerOrange",
@@ -171,11 +173,11 @@ function appearance(value: unknown, where: string): void {
         );
     }
   }
-  // The paper sheet is handwritten flush right; the compact card is typeset after its label.
+  // Both print their figures flush right: handwritten on the paper sheet, typeset on the card.
   if (compact) {
     assert.deepEqual(visual.sectionTitles, { align: "start", font: "heading" });
     assert.deepEqual(visual.values, {
-      align: "start",
+      align: "end",
       font: "body",
       color: "ink",
       renderMaximum: false,

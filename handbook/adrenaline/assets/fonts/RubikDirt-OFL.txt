@@ -1,10 +1,4 @@
-EB Garamond (variable, wght 400-800, upright)
-Source: @fontsource-variable/eb-garamond@5.3.0, files/eb-garamond-latin-wght-normal.woff2 (Latin subset, unmodified).
-Distributed in this package as handbook/adrenaline/assets/fonts/adrenaline-body.woff2
-and loaded under the family name "Adrenaline Body".
-It is a freely redistributable substitute and is not claimed to be the typeface of the original game.
-
-Copyright 2017 The EB Garamond Project Authors (https://github.com/octaviopardo/EBGaramond12) EBGaramond-Italic[wght].ttf: Copyright 2017 The EB Garamond Project Authors (https://github.com/octaviopardo/EBGaramond12)
+Copyright 2020 The Rubik Filtered Project Authors (https://github.com/NaN-xyz/Rubik-Filtered)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

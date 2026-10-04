@@ -7,18 +7,28 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - `ADRENALINE_VISUAL_CALLOUTS`, exported by the package root and by
-  `schema-adrenaline/presentation`, names six visual callouts read from the
+  `schema-adrenaline/presentation`, names seven visual callouts read from the
   Zombiology booklet: `adrenaline-exemple` (aliases `exemple`, `example`),
   `adrenaline-description`, `adrenaline-encart`, `adrenaline-formation`
   (modifier `fond`),
-  `adrenaline-action` and `adrenaline-table` (alias `table-aleatoire`). Each
-  entry requires the `style:adrenaline` capability.
+  `adrenaline-action`, `adrenaline-roller` (alias `roller`) and
+  `adrenaline-mention` (alias `mention`; modifiers `video`, `audio`, `livre`,
+  `lien`), a one-line reference: icon, bold label, then the body on the same
+  line. The pack declares its `--adrenaline-mention-*` tokens (surface, border, title
+  and one icon per modifier). Each entry requires the `style:adrenaline`
+  capability.
 - Page styles of the Zombiology scenario booklet, as pack tokens: an
-  `--adrenaline-h2-rule`, an `--adrenaline-h3-band` with its
-  `--adrenaline-h3-rule`, `--adrenaline-inline-code-*` (font, transform,
-  weight, colour), `--adrenaline-description-*`, `--adrenaline-note-*` (the
+  `--adrenaline-h1-surface`, `--adrenaline-h1-frieze` and
+  `--adrenaline-h1-rule` (the white h1 panel, its vertical garnet frieze and
+  closing rule), `--adrenaline-h2-rule`, an `--adrenaline-h3-rule`,
+  `--adrenaline-inline-code-*` (font, transform,
+  weight, colour), `--adrenaline-description-*` (rule, label and the white
+  `--adrenaline-description-surface`), `--adrenaline-note-*` (the
   handwritten sheet of the native `note` callout) and
   `--adrenaline-callout-tip` with its ink and border.
+- `--adrenaline-callout-title-font` and `--adrenaline-callout-title-weight`:
+  callout titles and the test line of an action are set in the bold body
+  serif, which stays legible at that size, instead of the display face.
 - Schema baseline `3.1.0` (additive within contract 3): the compact PNJ and
   creature cards of the Zombiology _Livret PNJ et animaux_ (#41, #42). Every
   printed value is entered as printed; nothing is derived from a rule.
@@ -37,8 +47,8 @@ All notable changes to this project will be documented in this file.
 declencheurs}` and `etatPrincipal` (the state printed on the large card);
     the state delta accepts the first two. Actions gain `test`, `degats` and
     one level of `suites`; `defense.niveau` (`oui`, `expose`, `non`).
-- Presentation: a `compact-card` appearance beside `paper-sheet`, with eight
-  more tokens; the forms `state-header`, `malus-tracks`, `inline-list`,
+- Presentation: a `compact-card` appearance beside `paper-sheet`, with ten
+  more tokens and figures flush right (`values.align: "end"`); the forms `state-header`, `malus-tracks`, `inline-list`,
   `skill-lines` and `action-lines`; sections may be `collapsible`, take their
   title from a value (`labelFrom`) or sit on the creature's `principal` and
   `secondaire` cards (`cards`); descriptors may map `categorie` to a banner
@@ -46,7 +56,8 @@ declencheurs}` and `etatPrincipal` (the state printed on the large card);
   them, with new self-tests.
 - The Handbook pack declares `--adrenaline-banner-*`, `--adrenaline-trigger-*`
   and `--adrenaline-dice-badge-*` in both layers; `validate:pack` measures
-  their contrast.
+  their contrast. It also declares `--adrenaline-malus-shock` (yellow) and
+  `--adrenaline-malus-wound` (red), the colours of the two malus tracks.
 - Examples `pnj/agent-de-securite.toml` and `monstre/infecte-zy-2.toml`, copied
   from the booklet; the legacy `etatAlternatif` form stays covered by
   `corpus/contract/valid/monstre-etat-alternatif-historique.toml`.
@@ -54,7 +65,7 @@ declencheurs}` and `etatPrincipal` (the state printed on the large card);
   modifiers, the inline marks and the tokens it reads;
   `handbook/adrenaline/callouts-example.md` is a note that renders all of them.
 - The Handbook pack `0.7.0` adds the tokens behind them, in light and dark
-  layers: `--h5-*`, `--adrenaline-h4-rule`, `--adrenaline-keyword-*`,
+  layers: `--h5-*`, `--adrenaline-keyword-*`,
   `--adrenaline-result-success-*`, `--adrenaline-result-failure-*`,
   `--adrenaline-example-rule`, `--adrenaline-formation-surface`,
   `--adrenaline-action-title-*` and `--adrenaline-action-border`.
@@ -65,11 +76,16 @@ declencheurs}` and `etatPrincipal` (the state printed on the large card);
 ### Changed
 
 - The pack follows the scenario booklet: h1 and h2 are printed in the text
-  ink instead of garnet; h3 leaves the display face for the bold body serif in
-  normal case, on `--adrenaline-h3-band`; `--bold-color` and
+  ink instead of garnet; h3 leaves the display face for the semibold garnet
+  body serif in normal case, over `--adrenaline-h3-rule`; `--bold-color` and
   `--list-marker-color` are the text ink.
-- The pack's h4 is upright and semibold, underlined by `--adrenaline-h4-rule`,
-  instead of italic.
+- The pack's h4 is upright and bold, without a rule, instead of italic.
+- The pack's typefaces are closer to the booklet: `Adrenaline Display` is now
+  Rubik Dirt (eroded capitals) instead of Roboto Condensed, and
+  `Adrenaline Body` is the variable EB Garamond (weights 400 to 800, so bold is
+  no longer synthesised) instead of Noto Serif. Family names and file paths are
+  unchanged; both are SIL OFL 1.1 substitutes from Fontsource, with their
+  licence beside the files, and are not the typefaces of the original game.
 - `examples/adrenaline/monstre/infecte-rodeur.toml` uses `etats` and
   `defense.niveau` instead of the legacy `etatAlternatif` and `defense.active`,
   both still accepted.

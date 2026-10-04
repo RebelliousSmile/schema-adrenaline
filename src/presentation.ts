@@ -71,8 +71,13 @@ type AdrenalinePresentationTokens = {
   statusRedInk: "--adrenaline-status-red-ink";
 };
 
-/** Extra tokens of a compact card: category banners, state triggers, dice badges. */
+/**
+ * Extra tokens of a compact card: category banners, state triggers, dice badges
+ * and the two coloured malus tracks (the stress track keeps the ink).
+ */
 type AdrenalineCompactCardTokens = AdrenalinePresentationTokens & {
+  malusShock: "--adrenaline-malus-shock";
+  malusWound: "--adrenaline-malus-wound";
   bannerGarnet: "--adrenaline-banner-garnet";
   bannerBlue: "--adrenaline-banner-blue";
   bannerOrange: "--adrenaline-banner-orange";
@@ -85,8 +90,9 @@ type AdrenalineCompactCardTokens = AdrenalinePresentationTokens & {
 
 /**
  * The paper sheet prints handwritten values flush right under centred titles;
- * the compact card of a PNJ or a creature prints typeset values after their
- * label, under titles aligned to the start.
+ * the compact card of a PNJ or a creature prints typeset figures (percentages,
+ * totals, solidities) flush right on their line, under titles aligned to the
+ * start. Prose values still follow their label.
  */
 export type AdrenalinePresentationAppearance =
   | {
@@ -105,7 +111,7 @@ export type AdrenalinePresentationAppearance =
       fonts: AdrenalinePresentationFonts;
       tokens: AdrenalineCompactCardTokens;
       sectionTitles: { align: "start"; font: "heading" };
-      values: { align: "start"; font: "body"; color: "ink"; renderMaximum: false };
+      values: { align: "end"; font: "body"; color: "ink"; renderMaximum: false };
     };
 
 export type AdrenalinePresentationBlock = {
@@ -242,6 +248,8 @@ const TOKENS = {
 
 const COMPACT_CARD_TOKENS = {
   ...TOKENS,
+  malusShock: "--adrenaline-malus-shock",
+  malusWound: "--adrenaline-malus-wound",
   bannerGarnet: "--adrenaline-banner-garnet",
   bannerBlue: "--adrenaline-banner-blue",
   bannerOrange: "--adrenaline-banner-orange",
@@ -269,7 +277,7 @@ const COMPACT_CARD = {
   fonts: FONTS,
   tokens: COMPACT_CARD_TOKENS,
   sectionTitles: { align: "start", font: "heading" },
-  values: { align: "start", font: "body", color: "ink", renderMaximum: false },
+  values: { align: "end", font: "body", color: "ink", renderMaximum: false },
 } as const satisfies AdrenalinePresentationAppearance;
 
 export const PJ_PRESENTATION = definePresentation({
