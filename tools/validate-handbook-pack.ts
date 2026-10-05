@@ -391,7 +391,6 @@ export function validateHandbookPack(
     // Rules and borders: non-text UI, WCAG 1.4.11 threshold.
     requireContrast(note, "--h1-color", "--adrenaline-h1-surface");
     requireContrast(note, "--adrenaline-h1-rule", "--adrenaline-h1-surface", 3);
-    requireContrast(note, "--adrenaline-h2-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-h3-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-description-rule", "--background-primary", 3);
     requireContrast(note, "--adrenaline-callout-tip-border", "--background-primary", 3);

@@ -39,7 +39,11 @@ function evidenceArtifact(artifact: FinalArtifact): FinalEvidence["artifact"] {
 }
 
 function ghJson(endpoint: string): unknown {
-  const result = spawnSync("gh", ["api", endpoint], { encoding: "utf8" });
+  const result = spawnSync("gh", ["api", endpoint], {
+    encoding: "utf8",
+    // A compare against a busy main exceeds the 1 MiB default and fails with no stderr.
+    maxBuffer: 64 * 1024 * 1024,
+  });
   if (result.status !== 0)
     throw new Error(`GitHub API ${endpoint} failed: ${result.stderr ?? result.error?.message}`);
   return JSON.parse(result.stdout) as unknown;

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche monstre — maquette de référence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  /*
+   * Référence HTML de la fiche monstre Zombiology (block:adrenaline-monstre),
+   * reconstruite depuis monstre.jpg (314 × 811 px). Couleurs relevées par
+   * quantification du JPEG : valeurs approximatives, à réconcilier avec les
+   * jetons du pack.
+   *
+   * La fiche est rendue depuis l'objet `monstre` plus bas, écrit dans la forme du
+   * schéma 3.0.0 (profil de base + `etats[]` à delta complet). Les champs que le
+   * schéma ne porte pas encore sont marqués `P(...)` et entourés de pointillés
+   * bleus quand la case « Montrer les champs proposés » est cochée.
+   */
+  :root {
+    --grenat: #5F0B00;          /* bandeau ZOMBIE, filets, bordure extérieure */
+    --section-band: #D3CFC6;    /* bandeaux de section et barre de nom */
+    --card: #FFFFFF;
+    --page: #F4F3EF;
+    --ink: #1E1A18;
+    --choc-badge: #FFD300;      /* badge DM/DP choquant */
+    --blessure: #FE0000;        /* badge DP blessant */
+    --trigger: #4DD0D8;         /* pastille flèche des déclencheurs */
+    --proposed: #2563EB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #E9E6E1; color: var(--ink); font: 14px/1.45 system-ui, "Segoe UI", sans-serif; padding: 16px; }
+  header.bar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px; }
+  header.bar h1 { font-size: 18px; }
+  header.bar label { font-size: 13px; display: flex; gap: 6px; align-items: center; }
+  .stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .panel { background: var(--page); padding: 12px; }
+  .panel h2 { font: 600 12px/1.2 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: #6b625c; margin-bottom: 8px; }
+  .zoom { zoom: var(--z, 1.5); }
+  .panel img { display: block; width: 314px; }
+  .notes { max-width: 520px; font-size: 13px; }
+  .notes li { margin: 0 0 6px 18px; }
+  .notes code { background: #fff; padding: 0 4px; }
+
+  /* ===== Fiche monstre ===== */
+  .sheet { width: 314px; font: 12px/1.3 "Roboto Condensed", "Arial Narrow", sans-serif; color: var(--ink); }
+  .card { background: var(--card); border: 1.5px solid var(--grenat); border-radius: 8px; overflow: hidden; }
+  /* La carte de l'état secondaire est détachée, plus étroite, décalée à droite. */
+  .card--secondary { margin: 6px 0 0 20px; }
+  .kind { background: var(--grenat); color: #fff; font-weight: 700; text-transform: uppercase; padding: 4px 8px 3px; letter-spacing: .02em; }
+  .name { display: flex; gap: 6px; background: var(--section-band); padding: 3px 8px; }
+  .name svg { width: 15px; height: 15px; flex: none; margin-top: 1px; }
+  .name__lines { flex: 1; }
+  .name__title { font-weight: 800; font-size: 14px; text-transform: uppercase; }
+  .name__title small { font-size: 14px; text-transform: none; }
+  .name__sub { display: flex; font-weight: 700; font-size: 13px; }
+  .name__sub .nd { margin-left: auto; font-weight: 400; }
+  .name__sub .nd b { font-weight: 700; }
+  .desc { font-style: italic; padding: 5px 8px 7px; }
+  .section { display: flex; align-items: center; background: var(--section-band); font-weight: 700; font-size: 13px; padding: 2px 8px; }
+  .section .box { margin-left: auto; width: 11px; height: 11px; border: 1.3px solid var(--ink); }
+  .body { padding: 5px 8px 7px; }
+  .trigger { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+  .trigger i { width: 12px; height: 12px; border-radius: 50%; background: var(--trigger); display: inline-grid; place-items: center; color: #fff; font: 700 9px/1 sans-serif; font-style: normal; }
+  .carac { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 2px; }
+  .carac b { margin-right: 3px; }
+  .carac .span2 { grid-column: span 2; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 10px; row-gap: 2px; }
+  .track { display: flex; align-items: center; gap: 3px; margin-top: 2px; }
+  .track .dot { width: 13px; height: 13px; border: 1.3px solid var(--ink); border-radius: 50%; }
+  .badge { display: inline-block; padding: 0 4px; font-weight: 700; color: #fff; border-radius: 1px; line-height: 1.25; }
+  .badge--blessante { background: var(--blessure); }
+  .badge--choquante { background: var(--choc-badge); color: var(--ink); }
+  .row { display: flex; justify-content: space-between; gap: 6px; border-bottom: 1px solid var(--grenat); padding-top: 3px; }
+  .row b { text-decoration: underline; text-underline-offset: 2px; }
+  .action { margin-bottom: 4px; }
+  .action--nested { margin-left: 10px; }
+  .action .sub { margin-top: 2px; }
+  .action .sub--note { padding-left: 10px; }
+  .action strong.upper { text-transform: uppercase; }
+
+  .show-proposed .proposed { outline: 1.5px dashed var(--proposed); outline-offset: 1px; }
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1>Fiche monstre — maquette <code>monstre.jpg</code> et reconstruction HTML</h1>
+  <label><input type="checkbox" id="toggle" checked> Montrer les champs proposés (hors schéma 3.0.0)</label>
+  <label>Zoom <input type="range" id="zoom" min="1" max="2.5" step=".1" value="1.5"></label>
+</header>
+
+<div class="stage">
+  <section class="panel"><h2>Maquette — monstre.jpg</h2><div class="zoom"><img src="monstre.jpg" alt="Maquette de la fiche monstre Infecté Zy-2"></div></section>
+  <section class="panel"><h2>Reconstruction depuis la donnée</h2><div class="zoom" id="sheet"></div></section>
+  <section class="panel notes">
+    <h2>Lecture</h2>
+    <ul>
+      <li>Pointillés bleus : valeur qui n'a <strong>aucun champ</strong> dans le schéma 3.0.0 (voir l'objet <code>monstre</code> dans la source).</li>
+      <li>La fiche est organisée <strong>par état</strong> : la carte principale imprime le profil <em>résolu</em> de l'état Stimulé (base + delta), la carte secondaire celui de l'état de base Non stimulé.</li>
+      <li>Profil de base = <strong>Non stimulé</strong>, ce que la règle et le titre « Non stimulé (Corps faible) » désignent : le corps brut. L'état <code>stimule</code> est un delta qui ajoute les actions.</li>
+      <li>Les titres de section empruntent les composants de la créature : <em>Comportement (instinct)</em>, <em>Agir (type d'infecté)</em>, <em>Non stimulé (type de corps)</em>.</li>
+      <li>Les traits <code>comportement[]</code>, <code>traitsSpeciaux</code>, <code>contagion</code> et <code>narratif</code> n'apparaissent pas sur la maquette.</li>
+      <li>La case vide du bandeau Stimulé et les cercles Malus sont <strong>imprimés vides</strong>.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+// Donnée de la fiche, dans la forme du schéma 3.0.0. Les plages jouables sont
+// abrégées en nombre (current) pour la lisibilité. `P(...)` marque une valeur
+// proposée, sans champ dans le schéma.
+const P = (v) => ({ proposed: true, v });
+const monstre = {
+  // proposé : catégorie imprimée dans le bandeau (Zombie, Animal, Monstre…)
+  categorie: P("Zombie"),
+  nom: "Infecté Zy-2",
+  typeInfecte: "Infecté Zy",
+  instinct: "Rôdeur",
+  typeDeCorps: "Corps faible",
+  niveauDeDanger: 6,
+  description: "Le vieil homme malade et décharné qui avance péniblement dans votre direction est secoué de spasmes étranges, marche bizarrement et vous regarde de ses yeux jaunes injectés de sang",
+
+  // ── Profil de base : l'état Non stimulé (le corps brut) ──
+  // proposé : nom et déclencheurs de l'état de base (seuls les `etats[]` en ont)
+  etatDeBase: P({ nom: "Non stimulé", declencheurs: ["1d10 min consécutives sans détecter de proie"] }),
+  caracteristiques: { for: 20, con: 30, dex: 20, rap: 20, per: 30 },
+  zoneDeDetection: "0 m",
+  deplacement: "1 m",
+  sante: { physique: [4, 9, 14, 19] },
+  // proposé : état permanent imprimé en Santé (l'exemple rôdeur le range dans etatDePartie, masqué)
+  etatsPermanents: P(["Insensible"]),
+  actionsParRound: 1,
+  defense: { active: false, bonus: 4 },
+  equipement: { possessions: ["Vêtements déchirés et souillés"] },
+
+  etats: [
+    {
+      id: "stimule",
+      nom: "Stimulé",
+      declencheurs: ["Une proie détectée"],
+      delta: {
+        zoneDeDetection: "2 m",
+        deplacement: "3 m",
+        sante: { physique: [5, 10, 15, 20] },
+        actionsParRound: 2,
+        // proposé : nombre de cercles Malus avant HS (règle : HS quand malus ≥ % Art martial)
+        malusAvantHs: P(3),
+        actions: [
+          {
+            nom: "Arme psychologique",
+            test: { nom: "Arme psychologique", specialite: "Dégoût zombie", pourcentage: 50 },
+            conditions: ["Attaque gratuite PREMIÈRE FOIS"],
+            desDeDegats: 1,
+            // proposé : versant (DM/DP), nature, alternative de dégâts, propriétés
+            degats: P({ versant: "mental", nature: "choquante", alternative: { des: 2, condition: "si la cible est au contact" },
+                        proprietes: ["Étourdissante", "Localisée (Peur)", "Fatale 9+"] }),
+          },
+          {
+            nom: "Art martial",
+            test: { nom: "Art martial", specialite: "Zombie", pourcentage: 10, caracteristique: "for", total: 30 },
+            imbrique: P(true),
+            notes: "Le zombie cherche à saisir et agripper puis mordre sa cible.",
+            desDeDegats: 1,
+            degats: P({ versant: "physique", nature: "blessante" }),
+            effets: ["Contamination par le sang", "Terreur de l'infection"],
+          },
+          {
+            nom: "Bave",
+            test: { nom: "Bave", specialite: "Infection respiratoire", pourcentage: 35 },
+            imbrique: P(true),
+            notes: "Être en contact avec le zombie (ou sa bave infectieuse) présente un risque de Contamination",
+          },
+          {
+            nom: "Observation",
+            test: { nom: "Observation", specialite: "Proie", pourcentage: 10, caracteristique: "per", total: 40 },
+          },
+        ],
+      },
+    },
+  ],
+  // Présents dans le schéma, absents de la maquette.
+  comportement: ["Erre au hasard tant qu'aucune proie n'est détectée."],
+  contagion: { agent: "Virus Y" },
+};
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const val = (x) => (x && x.proposed ? x.v : x);
+const wrap = (x, html, tag = "span") => (x && x.proposed ? `<${tag} class="proposed">${html}</${tag}>` : html);
+const biohazard = '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="#1E1A18" stroke-width="1.6"><circle cx="12" cy="13" r="2.2"/><path d="M12 10.8a5 5 0 0 1-3.6-8.3M12 10.8a5 5 0 0 0 3.6-8.3M10.1 14.1a5 5 0 0 1-7.9 3.4M13.9 14.1a5 5 0 0 0 7.9 3.4M8 16.5a6 6 0 0 0 8 0"/></g></svg>';
+
+// Profil résolu d'un état : toute propriété du delta remplace celle de la base.
+const resolve = (base, etat) => ({ ...base, ...(etat ? etat.delta : {}) });
+
+function caracBlock(p) {
+  const c = p.caracteristiques;
+  return `<div class="carac">
+    ${["for", "con", "dex", "rap"].map((k) => `<span><b>${k.toUpperCase()}</b>${c[k]} %</span>`).join("")}
+    <span class="span2">Zone de détection ${esc(p.zoneDeDetection)}</span>
+    <span><b>PER</b>${c.per} %</span><span>Dépl. ${esc(p.deplacement)}</span>
+  </div>`;
+}
+
+const sp = (p) => `<span><b>SP</b> ${p.sante.physique.join(" / ")}</span>`;
+const etat = (p) => wrap(p.etatsPermanents, `<b>État</b> ${val(p.etatsPermanents).join(", ")}`);
+const actionsLine = (p) => `<span><b>Actions</b> ${p.actionsParRound}/round</span>`;
+const defenseLine = (p) => `<span><b>Défense</b> ${p.defense.active ? "Oui" : "Non"}${p.defense.bonus !== undefined ? ` (${p.defense.bonus} bonus)` : ""}</span>`;
+
+function testRow(t) {
+  const left = `<b>${esc(t.nom)}</b>${t.specialite ? ` (${esc(t.specialite)})` : ""}${t.caracteristique ? ` ${t.pourcentage} % + <strong>${t.caracteristique.toUpperCase()}</strong>` : ""}`;
+  return `<div class="row"><span>${left}</span><span>${t.total ?? t.pourcentage} %</span></div>`;
+}
+
+function actionBlock(a) {
+  const d = val(a.degats);
+  const lines = [];
+  for (const c of a.conditions ?? []) lines.push(`<div class="sub">${esc(c).replace("PREMIÈRE FOIS", '<strong class="upper">Première fois</strong>')}</div>`);
+  if (a.desDeDegats !== undefined) {
+    const v = d && d.versant === "mental" ? "DM" : "DP";
+    const badge = (n) => `<span class="badge badge--${d ? d.nature : "blessante"}">${n}d10</span>`;
+    const alt = d && d.alternative ? ` (ou ${badge(d.alternative.des)} ${esc(d.alternative.condition)})` : "";
+    const effets = (a.effets ?? []).map((e) => ` + ${esc(e)}`).join("");
+    const dmg = `${wrap(a.degats, v)} ${wrap(a.degats, badge(a.desDeDegats))}${wrap(a.degats, alt)}${effets}`;
+    // La maquette enchaîne la ligne de dégâts à la note quand il y en a une.
+    lines.push(a.notes ? `<div class="sub sub--note">${esc(a.notes)} ${dmg}</div>` : `<div class="sub">${dmg}</div>`);
+    if (d && d.proprietes) lines.push(`<div class="sub">${wrap(a.degats, d.proprietes.join(", "))}</div>`);
+  } else if (a.notes) {
+    lines.push(`<div class="sub sub--note">${esc(a.notes)}</div>`);
+  }
+  const html = `<div class="action${val(a.imbrique) ? " action--nested" : ""}">${testRow(a.test)}${lines.join("")}</div>`;
+  return a.imbrique ? wrap(a.imbrique, html, "div") : html;
+}
+
+function render(m) {
+  const base = val(m.etatDeBase);
+  const stim = m.etats.find((e) => e.id === "stimule");
+  const s = resolve(m, stim);
+  const trig = (t) => `<div class="trigger"><i>➜</i>${esc(t)}</div>`;
+
+  return `
+  <div class="sheet">
+    <article class="card">
+      <div class="kind">${wrap(m.categorie, esc(val(m.categorie)))}</div>
+      <div class="name">${wrap(m.categorie, biohazard)}<div class="name__lines">
+        <div class="name__title">${esc(m.nom.split(" ")[0])} <small>${esc(m.nom.split(" ").slice(1).join(" "))}</small></div>
+        <div class="name__sub"><span>${esc(m.instinct)} ${esc(m.typeDeCorps)}</span><span class="nd"><b>ND</b> ${m.niveauDeDanger}</span></div>
+      </div></div>
+      <p class="desc">${esc(m.description)}</p>
+
+      <div class="section">${esc(stim.nom)}<span class="box"></span></div>
+      <div class="body">${stim.declencheurs.map(trig).join("")}${caracBlock(s)}</div>
+      <div class="section">Santé</div>
+      <div class="body">
+        <div class="two">${sp(s)}<span>${etat(s)}</span></div>
+        ${wrap(s.malusAvantHs, `<div class="track"><b>Malus</b>${'<span class="dot"></span>'.repeat(val(s.malusAvantHs))}<b>HS</b></div>`, "div")}
+      </div>
+      <div class="section">Comportement (${esc(m.instinct)})</div>
+      <div class="body two">${actionsLine(s)}${defenseLine(s)}</div>
+      <div class="section">Agir (${esc(m.typeInfecte)})</div>
+      <div class="body">${s.actions.map(actionBlock).join("")}</div>
+    </article>
+
+    <article class="card card--secondary">
+      <div class="section">${wrap(m.etatDeBase, esc(base.nom))} (${esc(m.typeDeCorps)})</div>
+      <div class="body">${wrap(m.etatDeBase, base.declencheurs.map(trig).join(""), "div")}${caracBlock(m)}</div>
+      <div class="section">Comportement et santé</div>
+      <div class="body two">${sp(m)}<span>${etat(m)}</span>${actionsLine(m)}${defenseLine(m)}</div>
+      <div class="section">Équipement</div>
+      <div class="body">${m.equipement.possessions.map(esc).join(", ")}</div>
+    </article>
+  </div>`;
+}
+
+document.getElementById("sheet").innerHTML = render(monstre);
+const toggle = document.getElementById("toggle");
+const sync = () => document.body.classList.toggle("show-proposed", toggle.checked);
+toggle.addEventListener("change", sync); sync();
+document.getElementById("zoom").addEventListener("input", (e) => document.documentElement.style.setProperty("--z", e.target.value));
+</script>
+</body>
+</html>

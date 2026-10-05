@@ -31,6 +31,16 @@ export const ADRENALINE_VISUAL_CALLOUTS = [
     capability: "style:adrenaline",
     modifiers: [],
   },
+  // A role card of the scenario: the title (`CARTE #1 — NOM`) on a garnet band in
+  // the display font, the brief on the rosy surface.
+  {
+    id: "adrenaline-role",
+    label: "Carte de rôle",
+    aliases: ["role"],
+    template: "title-body",
+    capability: "style:adrenaline",
+    modifiers: [],
+  },
   {
     id: "adrenaline-formation",
     label: "Formation",

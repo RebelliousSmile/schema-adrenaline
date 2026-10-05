@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche PNJ — maquette de référence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  /*
+   * Référence HTML de la fiche PNJ Zombiology (block:adrenaline-pnj), reconstruite
+   * depuis pnj.jpg (318 × 851 px). Couleurs relevées par quantification du JPEG :
+   * valeurs approximatives, à réconcilier avec les jetons du pack.
+   *
+   * La fiche est rendue depuis l'objet PNJ plus bas, écrit dans la forme du schéma
+   * 3.0.0. Les champs que le schéma ne porte pas encore sont marqués `proposé` et
+   * entourés de pointillés bleus quand la case « Montrer les champs proposés » est
+   * cochée.
+   */
+  :root {
+    --grenat: #5F0B00;          /* bandeau PNJ, filets, bordure extérieure */
+    --section-band: #D3CFC6;    /* bandeaux de section et barre de nom */
+    --card: #FFFFFF;
+    --page: #F4F3EF;
+    --ink: #1E1A18;
+    --choc: #E3A400;            /* piste Malus jaune, badge DP choquant (~#FFD300 sur le JPEG) */
+    --choc-badge: #FFD300;
+    --blessure: #E30411;        /* piste Malus rouge, badge DP blessant (~#FE0000) */
+    --censure-badge: #868781;   /* badge gris « −1d10 » du caractère */
+    --proposed: #2563EB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #E9E6E1; color: var(--ink); font: 14px/1.45 system-ui, "Segoe UI", sans-serif; padding: 16px; }
+  header.bar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px; }
+  header.bar h1 { font-size: 18px; }
+  header.bar label { font-size: 13px; display: flex; gap: 6px; align-items: center; }
+  .stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .panel { background: var(--page); padding: 12px; }
+  .panel h2 { font: 600 12px/1.2 system-ui, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: #6b625c; margin-bottom: 8px; }
+  .zoom { zoom: var(--z, 1.5); }
+  .panel img { display: block; width: 318px; }
+  .notes { max-width: 520px; font-size: 13px; }
+  .notes li { margin: 0 0 6px 18px; }
+  .notes code { background: #fff; padding: 0 4px; }
+
+  /* ===== Fiche PNJ ===== */
+  .pnj { width: 318px; background: var(--card); border: 1.5px solid var(--grenat); border-radius: 8px; overflow: hidden;
+         font: 12px/1.3 "Roboto Condensed", "Arial Narrow", sans-serif; color: var(--ink); }
+  .pnj__kind { background: var(--grenat); color: #fff; font-weight: 700; text-transform: uppercase; padding: 4px 8px 3px; letter-spacing: .02em; }
+  .pnj__name { display: flex; align-items: center; gap: 6px; background: var(--section-band); padding: 3px 8px; font-weight: 800; font-size: 14px; text-transform: uppercase; }
+  .pnj__name svg { width: 14px; height: 14px; fill: #6d6865; flex: none; }
+  .pnj__name .nd { margin-left: auto; text-transform: none; }
+  .pnj__desc { font-style: italic; padding: 5px 8px 7px; }
+  .pnj__section { background: var(--section-band); font-weight: 700; font-size: 13px; padding: 2px 8px; }
+  .pnj__body { padding: 5px 8px 7px; }
+  .carac { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 2px; }
+  .carac b { margin-right: 3px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 10px; }
+  .threshold { font-size: 13px; }
+  .badge { display: inline-block; padding: 0 4px; font-weight: 700; color: #fff; border-radius: 1px; line-height: 1.25; }
+  .badge--censure { background: var(--censure-badge); }
+  .badge--blessante { background: var(--blessure); }
+  .badge--choquante { background: var(--choc-badge); color: var(--ink); }
+  .track { display: flex; align-items: center; gap: 2px; font-weight: 700; margin-top: 2px; }
+  .track__label { width: 38px; }
+  .track span.dot { width: 14px; height: 14px; border-radius: 50%; border: 1.3px solid currentColor; display: inline-grid; place-items: center; font-size: 9px; font-weight: 400; }
+  .track--choc { color: var(--choc); }
+  .track--blessure { color: var(--blessure); }
+  .track span.dot.on { background: currentColor; color: #fff; }
+  .stress { display: flex; align-items: center; gap: 3px; margin-top: 3px; }
+  .stress b { text-transform: uppercase; }
+  .stress .dot { width: 13px; height: 13px; border: 1.3px solid var(--ink); border-radius: 50%; display: inline-grid; place-items: center; font-size: 9px; font-weight: 700; }
+  .stress small { font-size: 10.5px; margin-left: 3px; }
+  .row { display: flex; justify-content: space-between; gap: 6px; border-bottom: 1px solid var(--grenat); padding-top: 3px; }
+  .row b { text-decoration: underline; text-underline-offset: 2px; }
+  .sub { padding-left: 0; }
+  .sub--avantage { padding-left: 12px; }
+  .equip { line-height: 1.35; }
+
+  .show-proposed .proposed { outline: 1.5px dashed var(--proposed); outline-offset: 1px; }
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1>Fiche PNJ — maquette <code>pnj.jpg</code> et reconstruction HTML</h1>
+  <label><input type="checkbox" id="toggle" checked> Montrer les champs proposés (hors schéma 3.0.0)</label>
+  <label>Zoom <input type="range" id="zoom" min="1" max="2.5" step=".1" value="1.5"></label>
+</header>
+
+<div class="stage">
+  <section class="panel"><h2>Maquette — pnj.jpg</h2><div class="zoom"><img src="pnj.jpg" alt="Maquette de la fiche PNJ Agent de sécurité"></div></section>
+  <section class="panel"><h2>Reconstruction depuis la donnée</h2><div class="zoom" id="sheet"></div></section>
+  <section class="panel notes">
+    <h2>Lecture</h2>
+    <ul>
+      <li>Pointillés bleus : valeur qui n'a <strong>aucun champ</strong> dans le schéma 3.0.0 (voir l'objet <code>pnj</code> dans la source).</li>
+      <li>Les deux pistes Malus et les deux cercles de stress sont <strong>imprimés vides</strong> : ils font partie de la fiche de référence, pas seulement de l'état de partie.</li>
+      <li>Le bloc <code>narratif</code> n'apparaît pas sur la maquette.</li>
+      <li>Les valeurs sont imprimées dans la police de corps, en noir : pas d'encre manuscrite.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+// Donnée de la fiche, dans la forme du schéma 3.0.0. Les plages jouables sont
+// abrégées en nombre (current) pour la lisibilité. `P(...)` marque une valeur
+// proposée, sans champ dans le schéma.
+const P = (v) => ({ proposed: true, v });
+const pnj = {
+  nom: "Agent de sécurité",
+  niveauDeDanger: 17,
+  description: "Grand et robuste, cet homme à la peau foncée et aux traits marqués dégage une impression de calme malgré une expression peu démonstrative. Son uniforme sombre souligne sa carrure athlétique tandis que son regard attentif semble constamment balayer les gens alentour",
+  caracteristiques: { for: 50, con: 40, dex: 30, rap: 10, log: 20, vol: 40, per: 30, cha: 30 },
+  sante: { physique: [8, 17, 22, 27], mental: [7, 13, 18, 23] },
+  protections: {
+    physiques: {
+      solidite: 8,
+      armure: {
+        nom: "Chaussures",
+        // proposé : portée libre (« Pieds » n'est pas une LocalisationCorporelle)
+        couverture: P("Pieds uniquement"),
+        // proposé : réduction fixe contre des types de dégâts (le schéma n'a que des PP ajoutés aux seuils)
+        reduction: P({ valeur: -5, contre: ["Tranchante", "Perforante"] }),
+      },
+    },
+    mentales: {
+      solidite: 7,
+      caractere: {
+        trait: "Calme",
+        // proposé : réduction en dés (Censure : absorbe 1d10) au lieu de `points` PM, requis aujourd'hui
+        reduction: P({ des: -1 }),
+        localisations: ["anxiete", "peur", "colere"],
+      },
+    },
+  },
+  // proposé : pistes et cases imprimées sur la fiche de référence
+  pistes: P({ malusChoc: 10, malusBlessure: 10, stress: 2 }),
+  formations: [
+    { nom: "Classe populaire", pourcentage: 20 },
+    { nom: "Sécurité", pourcentage: 25 },
+    { nom: "Loisirs", pourcentage: 15 },
+  ],
+  competences: [
+    { nom: "Arme à feu", specialite: "Pistolet", pourcentage: 40, caracteristique: "dex", total: 70,
+      // proposé : ligne d'arme rattachée à la compétence
+      arme: P({ munitions: 12, portee: "60 m", desDeDegats: 3, nature: "blessante", proprietes: ["Perforante", "Fatale 9+"] }) },
+    { nom: "Art martial", specialite: "Judo", pourcentage: 40, caracteristique: "dex", total: 80,
+      arme: P({ desDeDegats: 1, nature: "choquante", proprietes: ["Contondante"] }),
+      avantages: ["Gestion du stress"] },
+    { nom: "Arme sociale", specialite: "Communauté", pourcentage: 35, caracteristique: "cha", total: 65 },
+    { nom: "Arme sociale", specialite: "Intimidation", pourcentage: 40, caracteristique: "cha", total: 70, avantages: ["Bouclier personnel"] },
+    { nom: "Arme sociale", specialite: "Négociation", pourcentage: 35, caracteristique: "cha", total: 65 },
+    { nom: "Discrétion", pourcentage: 30, caracteristique: "dex", total: 60 },
+    { nom: "Étiquette", specialite: "Autorité", pourcentage: 35, caracteristique: "vol", total: 65 },
+    { nom: "Observation", specialite: "Comportement", pourcentage: 30, caracteristique: "per", total: 60 },
+    { nom: "Sport", specialite: "Athlétisme", pourcentage: 25, caracteristique: "for", total: 75 },
+    { nom: "Sport", specialite: "Musculation", pourcentage: 35, caracteristique: "for", total: 85 },
+  ],
+  equipement: {
+    // « Uniforme de sécurité (Représentation) » : l'objet porte une propriété entre parenthèses
+    possessions: ["Chaussures tactiques", "Uniforme de sécurité (Représentation)", "Pistolet", "Smartphone", "Talkie walkie", "menottes plastiques"],
+  },
+};
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const val = (x) => (x && x.proposed ? x.v : x);
+const wrap = (x, html, tag = "span") => (x && x.proposed ? `<${tag} class="proposed">${html}</${tag}>` : html);
+const LOC = { anxiete: "Anxiété", peur: "Peur", colere: "Colère", impuissance: "Impuissance", tristesse: "Tristesse", culpabilite: "Culpabilité" };
+const icon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" fill="#8c8784"/><circle cx="12" cy="9" r="4.2" fill="#fff"/><path d="M4 22c0-4.6 3.6-7.4 8-7.4s8 2.8 8 7.4z" fill="#fff"/></svg>';
+
+function render(d) {
+  const c = d.caracteristiques;
+  const caracHtml = ["for", "con", "dex", "rap", "log", "vol", "per", "cha"]
+    .map((k) => `<span><b>${k.toUpperCase()}</b>${c[k]} %</span>`).join("");
+
+  const arm = d.protections.physiques.armure;
+  const red = val(arm.reduction);
+  const armourHtml = `<b>Armure</b> ${esc(arm.nom)} ${wrap(arm.couverture, esc(val(arm.couverture)))}, ${wrap(arm.reduction, `Réduction (${red.contre.join(", ")}) ${String(red.valeur).replace("-", "−")}`)}`;
+  const car = d.protections.mentales.caractere;
+  const carHtml = `<b>Caractère</b> ${esc(car.trait)} ${wrap(car.reduction, `<span class="badge badge--censure">−${Math.abs(val(car.reduction).des)}d10</span>`)} ${car.localisations.map((l) => LOC[l]).join(", ")}`;
+
+  const pistes = val(d.pistes);
+  const dots = (n) => Array.from({ length: n }, (_, i) => `<span class="dot">${i + 1}</span>`).join("");
+  const tracks = wrap(d.pistes, `
+    <div class="track track--choc"><span class="track__label">Malus</span>${dots(pistes.malusChoc)}</div>
+    <div class="track track--blessure"><span class="track__label">Malus</span>${dots(pistes.malusBlessure)}</div>
+    <div class="stress"><b>Stress</b>${'<span class="dot"></span>'.repeat(pistes.stress)}<small>(notez A pour adrénaline et P pour panique)</small></div>`, "div");
+
+  const formHtml = d.formations.map((f) => `<div class="row"><b>${esc(f.nom)}</b><span>${f.pourcentage} %</span></div>`).join("");
+
+  const compHtml = d.competences.map((k) => {
+    const head = `<div class="row"><span><b>${esc(k.nom)}</b>${k.specialite ? ` (${esc(k.specialite)})` : ""} ${k.pourcentage} %${k.caracteristique ? ` + <strong>${k.caracteristique.toUpperCase()}</strong>` : ""}</span><span>${k.total} %</span></div>`;
+    let sub = "";
+    if (k.arme) {
+      const a = val(k.arme);
+      const lines = [];
+      if (a.munitions !== undefined || a.portee) lines.push(`<div class="sub">${[a.munitions !== undefined ? `Munitions ${a.munitions}` : "", a.portee ? `Portée ${a.portee}` : ""].filter(Boolean).join(", ")}</div>`);
+      lines.push(`<div class="sub">DP <span class="badge badge--${a.nature}">${a.desDeDegats}d10</span> ${a.proprietes.join(", ")}</div>`);
+      sub += wrap(k.arme, lines.join(""), "div");
+    }
+    for (const av of k.avantages ?? []) sub += `<div class="sub sub--avantage">Avantage : ${esc(av)}</div>`;
+    return head + sub;
+  }).join("");
+
+  return `
+  <article class="pnj">
+    <div class="pnj__kind">PNJ</div>
+    <div class="pnj__name">${icon}<span>${esc(d.nom)}</span><span class="nd">ND ${d.niveauDeDanger}</span></div>
+    <p class="pnj__desc">${esc(d.description)}</p>
+    <div class="pnj__section">Caractéristiques</div>
+    <div class="pnj__body carac">${caracHtml}</div>
+    <div class="pnj__section">Santé</div>
+    <div class="pnj__body">
+      <div class="two threshold"><span><b>SP</b> ${d.sante.physique.join(" / ")}</span><span><b>SM</b> ${d.sante.mental.join(" / ")}</span></div>
+      <div class="two"><span>${armourHtml}</span><span>${carHtml}</span></div>
+      ${tracks}
+    </div>
+    <div class="pnj__section">Formations</div>
+    <div class="pnj__body">${formHtml}</div>
+    <div class="pnj__section">Compétences</div>
+    <div class="pnj__body">${compHtml}</div>
+    <div class="pnj__section">Équipement</div>
+    <div class="pnj__body equip">${d.equipement.possessions.map(esc).join(", ")}</div>
+  </article>`;
+}
+
+document.getElementById("sheet").innerHTML = render(pnj);
+const toggle = document.getElementById("toggle");
+const sync = () => document.body.classList.toggle("show-proposed", toggle.checked);
+toggle.addEventListener("change", sync); sync();
+document.getElementById("zoom").addEventListener("input", (e) => document.documentElement.style.setProperty("--z", e.target.value));
+</script>
+</body>
+</html>

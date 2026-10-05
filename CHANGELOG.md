@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-10-05
+
+### Changed
+
+- The Adrenaline pack declares `--adrenaline-h2-rule` as `transparent`: the
+  booklet prints h2 without a rule. `--adrenaline-h3-rule` is the garnet of
+  `--adrenaline-rule` (`#9D2416`) instead of the darker `#71170F`.
+
+### Added
+
+- `adrenaline-role` (alias `role`) in `ADRENALINE_VISUAL_CALLOUTS`: the role
+  card of the scenario booklet, a display-font title on a garnet band over the
+  rosy surface of the encart.
+
+## [3.1.0] - 2026-10-05
+
 ### Added
 
 - `ADRENALINE_VISUAL_CALLOUTS`, exported by the package root and by

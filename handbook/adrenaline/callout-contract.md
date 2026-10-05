@@ -9,6 +9,7 @@ La liste fait foi dans `ADRENALINE_VISUAL_CALLOUTS`, exporté par `schema-adrena
 | `adrenaline-exemple`     | `exemple`, `example` | Exemple de jeu. Filets pointillés en haut et en bas, sans fond. L'étiquette est en cartouche sombre calée à droite, et le corps en italique.                           |
 | `adrenaline-description` | `description`        | Texte à lire aux joueurs. Corps droit sur fond blanc, entre deux filets pointillés. L'étiquette est en cartouche grenat calée à droite, posée au-dessus du filet haut. |
 | `adrenaline-encart`      | `encart`             | Encart de règle ou de conseil. Titre sur un bandeau grenat ajusté au texte, corps sur une surface rosée bordée d'un filet grenat.                                      |
+| `adrenaline-role`        | `role`               | Carte de rôle du scénario. Titre (`CARTE #1 — NOM`) en police d'affichage sur un bandeau grenat ajusté au texte, corps sur la surface rosée bordée d'un filet grenat.  |
 | `adrenaline-formation`   | `formation`          | Paquetage ou formation. Bandeau sombre pleine largeur, puis le corps sans fond, qui porte en général une liste.                                                        |
 | `adrenaline-action`      | `action`             | Action de combat. Carte à coins arrondis, titre sur un bandeau pêche. Le **premier paragraphe** du corps devient la bande grenat de la ligne de test.                  |
 | `adrenaline-roller`      | `roller`             | Table à lancer. Même cadre et même bandeau grenat que l'encart, sans fond ; le tableau occupe toute la largeur, lignes alternées.                                      |
@@ -60,7 +61,7 @@ Trois types natifs d'Obsidian reprennent une mise en page du livret de scénario
 | Élément       | Mise en page                                                                                                         | Jetons                                                  |
 | ------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | Titre 1       | Police d'affichage, majuscules, sur un panneau blanc fermé par un filet grenat, une frise grenat verticale à gauche. | `--h1-*`, `--adrenaline-h1-surface`, `-frieze`, `-rule` |
-| Titre 2       | Comme le titre 1, plus petit, sur un filet fin.                                                                      | `--h2-*`, `--adrenaline-h2-rule`                        |
+| Titre 2       | Comme le titre 1, plus petit, sans filet (`transparent`).                                                            | `--h2-*`, `--adrenaline-h2-rule`                        |
 | Titre 3       | Serif du corps, semi-gras grenat, casse normale, sur un filet grenat fin.                                            | `--h3-*`, `--adrenaline-h3-rule`                        |
 | Titre 4       | Serif du corps, gras brun-grenat, sans filet.                                                                        | `--h4-*`                                                |
 | Titre 5       | Comme le titre 4, à la taille du niveau 5.                                                                           | `--h5-*`                                                |

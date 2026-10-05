@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "minimumHandbookVersion": "2.7.0",
   "requires": [
     "block:adrenaline-pj",
@@ -179,8 +179,8 @@
           "--adrenaline-h1-surface": "#FFFFFF",
           "--adrenaline-h1-frieze": "#71170F",
           "--adrenaline-h1-rule": "#71170F",
-          "--adrenaline-h2-rule": "#211A18",
-          "--adrenaline-h3-rule": "#71170F",
+          "--adrenaline-h2-rule": "transparent",
+          "--adrenaline-h3-rule": "#9D2416",
           "--adrenaline-inline-code-color": "#8B2115",
           "--adrenaline-description-rule": "#211A18",
           "--adrenaline-description-label-bg": "#71170F",
@@ -323,7 +323,7 @@
           "--adrenaline-h1-surface": "#2B1A16",
           "--adrenaline-h1-frieze": "#8B2115",
           "--adrenaline-h1-rule": "#F05A32",
-          "--adrenaline-h2-rule": "#C9B8AD",
+          "--adrenaline-h2-rule": "transparent",
           "--adrenaline-h3-rule": "#F05A32",
           "--adrenaline-inline-code-color": "#E78463",
           "--adrenaline-description-rule": "#C9B8AD",

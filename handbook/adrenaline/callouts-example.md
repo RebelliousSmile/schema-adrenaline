@@ -33,6 +33,11 @@ Ces callouts servent dans tous les livrets.
 > [!encart] Conseil au meneur
 > Un encart porte une règle optionnelle ou un conseil, à l'écart du texte courant.
 
+> [!role] CARTE #1 — Parent d'élèves
+> Parent d'une adolescente fréquentant la paroisse, vous êtes investi comme délégué des parents d'élèves au collège.
+>
+> **Objectif secondaire :** avoir une explication bien claire de ce qui s'est passé.
+
 > [!action] Attaque au contact
 > Compétence (spécialité) + FOR — test simple, 1 attaque
 >
