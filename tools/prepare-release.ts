@@ -63,7 +63,12 @@ function listFiles(directory: string, relative = ""): string[] {
 function canonicalContents(tarball: string): Record<string, string> {
   const extracted = fs.mkdtempSync(path.join(os.tmpdir(), "schema-adrenaline-unpack-"));
   try {
-    run("tar", ["-xzf", tarball, "-C", extracted]);
+    // Relative paths from the temp directory: a GNU tar on PATH (Git Bash) reads `C:` as a host.
+    run(
+      "tar",
+      ["-xzf", path.relative(os.tmpdir(), tarball), "-C", path.relative(os.tmpdir(), extracted)],
+      os.tmpdir(),
+    );
     return Object.fromEntries(
       listFiles(extracted)
         .sort()
