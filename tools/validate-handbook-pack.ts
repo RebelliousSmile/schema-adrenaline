@@ -51,6 +51,8 @@ const REQUIRED_NOTE_TOKENS = [
   "--adrenaline-rule",
   "--adrenaline-handwritten-ink",
   "--adrenaline-page-texture",
+  "--adrenaline-resume-accent",
+  "--adrenaline-resume-accent-ink",
 ];
 const REQUIRED_WORKSPACE_TOKENS = [
   "--background-primary-alt",

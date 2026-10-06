@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-10-06
+
+### Added
+
+- The Adrenaline pack declares `--adrenaline-resume-accent` and
+  `--adrenaline-resume-accent-ink` in both polarities: the dotted rule, the tab
+  and the labels of the scenario "Résumé" card (garnet in light, yellow in
+  dark). Both are required note tokens.
+
+### Changed
+
+- Dark `--adrenaline-note-surface` is `#3D3636` instead of `#2B1A16`.
+
 ## [3.2.0] - 2026-10-05
 
 ### Changed
