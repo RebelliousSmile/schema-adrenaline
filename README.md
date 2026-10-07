@@ -10,11 +10,21 @@ keeps its own declarative integration alongside them.
 
 ## Status
 
-This source declares `schema-adrenaline@3.1.0` and schema baseline `3.1.0`
+This source declares `schema-adrenaline@3.3.0` and schema baseline `3.1.0`
 (additive to contract 3).
 Consumers should pin a published release archive rather than the moving branch.
 Three character schemas live under the `adrenaline` folder, each covered by
 JSON and TOML examples and a shared conformance corpus.
+
+## Preview
+
+The Handbook pack gives each sheet the look of the Zombiology booklets, in light
+and dark polarities. These two captures are rendered by Playwright from the
+tokens, fonts and textures of `handbook/adrenaline/pack.json`; they are a
+reference layout built from the pack, not a screenshot of Obsidian.
+
+![Adrenaline pack tokens, light polarity](docs/images/pack-light.png)
+![Adrenaline pack tokens, dark polarity](docs/images/pack-dark.png)
 
 ## Published schemas
 
@@ -78,7 +88,7 @@ runtime adapter registry consumer-owned and exhaustive.
 - `tools/` provides generation, validation and audit scripts
 - `handbook.json` publishes the repository as a versioned Handbook catalogue
 - `handbook/adrenaline/` is the versioned, declarative game plugin copied into
-  Handbook from that catalogue; version 0.2.0 adds the licensed fonts and
+  Handbook from that catalogue; version 0.9.0 carries the licensed fonts and
   original light/dark textures while containing no executable code or external
   stylesheet
 
@@ -141,7 +151,7 @@ released host tag, and the host tests one exact package commit.
 Claims about a schema are cheap, so `npm run audit` measures them instead. It
 currently reports, and enforces:
 
-- **351 of 351 properties carry a description** — a tool reading only
+- **1260 of 1260 properties carry a description** — a tool reading only
   `schemas/` never meets an unexplained field.
 - **Every numeric value is bounded on both sides.** A bare `z.int()` compiles to
   `"maximum": 9007199254740991`; the four named primitives in
@@ -150,7 +160,7 @@ currently reports, and enforces:
   succeeds automatically and gains quality.
 - **Each schema is a valid draft-7 and compiles under Ajv,** which an
   unsatisfiable schema would not.
-- **24 malformed documents are rejected and 3 legitimate JSON witnesses accepted,**
+- **34 malformed documents are rejected and 3 legitimate JSON witnesses accepted,**
   alongside the TOML conformance cases indexed by `corpus/cases.json`.
 
 What it does not prove: no schema can check that a skill's `total` equals its
@@ -170,7 +180,7 @@ Install the immutable GitHub Release asset directly. npm records this complete
 URL and its SHA-512 SRI integrity in the consumer lockfile:
 
 ```sh
-npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v3.1.0/schema-adrenaline-3.1.0.tgz
+npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v3.3.0/schema-adrenaline-3.3.0.tgz
 ```
 
 ### Types and codecs (TypeScript apps)
@@ -238,9 +248,9 @@ API or document-shape change requires a new major contract version; a changed
 shape always receives a new `schemas/adrenaline/<version>/` directory. Published
 version directories, tags and release assets are immutable.
 
-The Handbook catalogue and game pack have their own version (`0.2.0` here).
+The Handbook catalogue and game pack have their own version (`0.9.0` here).
 Their version changes only when the pack changes and is deliberately independent
-from the `3.0.0` contract version.
+from the contract version.
 
 ### Creating a release-train candidate
 
