@@ -1,191 +1,132 @@
 # Schema Adrenaline
 
-Open, versioned data schemas for the **Adrenaline System** — the d100 engine by
-Damien Coltice behind _Zombiology_ — so VTTs, builders, and other digital tools
-can **share the same data**.
+_Schémas de données ouverts et versionnés pour l'Adrenaline System, le moteur d100 de Damien Coltice derrière Zombiology : fiches de personnage, PNJ et monstres échangés en JSON ou TOML entre Handbook, Lantern et les autres outils, sans format propriétaire._
 
-The repository is the shared Adrenaline source for **Handbook** and **Lantern**:
-they exchange structured JSON/TOML through the schemas below, while each tool
-keeps its own declarative integration alongside them.
+## État du projet
 
-## Status
+Ce dépôt déclare `schema-adrenaline@3.3.0` et la baseline de schéma `3.1.0`
+(additive au contrat 3). Les consommateurs épinglent une archive de release
+publiée, pas la branche mouvante.
 
-This source declares `schema-adrenaline@3.3.0` and schema baseline `3.1.0`
-(additive to contract 3).
-Consumers should pin a published release archive rather than the moving branch.
-Three character schemas live under the `adrenaline` folder, each covered by
-JSON and TOML examples and a shared conformance corpus.
+- _Ça marche aujourd'hui :_ trois schémas de personnage (`pj`, `pnj`, `monstre`) avec exemples JSON et TOML, un corpus de conformité partagé, des codecs TypeScript, et le pack Handbook (thèmes, polices, callouts)
+- _Pas encore :_ les catalogues de jeu (formations, compétences, armes) ne sont volontairement pas énumérés ; aucun schéma n'existe pour les règles, seulement pour les fiches
+- _Prochaine étape :_ l'intégration propre à Lantern vivra sous `lantern/` quand cet outil en aura besoin
 
-## Preview
+## Aperçu
 
-The Handbook pack gives each sheet the look of the Zombiology booklets, in light
-and dark polarities. These two captures are rendered by Playwright from the
-tokens, fonts and textures of `handbook/adrenaline/pack.json`; they are a
-reference layout built from the pack, not a screenshot of Obsidian.
+Le pack Handbook donne à chaque fiche la mise en page des livrets Zombiology, en polarité claire et sombre. Ces deux captures sont rendues par Playwright à partir des jetons, polices et textures de `handbook/adrenaline/pack.json` : c'est une mise en page de référence construite depuis le pack, pas une capture d'Obsidian.
 
-![Adrenaline pack tokens, light polarity](docs/images/pack-light.png)
-![Adrenaline pack tokens, dark polarity](docs/images/pack-dark.png)
+![Jetons du pack Adrenaline, polarité claire](docs/images/pack-light.png)
+![Jetons du pack Adrenaline, polarité sombre](docs/images/pack-dark.png)
 
-## Published schemas
+## Ce que les outils apportent
 
-They live under `adrenaline` rather than under a game folder because they
-describe the engine itself: every game running on the Adrenaline System shares
-them, and a game folder holds only what is specific to it.
+Ce dépôt décrit les données. Ce sont **Handbook** et **Lantern** qui les rendent, les éditent et les rendent jouables. Chaque fonctionnalité ci-dessous vit dans l'outil indiqué, pas ici.
 
-| Schema                                   | Covers                                                                                                                                                                                                                                                     |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `schemas/adrenaline/pj.schema.json`      | A player character sheet, following the printed one block for block: name, the eight characteristics, the four physical and four mental damage thresholds each with its covered value, protections, trainings with their skills, gear and game parameters. |
-| `schemas/adrenaline/pnj.schema.json`     | A non-player character record: only the name is required, everything else optional, from a named walk-on with a danger level and one italic line to a fully statted major character.                                                                       |
-| `schemas/adrenaline/monstre.schema.json` | A creature record: name and the four physical characteristics required, mental ones optional, with an alternate state, a generic contagion block and a narrative block.                                                                                    |
+### Handbook (plugin Obsidian)
 
-### What they do not carry
+[Handbook](https://github.com/RebelliousSmile/obsidian-handbook) installe le pack Adrenaline depuis ce dépôt. Il fournit :
 
-A sheet records a durable profile and may carry an optional `etatDePartie` block
-for the state of a session. It holds stress dice, malus tracks and sustained
-wounds with their location and duration without replacing the reference profile.
-The playable numeric values stored here carry `minimum`, `current` and `maximum`.
+- **Thèmes clair et sombre** : couleurs, titres, tableaux, surfaces et textures de page du pack, dans les deux polarités
+- **Polices du pack** : Adrenaline Body, Adrenaline Display et une police manuscrite, chargées localement
+- **Fiches** : rendu des documents `pj`, `pnj` et `monstre` selon l'annotation de présentation du schéma
+- **Callouts visuels** : exemple, description, encart, rôle, formation, action, roller et mention (voir [`callout-contract.md`](handbook/adrenaline/callout-contract.md))
+- **Dés** : clic droit sur un tableau placé dans un callout `roller` pour tirer un résultat, avec le plugin Dice Roller
+- **Colonnes** : régions multi-colonnes dans une note, repliées sur une colonne quand le volet de lecture est étroit
+- **Sections en mode alterné** : une partie de note affichée dans le mode opposé (sombre dans une note claire, et inversement)
+- **Export PDF** : mise en page de la fiche PJ Zombiology telle que la fiche papier la dispose, et option d'export sur papier blanc
 
-Threshold values are stored as read, never recomputed. The engine derives them
-(light = base + the tens digit of two characteristics, serious = light + 5, deep
-= light + 10), but two published sheets differ from that derivation by one point,
-so the schema records what the sheet prints.
+La [documentation de Handbook](https://github.com/RebelliousSmile/obsidian-handbook/wiki) détaille chacune de ces fonctions.
 
-**These schemas describe the shape of a record, not its content.** They enumerate
-no training, no skill, no weapon, no character trait and no creature. Every such
-name is a free string, because those catalogues belong to each game and to its
-publisher — not to the engine. What is closed is what the engine itself fixes:
-the eight characteristics, the twelve hit locations, the four damage thresholds.
+### Lantern (application web)
 
-### Presentation and consumer adapters
+[Lantern](https://github.com/RebelliousSmile/lantern) permet de **créer des fiches** Adrenaline System (personnages joueurs, PNJ, monstres) :
 
-The `2.2.0` baseline adds an `x-adrenaline-presentation` annotation at the
-root of each JSON Schema. It gives consumers the stable `block:adrenaline-*`
-capability, ordered sections and blocks, their document paths, finite layout
-forms, and a Zombiology appearance tied to the pack's tokens and font assets.
-The annotation is schema metadata:
-a user document must still not contain a `presentation` or `adapter` field, and
-the strict schemas and codecs continue to reject both.
+- édition structurée avec aperçu en direct de la fiche imprimée
+- import et export TOML, conformes à ces schémas
+- export PNG pour le partage et l'impression
+- stockage local dans le navigateur, sans compte
 
-Playable ranges expose `minimum`, `current` and `maximum` to the editor. The
-visible sheet renders `current` by default; PJ characteristics additionally
-show `minimum` as the creation value. `maximum` is never displayed. Scalar
-input bounds come directly from each property's JSON Schema `minimum` and
-`maximum`; a renderer must not duplicate those values locally.
-The descriptor never names React components, module paths, CSS classes or
-executable configuration. Handbook activates each sheet through the same
-`block:*` capability declared by the installed pack, while Lantern keeps any
-runtime adapter registry consumer-owned and exhaustive.
+## Schémas publiés
 
-## What's in here
+Ils vivent sous `adrenaline` plutôt que sous un dossier de jeu : ils décrivent le moteur, que partagent tous les jeux qui l'utilisent. Un dossier de jeu ne contient que ce qui lui est propre.
 
-- `src/zod/` contains the source Zod v4 definitions, each exporting its inferred
-  TypeScript type beside the schema
-- `schemas/` contains the generated JSON Schemas
-- `examples/` contains JSON/TOML examples per schema
-- `corpus/temoins/` holds one legitimate document per schema, which must validate
-- `corpus/refus/` holds one malformed document per defect, each of which must be
-  rejected
-- `tools/` provides generation, validation and audit scripts
-- `handbook.json` publishes the repository as a versioned Handbook catalogue
-- `handbook/adrenaline/` is the versioned, declarative game plugin copied into
-  Handbook from that catalogue; version 0.9.0 carries the licensed fonts and
-  original light/dark textures while containing no executable code or external
-  stylesheet
+| Schéma                                   | Couvre                                                                                                                                                                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `schemas/adrenaline/pj.schema.json`      | Une fiche de personnage joueur, bloc par bloc comme la fiche imprimée : nom, huit caractéristiques, quatre seuils physiques et quatre mentaux avec leur valeur couverte, protections, formations et compétences, équipement et paramètres de jeu. |
+| `schemas/adrenaline/pnj.schema.json`     | Une fiche de personnage non joueur : seul le nom est requis, tout le reste est optionnel, d'un figurant nommé avec un niveau de danger et une ligne en italique jusqu'à un personnage majeur entièrement chiffré.                                 |
+| `schemas/adrenaline/monstre.schema.json` | Une fiche de créature : nom et quatre caractéristiques physiques requis, mentales optionnelles, avec un état alternatif, un bloc de contagion générique et un bloc narratif.                                                                      |
 
-Lantern-specific integration files will live under `lantern/` when that
-consumer needs them. Adrenaline remains one repository: neither consumer needs
-a second per-game integration repository.
+### Ce qu'ils ne portent pas
 
-### Installing in Handbook
+Une fiche enregistre un profil durable et peut porter un bloc optionnel `etatDePartie` pour l'état d'une séance : dés de stress, jauges de malus et blessures persistantes avec leur localisation et leur durée, sans remplacer le profil de référence. Les valeurs numériques jouables portent `minimum`, `current` et `maximum`.
 
-Handbook 2.7.0 or newer can install this repository directly. Open
-**Settings → Handbook → Schema sources**, choose **Add source**, enter
-`RebelliousSmile/schema-adrenaline`, select the release, tag or branch to
-follow, then choose **Save and check**. Handbook reads `handbook.json` and
-installs Adrenaline with its declared backgrounds and fonts.
+Les seuils sont stockés tels qu'ils sont lus, jamais recalculés. Le moteur les dérive (léger = base + chiffre des dizaines de deux caractéristiques, grave = léger + 5, profond = léger + 10), mais deux fiches publiées s'écartent de cette dérivation d'un point : le schéma enregistre ce que la fiche imprime.
 
-Use **Check** on the same source to update it. Handbook downloads the catalogue,
-pack and declared assets together, then replaces the installed source
-atomically; no manual pack copy is required.
+**Ces schémas décrivent la forme d'une fiche, pas son contenu.** Ils n'énumèrent aucune formation, aucune compétence, aucune arme, aucun trait et aucune créature. Chacun de ces noms est une chaîne libre, parce que ces catalogues appartiennent à chaque jeu et à son éditeur, pas au moteur. Seul ce que le moteur fixe lui-même est fermé : les huit caractéristiques, les douze localisations de touche, les quatre seuils de dégâts.
 
-## Pinning a version
+### Présentation et adaptateurs
 
-`npm run gen` writes each schema twice:
+La baseline `2.2.0` ajoute une annotation `x-adrenaline-presentation` à la racine de chaque JSON Schema. Elle donne aux consommateurs la capability stable `block:adrenaline-*`, les sections et blocs ordonnés, leurs chemins dans le document, des formes de mise en page finies et une apparence Zombiology liée aux jetons et aux polices du pack. L'annotation est une métadonnée de schéma : un document utilisateur ne doit contenir ni champ `presentation` ni champ `adapter`, et les schémas stricts et les codecs rejettent les deux.
 
-- `schemas/adrenaline/<target>.schema.json` — the latest version. Its `$id`
-  points at `main`, and its content changes whenever the sources do.
-- `schemas/adrenaline/<version>/<target>.schema.json` — a frozen copy, whose
-  `$id` carries the version number in its own path.
+Les plages jouables exposent `minimum`, `current` et `maximum` à l'éditeur. La fiche visible affiche `current` par défaut ; les caractéristiques du PJ affichent en plus `minimum` comme valeur de création ; `maximum` n'est jamais affiché. Les bornes de saisie viennent directement des `minimum` et `maximum` JSON Schema de chaque propriété : un moteur de rendu ne doit pas les dupliquer. Le descripteur ne nomme jamais de composant React, de chemin de module, de classe CSS ni de configuration exécutable.
 
-Point your tool at the frozen copy if you need the document to stay put. An
-`$id` under `main` changes content without changing identity, which is fine to
-follow but not to depend on.
+## Contenu du dépôt
 
-Versioning goes through the path, never through a git tag: the same file served
-from a tag would still declare `main` as its `$id`, so its identity would not
-match the URL serving it.
+- `src/zod/` : les définitions Zod v4 sources, chacune exportant son type TypeScript inféré à côté du schéma
+- `schemas/` : les JSON Schemas générés
+- `examples/` : des exemples JSON et TOML par schéma
+- `corpus/temoins/` : un document légitime par schéma, qui doit valider
+- `corpus/refus/` : un document mal formé par défaut, que chaque schéma doit rejeter
+- `tools/` : scripts de génération, de validation et d'audit
+- `handbook.json` : publie le dépôt comme catalogue Handbook versionné
+- `handbook/adrenaline/` : le pack de jeu déclaratif que Handbook copie depuis ce catalogue, sans code exécutable ni feuille de style externe, avec une version indépendante de celle du contrat
 
-### Coordinating Handbook compatibility
+## Installer dans Handbook
 
-The Handbook package declares one minimum host in
-`handbook/adrenaline/pack.json`. CI derives the immutable Handbook tag directly
-from `minimumHandbookVersion`; schema-adrenaline therefore needs no reciprocal
-SHA file. Handbook, conversely, pins the full schema-adrenaline commit it tests
-in `compat/schema-adrenaline.ref`.
+Handbook 2.7.0 ou plus récent installe ce dépôt directement. Ouvre **Réglages → Handbook → Schema sources**, choisis **Add source**, saisis `RebelliousSmile/schema-adrenaline`, sélectionne la release, le tag ou la branche à suivre, puis **Save and check**. Handbook lit `handbook.json` et installe Adrenaline avec ses fonds et ses polices.
 
-Publish a compatibility change sequentially:
+Utilise **Check** sur la même source pour mettre à jour : Handbook télécharge ensemble le catalogue, le pack et les assets déclarés, puis remplace la source installée de façon atomique, sans copie manuelle.
 
-1. release the new Handbook host first, while it still accepts the last
-   published Adrenaline package through its flat-colour and system-font
-   fallbacks;
-2. set the package's `minimumHandbookVersion` to that exact release, validate
-   both repositories, and publish schema-adrenaline;
-3. update Handbook's single schema-adrenaline SHA, run its full check, then
-   publish any follow-up Handbook release.
+La publication et la coordination des versions entre Handbook, Lantern et ce dépôt (trains de release, compatibilité minimale de l'hôte) se règlent dans [obsidian-handbook](https://github.com/RebelliousSmile/obsidian-handbook), pas ici.
 
-This order avoids a circular pair of mutable references: the package tests a
-released host tag, and the host tests one exact package commit.
+## Épingler une version
 
-## How far to trust these schemas
+`npm run gen` écrit chaque schéma deux fois :
 
-Claims about a schema are cheap, so `npm run audit` measures them instead. It
-currently reports, and enforces:
+- `schemas/adrenaline/<cible>.schema.json` : la dernière version. Son `$id` pointe sur `main`, et son contenu change quand les sources changent.
+- `schemas/adrenaline/<version>/<cible>.schema.json` : une copie figée, dont le `$id` porte le numéro de version dans son propre chemin.
 
-- **1260 of 1260 properties carry a description** — a tool reading only
-  `schemas/` never meets an unexplained field.
-- **Every numeric value is bounded on both sides.** A bare `z.int()` compiles to
-  `"maximum": 9007199254740991`; the four named primitives in
-  `src/zod/common/primitives.ts` set real ceilings. Percentages stop at 200
-  rather than 100, because the engine lets them pass 100 % — beyond it the roll
-  succeeds automatically and gains quality.
-- **Each schema is a valid draft-7 and compiles under Ajv,** which an
-  unsatisfiable schema would not.
-- **34 malformed documents are rejected and 3 legitimate JSON witnesses accepted,**
-  alongside the TOML conformance cases indexed by `corpus/cases.json`.
+Pointe ton outil sur la copie figée si le document doit rester en place. Un `$id` sous `main` change de contenu sans changer d'identité : on peut le suivre, pas en dépendre.
 
-What it does not prove: no schema can check that a skill's `total` equals its
-percentage plus the characteristic it is rolled against — draft-7 cannot express
-a dependency on a value living in another block. Recompute it, do not trust it.
+Le versionnement passe par le chemin, jamais par un tag git : le même fichier servi depuis un tag déclarerait encore `main` comme `$id`, et son identité ne correspondrait pas à l'URL qui le sert.
 
-## Provenance of a file
+## Jusqu'où faire confiance à ces schémas
 
-Every target carries an optional `meta` block recording where the record came
-from: `typeDePublication` (`officiel`, `tiers`, `communautaire`, `maison`),
-`source`, `auteurs`, `page` and `licence`. It describes the file. Do not confuse
-it with `parametresDuJeu`, which describes a table's session.
+Une affirmation sur un schéma ne coûte rien, donc `npm run audit` la mesure. Il rapporte et impose actuellement :
 
-## Using the contract in your tool
+- **1260 propriétés sur 1260 portent une description** : un outil qui ne lit que `schemas/` ne rencontre jamais un champ inexpliqué.
+- **Toute valeur numérique est bornée des deux côtés.** Un `z.int()` nu compile en `"maximum": 9007199254740991` ; les quatre primitives nommées de `src/zod/common/primitives.ts` fixent de vrais plafonds. Les pourcentages s'arrêtent à 200 et non à 100, parce que le moteur les laisse dépasser 100 % : au-delà, le jet réussit automatiquement et gagne en qualité.
+- **Chaque schéma est un draft-7 valide et compile sous Ajv**, ce qu'un schéma insatisfiable ne ferait pas.
+- **34 documents mal formés sont rejetés et 3 témoins JSON légitimes acceptés**, en plus des cas TOML indexés par `corpus/cases.json`.
 
-Install the immutable GitHub Release asset directly. npm records this complete
-URL and its SHA-512 SRI integrity in the consumer lockfile:
+Ce qu'il ne prouve pas : aucun schéma ne peut vérifier que le `total` d'une compétence égale son pourcentage plus la caractéristique contre laquelle elle se lance. Le draft-7 ne sait pas exprimer une dépendance à une valeur située dans un autre bloc. Recalcule-le, ne lui fais pas confiance.
+
+## Provenance d'un fichier
+
+Chaque cible porte un bloc optionnel `meta` qui enregistre l'origine de la fiche : `typeDePublication` (`officiel`, `tiers`, `communautaire`, `maison`), `source`, `auteurs`, `page` et `licence`. Il décrit le fichier. Ne le confonds pas avec `parametresDuJeu`, qui décrit la séance d'une table.
+
+## Utiliser le contrat dans ton outil
+
+Installe l'asset immuable de la release GitHub directement. npm enregistre cette URL complète et son intégrité SHA-512 dans le lockfile du consommateur :
 
 ```sh
 npm install https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v3.3.0/schema-adrenaline-3.3.0.tgz
 ```
 
-### Types and codecs (TypeScript apps)
+### Types et codecs (applications TypeScript)
 
-Import the public contract; do not copy the Zod sources into a consumer:
+Importe le contrat public ; ne copie pas les sources Zod dans un consommateur :
 
 ```ts
 import {
@@ -200,17 +141,11 @@ const pnj = parsePnjToml(tomlSource);
 const json = ADRENALINE_DOCUMENT_CODECS.monstre.parseJson(jsonSource);
 ```
 
-The registry keys are `pj`, `pnj` and `monstre`. Every codec parses and
-serializes JSON and TOML through the same strict Zod schema, then verifies
-`minimum ≤ current ≤ maximum`, so unknown keys and inverted playable intervals
-are rejected rather than silently removed. Exported Zod schemas intentionally
-validate structure only; use a codec or `validatePlayableRanges` for the full
-portable contract.
+Les clés du registre sont `pj`, `pnj` et `monstre`. Chaque codec lit et sérialise JSON et TOML avec le même schéma Zod strict, puis vérifie `minimum ≤ current ≤ maximum` : les clés inconnues et les intervalles jouables inversés sont rejetés, pas supprimés en silence. Les schémas Zod exportés ne valident volontairement que la structure ; utilise un codec ou `validatePlayableRanges` pour le contrat portable complet.
 
-### Validate data (language-agnostic)
+### Valider des données (tout langage)
 
-Use the frozen JSON Schemas exported by the installed package with any JSON
-Schema validator (AJV, Python jsonschema, Rust jsonschema):
+Utilise les JSON Schemas figés exportés par le paquet installé avec n'importe quel validateur JSON Schema (AJV, Python jsonschema, Rust jsonschema) :
 
 ```ts
 import fs from "node:fs";
@@ -228,10 +163,9 @@ const data = JSON.parse(fs.readFileSync("path/to/data.json", "utf8"));
 if (!validate(data)) console.error(validate.errors);
 ```
 
-### Run the shared conformance kit
+### Rejouer le kit de conformité partagé
 
-`schema-adrenaline/corpus/cases.json` lists every accepted and rejected JSON or
-TOML case. Each `path` resolves from the package name, for example:
+`schema-adrenaline/corpus/cases.json` liste chaque cas accepté ou rejeté, en JSON ou en TOML. Chaque `path` se résout depuis le nom du paquet, par exemple :
 
 ```ts
 const manifestUrl = import.meta.resolve("schema-adrenaline/corpus/cases.json");
@@ -239,61 +173,30 @@ const manifest = JSON.parse(fs.readFileSync(new URL(manifestUrl), "utf8"));
 const firstCaseUrl = import.meta.resolve(`schema-adrenaline/${manifest.cases[0].path}`);
 ```
 
-Paths beginning with `examples/` and `corpus/` are public package exports.
+Les chemins qui commencent par `examples/` et `corpus/` sont des exports publics du paquet.
 
-### Compatibility and versioning
+### Compatibilité et versionnement
 
-The npm contract and frozen schema paths use Semantic Versioning. A breaking
-API or document-shape change requires a new major contract version; a changed
-shape always receives a new `schemas/adrenaline/<version>/` directory. Published
-version directories, tags and release assets are immutable.
+Le contrat npm et les chemins de schéma figés suivent le versionnement sémantique. Un changement cassant d'API ou de forme de document exige une nouvelle version majeure du contrat ; une forme modifiée reçoit toujours un nouveau dossier `schemas/adrenaline/<version>/`. Les dossiers de version, tags et assets de release publiés sont immuables.
 
-The Handbook catalogue and game pack have their own version (`0.9.0` here).
-Their version changes only when the pack changes and is deliberately independent
-from the contract version.
+Le catalogue Handbook et le pack de jeu ont leur propre version, qui ne change que lorsque le pack change et reste volontairement indépendante de la version du contrat.
 
-### Creating a release-train candidate
+### Autocomplétion dans l'éditeur
 
-Candidates are created only from **Actions → Publish candidate → Run workflow**
-on `main`. Supply the package version with an RC suffix, for example
-`v2.5.0-rc.1`; the workflow rejects stable tags, another branch, an unrelated
-commit, or a version that does not match `package.json`.
+Configure le schéma dans les réglages de ton éditeur (`json.schemas` dans VS Code, `evenBetterToml.schema.associations` pour le TOML), associé à un glob de fichiers.
 
-It verifies the provider contract on Ubuntu with Node 20, produces the tarball
-and its SHA-256 checksum from the same file, then publishes precisely those two
-assets in an immutable GitHub prerelease. Use that asset URL and SHA in the
-consumer proofs and the release-train manifest; consumers must never rebuild it.
+N'ajoute **pas** de clé `"$schema"` dans un fichier de données situé dans `examples/` : les schémas générés portent `"additionalProperties": false` à la racine, donc cette clé fait échouer `npm run validate` sur le fichier.
 
-The release order is: candidate → Lantern and Handbook proof PRs → approved
-release-train manifest → stable promotion. The candidate workflow never creates
-or promotes a stable release.
+## Contribuer
 
-### Editor autocomplete for JSON and TOML
+Les retours sur les schémas (champ manquant, écart avec la fiche imprimée) et les cas de refus sont les contributions les plus utiles à ce stade. Ouvre d'abord une issue ; la procédure complète est dans [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Configure the schema in your editor's settings (`json.schemas` in VS Code,
-`evenBetterToml.schema.associations` for TOML), matched on a file glob.
+## Travail dérivé
 
-Do **not** add a `"$schema"` key inside a data file that lives in `examples/`:
-the generated schemas carry `"additionalProperties": false` at the root, so that
-key makes `npm run validate` fail on the file.
+Ce dépôt dérive de [4rtamis/schema-in-the-mist](https://github.com/4rtamis/schema-in-the-mist), dont il réutilise l'outillage (`tools/`, chaîne de génération et de validation) sous licence MIT. Les schémas ici lui sont propres : rien des schémas du Mist Engine n'a été copié.
 
-## Derived work
+## Licence
 
-This repository is derived from
-[4rtamis/schema-in-the-mist](https://github.com/4rtamis/schema-in-the-mist),
-whose tooling (`tools/`, generation and validation pipeline) it reuses under the
-MIT licence. The schemas here are its own; nothing from the Mist Engine schemas
-was copied.
-
-## License
-
-- **Code & Schemas:** MIT (see [LICENSE](./LICENSE)). The notice carries two
-  copyright lines: the original author of the build tooling, and this
-  repository's own author.
-
-- **Docs:** CC BY 4.0 (see [here](./LICENSES/DOCS-LICENSE.md))
-
-- **Trademark / community content notice:** to be written. The Adrenaline System
-  and _Zombiology_ are the work of Damien Coltice; any adaptation of a
-  third-party setting (such as the d100 Wheel of Time adaptation) carries its own
-  constraints. Fill this in with the actual terms before publishing.
+- **Code et schémas :** MIT (voir [LICENSE](./LICENSE)). La notice porte deux lignes de copyright : l'auteur d'origine de l'outillage de build et l'auteur de ce dépôt.
+- **Documentation :** CC BY 4.0 (voir [ici](./LICENSES/DOCS-LICENSE.md))
+- **Marques et contenu communautaire :** notice à rédiger. L'Adrenaline System et _Zombiology_ sont l'œuvre de Damien Coltice. À compléter avec les conditions exactes avant publication.
