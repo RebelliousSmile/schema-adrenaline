@@ -368,6 +368,7 @@ export function validateHandbookPack(
     ]) {
       requireContrast(note, "--adrenaline-banner-ink", banner);
     }
+    requireContrast(note, "--adrenaline-card-ink", "--adrenaline-card-surface");
     requireContrast(note, "--adrenaline-trigger-ink", "--adrenaline-trigger-bg");
     requireContrast(note, "--adrenaline-dice-badge-ink", "--adrenaline-dice-badge-bg");
     requireContrast(note, "--h4-color", "--background-primary");

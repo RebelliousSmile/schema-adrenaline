@@ -1,0 +1,3464 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "nom": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Nom ou rôle, tel qu'il est écrit en en-tête de la fiche.",
+      "examples": [
+        "Sœur Madeleine",
+        "Le gardien du dépôt"
+      ]
+    },
+    "categorie": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Catégorie imprimée dans le bandeau de la fiche. Chaîne libre ; la présentation colore les valeurs connues.",
+      "examples": [
+        "PNJ",
+        "Police",
+        "Animal",
+        "Zombie"
+      ]
+    },
+    "niveauDeDanger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "ND, imprimé en en-tête de fiche. Mesure l'opposition représentée. Sur une créature, il s'obtient en additionnant les ND du corps, de l'instinct et du type ; il n'est donc pas borné par le 5 de chaque composant.",
+      "examples": [
+        1,
+        3,
+        8
+      ]
+    },
+    "niveauDeDangerAlternatif": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Second ND imprimé après une barre oblique, quand la fiche en donne deux.",
+      "examples": [
+        3
+      ]
+    },
+    "niveauDeDangerNote": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Précision imprimée sur le ND, appelée par un astérisque.",
+      "examples": [
+        "13 s'il a son arc, sinon 3"
+      ]
+    },
+    "description": {
+      "description": "Le paragraphe de présentation, tel qu'il est lu à la table : silhouette, allure, ce qu'on perçoit au premier regard.",
+      "type": "string",
+      "minLength": 1
+    },
+    "identite": {
+      "description": "Bloc Identité, quand la fiche en porte un.",
+      "type": "object",
+      "properties": {
+        "nationalite": {
+          "description": "Nationalité, en clair.",
+          "examples": [
+            "Française"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "genre": {
+          "description": "Genre, en clair. Chaîne libre : la feuille n'impose aucune liste.",
+          "examples": [
+            "Femme"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "cheveux": {
+          "description": "Couleur ou aspect des cheveux.",
+          "examples": [
+            "Bruns, coupés court"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "age": {
+          "description": "Âge en années.",
+          "examples": [
+            34
+          ],
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200
+        },
+        "yeux": {
+          "description": "Couleur des yeux.",
+          "examples": [
+            "Verts"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "taille": {
+          "description": "Taille, telle qu'écrite sur la feuille, unité comprise. Chaîne libre et non un nombre : la feuille est manuscrite et n'impose pas d'unité, deux fiches ne sont donc pas comparables sur ce champ.",
+          "examples": [
+            "1,72 m"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "peau": {
+          "description": "Teint ou aspect de la peau.",
+          "examples": [
+            "Mate"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "poids": {
+          "description": "Poids, tel qu'écrit sur la feuille, unité comprise. Même réserve que la taille : chaîne libre, non comparable d'une fiche à l'autre.",
+          "examples": [
+            "64 kg"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "signesParticuliers": {
+          "description": "Signes particuliers : cicatrices, tatouages, tout ce qui se remarque.",
+          "examples": [
+            [
+              "Cicatrice à l'arcade gauche"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un signe particulier, en une ligne."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "caracteristiques": {
+      "description": "Caractéristiques, chacune facultative : une fiche de figurant n'en chiffre qu'une ou deux, une fiche de personnage majeur les porte toutes les huit.",
+      "type": "object",
+      "properties": {
+        "for": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Force. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 40,
+              "maximum": 40
+            }
+          ]
+        },
+        "con": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Constitution. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 50,
+              "maximum": 50
+            }
+          ]
+        },
+        "dex": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Dextérité. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 45,
+              "maximum": 45
+            }
+          ]
+        },
+        "rap": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Rapidité. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 35,
+              "maximum": 35
+            }
+          ]
+        },
+        "log": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Logique. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 30,
+              "maximum": 30
+            }
+          ]
+        },
+        "vol": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Volonté. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 40,
+              "maximum": 40
+            }
+          ]
+        },
+        "per": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Perception. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 50,
+              "maximum": 50
+            }
+          ]
+        },
+        "cha": {
+          "type": "object",
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne basse du pourcentage de d100.",
+              "examples": [
+                0
+              ]
+            },
+            "current": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Pourcentage de d100 actuel.",
+              "examples": [
+                40,
+                80
+              ]
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200,
+              "description": "Borne haute du pourcentage de d100.",
+              "examples": [
+                100,
+                200
+              ]
+            }
+          },
+          "required": [
+            "minimum",
+            "current",
+            "maximum"
+          ],
+          "additionalProperties": false,
+          "description": "Charisme. Pourcentage de d100 jouable.",
+          "examples": [
+            {
+              "minimum": 0,
+              "current": 25,
+              "maximum": 25
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "sante": {
+      "description": "Bloc Santé. Absent ou complet : les fiches publiées portent leurs quatre seuils de chaque côté dès qu'elles en portent un.",
+      "type": "object",
+      "properties": {
+        "physique": {
+          "type": "object",
+          "properties": {
+            "superficiel": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât superficiel, le moins élevé des quatre."
+            },
+            "leger": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât léger."
+            },
+            "grave": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât grave."
+            },
+            "profond": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât profond, le plus élevé des quatre."
+            }
+          },
+          "required": [
+            "superficiel",
+            "leger",
+            "grave",
+            "profond"
+          ],
+          "additionalProperties": false,
+          "description": "Seuils physiques : superficiel, léger, grave, profond. Stockés tels que lus sur la feuille, jamais recalculés — deux fiches publiées s'écartent d'un point de la dérivation."
+        },
+        "mental": {
+          "type": "object",
+          "properties": {
+            "superficiel": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât superficiel, le moins élevé des quatre."
+            },
+            "leger": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât léger."
+            },
+            "grave": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât grave."
+            },
+            "profond": {
+              "type": "object",
+              "properties": {
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Valeur du seuil sur une localisation non couverte.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 7,
+                      "maximum": 7
+                    }
+                  ]
+                },
+                "couvert": {
+                  "description": "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 9,
+                      "maximum": 9
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "base"
+              ],
+              "additionalProperties": false,
+              "description": "Seuil de dégât profond, le plus élevé des quatre."
+            }
+          },
+          "required": [
+            "superficiel",
+            "leger",
+            "grave",
+            "profond"
+          ],
+          "additionalProperties": false,
+          "description": "Seuils mentaux : superficiel, léger, grave, profond. Symétriques des physiques, dérivés de la Solidité mentale et des qualités de LOG et VOL."
+        }
+      },
+      "required": [
+        "physique",
+        "mental"
+      ],
+      "additionalProperties": false
+    },
+    "protections": {
+      "description": "Protections, chaque versant et chaque champ facultatif : une fiche de PNJ n'imprime pas la Solidité.",
+      "type": "object",
+      "properties": {
+        "physiques": {
+          "description": "Protections physiques, chaque champ facultatif.",
+          "type": "object",
+          "properties": {
+            "solidite": {
+              "type": "object",
+              "properties": {
+                "minimum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne basse des points.",
+                  "examples": [
+                    0
+                  ]
+                },
+                "current": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Nombre de points actuel.",
+                  "examples": [
+                    7,
+                    26
+                  ]
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne haute des points.",
+                  "examples": [
+                    10,
+                    30
+                  ]
+                }
+              },
+              "required": [
+                "minimum",
+                "current",
+                "maximum"
+              ],
+              "additionalProperties": false,
+              "description": "PP de Solidité physique. Fixe le seuil superficiel.",
+              "examples": [
+                {
+                  "minimum": 0,
+                  "current": 7,
+                  "maximum": 7
+                }
+              ]
+            },
+            "armure": {
+              "description": "Armure portée, si le personnage en a une.",
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "description": "Nom de l'armure, tel qu'écrit sur la fiche.",
+                  "examples": [
+                    "Blouson de cuir"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "des": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Dés retirés aux dégâts, tels qu'imprimés dans le badge gris.",
+                  "examples": [
+                    "-1d10",
+                    "-2d10"
+                  ]
+                },
+                "points": {
+                  "description": "PP d'Armure, sur la feuille de PJ. S'ajoutent à la base de chaque seuil sur les localisations couvertes.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 2,
+                      "maximum": 2
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                },
+                "localisations": {
+                  "description": "Localisations corporelles couvertes par l'armure, quand elles relèvent du catalogue publié.",
+                  "examples": [
+                    [
+                      "torse",
+                      "bras-fort"
+                    ]
+                  ],
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "jambe-droite",
+                      "jambe-gauche",
+                      "torse",
+                      "bras-faible",
+                      "bras-fort",
+                      "tete"
+                    ],
+                    "description": "Localisation corporelle. Caractéristique associée : jambe droite RAP, jambe gauche RAP, torse ou dos CON, bras faible DEX, bras fort FOR, tête PER.",
+                    "examples": [
+                      "torse",
+                      "tete"
+                    ]
+                  }
+                },
+                "couverture": {
+                  "description": "Couverture en texte libre, telle qu'imprimée sur une fiche de PNJ.",
+                  "examples": [
+                    "Torse, Bras, Jambe",
+                    "Pieds uniquement"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "proprietes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
+                  },
+                  "description": "Propriétés de la protection.",
+                  "examples": [
+                    [
+                      "Discrète"
+                    ]
+                  ]
+                },
+                "reduction": {
+                  "type": "object",
+                  "properties": {
+                    "contre": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Un type de dégâts réduit."
+                      },
+                      "description": "Types de dégâts que la réduction concerne, imprimés entre parenthèses.",
+                      "examples": [
+                        [
+                          "Tranchante",
+                          "Perforante"
+                        ]
+                      ]
+                    },
+                    "valeur": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Points retirés, saisis positifs et imprimés précédés du signe moins.",
+                      "examples": [
+                        5
+                      ]
+                    }
+                  },
+                  "required": [
+                    "contre",
+                    "valeur"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Réduction fixe contre certains types de dégâts."
+                }
+              },
+              "additionalProperties": false
+            },
+            "bouclier": {
+              "description": "Bouclier physique : ce que le personnage interpose entre lui et le coup.",
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nom du bouclier, tel qu'écrit sur la fiche.",
+                  "examples": [
+                    "Portière de voiture",
+                    "Déni"
+                  ]
+                },
+                "proprietes": {
+                  "description": "Type de couvert (bouclier physique) ou de censure (bouclier mental).",
+                  "examples": [
+                    [
+                      "Couvert partiel"
+                    ]
+                  ],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
+                  }
+                }
+              },
+              "required": [
+                "nom"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "mentales": {
+          "description": "Protections mentales, chaque champ facultatif.",
+          "type": "object",
+          "properties": {
+            "solidite": {
+              "type": "object",
+              "properties": {
+                "minimum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne basse des points.",
+                  "examples": [
+                    0
+                  ]
+                },
+                "current": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Nombre de points actuel.",
+                  "examples": [
+                    7,
+                    26
+                  ]
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Borne haute des points.",
+                  "examples": [
+                    10,
+                    30
+                  ]
+                }
+              },
+              "required": [
+                "minimum",
+                "current",
+                "maximum"
+              ],
+              "additionalProperties": false,
+              "description": "PM de Solidité mentale. Fixe le seuil mental superficiel.",
+              "examples": [
+                {
+                  "minimum": 0,
+                  "current": 5,
+                  "maximum": 5
+                }
+              ]
+            },
+            "caractere": {
+              "description": "Trait de caractère protecteur, si le personnage en a un.",
+              "type": "object",
+              "properties": {
+                "trait": {
+                  "description": "Trait de caractère qui protège. Chaîne libre : le catalogue est éditorial. Absent quand la fiche n'en nomme pas.",
+                  "examples": [
+                    "Cynique",
+                    "Calme"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "des": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Dés retirés aux dégâts, tels qu'imprimés dans le badge gris.",
+                  "examples": [
+                    "-1d10",
+                    "-2d10"
+                  ]
+                },
+                "points": {
+                  "description": "PM de Caractère, sur la feuille de PJ. S'ajoutent à la base de chaque seuil mental couvert.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 2,
+                      "maximum": 2
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne basse des points.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Nombre de points actuel.",
+                      "examples": [
+                        7,
+                        26
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Borne haute des points.",
+                      "examples": [
+                        10,
+                        30
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                },
+                "localisations": {
+                  "description": "Localisations émotionnelles couvertes, quand elles relèvent du catalogue publié.",
+                  "examples": [
+                    [
+                      "peur",
+                      "anxiete"
+                    ]
+                  ],
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "anxiete",
+                      "impuissance",
+                      "colere",
+                      "tristesse",
+                      "peur",
+                      "culpabilite"
+                    ],
+                    "description": "Localisation émotionnelle. Caractéristique associée : anxiété CHA, impuissance CHA, colère LOG, tristesse PER, peur VOL, culpabilité DEX.",
+                    "examples": [
+                      "peur",
+                      "colere"
+                    ]
+                  }
+                },
+                "emotions": {
+                  "description": "Émotions couvertes en texte libre, telles qu'imprimées sur une fiche de PNJ.",
+                  "examples": [
+                    [
+                      "Anxiété"
+                    ]
+                  ],
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une émotion couverte."
+                  }
+                },
+                "proprietes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
+                  },
+                  "description": "Propriétés de la protection.",
+                  "examples": [
+                    [
+                      "Discrète"
+                    ]
+                  ]
+                },
+                "reduction": {
+                  "type": "object",
+                  "properties": {
+                    "contre": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Un type de dégâts réduit."
+                      },
+                      "description": "Types de dégâts que la réduction concerne, imprimés entre parenthèses.",
+                      "examples": [
+                        [
+                          "Tranchante",
+                          "Perforante"
+                        ]
+                      ]
+                    },
+                    "valeur": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "description": "Points retirés, saisis positifs et imprimés précédés du signe moins.",
+                      "examples": [
+                        5
+                      ]
+                    }
+                  },
+                  "required": [
+                    "contre",
+                    "valeur"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Réduction fixe contre certains types de dégâts."
+                }
+              },
+              "additionalProperties": false
+            },
+            "bouclier": {
+              "description": "Bouclier mental : la censure derrière laquelle le personnage se réfugie.",
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nom du bouclier, tel qu'écrit sur la fiche.",
+                  "examples": [
+                    "Portière de voiture",
+                    "Déni"
+                  ]
+                },
+                "proprietes": {
+                  "description": "Type de couvert (bouclier physique) ou de censure (bouclier mental).",
+                  "examples": [
+                    [
+                      "Couvert partiel"
+                    ]
+                  ],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Une propriété, en un mot ou deux."
+                  }
+                }
+              },
+              "required": [
+                "nom"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "pistes": {
+      "description": "Pistes de stress et de malus imprimées sous la santé : nombre de cercles en gras. Rien n'y est calculé.",
+      "type": "object",
+      "properties": {
+        "stress": {
+          "description": "Nombre de cercles de stress imprimés en gras, tel que saisi.",
+          "examples": [
+            2
+          ],
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "malusChoquants": {
+          "description": "Nombre de cercles de malus choquants imprimés en gras, tel que saisi.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "examples": [
+            1,
+            2,
+            5
+          ]
+        },
+        "malusBlessants": {
+          "description": "Nombre de cercles de malus blessants imprimés en gras, tel que saisi.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "examples": [
+            1,
+            2,
+            5
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "formations": {
+      "description": "Formations, quand la fiche les nomme. Souvent absentes : la fiche de PNJ liste plus volontiers les compétences seules.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Type de formation, imprimé en tête de colonne sur la feuille de PJ. Absent d'une fiche de PNJ, qui ne qualifie pas ses formations.",
+            "type": "string",
+            "enum": [
+              "classe-sociale",
+              "professionnelle",
+              "personnelle"
+            ],
+            "examples": [
+              "professionnelle"
+            ]
+          },
+          "nom": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Nom de la formation, écrit à la main entre parenthèses sur la feuille.",
+            "examples": [
+              "Moyenne",
+              "Infirmière"
+            ]
+          },
+          "pourcentage": {
+            "type": "object",
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne basse du pourcentage de d100.",
+                "examples": [
+                  0
+                ]
+              },
+              "current": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Pourcentage de d100 actuel.",
+                "examples": [
+                  40,
+                  80
+                ]
+              },
+              "maximum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne haute du pourcentage de d100.",
+                "examples": [
+                  100,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "minimum",
+              "current",
+              "maximum"
+            ],
+            "additionalProperties": false,
+            "description": "Pourcentage jouable de la formation.",
+            "examples": [
+              {
+                "minimum": 0,
+                "current": 15,
+                "maximum": 15
+              }
+            ]
+          },
+          "competences": {
+            "description": "Compétences rattachées à cette formation. La feuille de PJ les imprime sous la colonne de leur formation ; la fiche de PNJ les regroupe hors formation, et cette liste est alors absente.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nom": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
+                  "examples": [
+                    "Arme sociale",
+                    "Athlétisme"
+                  ]
+                },
+                "specialite": {
+                  "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
+                  "examples": [
+                    "Négociation"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pourcentage": {
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne basse du pourcentage de d100.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Pourcentage de d100 actuel.",
+                      "examples": [
+                        40,
+                        80
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne haute du pourcentage de d100.",
+                      "examples": [
+                        100,
+                        200
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Pourcentage jouable de la compétence seule, hors caractéristique.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 30,
+                      "maximum": 30
+                    }
+                  ]
+                },
+                "caracteristique": {
+                  "description": "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ comme sur la feuille de PJ.",
+                  "examples": [
+                    "cha"
+                  ],
+                  "type": "string",
+                  "enum": [
+                    "for",
+                    "con",
+                    "dex",
+                    "rap",
+                    "log",
+                    "vol",
+                    "per",
+                    "cha"
+                  ]
+                },
+                "total": {
+                  "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
+                  "examples": [
+                    {
+                      "minimum": 0,
+                      "current": 50,
+                      "maximum": 50
+                    }
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "minimum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne basse du pourcentage de d100.",
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Pourcentage de d100 actuel.",
+                      "examples": [
+                        40,
+                        80
+                      ]
+                    },
+                    "maximum": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 200,
+                      "description": "Borne haute du pourcentage de d100.",
+                      "examples": [
+                        100,
+                        200
+                      ]
+                    }
+                  },
+                  "required": [
+                    "minimum",
+                    "current",
+                    "maximum"
+                  ],
+                  "additionalProperties": false
+                },
+                "degats": {
+                  "description": "Ligne d'arme de la compétence : dégâts, munitions et portée, imprimés sous elle sans retrait.",
+                  "type": "object",
+                  "properties": {
+                    "versant": {
+                      "type": "string",
+                      "enum": [
+                        "physique",
+                        "mental"
+                      ],
+                      "description": "Versant des dégâts : physique, imprimé DP, ou mental, imprimé DM.",
+                      "examples": [
+                        "physique"
+                      ]
+                    },
+                    "profils": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "des": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "Expression des dégâts, telle qu'imprimée dans le badge.",
+                            "examples": [
+                              "1d10",
+                              "3d10 + 5"
+                            ]
+                          },
+                          "nature": {
+                            "type": "string",
+                            "enum": [
+                              "choquante",
+                              "blessante"
+                            ],
+                            "description": "Choquante (badge jaune) ou blessante (badge rouge).",
+                            "examples": [
+                              "blessante"
+                            ]
+                          },
+                          "condition": {
+                            "description": "Condition qui rend ce profil applicable, imprimée après le badge.",
+                            "examples": [
+                              "si la cible est au contact",
+                              "sur ✓✓"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "des"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Un profil de dégâts : dés, nature et condition éventuelle."
+                      },
+                      "description": "Profils de dégâts, dans l'ordre d'impression. Au moins un."
+                    },
+                    "liant": {
+                      "description": "Mot qui relie les profils successifs, imprimé entre deux badges.",
+                      "examples": [
+                        "ou",
+                        "mais"
+                      ],
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "proprietes": {
+                      "description": "Propriétés des dégâts. Chaînes libres : le catalogue est éditorial, pas une mécanique fermée.",
+                      "examples": [
+                        [
+                          "Perforante",
+                          "Fatale 9+"
+                        ]
+                      ],
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Une propriété, en un mot ou deux."
+                      }
+                    },
+                    "munitions": {
+                      "description": "Munitions de l'arme, telles qu'écrites sur la fiche.",
+                      "examples": [
+                        "12",
+                        "5 doses"
+                      ],
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "portee": {
+                      "description": "Portée de l'arme, telle qu'écrite sur la fiche.",
+                      "examples": [
+                        "60 m"
+                      ],
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "profils"
+                  ],
+                  "additionalProperties": false
+                },
+                "action": {
+                  "description": "Ligne d'action libre imprimée sous la compétence, précédée de « Action : ».",
+                  "examples": [
+                    "Charger, puis renverser sa cible"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                },
+                "avantages": {
+                  "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
+                  "examples": [
+                    [
+                      "Gestion du stress"
+                    ]
+                  ],
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Un avantage, en une ligne."
+                  }
+                },
+                "notes": {
+                  "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+                  "examples": [
+                    "Judo"
+                  ],
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "nom",
+                "pourcentage"
+              ],
+              "additionalProperties": false,
+              "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
+            }
+          }
+        },
+        "required": [
+          "nom",
+          "pourcentage"
+        ],
+        "additionalProperties": false,
+        "description": "Une formation et les compétences qu'elle porte."
+      }
+    },
+    "competences": {
+      "description": "Compétences du personnage. La fiche publiée les regroupe sous un bloc unique, hors des formations, et note pour chacune sa caractéristique et son total.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Nom de la compétence. Chaîne libre : le catalogue appartient à chaque jeu.",
+            "examples": [
+              "Arme sociale",
+              "Athlétisme"
+            ]
+          },
+          "specialite": {
+            "description": "Spécialité, notée entre parenthèses après le nom sur la fiche.",
+            "examples": [
+              "Négociation"
+            ],
+            "type": "string",
+            "minLength": 1
+          },
+          "pourcentage": {
+            "type": "object",
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne basse du pourcentage de d100.",
+                "examples": [
+                  0
+                ]
+              },
+              "current": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Pourcentage de d100 actuel.",
+                "examples": [
+                  40,
+                  80
+                ]
+              },
+              "maximum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne haute du pourcentage de d100.",
+                "examples": [
+                  100,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "minimum",
+              "current",
+              "maximum"
+            ],
+            "additionalProperties": false,
+            "description": "Pourcentage jouable de la compétence seule, hors caractéristique.",
+            "examples": [
+              {
+                "minimum": 0,
+                "current": 30,
+                "maximum": 30
+              }
+            ]
+          },
+          "caracteristique": {
+            "description": "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ comme sur la feuille de PJ.",
+            "examples": [
+              "cha"
+            ],
+            "type": "string",
+            "enum": [
+              "for",
+              "con",
+              "dex",
+              "rap",
+              "log",
+              "vol",
+              "per",
+              "cha"
+            ]
+          },
+          "total": {
+            "description": "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire.",
+            "examples": [
+              {
+                "minimum": 0,
+                "current": 50,
+                "maximum": 50
+              }
+            ],
+            "type": "object",
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne basse du pourcentage de d100.",
+                "examples": [
+                  0
+                ]
+              },
+              "current": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Pourcentage de d100 actuel.",
+                "examples": [
+                  40,
+                  80
+                ]
+              },
+              "maximum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 200,
+                "description": "Borne haute du pourcentage de d100.",
+                "examples": [
+                  100,
+                  200
+                ]
+              }
+            },
+            "required": [
+              "minimum",
+              "current",
+              "maximum"
+            ],
+            "additionalProperties": false
+          },
+          "degats": {
+            "description": "Ligne d'arme de la compétence : dégâts, munitions et portée, imprimés sous elle sans retrait.",
+            "type": "object",
+            "properties": {
+              "versant": {
+                "type": "string",
+                "enum": [
+                  "physique",
+                  "mental"
+                ],
+                "description": "Versant des dégâts : physique, imprimé DP, ou mental, imprimé DM.",
+                "examples": [
+                  "physique"
+                ]
+              },
+              "profils": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "des": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Expression des dégâts, telle qu'imprimée dans le badge.",
+                      "examples": [
+                        "1d10",
+                        "3d10 + 5"
+                      ]
+                    },
+                    "nature": {
+                      "type": "string",
+                      "enum": [
+                        "choquante",
+                        "blessante"
+                      ],
+                      "description": "Choquante (badge jaune) ou blessante (badge rouge).",
+                      "examples": [
+                        "blessante"
+                      ]
+                    },
+                    "condition": {
+                      "description": "Condition qui rend ce profil applicable, imprimée après le badge.",
+                      "examples": [
+                        "si la cible est au contact",
+                        "sur ✓✓"
+                      ],
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "des"
+                  ],
+                  "additionalProperties": false,
+                  "description": "Un profil de dégâts : dés, nature et condition éventuelle."
+                },
+                "description": "Profils de dégâts, dans l'ordre d'impression. Au moins un."
+              },
+              "liant": {
+                "description": "Mot qui relie les profils successifs, imprimé entre deux badges.",
+                "examples": [
+                  "ou",
+                  "mais"
+                ],
+                "type": "string",
+                "minLength": 1
+              },
+              "proprietes": {
+                "description": "Propriétés des dégâts. Chaînes libres : le catalogue est éditorial, pas une mécanique fermée.",
+                "examples": [
+                  [
+                    "Perforante",
+                    "Fatale 9+"
+                  ]
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Une propriété, en un mot ou deux."
+                }
+              },
+              "munitions": {
+                "description": "Munitions de l'arme, telles qu'écrites sur la fiche.",
+                "examples": [
+                  "12",
+                  "5 doses"
+                ],
+                "type": "string",
+                "minLength": 1
+              },
+              "portee": {
+                "description": "Portée de l'arme, telle qu'écrite sur la fiche.",
+                "examples": [
+                  "60 m"
+                ],
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "profils"
+            ],
+            "additionalProperties": false
+          },
+          "action": {
+            "description": "Ligne d'action libre imprimée sous la compétence, précédée de « Action : ».",
+            "examples": [
+              "Charger, puis renverser sa cible"
+            ],
+            "type": "string",
+            "minLength": 1
+          },
+          "avantages": {
+            "description": "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
+            "examples": [
+              [
+                "Gestion du stress"
+              ]
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Un avantage, en une ligne."
+            }
+          },
+          "notes": {
+            "description": "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+            "examples": [
+              "Judo"
+            ],
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "nom",
+          "pourcentage"
+        ],
+        "additionalProperties": false,
+        "description": "Une compétence de la fiche, avec sa spécialité et son total éventuel."
+      }
+    },
+    "equipement": {
+      "description": "Ce que le personnage porte sur lui et ce dont il se sert.",
+      "type": "object",
+      "properties": {
+        "possessions": {
+          "description": "Ce que le personnage transporte ou possède. Liste non bornée.",
+          "examples": [
+            [
+              "Trousse de secours",
+              "Lampe torche"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un objet possédé, en une ligne."
+          }
+        },
+        "equipementFavori": {
+          "description": "L'équipement favori, au singulier : la feuille n'en prévoit qu'un, et il ouvre un avantage.",
+          "examples": [
+            "Trousse de secours"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "armesPhysiques": {
+          "description": "Armes physiques. Liste non bornée : les deux lignes de la feuille sont de la place sur le papier, pas une règle.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Nom de l'arme, tel qu'écrit sur la feuille. Chaîne libre.",
+                "examples": [
+                  "Judo",
+                  "Batte de baseball",
+                  "Sarcasme"
+                ]
+              },
+              "pourcentage": {
+                "description": "Pourcentage jouable auquel l'arme se manie, tel que noté sur la feuille.",
+                "examples": [
+                  {
+                    "minimum": 0,
+                    "current": 30,
+                    "maximum": 30
+                  }
+                ],
+                "type": "object",
+                "properties": {
+                  "minimum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne basse du pourcentage de d100.",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "current": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Pourcentage de d100 actuel.",
+                    "examples": [
+                      40,
+                      80
+                    ]
+                  },
+                  "maximum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne haute du pourcentage de d100.",
+                    "examples": [
+                      100,
+                      200
+                    ]
+                  }
+                },
+                "required": [
+                  "minimum",
+                  "current",
+                  "maximum"
+                ],
+                "additionalProperties": false
+              },
+              "desDeDegats": {
+                "description": "Nombre de d10 de dégâts.",
+                "examples": [
+                  1,
+                  2
+                ],
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "type": {
+                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "examples": [
+                  "Contact",
+                  "Sociale"
+                ],
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "description": "Ce que la ligne d'arme porte en plus : munitions, portée, contrainte d'emploi.",
+                "examples": [
+                  "Deux mains"
+                ],
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "nom"
+            ],
+            "additionalProperties": false,
+            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+          }
+        },
+        "armesMentales": {
+          "description": "Armes mentales, notées comme les physiques. Liste non bornée.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nom": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Nom de l'arme, tel qu'écrit sur la feuille. Chaîne libre.",
+                "examples": [
+                  "Judo",
+                  "Batte de baseball",
+                  "Sarcasme"
+                ]
+              },
+              "pourcentage": {
+                "description": "Pourcentage jouable auquel l'arme se manie, tel que noté sur la feuille.",
+                "examples": [
+                  {
+                    "minimum": 0,
+                    "current": 30,
+                    "maximum": 30
+                  }
+                ],
+                "type": "object",
+                "properties": {
+                  "minimum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne basse du pourcentage de d100.",
+                    "examples": [
+                      0
+                    ]
+                  },
+                  "current": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Pourcentage de d100 actuel.",
+                    "examples": [
+                      40,
+                      80
+                    ]
+                  },
+                  "maximum": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 200,
+                    "description": "Borne haute du pourcentage de d100.",
+                    "examples": [
+                      100,
+                      200
+                    ]
+                  }
+                },
+                "required": [
+                  "minimum",
+                  "current",
+                  "maximum"
+                ],
+                "additionalProperties": false
+              },
+              "desDeDegats": {
+                "description": "Nombre de d10 de dégâts.",
+                "examples": [
+                  1,
+                  2
+                ],
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "type": {
+                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "examples": [
+                  "Contact",
+                  "Sociale"
+                ],
+                "type": "string",
+                "minLength": 1
+              },
+              "notes": {
+                "description": "Ce que la ligne d'arme porte en plus : munitions, portée, contrainte d'emploi.",
+                "examples": [
+                  "Deux mains"
+                ],
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "nom"
+            ],
+            "additionalProperties": false,
+            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "narratif": {
+      "description": "Bloc narratif : rôle, attitude, répliques, notes réservées au meneur.",
+      "type": "object",
+      "properties": {
+        "role": {
+          "description": "Rôle du personnage dans le scénario.",
+          "examples": [
+            "Médecin du camp"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "attitude": {
+          "description": "Attitude envers les personnages joueurs. Chaîne libre et non ensemble fermé : les fiches la nuancent volontiers au-delà du triptyque favorable, neutre, hostile.",
+          "examples": [
+            "Méfiante, mais prête à soigner quiconque le demande"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "personnalite": {
+          "description": "Traits de personnalité, un par entrée.",
+          "examples": [
+            [
+              "Obstinée",
+              "Économe de ses mots"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un trait de personnalité."
+          }
+        },
+        "historique": {
+          "description": "D'où vient le personnage, en un paragraphe.",
+          "type": "string",
+          "minLength": 1
+        },
+        "evolutionPossible": {
+          "description": "Ce que le personnage peut devenir selon le tour que prend la partie.",
+          "type": "string",
+          "minLength": 1
+        },
+        "interpretation": {
+          "description": "Conseils de jeu : approche, tics et manières, réactions émotionnelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un conseil de jeu."
+          }
+        },
+        "repliques": {
+          "description": "Répliques types, à lancer telles quelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Une réplique, à lancer telle quelle."
+          }
+        },
+        "notesMj": {
+          "description": "Réservé au meneur : secrets, faiblesses, alliés, stratégies, réactions contextuelles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Une note réservée au meneur."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "etatDePartie": {
+      "description": "Compteurs et états temporaires de la scène, séparés du profil de référence.",
+      "type": "object",
+      "properties": {
+        "stress": {
+          "description": "Compteurs de stress de la scène.",
+          "type": "object",
+          "properties": {
+            "adrenaline": {
+              "description": "Nombre de dés ou niveau de stress d'adrénaline en cours.",
+              "examples": [
+                1
+              ],
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "panique": {
+              "description": "Nombre de dés ou niveau de stress de panique en cours.",
+              "examples": [
+                0
+              ],
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "additionalProperties": false
+        },
+        "malus": {
+          "description": "Malus encaissés : Choc, Divers et Total.",
+          "type": "object",
+          "properties": {
+            "choc": {
+              "description": "Malus de choc de la case Choc.",
+              "type": "object",
+              "properties": {
+                "rounds": {
+                  "description": "Malus de choc cochés sur les cinq cercles « round », de haut en bas.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 5
+                },
+                "heures": {
+                  "description": "Malus de choc cochés sur les cinq cercles « heure », une fois les rounds pleins.",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 5
+                }
+              },
+              "additionalProperties": false
+            },
+            "divers": {
+              "description": "Case Divers : malus de choc au-delà de la colonne et autres malus, notés librement avec leur fréquence d'annulation.",
+              "examples": [
+                "2 malus (froid), annulés à l'heure"
+              ],
+              "type": "string",
+              "minLength": 1
+            },
+            "total": {
+              "description": "Total des malus, de 1 à 10. À 10 malus, le personnage subit l'état HS.",
+              "examples": [
+                2
+              ],
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            }
+          },
+          "additionalProperties": false
+        },
+        "etats": {
+          "description": "États encaissés ou temporaires actuellement applicables.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Nom de l'état encaissé."
+                  },
+                  "versant": {
+                    "type": "string",
+                    "const": "physique",
+                    "description": "Versant physique de l'état."
+                  },
+                  "localisation": {
+                    "description": "Localisation corporelle concernée, si la fiche la note.",
+                    "type": "string",
+                    "enum": [
+                      "jambe-droite",
+                      "jambe-gauche",
+                      "torse",
+                      "bras-faible",
+                      "bras-fort",
+                      "tete"
+                    ],
+                    "examples": [
+                      "torse",
+                      "tete"
+                    ]
+                  },
+                  "duree": {
+                    "description": "Durée ou condition de fin de l'état.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "notes": {
+                    "description": "Précision libre sur l'état encaissé.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "nom",
+                  "versant"
+                ],
+                "additionalProperties": false,
+                "description": "État de partie physique, éventuellement localisé."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Nom de l'état encaissé."
+                  },
+                  "versant": {
+                    "type": "string",
+                    "const": "mental",
+                    "description": "Versant mental de l'état."
+                  },
+                  "localisation": {
+                    "description": "Localisation émotionnelle concernée, si la fiche la note.",
+                    "type": "string",
+                    "enum": [
+                      "anxiete",
+                      "impuissance",
+                      "colere",
+                      "tristesse",
+                      "peur",
+                      "culpabilite"
+                    ],
+                    "examples": [
+                      "peur",
+                      "colere"
+                    ]
+                  },
+                  "duree": {
+                    "description": "Durée ou condition de fin de l'état.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "notes": {
+                    "description": "Précision libre sur l'état encaissé.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "nom",
+                  "versant"
+                ],
+                "additionalProperties": false,
+                "description": "État de partie mental, éventuellement localisé."
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Nom de l'état de partie."
+                  },
+                  "versant": {
+                    "type": "string",
+                    "const": "general",
+                    "description": "État indépendant des deux versants."
+                  },
+                  "duree": {
+                    "description": "Durée ou condition de fin de l'état.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "notes": {
+                    "description": "Précision libre sur l'état de partie.",
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "nom",
+                  "versant"
+                ],
+                "additionalProperties": false,
+                "description": "État de partie général, par exemple une immunité temporaire."
+              }
+            ],
+            "description": "État de partie encaissé, physique, mental ou général. Chaque versant n'accepte que ses localisations publiées."
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "meta": {
+      "description": "Attribution et catalogage : d'où vient cette fiche.",
+      "type": "object",
+      "properties": {
+        "typeDePublication": {
+          "type": "string",
+          "enum": [
+            "officiel",
+            "tiers",
+            "communautaire",
+            "maison"
+          ],
+          "description": "Origine du contenu, pour le catalogage par les outils tiers. Correspondance schema-in-the-mist : officiel/official, tiers/third_party, communautaire/cauldron, maison/homebrew.",
+          "examples": [
+            "officiel",
+            "maison"
+          ]
+        },
+        "source": {
+          "description": "Titre de l'ouvrage, du supplément ou du PDF dont la fiche est tirée.",
+          "examples": [
+            "Zombiology — Contamination",
+            "Livret PNJ et animaux"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "auteurs": {
+          "description": "Personnes créditées.",
+          "examples": [
+            [
+              "Damien Coltice"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un nom crédité."
+          }
+        },
+        "page": {
+          "description": "Page dans la source, quand elle est pertinente.",
+          "examples": [
+            42,
+            118
+          ],
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "licence": {
+          "description": "Conditions de réutilisation de cette fiche, en clair.",
+          "examples": [
+            "CC BY 4.0"
+          ],
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "nom"
+  ],
+  "additionalProperties": false,
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/3.2.0/pnj.schema.json",
+  "title": "Personnage non joué — Adrenaline System",
+  "description": "Fiche de personnage non joué du socle Adrenaline System : nom requis, tout le reste optionnel, du figurant nommé au personnage majeur entièrement chiffré.",
+  "x-adrenaline-presentation": {
+    "version": 1,
+    "capability": "block:adrenaline-pnj",
+    "sheet": {
+      "id": "adrenaline-pnj",
+      "label": "Fiche PNJ"
+    },
+    "appearance": {
+      "variant": "zombiology",
+      "surface": "compact-card",
+      "outerRule": true,
+      "fonts": {
+        "body": "Adrenaline Body",
+        "heading": "Adrenaline Display",
+        "handwritten": "Adrenaline Handwriting"
+      },
+      "tokens": {
+        "paper": "--background-primary",
+        "card": "--adrenaline-card-surface",
+        "ink": "--text-normal",
+        "band": "--adrenaline-band",
+        "bandInk": "--adrenaline-band-ink",
+        "sectionBand": "--adrenaline-section-band",
+        "rule": "--adrenaline-rule",
+        "handwrittenInk": "--adrenaline-handwritten-ink",
+        "statusYellowBg": "--adrenaline-status-yellow-bg",
+        "statusYellowInk": "--adrenaline-status-yellow-ink",
+        "statusRedBg": "--adrenaline-status-red-bg",
+        "statusRedInk": "--adrenaline-status-red-ink",
+        "malusShock": "--adrenaline-malus-shock",
+        "malusWound": "--adrenaline-malus-wound",
+        "bannerGarnet": "--adrenaline-banner-garnet",
+        "bannerBlue": "--adrenaline-banner-blue",
+        "bannerOrange": "--adrenaline-banner-orange",
+        "bannerInk": "--adrenaline-banner-ink",
+        "triggerBg": "--adrenaline-trigger-bg",
+        "triggerInk": "--adrenaline-trigger-ink",
+        "diceBadgeBg": "--adrenaline-dice-badge-bg",
+        "diceBadgeInk": "--adrenaline-dice-badge-ink"
+      },
+      "sectionTitles": {
+        "align": "start",
+        "font": "heading"
+      },
+      "values": {
+        "align": "end",
+        "font": "body",
+        "color": "ink",
+        "renderMaximum": false
+      }
+    },
+    "categories": {
+      "path": "/categorie",
+      "fallbackLabel": "PNJ",
+      "defaultVariant": "garnet",
+      "defaultIcon": "user",
+      "variants": {
+        "PNJ": "garnet",
+        "Police": "blue",
+        "Animal": "orange"
+      },
+      "icons": {
+        "Police": "shield",
+        "Animal": "paw-print"
+      }
+    },
+    "values": {
+      "editorBounds": "json-schema",
+      "range": {
+        "minimum": "minimum",
+        "current": "current",
+        "maximum": "maximum",
+        "render": "current"
+      }
+    },
+    "sections": [
+      {
+        "id": "entete",
+        "label": "En-tête",
+        "order": 10,
+        "layout": "banner",
+        "blocks": [
+          {
+            "id": "identification",
+            "label": "PNJ",
+            "order": 10,
+            "layout": "columns",
+            "columns": 2,
+            "form": "name-card",
+            "paths": [
+              "/nom",
+              "/categorie",
+              "/niveauDeDanger",
+              "/niveauDeDangerAlternatif",
+              "/niveauDeDangerNote"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "description",
+        "label": "Description",
+        "order": 20,
+        "layout": "stack",
+        "showTitle": false,
+        "blocks": [
+          {
+            "id": "description",
+            "label": "Description",
+            "order": 10,
+            "layout": "stack",
+            "form": "narrative",
+            "paths": [
+              "/description"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "caracteristiques",
+        "label": "Caractéristiques",
+        "order": 30,
+        "layout": "grid",
+        "columns": 4,
+        "blocks": [
+          {
+            "id": "caracteristiques",
+            "label": "Caractéristiques",
+            "order": 10,
+            "layout": "grid",
+            "columns": 4,
+            "form": "compact-rows",
+            "paths": [
+              "/caracteristiques"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sante",
+        "label": "Santé",
+        "order": 40,
+        "layout": "stack",
+        "blocks": [
+          {
+            "id": "sante",
+            "label": "Seuils",
+            "order": 10,
+            "layout": "columns",
+            "columns": 2,
+            "form": "threshold-rows",
+            "paths": [
+              "/sante"
+            ]
+          },
+          {
+            "id": "protections",
+            "label": "Protections",
+            "order": 20,
+            "layout": "columns",
+            "columns": 2,
+            "form": "protection-lines",
+            "paths": [
+              "/protections"
+            ]
+          },
+          {
+            "id": "pistes",
+            "label": "Stress et malus",
+            "order": 30,
+            "layout": "stack",
+            "form": "malus-tracks",
+            "decoration": {
+              "kind": "malus-tracks",
+              "length": 10,
+              "stressDefault": 2
+            },
+            "paths": [
+              "/pistes"
+            ]
+          },
+          {
+            "id": "etat-partie",
+            "label": "État de partie",
+            "order": 40,
+            "layout": "stack",
+            "form": "status-frames",
+            "paths": [
+              "/etatDePartie"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "formations",
+        "label": "Formations",
+        "order": 50,
+        "layout": "stack",
+        "blocks": [
+          {
+            "id": "formations",
+            "label": "Formations",
+            "order": 10,
+            "layout": "stack",
+            "form": "compact-rows",
+            "paths": [
+              "/formations"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "competences",
+        "label": "Compétences",
+        "order": 60,
+        "layout": "stack",
+        "blocks": [
+          {
+            "id": "competences",
+            "label": "Compétences",
+            "order": 10,
+            "layout": "stack",
+            "form": "skill-lines",
+            "paths": [
+              "/competences"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "equipement",
+        "label": "Équipement",
+        "order": 70,
+        "layout": "stack",
+        "blocks": [
+          {
+            "id": "equipement",
+            "label": "Équipement",
+            "order": 10,
+            "layout": "stack",
+            "form": "inline-list",
+            "paths": [
+              "/equipement"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "meneur",
+        "label": "Meneur",
+        "order": 80,
+        "layout": "stack",
+        "collapsible": true,
+        "blocks": [
+          {
+            "id": "narratif",
+            "label": "Notes du meneur",
+            "order": 10,
+            "layout": "stack",
+            "form": "narrative",
+            "paths": [
+              "/narratif"
+            ]
+          }
+        ]
+      }
+    ],
+    "hiddenPaths": [
+      "/identite",
+      "/meta"
+    ]
+  }
+}

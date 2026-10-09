@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-10-09
+
+### Added
+
+- The Adrenaline pack declares `--adrenaline-card-ink` in both polarities: the
+  text colour of the compact PNJ and creature cards (dark red in light, a pale
+  red in dark). It is a required note token with a contrast check against the
+  card surface.
+- The creature presentation prints `/malusAvantHs` with the new `malus-circles`
+  form: one empty circle per malus as entered, then `HS`. Nothing is derived.
+- Schema baseline `3.2.0` (additive within contract 3): the presentation lists
+  the new form, so a frozen `schemas/adrenaline/3.2.0` tree is published next
+  to the immutable `3.1.0` one.
+
 ## [3.3.0] - 2026-10-06
 
 ### Added

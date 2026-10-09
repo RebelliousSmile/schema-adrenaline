@@ -28,6 +28,7 @@ const FORMS = new Set([
   "state-card",
   "state-header",
   "malus-tracks",
+  "malus-circles",
   "inline-list",
   "skill-lines",
   "action-lines",

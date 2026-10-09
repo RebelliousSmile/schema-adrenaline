@@ -27,6 +27,7 @@ export type AdrenalinePresentationForm =
   | "state-card"
   | "state-header"
   | "malus-tracks"
+  | "malus-circles"
   | "inline-list"
   | "skill-lines"
   | "action-lines";
@@ -894,7 +895,7 @@ export const MONSTRE_PRESENTATION = definePresentation({
           label: "Malus avant HS",
           order: 30,
           layout: "stack",
-          form: "compact-rows",
+          form: "malus-circles",
           paths: ["/malusAvantHs"],
         },
         {

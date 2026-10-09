@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "version": "0.9.0",
+  "version": "0.10.0",
   "minimumHandbookVersion": "2.7.0",
   "requires": [
     "block:adrenaline-pj",
@@ -95,6 +95,7 @@
           "--adrenaline-band": "#71170F",
           "--adrenaline-band-ink": "#FFF8F0",
           "--adrenaline-rule": "#9D2416",
+          "--adrenaline-card-ink": "#73291F",
           "--adrenaline-handwritten-ink": "#285C94",
           "--adrenaline-page-texture": "var(--brumes-image-paper-grain, none)",
           "--adrenaline-page-texture-opacity": "0.32",
@@ -241,6 +242,7 @@
           "--adrenaline-band": "#71170F",
           "--adrenaline-band-ink": "#FFF4E9",
           "--adrenaline-rule": "#F05A32",
+          "--adrenaline-card-ink": "#F4B3A0",
           "--adrenaline-handwritten-ink": "#9DC7F0",
           "--adrenaline-page-texture": "var(--brumes-image-dark-organic, none)",
           "--adrenaline-page-texture-opacity": "0.2",
