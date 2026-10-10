@@ -3,9 +3,9 @@ name: Promote candidate
 # Merging the candidate's bump pull request is the read of that candidate: each
 # consumer then dispatches `candidate-adopted` here, and the promotion starts by
 # itself once both have merged. The dispatch by hand only resumes a stopped run.
-# It records the train from what is published, then hands over to the existing
-# gates: `Release train` proves the manifest, `Release contract` publishes behind
-# the `release` environment. Nothing here replaces a gate of either workflow.
+# It records the train from what is published, then hands over to `Release
+# contract`, which publishes behind the `release` environment. The consumers are
+# proven against the provider before the train leaves, not here.
 on:
   repository_dispatch:
     types: [candidate-adopted]
@@ -142,25 +142,6 @@ jobs:
             git push origin HEAD:main
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Prove the train
-        env:
-          MANIFEST: ${{ steps.train.outputs.manifest }}
-          TRAIN_SHA: ${{ steps.commit.outputs.sha }}
-        run: |
-          runs() { gh run list --workflow release-train.yml --commit "$TRAIN_SHA" "$@" --json databaseId --jq '.[].databaseId'; }
-          if test -n "$(runs --status success)"; then exit 0; fi
-          runs > known-runs.txt
-          gh workflow run release-train.yml --ref main -f manifest="$MANIFEST"
-          run=""
-          for attempt in $(seq 1 30); do
-            run=$(runs | grep -vxFf known-runs.txt | head -n 1 || true)
-            if test -n "$run"; then break; fi
-            sleep 10
-          done
-          rm known-runs.txt
-          test -n "$run"
-          gh run watch "$run" --exit-status --interval 30
 
       # A tag pushed with the workflow token starts no workflow, so the release is
       # dispatched explicitly; it then waits for the `release` environment.

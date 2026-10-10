@@ -11,8 +11,8 @@ import { parseFinalTrain, type FinalTrain } from "./verify-final-convergence.js"
 
 /* Writes the two records of a train from what is published, so no workstation types them:
    the protocol-1 manifest once both consumers pin the candidate on `main`, and the protocol-2
-   final record once both pin the final. It only records facts; `release-train:assert`,
-   `release-train.yml` and `final-convergence.yml` remain the judges of those facts. */
+   final record once both pin the final. It only records facts; `release-train:assert`
+   and `final-convergence.yml` remain the judges of those facts. */
 
 const PROVIDER = "schema-adrenaline";
 const DIRECTORY = "release-train";

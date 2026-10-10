@@ -2,7 +2,7 @@
 
 Commit one `protocol: 1` JSON manifest named `schema-adrenaline-vX.Y.Z.json` before promoting a release. Its `candidate` records the `schema-adrenaline` release URL, SHA-256, npm SHA-512 SRI, final version, RC tag, final tag and full provider commit. Its `consumers` array contains exactly Lantern and Handbook, each with its canonical repository and a full commit SHA.
 
-Neither record is typed by hand. `.github/workflows/promote.yml`, dispatched with the candidate tag once both consumers have merged its bump, writes the protocol-1 manifest from the published candidate and the `main` commits that pin it, commits it, proves it with the release-train workflow, tags the final on that commit and dispatches the release. The `converge` job of `.github/workflows/release.yml` writes the protocol-2 record once both `main` branches pin the final, then dispatches final convergence. Both use `tools/write-release-train.ts`, which only records facts and never rewrites a committed record with other ones; the gates described below judge them.
+Neither record is typed by hand. `.github/workflows/promote.yml`, dispatched with the candidate tag once both consumers have merged its bump, writes the protocol-1 manifest from the published candidate and the `main` commits that pin it, commits it, tags the final on that commit and dispatches the release. The `converge` job of `.github/workflows/release.yml` writes the protocol-2 record once both `main` branches pin the final, then dispatches final convergence. Both use `tools/write-release-train.ts`, which only records facts and never rewrites a committed record with other ones; the gates described below judge them.
 
 The only accepted local runner entry point is:
 
@@ -10,11 +10,9 @@ The only accepted local runner entry point is:
 npm run release-train:assert -- release-train/schema-adrenaline-vX.Y.Z.json
 ```
 
-The release-train workflow keeps its root checkout at the commit carrying that manifest and its provider-side verifier. It copies the same committed JSON as `release-train.json` into each consumer checkout. Separately, it checks out `schema-adrenaline` at `candidate.providerCommit` with its full history and tags, then exposes only that directory to consumer proofs as `SCHEMA_ADRENALINE_ROOT`. This lets Handbook prove both the candidate checkout's `HEAD` and its `stagingTag` without treating the manifest checkout as candidate data.
+The consumers are proven against the provider before the train leaves (the presentation of the supervisor); no workflow replays those proofs on the candidate manifest. Each consumer still owns its `release-train:assert` implementation and writes `release-train.json.evidence.json`; final convergence runs it on the final record.
 
-Each consumer owns its `release-train:assert` implementation and writes `release-train.json.evidence.json`; the supplier checks the two evidence files against the candidate and their pinned consumer identities. The candidate checkout is derived from the existing protocol-1 field; it is not an additional manifest field or a consumer-local fallback.
-
-The manifest admits no commands, branches, tags, short commits, local paths, query strings or unknown fields. The stable workflow downloads the RC archive, checks its SHA-256 and publishes those same bytes only after an approved train.
+The manifest admits no commands, branches, tags, short commits, local paths, query strings or unknown fields. The stable workflow downloads the RC archive, checks its SHA-256 and publishes those same bytes only from a commit that carries the manifest and descends from `candidate.providerCommit`.
 
 After final publication, commit a separate `schema-adrenaline-vX.Y.Z-final.json` record. It uses the established protocol-2 envelope: `protocol: 2`, `artifact` (`provider`, canonical final `releaseUrl`, `sha256`, `integrity`, `version`), and exactly two `consumers` (`role`, canonical `repository`, full commit `ref`). Keep the protocol-1 candidate manifest and its prerelease consumer refs unchanged. The provider derives the final tag and its exact commit from the version, compares the candidate manifest at that tag with the committed manifest, and verifies that both the candidate and canonical final URLs download identical bytes with the declared SHA-256 and SHA-512 SRI. It verifies the final checksum asset and immutable release metadata as well.
 
