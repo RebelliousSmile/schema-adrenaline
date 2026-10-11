@@ -2,18 +2,21 @@ import { z } from "zod";
 import { ActionDeCreature, DefenseDeCreature } from "./combat.js";
 import { CaracteristiquesMentales, CaracteristiquesPhysiques } from "./caracteristiques.js";
 import { Contagion } from "./contagion.js";
-import { Equipement } from "./equipement.js";
+import { EquipementDeCreature } from "./equipement.js";
 import { Competence } from "./formations.js";
 import { Compte } from "./primitives.js";
 import { ProtectionsAbregees } from "./protections.js";
 import { SanteDeCreature } from "./sante.js";
 
-/** Caractéristiques permanentes d'une créature : physiques requises, mentales facultatives. */
+/**
+ * Caractéristiques permanentes d'une créature : les quatre physiques requises,
+ * la perception facultative. LOG, VOL et CHA n'existent pas pour une créature.
+ */
 export const CaracteristiquesDeCreature = CaracteristiquesPhysiques.extend(
-  CaracteristiquesMentales.partial().shape,
+  CaracteristiquesMentales.pick({ per: true }).partial().shape,
 ).meta({
   description:
-    "Caractéristiques d'une créature : les quatre physiques toujours, les mentales seulement si elle en a.",
+    "Caractéristiques d'une créature : les quatre physiques toujours, la perception seulement si elle en a une.",
 });
 
 /**
@@ -78,7 +81,7 @@ export const DeltaEtatDeCreature = z
     competences: z.array(Competence).optional().meta({
       description: "Compétences qui remplacent celles de l'état de base.",
     }),
-    equipement: Equipement.optional().meta({
+    equipement: EquipementDeCreature.optional().meta({
       description: "Équipement qui remplace celui de l'état de base.",
     }),
     contagion: Contagion.optional().meta({

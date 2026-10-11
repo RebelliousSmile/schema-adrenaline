@@ -4,8 +4,8 @@ _Schémas de données ouverts et versionnés pour l'Adrenaline System, le moteur
 
 ## État du projet
 
-Ce dépôt déclare `schema-adrenaline@3.4.0` et la baseline de schéma `3.2.0`
-(additive au contrat 3). Les consommateurs épinglent une archive de release
+Ce dépôt déclare `schema-adrenaline@4.0.0` et la baseline de schéma `4.0.0`
+(rupture avec le contrat 3 : voir le `CHANGELOG`). Les consommateurs épinglent une archive de release
 publiée, pas la branche mouvante.
 
 - _Ça marche aujourd'hui :_ trois schémas de personnage (`pj`, `pnj`, `monstre`) avec exemples JSON et TOML, un corpus de conformité partagé, des codecs TypeScript, et le pack Handbook (thèmes, polices, callouts)
@@ -158,6 +158,17 @@ const firstCaseUrl = import.meta.resolve(`schema-adrenaline/${manifest.cases[0].
 ```
 
 Les chemins qui commencent par `examples/` et `corpus/` sont des exports publics du paquet.
+
+### Descripteur de présentation (cartes de la créature)
+
+Chaque cible publie, dans son schéma JSON, un descripteur `x-adrenaline-presentation` (et l'export `schema-adrenaline/presentation`). Il dit quoi imprimer et où ; le consommateur le suit, il ne recopie pas la mise en page. Ce que chaque propriété lui demande :
+
+- `pointerRows` (bloc) : lignes de JSON Pointers, chaque pointeur descendant d'un chemin du bloc. Imprime les cellules dans cet ordre, ligne par ligne, avec `label` à la place du nom quand il est donné. Une cellule sans valeur saisie n'est pas imprimée : ne la remplace ni par un zéro ni par un tiret, et n'en calcule aucune.
+- `cards` (descripteur, créature seule) : déclare les cartes, `principal` (toujours imprimée, sans condition) et `secondaire`. La carte `secondaire` porte `existsWhenAny: ["/etats", "/etatAlternatif"]` : elle existe quand le document saisit une valeur à l'un de ces pointeurs, une liste comptant quand elle n'est pas vide. Sans valeur saisie, elle n'existe pas. Toute carte citée ailleurs dans le descripteur est déclarée ici.
+- `cards` (section ou bloc, créature seule) : les cartes qui impriment cette section ou ce bloc ; absent sur un bloc, toutes les cartes de sa section. Une section sans `cards` s'imprime une fois, hors des cartes.
+- `fallbackCard` (section) : quand aucune des cartes de `cards` n'existe, la section s'imprime sur cette carte (`principal`), à sa place d'`order` parmi les sections de cette carte. Une créature à un seul état n'a pas de carte `secondaire`.
+- `joinedTo` (section) : sur la carte nommée, la section s'imprime juste après la section `section`, sous le seul titre `title` qui couvre les deux. Ailleurs, les deux sections restent séparées.
+- `decoration` `state-badge` (bloc `etat`) : un repère devant chaque déclencheur, et la case de l'état courant, lue à `/etatActif`, dessinée sur les cartes listées par `current.cards` seulement. La couleur est le jeton `--adrenaline-card-badge`, déclaré par le pack : le consommateur le lit.
 
 ### Compatibilité et versionnement
 

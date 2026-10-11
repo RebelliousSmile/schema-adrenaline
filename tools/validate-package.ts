@@ -6,6 +6,12 @@ import { spawnSync } from "node:child_process";
 import { ADRENALINE_SCHEMA_VERSION } from "../src/contract-version.js";
 
 const root = process.cwd();
+// The contract version is the major of the package (a new contract is a new major, README).
+const contractMajor = Number(
+  (
+    JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")) as { version: string }
+  ).version.split(".")[0],
+);
 const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "schema-adrenaline-package-"));
 const npmCli =
   process.env.npm_execpath ??
@@ -80,7 +86,7 @@ import {
   PNJ_PRESENTATION as PNJ_PRESENTATION_SUBPATH,
 } from "schema-adrenaline/presentation";
 
-assert.equal(ADRENALINE_CONTRACT_VERSION, 3);
+assert.equal(ADRENALINE_CONTRACT_VERSION, ${contractMajor});
 assert.equal(ADRENALINE_TOML_VERSION, "1.0.0");
 assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj", "pnj"]);
 

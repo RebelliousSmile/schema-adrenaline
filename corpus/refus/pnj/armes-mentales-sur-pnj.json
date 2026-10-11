@@ -1,0 +1,29 @@
+{
+  "nom": "Témoin",
+  "etatDePartie": {
+    "malus": {
+      "total": 1
+    },
+    "etats": [
+      {
+        "nom": "Anxiété",
+        "versant": "mental",
+        "localisation": "anxiete"
+      }
+    ]
+  },
+  "equipement": {
+    "armesMentales": [
+      {
+        "nom": "Sarcasme",
+        "pourcentage": {
+          "minimum": 0,
+          "current": 30,
+          "maximum": 30
+        },
+        "desDeDegats": 1,
+        "type": "Sociale"
+      }
+    ]
+  }
+}

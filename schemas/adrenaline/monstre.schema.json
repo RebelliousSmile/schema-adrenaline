@@ -274,102 +274,6 @@
             }
           ]
         },
-        "log": {
-          "type": "object",
-          "properties": {
-            "minimum": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
-            },
-            "current": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
-            },
-            "maximum": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
-            }
-          },
-          "required": [
-            "minimum",
-            "current",
-            "maximum"
-          ],
-          "additionalProperties": false,
-          "description": "Logique. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 30,
-              "maximum": 30
-            }
-          ]
-        },
-        "vol": {
-          "type": "object",
-          "properties": {
-            "minimum": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
-            },
-            "current": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
-            },
-            "maximum": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
-            }
-          },
-          "required": [
-            "minimum",
-            "current",
-            "maximum"
-          ],
-          "additionalProperties": false,
-          "description": "Volonté. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 40,
-              "maximum": 40
-            }
-          ]
-        },
         "per": {
           "type": "object",
           "properties": {
@@ -417,54 +321,6 @@
               "maximum": 50
             }
           ]
-        },
-        "cha": {
-          "type": "object",
-          "properties": {
-            "minimum": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Borne basse du pourcentage de d100.",
-              "examples": [
-                0
-              ]
-            },
-            "current": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Pourcentage de d100 actuel.",
-              "examples": [
-                40,
-                80
-              ]
-            },
-            "maximum": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 200,
-              "description": "Borne haute du pourcentage de d100.",
-              "examples": [
-                100,
-                200
-              ]
-            }
-          },
-          "required": [
-            "minimum",
-            "current",
-            "maximum"
-          ],
-          "additionalProperties": false,
-          "description": "Charisme. Pourcentage de d100 jouable.",
-          "examples": [
-            {
-              "minimum": 0,
-              "current": 25,
-              "maximum": 25
-            }
-          ]
         }
       },
       "required": [
@@ -474,10 +330,10 @@
         "rap"
       ],
       "additionalProperties": false,
-      "description": "Caractéristiques d'une créature : les quatre physiques toujours, les mentales seulement si elle en a."
+      "description": "Caractéristiques d'une créature : les quatre physiques toujours, la perception seulement si elle en a une."
     },
     "sante": {
-      "description": "Seuils de dégât. Les mentaux n'ont de sens que si la créature a des caractéristiques mentales.",
+      "description": "Seuils de dégât. Les mentaux n'ont de sens que si la créature a une perception.",
       "type": "object",
       "properties": {
         "physique": {
@@ -2877,7 +2733,8 @@
       "minLength": 1
     },
     "etats": {
-      "description": "États identifiés de la créature, chacun portant un delta complet de profil.",
+      "description": "L'autre état de la créature, en plus de son état de base : zéro (carte unique) ou un, jamais davantage. Il porte un delta complet de profil. La forme héritée `etatAlternatif` compte pour cet unique état : la combiner avec `etats`, même vide, est refusé par le codec seul : le générateur de schéma n'émet pas cette contrainte sans `refine`, que le dépôt interdit, donc le schéma JSON publié accepte ce mélange.",
+      "maxItems": 1,
       "type": "array",
       "items": {
         "type": "object",
@@ -3106,102 +2963,6 @@
                       }
                     ]
                   },
-                  "log": {
-                    "type": "object",
-                    "properties": {
-                      "minimum": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Borne basse du pourcentage de d100.",
-                        "examples": [
-                          0
-                        ]
-                      },
-                      "current": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Pourcentage de d100 actuel.",
-                        "examples": [
-                          40,
-                          80
-                        ]
-                      },
-                      "maximum": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Borne haute du pourcentage de d100.",
-                        "examples": [
-                          100,
-                          200
-                        ]
-                      }
-                    },
-                    "required": [
-                      "minimum",
-                      "current",
-                      "maximum"
-                    ],
-                    "additionalProperties": false,
-                    "description": "Logique. Pourcentage de d100 jouable.",
-                    "examples": [
-                      {
-                        "minimum": 0,
-                        "current": 30,
-                        "maximum": 30
-                      }
-                    ]
-                  },
-                  "vol": {
-                    "type": "object",
-                    "properties": {
-                      "minimum": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Borne basse du pourcentage de d100.",
-                        "examples": [
-                          0
-                        ]
-                      },
-                      "current": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Pourcentage de d100 actuel.",
-                        "examples": [
-                          40,
-                          80
-                        ]
-                      },
-                      "maximum": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Borne haute du pourcentage de d100.",
-                        "examples": [
-                          100,
-                          200
-                        ]
-                      }
-                    },
-                    "required": [
-                      "minimum",
-                      "current",
-                      "maximum"
-                    ],
-                    "additionalProperties": false,
-                    "description": "Volonté. Pourcentage de d100 jouable.",
-                    "examples": [
-                      {
-                        "minimum": 0,
-                        "current": 40,
-                        "maximum": 40
-                      }
-                    ]
-                  },
                   "per": {
                     "type": "object",
                     "properties": {
@@ -3247,54 +3008,6 @@
                         "minimum": 0,
                         "current": 50,
                         "maximum": 50
-                      }
-                    ]
-                  },
-                  "cha": {
-                    "type": "object",
-                    "properties": {
-                      "minimum": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Borne basse du pourcentage de d100.",
-                        "examples": [
-                          0
-                        ]
-                      },
-                      "current": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Pourcentage de d100 actuel.",
-                        "examples": [
-                          40,
-                          80
-                        ]
-                      },
-                      "maximum": {
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 200,
-                        "description": "Borne haute du pourcentage de d100.",
-                        "examples": [
-                          100,
-                          200
-                        ]
-                      }
-                    },
-                    "required": [
-                      "minimum",
-                      "current",
-                      "maximum"
-                    ],
-                    "additionalProperties": false,
-                    "description": "Charisme. Pourcentage de d100 jouable.",
-                    "examples": [
-                      {
-                        "minimum": 0,
-                        "current": 25,
-                        "maximum": 25
                       }
                     ]
                   }
@@ -6064,7 +5777,7 @@
                           "maximum": 100
                         },
                         "type": {
-                          "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                          "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
                           "examples": [
                             "Contact",
                             "Sociale"
@@ -6085,11 +5798,11 @@
                         "nom"
                       ],
                       "additionalProperties": false,
-                      "description": "Une arme, physique ou mentale : les deux se notent pareil."
+                      "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
                     }
                   },
-                  "armesMentales": {
-                    "description": "Armes mentales, notées comme les physiques. Liste non bornée.",
+                  "armesPsychologiques": {
+                    "description": "Armes psychologiques de la créature, notées comme les armes physiques. Liste non bornée.",
                     "type": "array",
                     "items": {
                       "type": "object",
@@ -6163,7 +5876,7 @@
                           "maximum": 100
                         },
                         "type": {
-                          "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                          "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
                           "examples": [
                             "Contact",
                             "Sociale"
@@ -6184,7 +5897,7 @@
                         "nom"
                       ],
                       "additionalProperties": false,
-                      "description": "Une arme, physique ou mentale : les deux se notent pareil."
+                      "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
                     }
                   }
                 },
@@ -6572,102 +6285,6 @@
                 }
               ]
             },
-            "log": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Logique. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 30,
-                  "maximum": 30
-                }
-              ]
-            },
-            "vol": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Volonté. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 40,
-                  "maximum": 40
-                }
-              ]
-            },
             "per": {
               "type": "object",
               "properties": {
@@ -6713,54 +6330,6 @@
                   "minimum": 0,
                   "current": 50,
                   "maximum": 50
-                }
-              ]
-            },
-            "cha": {
-              "type": "object",
-              "properties": {
-                "minimum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne basse du pourcentage de d100.",
-                  "examples": [
-                    0
-                  ]
-                },
-                "current": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Pourcentage de d100 actuel.",
-                  "examples": [
-                    40,
-                    80
-                  ]
-                },
-                "maximum": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 200,
-                  "description": "Borne haute du pourcentage de d100.",
-                  "examples": [
-                    100,
-                    200
-                  ]
-                }
-              },
-              "required": [
-                "minimum",
-                "current",
-                "maximum"
-              ],
-              "additionalProperties": false,
-              "description": "Charisme. Pourcentage de d100 jouable.",
-              "examples": [
-                {
-                  "minimum": 0,
-                  "current": 25,
-                  "maximum": 25
                 }
               ]
             }
@@ -7204,7 +6773,7 @@
                 "maximum": 100
               },
               "type": {
-                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
                 "examples": [
                   "Contact",
                   "Sociale"
@@ -7225,11 +6794,11 @@
               "nom"
             ],
             "additionalProperties": false,
-            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+            "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
           }
         },
-        "armesMentales": {
-          "description": "Armes mentales, notées comme les physiques. Liste non bornée.",
+        "armesPsychologiques": {
+          "description": "Armes psychologiques de la créature, notées comme les armes physiques. Liste non bornée.",
           "type": "array",
           "items": {
             "type": "object",
@@ -7303,7 +6872,7 @@
                 "maximum": 100
               },
               "type": {
-                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
                 "examples": [
                   "Contact",
                   "Sociale"
@@ -7324,7 +6893,7 @@
               "nom"
             ],
             "additionalProperties": false,
-            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+            "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
           }
         }
       },
@@ -7825,7 +7394,7 @@
   "additionalProperties": false,
   "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/monstre.schema.json",
   "title": "Créature — Adrenaline System",
-  "description": "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, états identifiés, combat structuré, contagion générique et bloc narratif facultatifs.",
+  "description": "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, perception optionnelle, états identifiés, combat structuré, contagion générique et bloc narratif facultatifs.",
   "x-adrenaline-presentation": {
     "version": 1,
     "capability": "block:adrenaline-monstre",
@@ -7864,7 +7433,8 @@
         "triggerBg": "--adrenaline-trigger-bg",
         "triggerInk": "--adrenaline-trigger-ink",
         "diceBadgeBg": "--adrenaline-dice-badge-bg",
-        "diceBadgeInk": "--adrenaline-dice-badge-ink"
+        "diceBadgeInk": "--adrenaline-dice-badge-ink",
+        "stateBadge": "--adrenaline-card-badge"
       },
       "sectionTitles": {
         "align": "start",
@@ -7891,6 +7461,18 @@
         "Animal": "paw-print"
       }
     },
+    "cards": [
+      {
+        "id": "principal"
+      },
+      {
+        "id": "secondaire",
+        "existsWhenAny": [
+          "/etats",
+          "/etatAlternatif"
+        ]
+      }
+    ],
     "values": {
       "editorBounds": "json-schema",
       "range": {
@@ -7960,6 +7542,16 @@
             "order": 10,
             "layout": "stack",
             "form": "state-header",
+            "decoration": {
+              "kind": "state-badge",
+              "triggerMarker": true,
+              "current": {
+                "path": "/etatActif",
+                "cards": [
+                  "principal"
+                ]
+              }
+            },
             "paths": [
               "/etatPrincipal",
               "/etatActif",
@@ -7988,27 +7580,38 @@
             "layout": "grid",
             "columns": 4,
             "form": "compact-rows",
+            "pointerRows": [
+              [
+                {
+                  "path": "/caracteristiques/for"
+                },
+                {
+                  "path": "/caracteristiques/con"
+                },
+                {
+                  "path": "/caracteristiques/dex"
+                },
+                {
+                  "path": "/caracteristiques/rap"
+                }
+              ],
+              [
+                {
+                  "path": "/zoneDeDetection",
+                  "label": "Zone de détection"
+                },
+                {
+                  "path": "/caracteristiques/per"
+                },
+                {
+                  "path": "/deplacement",
+                  "label": "Dépl."
+                }
+              ]
+            ],
             "paths": [
-              "/caracteristiques"
-            ]
-          },
-          {
-            "id": "detection",
-            "label": "Détection",
-            "order": 20,
-            "layout": "stack",
-            "form": "compact-rows",
-            "paths": [
-              "/zoneDeDetection"
-            ]
-          },
-          {
-            "id": "deplacement",
-            "label": "Déplacement",
-            "order": 30,
-            "layout": "stack",
-            "form": "compact-rows",
-            "paths": [
+              "/caracteristiques",
+              "/zoneDeDetection",
               "/deplacement"
             ]
           }
@@ -8018,7 +7621,8 @@
         "id": "sante",
         "label": "Santé",
         "order": 50,
-        "layout": "stack",
+        "layout": "grid",
+        "columns": 2,
         "cards": [
           "principal",
           "secondaire"
@@ -8026,21 +7630,29 @@
         "blocks": [
           {
             "id": "sante",
-            "label": "Seuils",
+            "label": "SP",
             "order": 10,
             "layout": "columns",
             "columns": 2,
             "form": "threshold-rows",
+            "placement": {
+              "column": 1,
+              "row": 1
+            },
             "paths": [
               "/sante"
             ]
           },
           {
             "id": "etats-permanents",
-            "label": "États permanents",
+            "label": "État",
             "order": 20,
             "layout": "stack",
             "form": "inline-list",
+            "placement": {
+              "column": 2,
+              "row": 1
+            },
             "paths": [
               "/etatsPermanents"
             ]
@@ -8051,6 +7663,14 @@
             "order": 30,
             "layout": "stack",
             "form": "malus-circles",
+            "placement": {
+              "column": 1,
+              "row": 2,
+              "columnSpan": 2
+            },
+            "cards": [
+              "principal"
+            ],
             "paths": [
               "/malusAvantHs"
             ]
@@ -8062,6 +7682,14 @@
             "layout": "columns",
             "columns": 2,
             "form": "protection-lines",
+            "placement": {
+              "column": 1,
+              "row": 3,
+              "columnSpan": 2
+            },
+            "cards": [
+              "principal"
+            ],
             "paths": [
               "/protections"
             ]
@@ -8078,6 +7706,11 @@
           "principal",
           "secondaire"
         ],
+        "joinedTo": {
+          "section": "sante",
+          "title": "Comportement et santé",
+          "card": "secondaire"
+        },
         "blocks": [
           {
             "id": "combat",
@@ -8123,6 +7756,7 @@
         "cards": [
           "secondaire"
         ],
+        "fallbackCard": "principal",
         "blocks": [
           {
             "id": "equipement",

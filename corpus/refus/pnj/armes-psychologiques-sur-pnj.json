@@ -1,0 +1,29 @@
+{
+  "nom": "Témoin",
+  "etatDePartie": {
+    "malus": {
+      "total": 1
+    },
+    "etats": [
+      {
+        "nom": "Anxiété",
+        "versant": "mental",
+        "localisation": "anxiete"
+      }
+    ]
+  },
+  "equipement": {
+    "armesPsychologiques": [
+      {
+        "nom": "Terreur",
+        "pourcentage": {
+          "minimum": 0,
+          "current": 40,
+          "maximum": 40
+        },
+        "desDeDegats": 1,
+        "type": "Psychologique"
+      }
+    ]
+  }
+}

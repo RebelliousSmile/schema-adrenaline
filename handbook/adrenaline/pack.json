@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "version": "0.10.0",
+  "version": "0.11.0",
   "minimumHandbookVersion": "2.7.0",
   "requires": [
     "block:adrenaline-pj",
@@ -177,6 +177,7 @@
           "--adrenaline-trigger-ink": "#10282C",
           "--adrenaline-dice-badge-bg": "#211A18",
           "--adrenaline-dice-badge-ink": "#FFF8F0",
+          "--adrenaline-card-badge": "#0E8FA3",
           "--adrenaline-malus-shock": "#E3A400",
           "--adrenaline-malus-wound": "#E30411",
           "--adrenaline-h1-surface": "#FFFFFF",
@@ -324,6 +325,7 @@
           "--adrenaline-trigger-ink": "#F0FBFC",
           "--adrenaline-dice-badge-bg": "#F4E9DF",
           "--adrenaline-dice-badge-ink": "#160D0B",
+          "--adrenaline-card-badge": "#4FC3D6",
           "--adrenaline-malus-shock": "#F2C200",
           "--adrenaline-malus-wound": "#F0503C",
           "--adrenaline-h1-surface": "#2B1A16",

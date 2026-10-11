@@ -2279,7 +2279,7 @@
                 "maximum": 100
               },
               "type": {
-                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
                 "examples": [
                   "Contact",
                   "Sociale"
@@ -2300,7 +2300,7 @@
               "nom"
             ],
             "additionalProperties": false,
-            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+            "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
           }
         },
         "armesMentales": {
@@ -2378,7 +2378,7 @@
                 "maximum": 100
               },
               "type": {
-                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
                 "examples": [
                   "Contact",
                   "Sociale"
@@ -2399,7 +2399,7 @@
               "nom"
             ],
             "additionalProperties": false,
-            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+            "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
           }
         }
       },

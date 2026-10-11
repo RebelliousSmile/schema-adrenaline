@@ -1,0 +1,82 @@
+{
+  "nom": "Témoin",
+  "caracteristiques": {
+    "for": {
+      "minimum": 0,
+      "current": 40,
+      "maximum": 40
+    },
+    "con": {
+      "minimum": 0,
+      "current": 50,
+      "maximum": 50
+    },
+    "dex": {
+      "minimum": 0,
+      "current": 20,
+      "maximum": 20
+    },
+    "rap": {
+      "minimum": 0,
+      "current": 15,
+      "maximum": 15
+    },
+    "per": {
+      "minimum": 0,
+      "current": 30,
+      "maximum": 30
+    }
+  },
+  "etatDePartie": {
+    "malus": {
+      "total": 1
+    },
+    "etats": [
+      {
+        "nom": "Insensible",
+        "versant": "general",
+        "duree": "Pendant l'état actif"
+      }
+    ]
+  },
+  "etats": [
+    {
+      "id": "stimule",
+      "nom": "Stimulé",
+      "delta": {
+        "caracteristiques": {
+          "for": {
+            "minimum": 0,
+            "current": 40,
+            "maximum": 40
+          },
+          "con": {
+            "minimum": 0,
+            "current": 50,
+            "maximum": 50
+          },
+          "dex": {
+            "minimum": 0,
+            "current": 20,
+            "maximum": 20
+          },
+          "rap": {
+            "minimum": 0,
+            "current": 15,
+            "maximum": 15
+          },
+          "per": {
+            "minimum": 0,
+            "current": 30,
+            "maximum": 30
+          },
+          "log": {
+            "minimum": 0,
+            "current": 40,
+            "maximum": 40
+          }
+        }
+      }
+    }
+  ]
+}

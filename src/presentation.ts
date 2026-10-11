@@ -49,7 +49,17 @@ export type AdrenalinePresentationDecoration =
    * Stress and malus tracks of a compact card: `length` circles per track, the
    * first `stressDefault` stress circles bold when the document gives no count.
    */
-  | { kind: "malus-tracks"; length: 10; stressDefault: 2 };
+  | { kind: "malus-tracks"; length: 10; stressDefault: 2 }
+  /**
+   * Header of a creature state: a marker before each trigger, and a case marking
+   * the state currently played, bound to `current.path` (`/etatActif`) and drawn
+   * on the listed cards only.
+   */
+  | {
+      kind: "state-badge";
+      triggerMarker: true;
+      current: { path: "/etatActif"; cards: readonly ["principal"] };
+    };
 
 type AdrenalinePresentationFonts = {
   body: "Adrenaline Body";
@@ -89,6 +99,11 @@ type AdrenalineCompactCardTokens = AdrenalinePresentationTokens & {
   diceBadgeInk: "--adrenaline-dice-badge-ink";
 };
 
+/** A creature card also draws the case of its current state: the PNJ card has no state header. */
+type AdrenalineCreatureCardTokens = AdrenalineCompactCardTokens & {
+  stateBadge: "--adrenaline-card-badge";
+};
+
 /**
  * The paper sheet prints handwritten values flush right under centred titles;
  * the compact card of a PNJ or a creature prints typeset figures (percentages,
@@ -110,10 +125,26 @@ export type AdrenalinePresentationAppearance =
       surface: "compact-card";
       outerRule: true;
       fonts: AdrenalinePresentationFonts;
-      tokens: AdrenalineCompactCardTokens;
+      tokens: AdrenalineCompactCardTokens | AdrenalineCreatureCardTokens;
       sectionTitles: { align: "start"; font: "heading" };
       values: { align: "end"; font: "body"; color: "ink"; renderMaximum: false };
     };
+
+/** The cards a creature can print. */
+export type AdrenalineCardId = "principal" | "secondaire";
+
+/**
+ * Creature only: a card the descriptor names, and when it exists. Every card a
+ * section, a block, a join, a fallback or the badge cites is declared here.
+ * Without `existsWhenAny` the card is always printed. With it, the card is
+ * printed only when the document enters a value at one of the listed JSON
+ * Pointers; an array counts as entered when it is not empty. No pointer
+ * entered, no card: the sections it carried follow their `fallbackCard`.
+ */
+export type AdrenalinePresentationCard = {
+  id: AdrenalineCardId;
+  existsWhenAny?: readonly string[];
+};
 
 export type AdrenalinePresentationBlock = {
   id: string;
@@ -141,6 +172,15 @@ export type AdrenalinePresentationBlock = {
    * naming one field spans the whole block.
    */
   fieldRows?: readonly (readonly string[])[];
+  /**
+   * Printed rows of a block that reads several paths, by JSON Pointer. Each
+   * pointer descends from one of the block paths; a row fits the block columns.
+   * A cell whose value the document leaves out is not printed. `label`
+   * replaces the printed name of the cell.
+   */
+  pointerRows?: readonly (readonly { path: string; label?: string }[])[];
+  /** Creature only: the cards that print this block; absent, every card of its section. */
+  cards?: readonly AdrenalineCardId[];
   decoration?: AdrenalinePresentationDecoration;
   /** JSON Pointers read by this visible block. */
   paths: string[];
@@ -168,7 +208,24 @@ export type AdrenalinePresentationSection = {
    * `secondaire` card shows the other one. A section without `cards` is printed
    * once, outside the cards.
    */
-  cards?: readonly ("principal" | "secondaire")[];
+  cards?: readonly AdrenalineCardId[];
+  /**
+   * Creature only: on the named card, this section is printed right after the
+   * section `section` (which comes first in `order`), under the single title
+   * `title` that covers both, instead of on its own. Both sections stay
+   * separate everywhere else.
+   */
+  joinedTo?: { section: string; title: string; card: AdrenalineCardId };
+  /**
+   * Creature only: the card that prints this section when none of the cards
+   * named by `cards` is printed: a card whose `existsWhenAny` finds no entered
+   * value does not exist (a creature without a second state has no
+   * `secondaire` card). The section is then printed on this card, at its place
+   * of `order` among the sections of that card. Required on a section printed
+   * on the `secondaire` card only; it names the `principal` card, which every
+   * creature prints, and never one already in `cards`.
+   */
+  fallbackCard?: "principal";
   blocks: AdrenalinePresentationBlock[];
 };
 
@@ -196,6 +253,8 @@ export type AdrenalinePresentation = {
   };
   appearance: AdrenalinePresentationAppearance;
   categories?: AdrenalinePresentationCategories;
+  /** Creature only: the cards, and when each exists. */
+  cards?: readonly AdrenalinePresentationCard[];
   values: {
     /** Lantern reads scalar input limits from JSON Schema minimum/maximum. */
     editorBounds: "json-schema";
@@ -261,6 +320,11 @@ const COMPACT_CARD_TOKENS = {
   diceBadgeInk: "--adrenaline-dice-badge-ink",
 } as const;
 
+const CREATURE_CARD_TOKENS = {
+  ...COMPACT_CARD_TOKENS,
+  stateBadge: "--adrenaline-card-badge",
+} as const;
+
 const PAPER_SHEET = {
   variant: "zombiology",
   surface: "paper-sheet",
@@ -279,6 +343,11 @@ const COMPACT_CARD = {
   tokens: COMPACT_CARD_TOKENS,
   sectionTitles: { align: "start", font: "heading" },
   values: { align: "end", font: "body", color: "ink", renderMaximum: false },
+} as const satisfies AdrenalinePresentationAppearance;
+
+const CREATURE_CARD = {
+  ...COMPACT_CARD,
+  tokens: CREATURE_CARD_TOKENS,
 } as const satisfies AdrenalinePresentationAppearance;
 
 export const PJ_PRESENTATION = definePresentation({
@@ -768,7 +837,7 @@ export const MONSTRE_PRESENTATION = definePresentation({
   version: 1,
   capability: "block:adrenaline-monstre",
   sheet: { id: "adrenaline-monstre", label: "Fiche monstre" },
-  appearance: COMPACT_CARD,
+  appearance: CREATURE_CARD,
   categories: {
     path: "/categorie",
     fallbackLabel: "Créature",
@@ -777,6 +846,7 @@ export const MONSTRE_PRESENTATION = definePresentation({
     variants: { Zombie: "garnet", Animal: "orange" },
     icons: { Zombie: "biohazard", Animal: "paw-print" },
   },
+  cards: [{ id: "principal" }, { id: "secondaire", existsWhenAny: ["/etats", "/etatAlternatif"] }],
   values: VALUES,
   sections: [
     {
@@ -827,6 +897,11 @@ export const MONSTRE_PRESENTATION = definePresentation({
           order: 10,
           layout: "stack",
           form: "state-header",
+          decoration: {
+            kind: "state-badge",
+            triggerMarker: true,
+            current: { path: "/etatActif", cards: ["principal"] },
+          },
           paths: ["/etatPrincipal", "/etatActif", "/etatDeBase", "/etats", "/etatAlternatif"],
         },
       ],
@@ -846,23 +921,20 @@ export const MONSTRE_PRESENTATION = definePresentation({
           layout: "grid",
           columns: 4,
           form: "compact-rows",
-          paths: ["/caracteristiques"],
-        },
-        {
-          id: "detection",
-          label: "Détection",
-          order: 20,
-          layout: "stack",
-          form: "compact-rows",
-          paths: ["/zoneDeDetection"],
-        },
-        {
-          id: "deplacement",
-          label: "Déplacement",
-          order: 30,
-          layout: "stack",
-          form: "compact-rows",
-          paths: ["/deplacement"],
+          pointerRows: [
+            [
+              { path: "/caracteristiques/for" },
+              { path: "/caracteristiques/con" },
+              { path: "/caracteristiques/dex" },
+              { path: "/caracteristiques/rap" },
+            ],
+            [
+              { path: "/zoneDeDetection", label: "Zone de détection" },
+              { path: "/caracteristiques/per" },
+              { path: "/deplacement", label: "Dépl." },
+            ],
+          ],
+          paths: ["/caracteristiques", "/zoneDeDetection", "/deplacement"],
         },
       ],
     },
@@ -870,24 +942,27 @@ export const MONSTRE_PRESENTATION = definePresentation({
       id: "sante",
       label: "Santé",
       order: 50,
-      layout: "stack",
+      layout: "grid",
+      columns: 2,
       cards: ["principal", "secondaire"],
       blocks: [
         {
           id: "sante",
-          label: "Seuils",
+          label: "SP",
           order: 10,
           layout: "columns",
           columns: 2,
           form: "threshold-rows",
+          placement: { column: 1, row: 1 },
           paths: ["/sante"],
         },
         {
           id: "etats-permanents",
-          label: "États permanents",
+          label: "État",
           order: 20,
           layout: "stack",
           form: "inline-list",
+          placement: { column: 2, row: 1 },
           paths: ["/etatsPermanents"],
         },
         {
@@ -896,6 +971,8 @@ export const MONSTRE_PRESENTATION = definePresentation({
           order: 30,
           layout: "stack",
           form: "malus-circles",
+          placement: { column: 1, row: 2, columnSpan: 2 },
+          cards: ["principal"],
           paths: ["/malusAvantHs"],
         },
         {
@@ -905,6 +982,8 @@ export const MONSTRE_PRESENTATION = definePresentation({
           layout: "columns",
           columns: 2,
           form: "protection-lines",
+          placement: { column: 1, row: 3, columnSpan: 2 },
+          cards: ["principal"],
           paths: ["/protections"],
         },
       ],
@@ -916,6 +995,7 @@ export const MONSTRE_PRESENTATION = definePresentation({
       layout: "stack",
       labelFrom: "/instinct",
       cards: ["principal", "secondaire"],
+      joinedTo: { section: "sante", title: "Comportement et santé", card: "secondaire" },
       blocks: [
         {
           id: "combat",
@@ -952,6 +1032,7 @@ export const MONSTRE_PRESENTATION = definePresentation({
       order: 80,
       layout: "stack",
       cards: ["secondaire"],
+      fallbackCard: "principal",
       blocks: [
         {
           id: "equipement",

@@ -4,6 +4,101 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-10-11
+
+### Breaking
+
+- The creature no longer carries `log`, `vol` or `cha` in `/caracteristiques`
+  (the contract rejects them, naming the key). `per` stays. The
+  same three keys are rejected in `etats[].delta.caracteristiques` and in the
+  legacy `etatAlternatif.caracteristiques`. The PJ and PNJ characteristics are
+  unchanged: PNJ examples that enter `log`, `vol` and `cha` stay valid. The
+  creature example `predateur-pensant.toml` drops those three tables.
+- The equipment is split. The creature replaces `armesMentales` with
+  `armesPsychologiques`; the PNJ loses the `armesMentales` field; the PJ keeps
+  `armesMentales`. A creature or a PNJ that enters `armesMentales` is rejected,
+  naming the key, also inside `etats[].delta.equipement`.
+- The list of states is closed. A creature declares at most one state besides
+  its base: `etats` holds zero or one element (zero is the single-card
+  creature), and the legacy `etatAlternatif` counts as that one state. A
+  document with two or more `etats` is rejected, naming `etats`, by Zod and by
+  the generated JSON Schema (`maxItems: 1`). Before, the states past the first
+  were accepted and never printed. Mixing `etatAlternatif` with `etats` was
+  already rejected by the codec at 3.4.0 (also with an empty `etats`) and still
+  is. The refusal lives in the codec alone: the schema generator does not emit
+  that constraint without a `refine`, which this repository forbids on the
+  objects bound to the targets, so the published draft-7 JSON Schema accepts
+  the mix. The `etats` description says so, and `validate:contract` guards it:
+  the two mix fixtures must be refused by the codec and accepted by the schema.
+- The creature presentation no longer has the `detection` and `deplacement`
+  blocks: `/zoneDeDetection` and `/deplacement` are printed by the
+  characteristics block.
+
+### Added
+
+- Block property `pointerRows`: rows of pointers (`fieldRows` stays reserved
+  for the identity). The creature characteristics print two rows, FOR CON DEX
+  RAP, then "Zone de détection", PER, "Dépl.". A cell without an entered value
+  is not printed.
+- Decoration `state-badge` on the `etat` block: a marker before each trigger
+  and the box of the current state (`/etatActif`) on the main card only. The
+  pack declares `--adrenaline-card-badge` (cyan) in both polarities; Lantern
+  must draw it (a published card token that is not read fails its guard).
+- Block property `cards` (the `malus` and `protections` blocks are published on
+  the main card only) and section property `joinedTo`, carried by the section that follows:
+  on the secondary card, `comportement` is printed right after `sante` under the
+  single title "Comportement et santé", health first, as the book prints the
+  small card. The main card keeps its two sections.
+- Section property `fallbackCard`: when none of the cards named by `cards` is
+  printed (a creature without a second state has no `secondaire` card), the
+  section is printed on this card, at its place of `order` among the sections of
+  that card. The `equipement` section, printed on the `secondaire` card only,
+  declares `fallbackCard: "principal"`. Nothing else changes for a creature
+  with one card: the case of the current state follows `current.cards`, and
+  `joinedTo` only applies on its own card. A section printed on the
+  `secondaire` card only must declare a fallback.
+- Descriptor property `cards` (creature only): the declaration of the cards,
+  `[{ id: "principal" }, { id: "secondaire", existsWhenAny: ["/etats",
+"/etatAlternatif"] }]`. A card with `existsWhenAny` exists when the document
+  enters a value at one of its pointers (a list counts when it is not empty);
+  with none entered it does not exist, and its sections follow their
+  `fallbackCard`. `principal` is always printed and carries no condition.
+  `validate:presentation` requires every card cited by a section, a block, a
+  `fallbackCard`, a `joinedTo` or the badge to be declared, every pointer to
+  exist in the contract, and refuses `cards` on the PJ and the PNJ; each rule
+  has a negative proof in the self-test.
+- Refusal corpus, one file per case: `log`, `vol` and `cha` in
+  `etats[].delta.caracteristiques` and in `etatAlternatif.caracteristiques`;
+  `armesMentales` in `etats[].delta.equipement`; `armesPsychologiques` on the
+  PNJ and on the PJ (each refused as an unrecognized key).
+- `validate:presentation` checks every pointer row (descends from a block path,
+  exists in the contract, placed once, fits the columns, every field of the
+  paths printed), every join (an existing section, printed on the same card, not
+  itself joined, coming first in `order`, non-empty title), the block `cards`,
+  the badge (its `current` path read by the block, its cards cards of the
+  section) and `fallbackCard` (a known card, not already in `cards`, the
+  principal card, creature only, required on a section printed on the
+  `secondaire` card only). Each of these rules has a negative proof in the
+  self-test, as do the creature-only `stateBadge` token and the stray keys of
+  the descriptor, sections and blocks.
+- Pack 0.11.0. Schema baseline `4.0.0`; `schemas/adrenaline/3.2.0` stays intact.
+
+### Changed
+
+- `contractVersion` goes from 3 to 4 (`cross-tool-provider.json`,
+  `ADRENALINE_CONTRACT_VERSION`); `validate:package` now reads the expected
+  value from the major of `package.json` instead of a literal.
+- Creature presentation: the `sante` section moves from a `stack` to a
+  two-column grid, thresholds and permanent states on one row. The thresholds
+  block is labelled "SP" on the creature card, as the book prints it (it was
+  "Seuils"; the PNJ card keeps "Seuils"), and the second label is "État" (it was
+  "États permanents").
+
+### Migration
+
+- `traitsSpeciaux = [ "État Insensible." ]` stays a special trait: nothing is
+  converted. Re-enter it as `etatsPermanents` where the state is meant.
+
 ## [3.4.0] - 2026-10-09
 
 ### Added

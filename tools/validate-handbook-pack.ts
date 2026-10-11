@@ -371,6 +371,7 @@ export function validateHandbookPack(
     requireContrast(note, "--adrenaline-card-ink", "--adrenaline-card-surface");
     requireContrast(note, "--adrenaline-trigger-ink", "--adrenaline-trigger-bg");
     requireContrast(note, "--adrenaline-dice-badge-ink", "--adrenaline-dice-badge-bg");
+    requireContrast(note, "--adrenaline-card-badge", "--adrenaline-card-surface", 3);
     requireContrast(note, "--h4-color", "--background-primary");
     requireContrast(note, "--h5-color", "--background-primary");
     requireContrast(note, "--adrenaline-keyword-color", "--background-primary");
@@ -434,10 +435,13 @@ function justBelow(version: string): string {
   throw new Error(`no version below ${version}`);
 }
 
-function refused(name: string, run: () => void): void {
+function refused(name: string, run: () => void, reason?: string): void {
   try {
     run();
-  } catch {
+  } catch (error) {
+    if (reason !== undefined && !String((error as Error).message).includes(reason)) {
+      throw new Error(`self-test refused ${name} for another reason: ${(error as Error).message}`);
+    }
     return;
   }
   throw new Error(`self-test did not refuse ${name}`);
@@ -480,6 +484,20 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   const calloutDark = record(calloutStyle.dark, "dark");
   record(calloutDark.note, "note")["--adrenaline-action-title-ink"] = "#6B4A3C";
 
+  /* The state badge is read in each polarity, one layer at a time: washed into the card surface
+     (1:1), or left at a contrast between the floor of the check and the 3:1 it asks for. */
+  const badgeIn = (layer: "light" | "dark", colour?: string): RecordValue => {
+    const changed = clone(packSource) as RecordValue;
+    const style = record(record(changed.pack, "pack").style, "style");
+    const note = record(record(style[layer], layer).note, "note");
+    note["--adrenaline-card-badge"] = colour ?? note["--adrenaline-card-surface"];
+    return changed;
+  };
+  const washedBadgeLight = badgeIn("light");
+  const washedBadgeDark = badgeIn("dark");
+  const faintBadgeLight = badgeIn("light", "#5FB8C7"); // 2.25:1 on the light card
+  const faintBadgeDark = badgeIn("dark", "#6A5753"); // 2.46:1 on the dark card
+
   const weakLinkHover = clone(packSource) as RecordValue;
   const weakLinkPack = record(weakLinkHover.pack, "pack");
   const weakLinkStyle = record(weakLinkPack.style, "style");
@@ -517,6 +535,41 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   refused("unsafe token", () => validateHandbookPack(unsafe));
   refused("low contrast", () => validateHandbookPack(lowContrast));
   refused("low callout contrast", () => validateHandbookPack(lowCalloutContrast));
+  refused(
+    "light state badge washed into the card",
+    () => validateHandbookPack(washedBadgeLight),
+    "contrast --adrenaline-card-badge/--adrenaline-card-surface",
+  );
+  refused(
+    "dark state badge washed into the card",
+    () => validateHandbookPack(washedBadgeDark),
+    "contrast --adrenaline-card-badge/--adrenaline-card-surface",
+  );
+  refused(
+    "light state badge under 3:1",
+    () => validateHandbookPack(faintBadgeLight),
+    "contrast --adrenaline-card-badge/--adrenaline-card-surface",
+  );
+  refused(
+    "dark state badge under 3:1",
+    () => validateHandbookPack(faintBadgeDark),
+    "contrast --adrenaline-card-badge/--adrenaline-card-surface",
+  );
+  /* `refused` itself: a refusal for another reason than the one asked is not a pass. */
+  let wrongReasonPassed = true;
+  try {
+    refused(
+      "probe",
+      () => {
+        throw new Error("another failure");
+      },
+      "the expected reason",
+    );
+  } catch (error) {
+    wrongReasonPassed = !String((error as Error).message).includes("for another reason");
+  }
+  if (wrongReasonPassed)
+    throw new Error("self-test: refused() accepts a refusal for another reason");
   refused("link hover weaker than rest", () => validateHandbookPack(weakLinkHover));
   refused("missing note token", () => validateHandbookPack(missingNoteToken));
   refused("texture token in workspace", () => validateHandbookPack(workspaceTexture));

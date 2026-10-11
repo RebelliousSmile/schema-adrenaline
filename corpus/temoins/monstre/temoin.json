@@ -38,5 +38,19 @@
         "duree": "Pendant l'état actif"
       }
     ]
+  },
+  "equipement": {
+    "armesPsychologiques": [
+      {
+        "nom": "Terreur",
+        "pourcentage": {
+          "minimum": 0,
+          "current": 40,
+          "maximum": 40
+        },
+        "desDeDegats": 1,
+        "type": "Psychologique"
+      }
+    ]
   }
 }

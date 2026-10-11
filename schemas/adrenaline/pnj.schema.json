@@ -2709,7 +2709,7 @@
                 "maximum": 100
               },
               "type": {
-                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
+                "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
                 "examples": [
                   "Contact",
                   "Sociale"
@@ -2730,106 +2730,7 @@
               "nom"
             ],
             "additionalProperties": false,
-            "description": "Une arme, physique ou mentale : les deux se notent pareil."
-          }
-        },
-        "armesMentales": {
-          "description": "Armes mentales, notées comme les physiques. Liste non bornée.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "nom": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Nom de l'arme, tel qu'écrit sur la feuille. Chaîne libre.",
-                "examples": [
-                  "Judo",
-                  "Batte de baseball",
-                  "Sarcasme"
-                ]
-              },
-              "pourcentage": {
-                "description": "Pourcentage jouable auquel l'arme se manie, tel que noté sur la feuille.",
-                "examples": [
-                  {
-                    "minimum": 0,
-                    "current": 30,
-                    "maximum": 30
-                  }
-                ],
-                "type": "object",
-                "properties": {
-                  "minimum": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 200,
-                    "description": "Borne basse du pourcentage de d100.",
-                    "examples": [
-                      0
-                    ]
-                  },
-                  "current": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 200,
-                    "description": "Pourcentage de d100 actuel.",
-                    "examples": [
-                      40,
-                      80
-                    ]
-                  },
-                  "maximum": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 200,
-                    "description": "Borne haute du pourcentage de d100.",
-                    "examples": [
-                      100,
-                      200
-                    ]
-                  }
-                },
-                "required": [
-                  "minimum",
-                  "current",
-                  "maximum"
-                ],
-                "additionalProperties": false
-              },
-              "desDeDegats": {
-                "description": "Nombre de d10 de dégâts.",
-                "examples": [
-                  1,
-                  2
-                ],
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 100
-              },
-              "type": {
-                "description": "Contact ou distance pour une arme physique, psychologique ou sociale pour une arme mentale.",
-                "examples": [
-                  "Contact",
-                  "Sociale"
-                ],
-                "type": "string",
-                "minLength": 1
-              },
-              "notes": {
-                "description": "Ce que la ligne d'arme porte en plus : munitions, portée, contrainte d'emploi.",
-                "examples": [
-                  "Deux mains"
-                ],
-                "type": "string",
-                "minLength": 1
-              }
-            },
-            "required": [
-              "nom"
-            ],
-            "additionalProperties": false,
-            "description": "Une arme, physique ou mentale : les deux se notent pareil."
+            "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
           }
         }
       },

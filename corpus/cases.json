@@ -153,6 +153,13 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pnj/armes-mentales-sur-pnj.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject",
+      "names": "armesMentales"
+    },
+    {
       "path": "corpus/refus/pnj/caracteristique-scalaire-heritee.json",
       "target": "pnj",
       "format": "json",
@@ -199,6 +206,41 @@
       "target": "pnj",
       "format": "json",
       "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/monstre/armes-mentales-sur-creature.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "armesMentales"
+    },
+    {
+      "path": "corpus/refus/monstre/log-sur-creature.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "log"
+    },
+    {
+      "path": "corpus/refus/monstre/vol-sur-creature.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "vol"
+    },
+    {
+      "path": "corpus/refus/monstre/cha-sur-creature.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "cha"
+    },
+    {
+      "path": "corpus/refus/monstre/deux-etats-sur-creature.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "etats"
     },
     {
       "path": "corpus/refus/monstre/actions-par-round-negatives.json",
@@ -325,6 +367,83 @@
       "target": "pj",
       "format": "toml",
       "expect": "reject"
+    },
+    {
+      "path": "corpus/contract/invalid/monstre-etat-alternatif-et-etats.toml",
+      "target": "monstre",
+      "format": "toml",
+      "expect": "reject",
+      "names": "etats"
+    },
+    {
+      "path": "corpus/contract/invalid/monstre-etat-alternatif-et-etats-vide.toml",
+      "target": "monstre",
+      "format": "toml",
+      "expect": "reject",
+      "names": "etats"
+    },
+    {
+      "path": "corpus/refus/monstre/log-dans-delta-detat.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "log"
+    },
+    {
+      "path": "corpus/refus/monstre/log-dans-etat-alternatif.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "log"
+    },
+    {
+      "path": "corpus/refus/monstre/vol-dans-delta-detat.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "vol"
+    },
+    {
+      "path": "corpus/refus/monstre/vol-dans-etat-alternatif.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "vol"
+    },
+    {
+      "path": "corpus/refus/monstre/cha-dans-delta-detat.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "cha"
+    },
+    {
+      "path": "corpus/refus/monstre/cha-dans-etat-alternatif.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "cha"
+    },
+    {
+      "path": "corpus/refus/monstre/armes-mentales-dans-delta-detat.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "armesMentales"
+    },
+    {
+      "path": "corpus/refus/pnj/armes-psychologiques-sur-pnj.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject",
+      "names": "armesPsychologiques"
+    },
+    {
+      "path": "corpus/refus/pj/armes-psychologiques-sur-pj.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject",
+      "names": "armesPsychologiques"
     }
   ]
 }

@@ -17,6 +17,8 @@ interface ContractCase {
   target: AdrenalineDocumentTarget;
   format: ContractFormat;
   expect: ContractExpectation;
+  /** Rejection only: a key or path the refusal message must name. */
+  names?: string;
 }
 interface ContractManifest {
   manifestVersion: number;
@@ -127,6 +129,15 @@ for (const testCase of manifest.cases) {
         `${label}: the draft-7 schema must accept a structurally valid inverted range`,
       );
     }
+    // The mix of `etatAlternatif` with `etats` is refused by the codec alone: the generator
+    // emits no such constraint without a `refine`, which the repository forbids. The published
+    // schema accepts both fixtures; if it ever refuses them, the documented gap has moved.
+    if (testCase.path.includes("etat-alternatif-et-etats")) {
+      assert.ok(
+        structuralValidator(testCase.target)(raw),
+        `${label}: the draft-7 schema must accept the mix the codec refuses`,
+      );
+    }
     if (testCase.path.includes("presentation-adapter-inconnu")) {
       assert.equal(testCase.format, "json", `${label}: presentation fixture must be JSON`);
       const { presentation: _presentation, ...withoutPresentation } = raw as Record<
@@ -144,6 +155,13 @@ for (const testCase of manifest.cases) {
       );
     }
     assert.throws(() => parse(source), `${label}: invalid fixture was accepted`);
+    if (testCase.names !== undefined) {
+      assert.throws(
+        () => parse(source),
+        (error: unknown) => String((error as Error).message).includes(testCase.names as string),
+        `${label}: the refusal must name ${testCase.names}`,
+      );
+    }
     console.log(`✓ contract rejection: ${label}`);
     continue;
   }

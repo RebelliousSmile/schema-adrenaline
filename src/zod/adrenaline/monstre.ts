@@ -8,7 +8,7 @@ import {
   NiveauDeDangerAlternatif,
   NoteDeNiveauDeDanger,
 } from "../common/danger.js";
-import { Equipement } from "../common/equipement.js";
+import { EquipementDeCreature } from "../common/equipement.js";
 import {
   CaracteristiquesDeCreature,
   EtatDeCreature,
@@ -71,9 +71,8 @@ const EtatAlternatifHistorique = z
  * de paramètres de création.
  *
  * Contrainte non validable, énoncée ici faute de pouvoir l'exprimer : des seuils
- * mentaux n'ont de sens que sur une créature portant des caractéristiques
- * mentales. Draft-7 n'a pas de `dependentSchemas`, et un `refine`
- * disparaîtrait sans trace du schéma généré.
+ * mentaux n'ont de sens que sur une créature portant une perception. Draft-7
+ * n'a pas de `dependentSchemas`, et un `refine` disparaîtrait sans trace du schéma généré.
  */
 export const Monstre = z
   .strictObject({
@@ -120,7 +119,7 @@ export const Monstre = z
     caracteristiques: CaracteristiquesDeCreature,
     sante: SanteDeCreature.optional().meta({
       description:
-        "Seuils de dégât. Les mentaux n'ont de sens que si la créature a des caractéristiques mentales.",
+        "Seuils de dégât. Les mentaux n'ont de sens que si la créature a une perception.",
     }),
     etatsPermanents: EtatsPermanents.optional(),
     malusAvantHs: MalusAvantHs.optional(),
@@ -184,8 +183,9 @@ export const Monstre = z
       description:
         "Identifiant de l'état actuellement actif. Absent ou `base` désigne le profil de base.",
     }),
-    etats: z.array(EtatDeCreature).optional().meta({
-      description: "États identifiés de la créature, chacun portant un delta complet de profil.",
+    etats: z.array(EtatDeCreature).max(1).optional().meta({
+      description:
+        "L'autre état de la créature, en plus de son état de base : zéro (carte unique) ou un, jamais davantage. Il porte un delta complet de profil. La forme héritée `etatAlternatif` compte pour cet unique état : la combiner avec `etats`, même vide, est refusé par le codec seul : le générateur de schéma n'émet pas cette contrainte sans `refine`, que le dépôt interdit, donc le schéma JSON publié accepte ce mélange.",
     }),
     etatAlternatif: EtatAlternatifHistorique.optional().meta({
       description: "Ancien format lu pour compatibilité. Les nouveaux documents utilisent `etats`.",
@@ -207,7 +207,7 @@ export const Monstre = z
       description:
         "Compétences rattachées directement à la créature : elle ne passe par aucune formation.",
     }),
-    equipement: Equipement.optional().meta({
+    equipement: EquipementDeCreature.optional().meta({
       description: "Ce dont la créature se sert, quand elle se sert de quelque chose.",
     }),
     contagion: Contagion.optional().meta({
@@ -228,7 +228,7 @@ export const Monstre = z
     $id: "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/monstre.schema.json",
     title: "Créature — Adrenaline System",
     description:
-      "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, caractéristiques mentales optionnelles, états identifiés, combat structuré, contagion générique et bloc narratif facultatifs.",
+      "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, perception optionnelle, états identifiés, combat structuré, contagion générique et bloc narratif facultatifs.",
     "x-adrenaline-presentation": MONSTRE_PRESENTATION,
   });
 

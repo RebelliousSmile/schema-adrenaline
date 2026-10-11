@@ -7,7 +7,7 @@ import {
   NiveauDeDangerAlternatif,
   NoteDeNiveauDeDanger,
 } from "../common/danger.js";
-import { Equipement } from "../common/equipement.js";
+import { EquipementDePnj } from "../common/equipement.js";
 import { EtatDePartie } from "../common/etat-de-partie.js";
 import { Competence, Formation } from "../common/formations.js";
 import { Identite } from "../common/identite.js";
@@ -91,7 +91,7 @@ export const PersonnageNonJoue = z
       description:
         "Compétences du personnage. La fiche publiée les regroupe sous un bloc unique, hors des formations, et note pour chacune sa caractéristique et son total.",
     }),
-    equipement: Equipement.optional().meta({
+    equipement: EquipementDePnj.optional().meta({
       description: "Ce que le personnage porte sur lui et ce dont il se sert.",
     }),
     narratif: Narratif.optional().meta({

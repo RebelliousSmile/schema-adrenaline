@@ -59,6 +59,8 @@ const COMPACT_CARD_TOKENS = [
   "diceBadgeBg",
   "diceBadgeInk",
 ];
+/** Only a creature card has a state header, so only it draws the case of its current state. */
+const CREATURE_CARD_TOKENS = ["stateBadge"];
 const CARDS = ["principal", "secondaire"];
 const CATEGORY_VARIANTS = new Set(["garnet", "blue", "orange"]);
 const ICON = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -129,7 +131,7 @@ function nodeAt(schema: Obj, raw: unknown, where: string): { root: string; node:
   return { root: segments[0], node };
 }
 
-function appearance(value: unknown, where: string): void {
+function appearance(value: unknown, where: string, target: Target): void {
   const visual = obj(value, where);
   keys(
     visual,
@@ -156,7 +158,17 @@ function appearance(value: unknown, where: string): void {
     );
   const compact = visual.surface === "compact-card";
   const tokens = obj(visual.tokens, `${where}.tokens`);
-  keys(tokens, compact ? [...BASE_TOKENS, ...COMPACT_CARD_TOKENS] : BASE_TOKENS, `${where}.tokens`);
+  keys(
+    tokens,
+    compact
+      ? [
+          ...BASE_TOKENS,
+          ...COMPACT_CARD_TOKENS,
+          ...(target === "monstre" ? CREATURE_CARD_TOKENS : []),
+        ]
+      : BASE_TOKENS,
+    `${where}.tokens`,
+  );
   const style = obj(pack.style, "pack.style");
   for (const token of Object.values(tokens)) {
     assert.match(token as string, /^--[a-z0-9-]+$/, `${where} token is unsafe`);
@@ -228,6 +240,12 @@ function decoration(value: unknown, where: string): void {
       assert.equal(rule.length, 10);
       assert.equal(rule.stressDefault, 2);
       break;
+    case "state-badge":
+      keys(rule, ["kind", "triggerMarker", "current"], where);
+      assert.equal(rule.triggerMarker, true, `${where}.triggerMarker must be true`);
+      // What `current` binds to is checked with the block, which knows its paths and cards.
+      keys(obj(rule.current, `${where}.current`), ["path", "cards"], `${where}.current`);
+      break;
     default:
       assert.fail(`${where} decoration is unknown`);
   }
@@ -285,6 +303,7 @@ export function validatePresentation(source: unknown, target: Target): void {
       "sheet",
       "appearance",
       ...(descriptor.categories === undefined ? [] : ["categories"]),
+      ...(descriptor.cards === undefined ? [] : ["cards"]),
       "values",
       "sections",
       "hiddenPaths",
@@ -297,9 +316,53 @@ export function validatePresentation(source: unknown, target: Target): void {
   keys(sheet, ["id", "label"], `${target}.sheet`);
   assert.equal(sheet.id, `adrenaline-${target}`);
   assert.ok(typeof sheet.label === "string" && sheet.label.length > 0);
-  appearance(descriptor.appearance, `${target}.appearance`);
+  appearance(descriptor.appearance, `${target}.appearance`, target);
   if (descriptor.categories !== undefined)
     categories(schema, descriptor.categories, `${target}.categories`);
+  // The cards the creature can print, and when each exists: every card cited below is one of them.
+  const declaredCards = new Map<string, readonly string[] | undefined>();
+  if (descriptor.cards !== undefined) {
+    assert.equal(target, "monstre", `${target}.cards belongs to the creature card`);
+    assert.ok(
+      Array.isArray(descriptor.cards) && descriptor.cards.length > 0,
+      `${target}.cards must not be empty`,
+    );
+    descriptor.cards.forEach((raw: unknown, i: number) => {
+      const where = `${target}.cards.${i}`;
+      const card = obj(raw, where);
+      keys(card, card.existsWhenAny === undefined ? ["id"] : ["id", "existsWhenAny"], where);
+      assert.ok(CARDS.includes(card.id as string), `${where}.id is unknown`);
+      assert.ok(
+        !declaredCards.has(card.id as string),
+        `${where} declares ${String(card.id)} twice`,
+      );
+      if (card.existsWhenAny === undefined) {
+        declaredCards.set(card.id as string, undefined);
+        return;
+      }
+      const pointers = card.existsWhenAny;
+      assert.ok(
+        Array.isArray(pointers) && pointers.length > 0,
+        `${where}.existsWhenAny must not be empty`,
+      );
+      for (const pointer of pointers) nodeAt(schema, pointer, `${where}.existsWhenAny ${pointer}`);
+      assert.equal(
+        new Set(pointers).size,
+        pointers.length,
+        `${where}.existsWhenAny repeats a pointer`,
+      );
+      declaredCards.set(card.id as string, pointers as string[]);
+    });
+    assert.ok(
+      declaredCards.has("principal") && declaredCards.get("principal") === undefined,
+      `${target}.cards must declare the principal card, always printed`,
+    );
+  } else assert.notEqual(target, "monstre", `${target} must declare its cards`);
+  const declared = (card: unknown, where: string): void =>
+    assert.ok(
+      declaredCards.has(String(card)),
+      `${where} names card ${String(card)}, which the descriptor does not declare`,
+    );
   const values = obj(descriptor.values, `${target}.values`);
   keys(values, ["editorBounds", "range"], `${target}.values`);
   assert.equal(values.editorBounds, "json-schema");
@@ -310,11 +373,12 @@ export function validatePresentation(source: unknown, target: Target): void {
     render: "current",
   });
 
+  const sectionList = entries(descriptor.sections, `${target}.sections`);
   const coverage = new Set<string>();
   const usedPaths: string[] = [];
   const forms = new Map<string, string>();
   const rows: { id: string; span: number }[] = [];
-  for (const section of entries(descriptor.sections, `${target}.sections`)) {
+  for (const section of sectionList) {
     const where = `${target}.sections.${section.id}`;
     keys(
       section,
@@ -329,6 +393,8 @@ export function validatePresentation(source: unknown, target: Target): void {
         ...(section.collapsible === undefined ? [] : ["collapsible"]),
         ...(section.labelFrom === undefined ? [] : ["labelFrom"]),
         ...(section.cards === undefined ? [] : ["cards"]),
+        ...(section.joinedTo === undefined ? [] : ["joinedTo"]),
+        ...(section.fallbackCard === undefined ? [] : ["fallbackCard"]),
         "blocks",
       ],
       where,
@@ -348,13 +414,65 @@ export function validatePresentation(source: unknown, target: Target): void {
         Array.isArray(section.cards) && section.cards.length > 0,
         `${where}.cards must not be empty`,
       );
-      assert.ok(
-        section.cards.every((card: unknown) => CARDS.includes(card as string)),
-        `${where}.cards names an unknown card`,
-      );
+      for (const card of section.cards) declared(card, `${where}.cards`);
       assert.equal(new Set(section.cards).size, section.cards.length, `${where}.cards repeat`);
       assert.ok(section.collapsible === undefined, `${where} cannot fold inside a card`);
     }
+    if (section.joinedTo !== undefined) {
+      assert.equal(target, "monstre", `${where}.joinedTo belongs to the creature card`);
+      const join = obj(section.joinedTo, `${where}.joinedTo`);
+      keys(join, ["section", "title", "card"], `${where}.joinedTo`);
+      assert.ok(
+        typeof join.title === "string" && join.title.trim().length > 0,
+        `${where}.joinedTo.title must be text`,
+      );
+      declared(join.card, `${where}.joinedTo.card`);
+      assert.notEqual(join.section, section.id, `${where}.joinedTo cannot name itself`);
+      const host = sectionList.find((other) => other.id === join.section);
+      assert.ok(host, `${where}.joinedTo names unknown section ${String(join.section)}`);
+      assert.ok(
+        Array.isArray(section.cards) && section.cards.includes(join.card),
+        `${where}.joinedTo needs its own section printed on the ${String(join.card)} card`,
+      );
+      assert.ok(
+        Array.isArray(host.cards) && host.cards.includes(join.card),
+        `${where}.joinedTo names section ${String(join.section)}, not printed on the ${String(join.card)} card`,
+      );
+      assert.equal(
+        host.joinedTo,
+        undefined,
+        `${where}.joinedTo names section ${String(join.section)}, itself joined`,
+      );
+      assert.ok(
+        Number(host.order) < Number(section.order),
+        `${where}.joinedTo names section ${String(join.section)}, which does not come first in order`,
+      );
+    }
+    // The card a section falls back to when the cards it names are not printed.
+    if (section.fallbackCard !== undefined) {
+      assert.equal(target, "monstre", `${where}.fallbackCard belongs to the creature card`);
+      assert.ok(Array.isArray(section.cards), `${where}.fallbackCard needs a section on cards`);
+      declared(section.fallbackCard, `${where}.fallbackCard`);
+      assert.ok(
+        !section.cards.includes(section.fallbackCard),
+        `${where}.fallbackCard ${String(section.fallbackCard)} is already a card of the section`,
+      );
+      assert.equal(
+        section.fallbackCard,
+        "principal",
+        `${where}.fallbackCard must name the principal card, the only one every creature prints`,
+      );
+    }
+    if (
+      target === "monstre" &&
+      Array.isArray(section.cards) &&
+      section.cards.length === 1 &&
+      section.cards[0] === "secondaire"
+    )
+      assert.ok(
+        section.fallbackCard !== undefined,
+        `${where} is printed on the secondaire card only and declares no fallbackCard`,
+      );
     if (section.row !== undefined) {
       const row = obj(section.row, `${where}.row`);
       keys(row, ["id", "span"], `${where}.row`);
@@ -389,6 +507,8 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.formationTypes === undefined ? [] : ["formationTypes"]),
           ...(block.placement === undefined ? [] : ["placement"]),
           ...(block.fieldRows === undefined ? [] : ["fieldRows"]),
+          ...(block.pointerRows === undefined ? [] : ["pointerRows"]),
+          ...(block.cards === undefined ? [] : ["cards"]),
           ...(block.decoration === undefined ? [] : ["decoration"]),
           "paths",
         ],
@@ -438,6 +558,67 @@ export function validatePresentation(source: unknown, target: Target): void {
           Object.keys(fields).sort(),
           `${blockWhere}.fieldRows must name each field once`,
         );
+      }
+      if (block.cards !== undefined) {
+        assert.ok(Array.isArray(section.cards), `${blockWhere}.cards needs a section on cards`);
+        assert.ok(
+          Array.isArray(block.cards) && block.cards.length > 0,
+          `${blockWhere}.cards must not be empty`,
+        );
+        for (const card of block.cards) declared(card, `${blockWhere}.cards`);
+        assert.ok(
+          block.cards.every((card: unknown) => (section.cards as unknown[]).includes(card)),
+          `${blockWhere}.cards must name cards of its section`,
+        );
+        assert.equal(new Set(block.cards).size, block.cards.length, `${blockWhere}.cards repeat`);
+      }
+      if (block.pointerRows !== undefined) {
+        assert.ok(
+          Array.isArray(block.pointerRows) && block.pointerRows.length > 0,
+          `${blockWhere}.pointerRows must not be empty`,
+        );
+        const roots = block.paths as string[];
+        const placed: string[] = [];
+        block.pointerRows.forEach((row: unknown, i: number) => {
+          assert.ok(
+            Array.isArray(row) && row.length > 0,
+            `${blockWhere}.pointerRows.${i} must not be empty`,
+          );
+          assert.ok(
+            row.length <= Number(block.columns ?? 1),
+            `${blockWhere}.pointerRows.${i} must fit the block columns`,
+          );
+          for (const raw of row as unknown[]) {
+            const cell = obj(raw, `${blockWhere}.pointerRows.${i}`);
+            keys(cell, cell.label === undefined ? ["path"] : ["path", "label"], blockWhere);
+            if (cell.label !== undefined)
+              assert.ok(
+                typeof cell.label === "string" && cell.label.length > 0,
+                `${blockWhere} pointer ${String(cell.path)} label must be text`,
+              );
+            const pointer = String(cell.path);
+            nodeAt(schema, pointer, `${blockWhere} pointer ${pointer}`);
+            assert.ok(
+              roots.some((root) => pointer === root || pointer.startsWith(`${root}/`)),
+              `${blockWhere} pointer ${pointer} does not descend from a block path`,
+            );
+            assert.ok(
+              !placed.includes(pointer),
+              `${blockWhere} pointer ${pointer} is placed twice`,
+            );
+            placed.push(pointer);
+          }
+        });
+        // Every field a block path publishes must be printed in some row.
+        for (const root of roots) {
+          const node = nodeAt(schema, root, blockWhere).node;
+          const expected =
+            node.properties === undefined
+              ? [root]
+              : Object.keys(obj(node.properties, blockWhere)).map((name) => `${root}/${name}`);
+          for (const pointer of expected)
+            assert.ok(placed.includes(pointer), `${blockWhere} pointer ${pointer} is in no row`);
+        }
       }
       if (block.valueSuffix !== undefined)
         assert.ok(["%", "PX"].includes(block.valueSuffix as string));
@@ -503,11 +684,39 @@ export function validatePresentation(source: unknown, target: Target): void {
             `${blockWhere}.placement.${field} must be positive`,
           );
         assert.ok(
-          Number(placement.column) <= Number(section.columns ?? 1),
+          Number(placement.column) + Number(placement.columnSpan ?? 1) - 1 <=
+            Number(section.columns ?? 1),
           `${blockWhere}.placement.column exceeds section columns`,
         );
       }
       if (block.decoration !== undefined) decoration(block.decoration, `${blockWhere}.decoration`);
+      if (
+        block.decoration !== undefined &&
+        obj(block.decoration, blockWhere).kind === "state-badge"
+      ) {
+        assert.equal(block.form, "state-header", `${blockWhere} state badge needs a state header`);
+        const current = obj(obj(block.decoration, blockWhere).current, blockWhere);
+        nodeAt(schema, current.path, `${blockWhere} state badge current`);
+        assert.ok(
+          (block.paths as string[]).includes(current.path as string),
+          `${blockWhere} state badge needs its current path among the block paths`,
+        );
+        assert.ok(
+          Array.isArray(current.cards) && current.cards.length > 0,
+          `${blockWhere} state badge cards must not be empty`,
+        );
+        for (const card of current.cards) declared(card, `${blockWhere} state badge cards`);
+        assert.ok(
+          Array.isArray(section.cards) &&
+            current.cards.every((card: unknown) => (section.cards as unknown[]).includes(card)),
+          `${blockWhere} state badge cards must name cards of its section`,
+        );
+        assert.equal(
+          new Set(current.cards).size,
+          current.cards.length,
+          `${blockWhere} state badge cards repeat`,
+        );
+      }
       const tracks = block.decoration !== undefined && obj(block.decoration, blockWhere).kind;
       if (block.form === "malus-tracks" || tracks === "malus-tracks")
         assert.ok(
@@ -711,7 +920,10 @@ if (process.argv.includes("--self-test")) {
   const unknownCard = clone(monster);
   for (const section of sectionsOf(unknownCard))
     if (section.cards) (section.cards as string[]).push("tertiaire");
-  assert.throws(() => validatePresentation(unknownCard, "monstre"));
+  assert.throws(
+    () => validatePresentation(unknownCard, "monstre"),
+    /sections\.etat\.cards names card tertiaire, which the descriptor does not declare/,
+  );
   const labelTwice = clone(monster);
   for (const section of sectionsOf(labelTwice))
     if (section.labelFrom) section.labelFrom = "/caracteristiques";
@@ -719,6 +931,411 @@ if (process.argv.includes("--self-test")) {
   const wrongVariant = clone(monster);
   obj(obj(wrongVariant[EXTENSION], EXTENSION).categories, "categories").defaultVariant = "pink";
   assert.throws(() => validatePresentation(wrongVariant, "monstre"));
+  const blocksOf = (value: Obj) => sectionsOf(value).flatMap((section) => section.blocks as Obj[]);
+  type Cell = { path: string; label?: string };
+  const rowsOf = (value: Obj) => {
+    const block = blocksOf(value).find((candidate) => candidate.pointerRows);
+    assert.ok(block);
+    return block.pointerRows as Cell[][];
+  };
+  const absentPointer = clone(monster);
+  rowsOf(absentPointer)[1][1].path = "/caracteristiques/log";
+  assert.throws(
+    () => validatePresentation(absentPointer, "monstre"),
+    /blocks\.caracteristiques pointer \/caracteristiques\/log/,
+  );
+  const doubledPointer = clone(monster);
+  rowsOf(doubledPointer)[1][0].path = "/caracteristiques/for";
+  assert.throws(
+    () => validatePresentation(doubledPointer, "monstre"),
+    /blocks\.caracteristiques pointer \/caracteristiques\/for is placed twice/,
+  );
+  const foreignPointer = clone(monster);
+  rowsOf(foreignPointer)[1][0].path = "/niveauDeDanger";
+  assert.throws(
+    () => validatePresentation(foreignPointer, "monstre"),
+    /blocks\.caracteristiques pointer \/niveauDeDanger does not descend/,
+  );
+  const unplacedPointer = clone(monster);
+  rowsOf(unplacedPointer)[0].pop();
+  assert.throws(
+    () => validatePresentation(unplacedPointer, "monstre"),
+    /blocks\.caracteristiques pointer \/caracteristiques\/rap is in no row/,
+  );
+  const wideRow = clone(monster);
+  rowsOf(wideRow)[1].push({ path: "/caracteristiques/for" }, { path: "/caracteristiques/con" });
+  assert.throws(
+    () => validatePresentation(wideRow, "monstre"),
+    /blocks\.caracteristiques\.pointerRows\.1 must fit the block columns/,
+  );
+  /* Joins: the section that follows names the one that comes first. */
+  const sectionNamed = (value: Obj, id: string): Obj => {
+    const found = sectionsOf(value).find((section) => section.id === id);
+    assert.ok(found);
+    return found;
+  };
+  const joinOf = (value: Obj): Obj => obj(sectionNamed(value, "comportement").joinedTo, "joinedTo");
+  /* One refusal per rule on the creature: the mutation must fail with the rule's own message. */
+  const refuse = (name: string, mutate: (value: Obj) => void, message: RegExp): void => {
+    const mutated = clone(monster);
+    mutate(mutated);
+    assert.throws(() => validatePresentation(mutated, "monstre"), message, name);
+  };
+  refuse(
+    "join to a missing section",
+    (value) => (joinOf(value).section = "absente"),
+    /sections\.comportement\.joinedTo names unknown section absente/,
+  );
+  refuse(
+    "join without a title",
+    (value) => (joinOf(value).title = " "),
+    /sections\.comportement\.joinedTo\.title must be text/,
+  );
+  refuse(
+    "join with a stray key",
+    (value) => (joinOf(value).stray = true),
+    /sections\.comportement\.joinedTo fields differ/,
+  );
+  refuse(
+    "join on an unknown card",
+    (value) => (joinOf(value).card = "tertiaire"),
+    /sections\.comportement\.joinedTo\.card names card tertiaire, which the descriptor does not declare/,
+  );
+  refuse(
+    "join to a section absent from the card",
+    (value) => (sectionNamed(value, "sante").cards = ["principal"]),
+    /sections\.comportement\.joinedTo names section sante, not printed on the secondaire card/,
+  );
+  refuse(
+    "join whose own section is absent from the card",
+    (value) => (sectionNamed(value, "comportement").cards = ["principal"]),
+    /sections\.comportement\.joinedTo needs its own section printed on the secondaire card/,
+  );
+  refuse(
+    "join on itself",
+    (value) => (joinOf(value).section = "comportement"),
+    /sections\.comportement\.joinedTo cannot name itself/,
+  );
+  refuse(
+    "join to a section itself joined",
+    (value) => {
+      const host = sectionNamed(value, "sante");
+      host.joinedTo = { section: "corps", title: "Corps et santé", card: "secondaire" };
+      host.order = 55;
+    },
+    /sections\.comportement\.joinedTo names section sante, itself joined/,
+  );
+  refuse(
+    "join carried by the section that comes first",
+    (value) => {
+      const first = sectionNamed(value, "sante");
+      first.joinedTo = {
+        section: "comportement",
+        title: String(joinOf(value).title),
+        card: "secondaire",
+      };
+      delete sectionNamed(value, "comportement").joinedTo;
+    },
+    /sections\.sante\.joinedTo names section comportement, which does not come first in order/,
+  );
+  const joinOnNpc = clone(schemas.get("pnj") as Obj);
+  sectionsOf(joinOnNpc)[1].joinedTo = {
+    section: String(sectionsOf(joinOnNpc)[0].id),
+    title: "Fusion",
+    card: "secondaire",
+  };
+  assert.throws(
+    () => validatePresentation(joinOnNpc, "pnj"),
+    /joinedTo belongs to the creature card/,
+  );
+  const unknownDecoration = clone(monster);
+  for (const block of blocksOf(unknownDecoration))
+    if (block.decoration) obj(block.decoration, "decoration").kind = "state-pill";
+  assert.throws(() => validatePresentation(unknownDecoration, "monstre"), /decoration is unknown/);
+  const foreignBlockCard = clone(monster);
+  for (const block of blocksOf(foreignBlockCard))
+    if (block.id === "malus") block.cards = ["tertiaire"];
+  assert.throws(
+    () => validatePresentation(foreignBlockCard, "monstre"),
+    /blocks\.malus\.cards names card tertiaire, which the descriptor does not declare/,
+  );
+  /* Compact-card rules of the creature. */
+  const blockNamed = (value: Obj, id: string): Obj => {
+    const found = blocksOf(value).find((block) => block.id === id);
+    assert.ok(found);
+    return found;
+  };
+  const badgeOf = (value: Obj): Obj => obj(blockNamed(value, "etat").decoration, "decoration");
+  refuse(
+    "badge without trigger marker",
+    (value) => (badgeOf(value).triggerMarker = false),
+    /blocks\.etat\.decoration\.triggerMarker must be true/,
+  );
+  refuse(
+    "badge with a stray key",
+    (value) => (badgeOf(value).stray = true),
+    /blocks\.etat\.decoration fields differ/,
+  );
+  refuse(
+    "badge on a block that is not a state header",
+    (value) => (blockNamed(value, "etat").form = "state-card"),
+    /blocks\.etat state badge needs a state header/,
+  );
+  refuse(
+    "badge without the active state path",
+    (value) => {
+      const block = blockNamed(value, "etat");
+      block.paths = (block.paths as string[]).filter((path) => path !== "/etatActif");
+    },
+    /blocks\.etat state badge needs its current path among the block paths/,
+  );
+  refuse(
+    "block cards on a section without cards",
+    (value) => (blockNamed(value, "description").cards = ["principal"]),
+    /blocks\.description\.cards needs a section on cards/,
+  );
+  refuse(
+    "empty block cards",
+    (value) => (blockNamed(value, "malus").cards = []),
+    /blocks\.malus\.cards must not be empty/,
+  );
+  refuse(
+    "repeated block cards",
+    (value) => (blockNamed(value, "malus").cards = ["principal", "principal"]),
+    /blocks\.malus\.cards repeat/,
+  );
+  refuse(
+    "empty pointer rows",
+    (value) => (blockNamed(value, "caracteristiques").pointerRows = []),
+    /blocks\.caracteristiques\.pointerRows must not be empty/,
+  );
+  refuse(
+    "empty pointer row",
+    (value) => rowsOf(value).push([]),
+    /blocks\.caracteristiques\.pointerRows\.2 must not be empty/,
+  );
+  refuse(
+    "pointer cell with a stray key",
+    (value) => ((rowsOf(value)[0][0] as Obj).stray = true),
+    /blocks\.caracteristiques fields differ/,
+  );
+  refuse(
+    "pointer cell with an empty label",
+    (value) => (rowsOf(value)[1][0].label = ""),
+    /blocks\.caracteristiques pointer \/zoneDeDetection label must be text/,
+  );
+  refuse(
+    "column span past the section columns",
+    (value) => (blockNamed(value, "malus").placement = { column: 2, row: 2, columnSpan: 2 }),
+    /blocks\.malus\.placement\.column exceeds section columns/,
+  );
+  refuse(
+    "detection printed apart from the characteristics",
+    (value) => {
+      const sante = sectionNamed(value, "corps");
+      (sante.blocks as Obj[]).push({
+        id: "detection",
+        label: "Détection",
+        order: 90,
+        layout: "stack",
+        form: "compact-rows",
+        paths: ["/zoneDeDetection"],
+      });
+    },
+    /monstre paths must be unique/,
+  );
+  /* Fallback card: where a section goes when the cards it names are not printed. */
+  refuse(
+    "secondary-only section without a fallback card",
+    (value) => delete sectionNamed(value, "equipement").fallbackCard,
+    /sections\.equipement is printed on the secondaire card only and declares no fallbackCard/,
+  );
+  refuse(
+    "fallback card unknown",
+    (value) => (sectionNamed(value, "equipement").fallbackCard = "tertiaire"),
+    /sections\.equipement\.fallbackCard names card tertiaire, which the descriptor does not declare/,
+  );
+  refuse(
+    "fallback card already a card of the section",
+    (value) => (sectionNamed(value, "corps").fallbackCard = "principal"),
+    /sections\.corps\.fallbackCard principal is already a card of the section/,
+  );
+  refuse(
+    "fallback card that is not the principal card",
+    (value) => (sectionNamed(value, "agir").fallbackCard = "secondaire"),
+    /sections\.agir\.fallbackCard must name the principal card/,
+  );
+  refuse(
+    "fallback card on a section without cards",
+    (value) => (sectionNamed(value, "meneur").fallbackCard = "principal"),
+    /sections\.meneur\.fallbackCard needs a section on cards/,
+  );
+  const fallbackOnNpc = clone(schemas.get("pnj") as Obj);
+  sectionsOf(fallbackOnNpc)[1].fallbackCard = "principal";
+  assert.throws(
+    () => validatePresentation(fallbackOnNpc, "pnj"),
+    /fallbackCard belongs to the creature card/,
+  );
+  /* State badge: what its case is bound to. */
+  const currentOf = (value: Obj): Obj => obj(badgeOf(value).current, "current");
+  refuse(
+    "badge case on a card the section does not print",
+    (value) => (currentOf(value).cards = ["tertiaire"]),
+    /blocks\.etat state badge cards names card tertiaire, which the descriptor does not declare/,
+  );
+  refuse(
+    "badge case without cards",
+    (value) => (currentOf(value).cards = []),
+    /blocks\.etat state badge cards must not be empty/,
+  );
+  refuse(
+    "badge case cards repeated",
+    (value) => (currentOf(value).cards = ["principal", "principal"]),
+    /blocks\.etat state badge cards repeat/,
+  );
+  refuse(
+    "badge case bound to a path the contract lacks",
+    (value) => (currentOf(value).path = "/inconnu"),
+    /blocks\.etat state badge current references unknown property inconnu/,
+  );
+  refuse(
+    "badge case bound to a path the block does not read",
+    (value) => (currentOf(value).path = "/nom"),
+    /blocks\.etat state badge needs its current path among the block paths/,
+  );
+  refuse(
+    "badge case with a stray key",
+    (value) => (currentOf(value).stray = true),
+    /blocks\.etat\.decoration\.current fields differ/,
+  );
+  /* Card declaration: every card cited is declared, and the condition of a card is published data. */
+  const cardsOf = (value: Obj): Obj[] => obj(value[EXTENSION], EXTENSION).cards as Obj[];
+  const secondaryOf = (value: Obj): Obj => {
+    const found = cardsOf(value).find((card) => card.id === "secondaire");
+    assert.ok(found);
+    return found;
+  };
+  refuse(
+    "secondary card cited but not declared",
+    (value) => {
+      obj(value[EXTENSION], EXTENSION).cards = cardsOf(value).filter(
+        (card) => card.id !== "secondaire",
+      );
+    },
+    /sections\.etat\.cards names card secondaire, which the descriptor does not declare/,
+  );
+  refuse(
+    "creature without any card declaration",
+    (value) => delete obj(value[EXTENSION], EXTENSION).cards,
+    /monstre must declare its cards/,
+  );
+  refuse(
+    "empty card declaration",
+    (value) => (obj(value[EXTENSION], EXTENSION).cards = []),
+    /monstre\.cards must not be empty/,
+  );
+  refuse(
+    "card declaration with a stray key",
+    (value) => (secondaryOf(value).stray = true),
+    /monstre\.cards\.1 fields differ/,
+  );
+  refuse(
+    "card declaration of an unknown card",
+    (value) => (secondaryOf(value).id = "tertiaire"),
+    /monstre\.cards\.1\.id is unknown/,
+  );
+  refuse(
+    "card declared twice",
+    (value) => (secondaryOf(value).id = "principal"),
+    /monstre\.cards\.1 declares principal twice/,
+  );
+  refuse(
+    "principal card not declared",
+    (value) => {
+      obj(value[EXTENSION], EXTENSION).cards = cardsOf(value).filter(
+        (card) => card.id !== "principal",
+      );
+    },
+    /monstre\.cards must declare the principal card, always printed/,
+  );
+  refuse(
+    "principal card with a condition",
+    (value) => (cardsOf(value)[0].existsWhenAny = ["/etats"]),
+    /monstre\.cards must declare the principal card, always printed/,
+  );
+  refuse(
+    "card condition without pointer",
+    (value) => (secondaryOf(value).existsWhenAny = []),
+    /monstre\.cards\.1\.existsWhenAny must not be empty/,
+  );
+  refuse(
+    "card condition that is not a list",
+    (value) => (secondaryOf(value).existsWhenAny = "/etats"),
+    /monstre\.cards\.1\.existsWhenAny must not be empty/,
+  );
+  refuse(
+    "card condition on a pointer the contract lacks",
+    (value) => (secondaryOf(value).existsWhenAny = ["/etats", "/inconnu"]),
+    /monstre\.cards\.1\.existsWhenAny \/inconnu references unknown property inconnu/,
+  );
+  refuse(
+    "card condition that repeats a pointer",
+    (value) => (secondaryOf(value).existsWhenAny = ["/etats", "/etats"]),
+    /monstre\.cards\.1\.existsWhenAny repeats a pointer/,
+  );
+  for (const target of ["pj", "pnj"] as const) {
+    const withCards = clone(schemas.get(target) as Obj);
+    obj(withCards[EXTENSION], EXTENSION).cards = [{ id: "principal" }];
+    assert.throws(
+      () => validatePresentation(withCards, target),
+      new RegExp(`${target}\.cards belongs to the creature card`),
+    );
+  }
+  /* Pointers: a root only owns what lies under `<root>/`, not a sibling that shares its prefix. */
+  refuse(
+    "pointer on a sibling that shares the prefix of a block path",
+    (value) => {
+      const block = blockNamed(value, "caracteristiques");
+      (block.paths as string[]).push("/etats");
+      rowsOf(value)[1][0].path = "/etatsPermanents";
+    },
+    /blocks\.caracteristiques pointer \/etatsPermanents does not descend from a block path/,
+  );
+  /* Keys: nothing outside the published properties, at each level of the descriptor. */
+  refuse(
+    "stray key on the descriptor",
+    (value) => ((value[EXTENSION] as Obj).stray = true),
+    /x-adrenaline-presentation fields differ/,
+  );
+  refuse(
+    "stray key on a section",
+    (value) => (sectionNamed(value, "entete").stray = true),
+    /sections\.entete fields differ/,
+  );
+  refuse(
+    "stray key on a block",
+    (value) => (blockNamed(value, "identification").stray = true),
+    /blocks\.identification fields differ/,
+  );
+  /* Tokens: the creature card draws the badge case, the PNJ card has none. */
+  const tokensOf = (value: Obj): Obj =>
+    obj(obj(obj(value[EXTENSION], EXTENSION).appearance, "appearance").tokens, "tokens");
+  refuse(
+    "creature card without its state badge token",
+    (value) => delete tokensOf(value).stateBadge,
+    /monstre\.appearance\.tokens fields differ/,
+  );
+  refuse(
+    "creature card with a stray token",
+    (value) => (tokensOf(value).stray = "--stray"),
+    /monstre\.appearance\.tokens fields differ/,
+  );
+  const badgeTokenOnNpc = clone(schemas.get("pnj") as Obj);
+  tokensOf(badgeTokenOnNpc).stateBadge = "--adrenaline-card-badge";
+  assert.throws(
+    () => validatePresentation(badgeTokenOnNpc, "pnj"),
+    /pnj\.appearance\.tokens fields differ/,
+  );
   const npc = schemas.get("pnj");
   assert.ok(npc);
   const bareTracks = clone(npc);

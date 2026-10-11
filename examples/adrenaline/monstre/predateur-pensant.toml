@@ -30,25 +30,10 @@ minimum = 0
 current = 55
 maximum = 55
 
-[caracteristiques.log]
-minimum = 0
-current = 40
-maximum = 40
-
-[caracteristiques.vol]
-minimum = 0
-current = 50
-maximum = 50
-
 [caracteristiques.per]
 minimum = 0
 current = 75
 maximum = 75
-
-[caracteristiques.cha]
-minimum = 0
-current = 20
-maximum = 20
 
 [sante.physique.superficiel.base]
 minimum = 0

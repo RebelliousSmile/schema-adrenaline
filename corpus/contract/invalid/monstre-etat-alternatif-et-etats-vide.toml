@@ -1,0 +1,40 @@
+etats = []
+nom = "Témoin"
+
+[caracteristiques.for]
+minimum = 0
+current = 40
+maximum = 40
+
+[caracteristiques.con]
+minimum = 0
+current = 50
+maximum = 50
+
+[caracteristiques.dex]
+minimum = 0
+current = 20
+maximum = 20
+
+[caracteristiques.rap]
+minimum = 0
+current = 15
+maximum = 15
+
+[caracteristiques.per]
+minimum = 0
+current = 30
+maximum = 30
+
+[etatDePartie.malus]
+total = 1
+
+[[etatDePartie.etats]]
+nom = "Insensible"
+versant = "general"
+duree = "Pendant l'état actif"
+
+[etatAlternatif]
+nom = "Stimulé"
+actionsParRound = 2
+
