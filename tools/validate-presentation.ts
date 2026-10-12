@@ -244,7 +244,16 @@ function decoration(value: unknown, where: string): void {
       keys(rule, ["kind", "triggerMarker", "current"], where);
       assert.equal(rule.triggerMarker, true, `${where}.triggerMarker must be true`);
       // What `current` binds to is checked with the block, which knows its paths and cards.
-      keys(obj(rule.current, `${where}.current`), ["path", "cards"], `${where}.current`);
+      keys(
+        obj(rule.current, `${where}.current`),
+        ["path", "cards", "position"],
+        `${where}.current`,
+      );
+      assert.equal(
+        obj(rule.current, `${where}.current`).position,
+        "end",
+        `${where}.current.position must be end`,
+      );
       break;
     default:
       assert.fail(`${where} decoration is unknown`);
@@ -502,6 +511,7 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.form === undefined ? [] : ["form"]),
           ...(block.rangeDisplay === undefined ? [] : ["rangeDisplay"]),
           ...(block.rowLabels === undefined ? [] : ["rowLabels"]),
+          ...(block.subtitlePaths === undefined ? [] : ["subtitlePaths"]),
           ...(block.valueSuffix === undefined ? [] : ["valueSuffix"]),
           ...(block.formationFields === undefined ? [] : ["formationFields"]),
           ...(block.formationTypes === undefined ? [] : ["formationTypes"]),
@@ -534,6 +544,25 @@ export function validatePresentation(source: unknown, target: Target): void {
         assert.ok(
           block.rowLabels.every((label: unknown) => typeof label === "string" && label.length > 0),
         );
+      }
+      if (block.subtitlePaths !== undefined) {
+        assert.equal(block.form, "name-card", `${blockWhere}.subtitlePaths needs a name card`);
+        assert.ok(
+          Array.isArray(block.subtitlePaths) && block.subtitlePaths.length > 0,
+          `${blockWhere}.subtitlePaths must not be empty`,
+        );
+        assert.equal(
+          new Set(block.subtitlePaths).size,
+          block.subtitlePaths.length,
+          `${blockWhere}.subtitlePaths repeat`,
+        );
+        for (const pointer of block.subtitlePaths as string[]) {
+          nodeAt(schema, pointer, `${blockWhere}.subtitlePaths`);
+          assert.ok(
+            (block.paths as string[]).includes(pointer),
+            `${blockWhere}.subtitlePaths ${pointer} is not among the block paths`,
+          );
+        }
       }
       if (block.fieldRows !== undefined) {
         assert.equal(
@@ -791,16 +820,59 @@ export function validatePresentation(source: unknown, target: Target): void {
     assert.equal(total.minimum, 0);
     assert.equal(total.maximum, 10, `${target}.malus.total must stop at 10, the HS state`);
   }
-  if (target === "monstre") {
-    const numericField: Obj = nodeAt(
-      schema,
-      "/caracteristiques/for/current",
-      `${target}.for.current`,
-    ).node;
-    assert.ok(
-      Number(numericField.maximum) >= 70,
-      "monster characteristics must allow values above 50",
+  if (target === "monstre" || target === "pnj") {
+    // Creature and NPC accept a plain number or a triplet everywhere: a strict triplet
+    // (an object with minimum, current and maximum) outside an anyOf with a number is a
+    // value the player rule leaked into.
+    const strictPaths: string[] = [];
+    const walk = (node: unknown, path: string, offersNumber: boolean): void => {
+      if (Array.isArray(node)) {
+        node.forEach((item, index) => walk(item, `${path}[${index}]`, offersNumber));
+        return;
+      }
+      if (node === null || typeof node !== "object") return;
+      const record = node as Obj;
+      const props = record.properties as Obj | undefined;
+      if (
+        record.type === "object" &&
+        props &&
+        ["minimum", "current", "maximum"].every((key) => key in props) &&
+        !offersNumber
+      )
+        strictPaths.push(path);
+      for (const [key, child] of Object.entries(record)) {
+        const branches = Array.isArray(child) ? (child as Obj[]) : [];
+        const offers =
+          (key === "anyOf" || key === "oneOf") &&
+          branches.some((branch) => branch.type === "integer" || branch.type === "number");
+        walk(child, `${path}/${key}`, offers);
+      }
+    };
+    walk(schema, "", false);
+    assert.deepEqual(
+      strictPaths,
+      [],
+      `${target} must not carry a strict triplet outside a number-or-triplet choice`,
     );
+  }
+  if (target === "monstre") {
+    // A creature value is either a plain number or the triplet: both branches must allow
+    // values above 50.
+    const value: Obj = nodeAt(schema, "/caracteristiques/for", `${target}.for`).node;
+    const branches = value.anyOf as Obj[];
+    assert.ok(
+      Array.isArray(branches) && branches.length === 2,
+      `${target}.for must offer two forms`,
+    );
+    const plain = branches.find((branch) => branch.type === "integer");
+    const triplet = branches.find((branch) => branch.type === "object");
+    assert.ok(plain && triplet, `${target}.for must be a number or a triplet`);
+    const current = obj(obj(triplet.properties, "monstre.for.properties").current, "for.current");
+    for (const numericField of [plain, current])
+      assert.ok(
+        Number(numericField.maximum) >= 70,
+        "monster characteristics must allow values above 50",
+      );
   }
 }
 
@@ -1104,6 +1176,28 @@ if (process.argv.includes("--self-test")) {
     (value) => (blockNamed(value, "malus").cards = ["principal", "principal"]),
     /blocks\.malus\.cards repeat/,
   );
+  /* A strict triplet outside a number-or-triplet choice is refused; inside one, it is accepted. */
+  const strictTriplet = {
+    type: "object",
+    properties: {
+      minimum: { type: "integer", minimum: 0, maximum: 50 },
+      current: { type: "integer", minimum: 0, maximum: 50 },
+      maximum: { type: "integer", minimum: 0, maximum: 50 },
+    },
+  };
+  const withDefinition = (value: Obj, definition: Obj): void => {
+    value.$defs = { ...((value.$defs as Obj | undefined) ?? {}), sonde: definition };
+  };
+  refuse(
+    "strict triplet outside a number-or-triplet choice",
+    (value) => withDefinition(value, clone(strictTriplet)),
+    /monstre must not carry a strict triplet outside a number-or-triplet choice/,
+  );
+  const tolerated = clone(monster);
+  withDefinition(tolerated, {
+    anyOf: [{ type: "integer", minimum: 0, maximum: 50 }, clone(strictTriplet)],
+  });
+  validatePresentation(tolerated, "monstre");
   refuse(
     "empty pointer rows",
     (value) => (blockNamed(value, "caracteristiques").pointerRows = []),
@@ -1167,8 +1261,8 @@ if (process.argv.includes("--self-test")) {
   );
   refuse(
     "fallback card on a section without cards",
-    (value) => (sectionNamed(value, "meneur").fallbackCard = "principal"),
-    /sections\.meneur\.fallbackCard needs a section on cards/,
+    (value) => (sectionNamed(value, "contagion").fallbackCard = "principal"),
+    /sections\.contagion\.fallbackCard needs a section on cards/,
   );
   const fallbackOnNpc = clone(schemas.get("pnj") as Obj);
   sectionsOf(fallbackOnNpc)[1].fallbackCard = "principal";
@@ -1207,6 +1301,54 @@ if (process.argv.includes("--self-test")) {
     "badge case with a stray key",
     (value) => (currentOf(value).stray = true),
     /blocks\.etat\.decoration\.current fields differ/,
+  );
+  refuse(
+    "badge case without its position",
+    (value) => delete currentOf(value).position,
+    /blocks\.etat\.decoration\.current fields differ/,
+  );
+  refuse(
+    "badge case on the start side",
+    (value) => (currentOf(value).position = "start"),
+    /blocks\.etat\.decoration\.current\.position must be end/,
+  );
+  /* Banner subtitle: the pointers printed under the name. */
+  const subtitleOf = (value: Obj): string[] =>
+    blockNamed(value, "identification").subtitlePaths as string[];
+  refuse(
+    "subtitle on a block that is not a name card",
+    (value) => (blockNamed(value, "description").subtitlePaths = ["/description"]),
+    /blocks\.description\.subtitlePaths needs a name card/,
+  );
+  refuse(
+    "empty subtitle",
+    (value) => (blockNamed(value, "identification").subtitlePaths = []),
+    /blocks\.identification\.subtitlePaths must not be empty/,
+  );
+  refuse(
+    "subtitle pointer repeated",
+    (value) => subtitleOf(value).push("/instinct"),
+    /blocks\.identification\.subtitlePaths repeat/,
+  );
+  refuse(
+    "subtitle pointer the contract lacks",
+    (value) => (subtitleOf(value)[0] = "/inconnu"),
+    /references unknown property inconnu/,
+  );
+  refuse(
+    "subtitle pointer the block does not read",
+    (value) => (subtitleOf(value)[0] = "/typeInfecte"),
+    /blocks\.identification\.subtitlePaths \/typeInfecte is not among the block paths/,
+  );
+  refuse(
+    "subtitle path printed a second time as a section label",
+    (value) => (sectionNamed(value, "comportement").labelFrom = "/instinct"),
+    /monstre paths must be unique/,
+  );
+  refuse(
+    "body type printed a second time as a section label",
+    (value) => (sectionNamed(value, "corps").labelFrom = "/typeDeCorps"),
+    /monstre paths must be unique/,
   );
   /* Card declaration: every card cited is declared, and the condition of a card is published data. */
   const cardsOf = (value: Obj): Obj[] => obj(value[EXTENSION], EXTENSION).cards as Obj[];

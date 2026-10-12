@@ -1,0 +1,79 @@
+{
+  "nom": "Nombres simples",
+  "caracteristiques": {
+    "for": 40,
+    "con": 50,
+    "dex": 20,
+    "rap": 15,
+    "per": 30
+  },
+  "equipement": {
+    "armesPsychologiques": [
+      {
+        "nom": "Terreur",
+        "pourcentage": 40,
+        "desDeDegats": 1,
+        "type": "Psychologique"
+      }
+    ]
+  },
+  "contagion": {
+    "agent": "Souche A-7",
+    "vecteurs": [
+      {
+        "nom": "Morsure",
+        "probabilite": 80
+      }
+    ]
+  },
+  "etats": [
+    {
+      "id": "stimule",
+      "nom": "Stimulé",
+      "delta": {
+        "caracteristiques": {
+          "for": 60,
+          "con": 50,
+          "dex": 30,
+          "rap": 25
+        },
+        "actions": [
+          {
+            "nom": "Morsure frénétique",
+            "test": {
+              "nom": "Mordre",
+              "pourcentage": 60
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "actions": [
+    {
+      "nom": "Morsure",
+      "test": {
+        "nom": "Mordre",
+        "pourcentage": 45
+      },
+      "degats": {
+        "versant": "physique",
+        "profils": [
+          {
+            "des": "1d10",
+            "nature": "blessante"
+          }
+        ]
+      },
+      "suites": [
+        {
+          "nom": "Entraver",
+          "test": {
+            "nom": "Lutte",
+            "pourcentage": 30
+          }
+        }
+      ]
+    }
+  ]
+}

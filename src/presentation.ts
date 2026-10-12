@@ -53,12 +53,13 @@ export type AdrenalinePresentationDecoration =
   /**
    * Header of a creature state: a marker before each trigger, and a case marking
    * the state currently played, bound to `current.path` (`/etatActif`) and drawn
-   * on the listed cards only.
+   * on the listed cards only. `position` is the side of the title band where
+   * the case sits: `end`, flush right.
    */
   | {
       kind: "state-badge";
       triggerMarker: true;
-      current: { path: "/etatActif"; cards: readonly ["principal"] };
+      current: { path: "/etatActif"; cards: readonly ["principal"]; position: "end" };
     };
 
 type AdrenalinePresentationFonts = {
@@ -156,6 +157,12 @@ export type AdrenalinePresentationBlock = {
   /** Visible columns of a playable range; maximum remains editor-only. */
   rangeDisplay?: readonly ("minimum" | "current")[];
   rowLabels?: readonly string[];
+  /**
+   * `name-card` only: the pointers, among the block paths, printed on one line
+   * under the name, in this order and joined by a space; a value the document
+   * leaves out is not printed. They are not printed again in the banner.
+   */
+  subtitlePaths?: readonly string[];
   valueSuffix?: "%" | "PX";
   formationFields?: {
     header: readonly ["type", "nom", "pourcentage"];
@@ -198,7 +205,7 @@ export type AdrenalinePresentationSection = {
    * side by side; `span` is the share of the sheet width, in thirds.
    */
   row?: { id: string; span: 1 | 2 | 3 };
-  /** Folded by default: game-master material, such as the narrative block. */
+  /** Folded by default. No sheet uses it yet: the player sheet will. */
   collapsible?: true;
   /** JSON Pointer whose value is printed after the label: `Comportement (Rôdeur)`. */
   labelFrom?: string;
@@ -643,6 +650,9 @@ const HEADER_PATHS = [
   "/niveauDeDangerNote",
 ] as const;
 
+/** The creature banner also reads the instinct and the body type, printed under the name. */
+const CREATURE_HEADER_PATHS = [...HEADER_PATHS, "/instinct", "/typeDeCorps"] as const;
+
 /**
  * The compact PNJ card of the booklets: a coloured banner (category, name,
  * ND), the description paragraph, then characteristics, health and its tracks,
@@ -807,15 +817,14 @@ export const PNJ_PRESENTATION = definePresentation({
       ],
     },
     {
-      id: "meneur",
-      label: "Meneur",
+      id: "notes",
+      label: "Notes",
       order: 80,
       layout: "stack",
-      collapsible: true,
       blocks: [
         {
           id: "narratif",
-          label: "Notes du meneur",
+          label: "Notes",
           order: 10,
           layout: "stack",
           form: "narrative",
@@ -831,7 +840,7 @@ export const PNJ_PRESENTATION = definePresentation({
  * The creature card of the booklets: a banner, the description, then two
  * state cards side by side — the large `principal` card and the small
  * `secondaire` one — each printing the profile of its state, resolved from the
- * base and the state's delta. Game-master material folds away below.
+ * base and the state's delta. The skills, the contagion and the notes are printed below, outside the cards.
  */
 export const MONSTRE_PRESENTATION = definePresentation({
   version: 1,
@@ -862,7 +871,8 @@ export const MONSTRE_PRESENTATION = definePresentation({
           layout: "columns",
           columns: 2,
           form: "name-card",
-          paths: [...HEADER_PATHS],
+          subtitlePaths: ["/instinct", "/typeDeCorps"],
+          paths: [...CREATURE_HEADER_PATHS],
         },
       ],
     },
@@ -900,7 +910,7 @@ export const MONSTRE_PRESENTATION = definePresentation({
           decoration: {
             kind: "state-badge",
             triggerMarker: true,
-            current: { path: "/etatActif", cards: ["principal"] },
+            current: { path: "/etatActif", cards: ["principal"], position: "end" },
           },
           paths: ["/etatPrincipal", "/etatActif", "/etatDeBase", "/etats", "/etatAlternatif"],
         },
@@ -911,7 +921,7 @@ export const MONSTRE_PRESENTATION = definePresentation({
       label: "Corps",
       order: 40,
       layout: "stack",
-      labelFrom: "/typeDeCorps",
+      showTitle: false,
       cards: ["principal", "secondaire"],
       blocks: [
         {
@@ -993,9 +1003,8 @@ export const MONSTRE_PRESENTATION = definePresentation({
       label: "Comportement",
       order: 60,
       layout: "stack",
-      labelFrom: "/instinct",
       cards: ["principal", "secondaire"],
-      joinedTo: { section: "sante", title: "Comportement et santé", card: "secondaire" },
+      joinedTo: { section: "sante", title: "Santé et comportement", card: "secondaire" },
       blocks: [
         {
           id: "combat",
@@ -1004,7 +1013,26 @@ export const MONSTRE_PRESENTATION = definePresentation({
           layout: "columns",
           columns: 2,
           form: "combat",
+          rowLabels: ["Actions", "Défense"],
           paths: ["/actionsParRound", "/defense"],
+        },
+        {
+          id: "comportement-notes",
+          label: "Comportement",
+          order: 20,
+          layout: "stack",
+          form: "narrative",
+          cards: ["principal"],
+          paths: ["/comportement"],
+        },
+        {
+          id: "traits",
+          label: "Traits spéciaux",
+          order: 30,
+          layout: "stack",
+          form: "narrative",
+          cards: ["principal"],
+          paths: ["/traitsSpeciaux"],
         },
       ],
     },
@@ -1045,48 +1073,47 @@ export const MONSTRE_PRESENTATION = definePresentation({
       ],
     },
     {
-      id: "meneur",
-      label: "Meneur",
+      id: "competences",
+      label: "Compétences",
       order: 90,
       layout: "stack",
-      collapsible: true,
       blocks: [
-        {
-          id: "comportement-notes",
-          label: "Comportement",
-          order: 10,
-          layout: "stack",
-          form: "narrative",
-          paths: ["/comportement"],
-        },
-        {
-          id: "traits",
-          label: "Traits",
-          order: 20,
-          layout: "stack",
-          form: "narrative",
-          paths: ["/traitsSpeciaux"],
-        },
         {
           id: "competences",
           label: "Compétences",
-          order: 30,
+          order: 10,
           layout: "stack",
           form: "skill-lines",
           paths: ["/competences"],
         },
+      ],
+    },
+    {
+      id: "contagion",
+      label: "Contagion",
+      order: 100,
+      layout: "stack",
+      blocks: [
         {
           id: "contagion",
           label: "Contagion",
-          order: 40,
+          order: 10,
           layout: "stack",
           form: "narrative",
           paths: ["/contagion"],
         },
+      ],
+    },
+    {
+      id: "notes",
+      label: "Notes",
+      order: 110,
+      layout: "stack",
+      blocks: [
         {
           id: "narratif",
-          label: "Notes du meneur",
-          order: 50,
+          label: "Notes",
+          order: 10,
           layout: "stack",
           form: "narrative",
           paths: ["/narratif"],

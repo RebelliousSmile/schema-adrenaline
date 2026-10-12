@@ -33,6 +33,29 @@ All notable changes to this project will be documented in this file.
 - The creature presentation no longer has the `detection` and `deplacement`
   blocks: `/zoneDeDetection` and `/deplacement` are printed by the
   characteristics block.
+- The "Meneur" collapsible section is removed from the creature and PNJ
+  presentations: the game master's material is printed openly. The creature
+  prints `/comportement` and `/traitsSpeciaux` (block `traits`, "Traits
+  spéciaux") in the `comportement` section, on the `principal` card only (blocks
+  `cards`), then the ordinary sections `competences`, `contagion` and `notes`
+  (`/narratif`) outside the cards; the PNJ prints `/narratif` in an ordinary
+  `notes` section. A section whose blocks are all empty is not printed. No path
+  is dropped. The `collapsible` capability and its rule stay in the contract
+  for the player sheet; the `fallbackCard` negative proof now targets
+  `contagion`.
+- The creature and the PNJ accept two forms for every numeric value, including
+  inside a state `delta`: a plain number (the form to write) or the
+  `{minimum,current,maximum}` triplet (still read), with the same bounds. This
+  includes the test percentage of an action and of an action suite (`test` is
+  now the soft competence, also in a state `delta.actions`); the generated
+  creature and PNJ schemas carry no strict triplet any more, and
+  `validate:presentation` proves it. The
+  `minimum <= current <= maximum` check stays for triplets. The player
+  character keeps the triplet only. Creatures and PNJs gain no XP, so their
+  scores do not evolve. Corpus: plain-number and triplet witnesses for both
+  targets, a PNJ out-of-range number refusal, a PJ plain-number refusal; the
+  former PNJ refusal `caracteristique-scalaire-heritee` is now the witness
+  `corpus/temoins/pnj/valeurs-nombres.json`.
 
 ### Added
 
@@ -47,7 +70,7 @@ All notable changes to this project will be documented in this file.
 - Block property `cards` (the `malus` and `protections` blocks are published on
   the main card only) and section property `joinedTo`, carried by the section that follows:
   on the secondary card, `comportement` is printed right after `sante` under the
-  single title "Comportement et santé", health first, as the book prints the
+  single title "Santé et comportement", health first, as the book prints the
   small card. The main card keeps its two sections.
 - Section property `fallbackCard`: when none of the cards named by `cards` is
   printed (a creature without a second state has no `secondaire` card), the
@@ -81,6 +104,25 @@ All notable changes to this project will be documented in this file.
   `secondaire` card only). Each of these rules has a negative proof in the
   self-test, as do the creature-only `stateBadge` token and the stray keys of
   the descriptor, sections and blocks.
+- Block property `subtitlePaths` (`name-card` only): the pointers printed on
+  one line under the name. The creature banner reads `/instinct` and
+  `/typeDeCorps` (the creature gets its own header paths; the PNJ banner is
+  unchanged), printed as "Enragé Corps moyen". The `corps` section loses its
+  `labelFrom` (`/typeDeCorps`, now in the banner), the `comportement` section
+  loses its `labelFrom` (`/instinct`) and is titled "Comportement"; the `corps`
+  section prints no title (`showTitle: false`).
+- `state-badge` publishes `current.position: "end"`: the case of the current
+  state sits at the right of the state title band. The `state-header` form
+  (README) defines the band, the round arrow icon and the bare-text trigger;
+  nothing else is published and no colour is added.
+- The `combat` block publishes `rowLabels: ["Actions", "Défense"]`; the README
+  defines the "/round" and "bonus" wording of the form. The README also states
+  that a `pointerRows` cell with a `label` prints in regular weight and that
+  `threshold-rows` prints "SP 7 / 14 / 19 / 24" on the compact cards.
+- `validate:presentation` guards `subtitlePaths` (name card only, not empty, no
+  repeat, existing pointers read by the block) and `current.position`, each
+  with a negative proof; a path used both in the subtitle and as a section
+  label is refused by the existing uniqueness rule, now proved for both.
 - Pack 0.11.0. Schema baseline `4.0.0`; `schemas/adrenaline/3.2.0` stays intact.
 
 ### Changed

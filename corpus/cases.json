@@ -21,6 +21,37 @@
       "expect": "accept"
     },
     {
+      "path": "corpus/temoins/monstre/valeurs-nombres.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/temoins/monstre/test-d-action-en-triplet.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/refus/monstre/test-d-action-hors-borne.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "pourcentage"
+    },
+    {
+      "path": "corpus/temoins/pnj/valeurs-triplets.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/temoins/pnj/valeurs-nombres.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
       "path": "corpus/refus/pj/abreviation-de-caracteristique-inconnue.json",
       "target": "pj",
       "format": "json",
@@ -158,12 +189,6 @@
       "format": "json",
       "expect": "reject",
       "names": "armesMentales"
-    },
-    {
-      "path": "corpus/refus/pnj/caracteristique-scalaire-heritee.json",
-      "target": "pnj",
-      "format": "json",
-      "expect": "reject"
     },
     {
       "path": "corpus/refus/pnj/localisation-emotionnelle-inconnue.json",
@@ -444,6 +469,33 @@
       "format": "json",
       "expect": "reject",
       "names": "armesPsychologiques"
+    },
+    {
+      "path": "corpus/refus/pnj/nombre-hors-borne.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/caracteristique-nombre-simple.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject",
+      "names": "con"
+    },
+    {
+      "path": "corpus/refus/monstre/nombre-hors-borne.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "for"
+    },
+    {
+      "path": "corpus/refus/monstre/points-hors-borne.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "points"
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+  "nom": "Nombres simples",
+  "caracteristiques": { "for": 40, "con": 50 },
+  "competences": [{ "nom": "Mécanique", "pourcentage": 60, "caracteristique": "log" }],
+  "equipement": {
+    "armesPhysiques": [{ "nom": "Clé à molette", "pourcentage": 55, "desDeDegats": 2 }]
+  }
+}

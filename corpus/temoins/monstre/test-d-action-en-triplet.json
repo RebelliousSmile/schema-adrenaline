@@ -1,0 +1,40 @@
+{
+  "nom": "Test d'action en triplet",
+  "caracteristiques": {
+    "for": {
+      "minimum": 0,
+      "current": 40,
+      "maximum": 60
+    },
+    "con": 50,
+    "dex": 20,
+    "rap": 15,
+    "per": 30
+  },
+  "actions": [
+    {
+      "nom": "Morsure",
+      "test": {
+        "nom": "Mordre",
+        "pourcentage": {
+          "minimum": 0,
+          "current": 45,
+          "maximum": 60
+        }
+      },
+      "suites": [
+        {
+          "nom": "Entraver",
+          "test": {
+            "nom": "Lutte",
+            "pourcentage": {
+              "minimum": 0,
+              "current": 30,
+              "maximum": 30
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

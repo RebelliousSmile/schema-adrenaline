@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Degats } from "./degats.js";
-import { Competence } from "./formations.js";
+import { CompetenceSouple } from "./formations.js";
 import { Compte } from "./primitives.js";
 
 /**
@@ -46,7 +46,7 @@ const champsDAction = {
         "Nom de l'action, tel qu'il est présenté sur la fiche. Attendu quand l'action n'a pas de test qui la nomme.",
       examples: ["Morsure"],
     }),
-  test: Competence.optional().meta({
+  test: CompetenceSouple.optional().meta({
     description: "Test associé à l'action, quand elle en demande un.",
   }),
   degats: Degats.optional().meta({

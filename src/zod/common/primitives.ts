@@ -163,6 +163,74 @@ export const ProbabiliteJouable = ValeurJouable.extend({
     "Probabilité de transmission jouable. Les codecs vérifient minimum ≤ current ≤ maximum.",
 });
 
+const NOTE_FORME =
+  " Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.";
+
+/**
+ * Les créatures et les PNJ ne prennent pas d'expérience et leur score
+ * n'évolue pas : ils n'ont pas besoin de bornes. Leurs valeurs chiffrées
+ * s'écrivent donc en nombre simple, et l'ancien triplet reste accepté en
+ * lecture (le nombre garde les bornes de sa variante jouable). Le PJ garde le
+ * triplet seul.
+ */
+function souple<N extends z.ZodType, J extends z.ZodType>(
+  nombre: N,
+  jouable: J,
+  description: string,
+) {
+  return z.union([nombre, jouable]).meta({ description: description + NOTE_FORME });
+}
+
+/** Pourcentage de d100 d'une créature ou d'un PNJ : nombre simple ou triplet. */
+export const PourcentageSouple = souple(
+  Pourcentage,
+  PourcentageJouable,
+  "Pourcentage de d100. Peut dépasser 100.",
+);
+
+/** Points d'une créature ou d'un PNJ : nombre simple ou triplet. */
+export const PointsSouples = souple(
+  Points,
+  PointsJouables,
+  "Points, dans l'unité des protections et des seuils de dégât.",
+);
+
+/** Probabilité de transmission d'une créature : nombre simple ou triplet. */
+export const ProbabiliteSouple = souple(
+  z.int().min(0).max(100),
+  ProbabiliteJouable,
+  "Probabilité de transmission, bornée à 100 %.",
+);
+
+/**
+ * Les trois valeurs jouables qu'un schéma commun consomme, avec la note qui
+ * s'ajoute aux descriptions et la façon d'écrire un exemple. `KIT_JOUEUR`
+ * reproduit le PJ à l'identique ; `KIT_SOUPLE` sert la créature et le PNJ.
+ */
+export type KitDeValeurs = {
+  pourcentage: z.ZodType;
+  points: z.ZodType;
+  probabilite: z.ZodType;
+  note: string;
+  exemple: (nombre: number) => unknown;
+};
+
+export const KIT_JOUEUR = {
+  pourcentage: PourcentageJouable,
+  points: PointsJouables,
+  probabilite: ProbabiliteJouable,
+  note: "",
+  exemple: (nombre: number) => ({ minimum: 0, current: nombre, maximum: nombre }),
+} satisfies KitDeValeurs;
+
+export const KIT_SOUPLE = {
+  pourcentage: PourcentageSouple,
+  points: PointsSouples,
+  probabilite: ProbabiliteSouple,
+  note: NOTE_FORME,
+  exemple: (nombre: number) => nombre,
+} satisfies KitDeValeurs;
+
 export type ValeurJouableValeur = z.infer<typeof ValeurJouable>;
 export type PourcentageJouableValeur = z.infer<typeof PourcentageJouable>;
 export type PointsJouablesValeur = z.infer<typeof PointsJouables>;

@@ -1,0 +1,23 @@
+{
+  "nom": "Triplets hérités",
+  "caracteristiques": {
+    "for": { "minimum": 0, "current": 40, "maximum": 40 },
+    "con": { "minimum": 0, "current": 50, "maximum": 50 }
+  },
+  "competences": [
+    {
+      "nom": "Mécanique",
+      "pourcentage": { "minimum": 0, "current": 60, "maximum": 60 },
+      "caracteristique": "log"
+    }
+  ],
+  "equipement": {
+    "armesPhysiques": [
+      {
+        "nom": "Clé à molette",
+        "pourcentage": { "minimum": 0, "current": 55, "maximum": 55 },
+        "desDeDegats": 2
+      }
+    ]
+  }
+}

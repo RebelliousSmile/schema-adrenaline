@@ -1,0 +1,4 @@
+{
+  "nom": "Nombre hors borne",
+  "caracteristiques": { "for": 100000 }
+}

@@ -1,0 +1,19 @@
+{
+  "nom": "Test d'action hors borne",
+  "caracteristiques": {
+    "for": 40,
+    "con": 50,
+    "dex": 20,
+    "rap": 15,
+    "per": 30
+  },
+  "actions": [
+    {
+      "nom": "Morsure",
+      "test": {
+        "nom": "Mordre",
+        "pourcentage": 100000
+      }
+    }
+  ]
+}

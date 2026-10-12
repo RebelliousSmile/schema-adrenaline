@@ -16,7 +16,7 @@ import {
   MalusAvantHs,
 } from "../common/etat-monstre.js";
 import { EtatDePartie } from "../common/etat-de-partie.js";
-import { Competence } from "../common/formations.js";
+import { CompetenceSouple } from "../common/formations.js";
 import { Meta } from "../common/meta.js";
 import { Narratif } from "../common/narratif.js";
 import { Compte } from "../common/primitives.js";
@@ -203,7 +203,7 @@ export const Monstre = z
       .meta({
         description: "Insensibilités, immunités, capacités hors du commun. Liste non bornée.",
       }),
-    competences: z.array(Competence).optional().meta({
+    competences: z.array(CompetenceSouple).optional().meta({
       description:
         "Compétences rattachées directement à la créature : elle ne passe par aucune formation.",
     }),

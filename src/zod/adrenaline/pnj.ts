@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { PNJ_PRESENTATION } from "../../presentation.js";
-import { Caracteristiques } from "../common/caracteristiques.js";
+import { CaracteristiquesSouples } from "../common/caracteristiques.js";
 import { Categorie } from "../common/categorie.js";
 import {
   NiveauDeDanger,
@@ -9,13 +9,13 @@ import {
 } from "../common/danger.js";
 import { EquipementDePnj } from "../common/equipement.js";
 import { EtatDePartie } from "../common/etat-de-partie.js";
-import { Competence, Formation } from "../common/formations.js";
+import { CompetenceSouple, FormationSouple } from "../common/formations.js";
 import { Identite } from "../common/identite.js";
 import { Meta } from "../common/meta.js";
 import { Narratif } from "../common/narratif.js";
 import { Compte } from "../common/primitives.js";
 import { ProtectionsAbregees } from "../common/protections.js";
-import { Sante } from "../common/sante.js";
+import { SanteDePnj } from "../common/sante.js";
 
 /**
  * Un humain non joué : le même socle qu'un personnage joueur, moins la
@@ -53,11 +53,11 @@ export const PersonnageNonJoue = z
     identite: Identite.optional().meta({
       description: "Bloc Identité, quand la fiche en porte un.",
     }),
-    caracteristiques: Caracteristiques.partial().optional().meta({
+    caracteristiques: CaracteristiquesSouples.partial().optional().meta({
       description:
         "Caractéristiques, chacune facultative : une fiche de figurant n'en chiffre qu'une ou deux, une fiche de personnage majeur les porte toutes les huit.",
     }),
-    sante: Sante.optional().meta({
+    sante: SanteDePnj.optional().meta({
       description:
         "Bloc Santé. Absent ou complet : les fiches publiées portent leurs quatre seuils de chaque côté dès qu'elles en portent un.",
     }),
@@ -83,11 +83,11 @@ export const PersonnageNonJoue = z
         description:
           "Pistes de stress et de malus imprimées sous la santé : nombre de cercles en gras. Rien n'y est calculé.",
       }),
-    formations: z.array(Formation).optional().meta({
+    formations: z.array(FormationSouple).optional().meta({
       description:
         "Formations, quand la fiche les nomme. Souvent absentes : la fiche de PNJ liste plus volontiers les compétences seules.",
     }),
-    competences: z.array(Competence).optional().meta({
+    competences: z.array(CompetenceSouple).optional().meta({
       description:
         "Compétences du personnage. La fiche publiée les regroupe sous un bloc unique, hors des formations, et note pour chacune sa caractéristique et son total.",
     }),
