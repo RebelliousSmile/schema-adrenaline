@@ -94,10 +94,7 @@ export type AdrenalinePresentationDecoration =
       kind: "wound-circles";
       side: "physical" | "mental";
       durations: readonly ["heure", "jour", "semaine", "mois"];
-      columns: readonly [
-        { key: "premiereColonne" },
-        { key: "secondeColonne" },
-      ];
+      columns: readonly [{ key: "premiereColonne" }, { key: "secondeColonne" }];
       circles: 1;
     }
   | { kind: "weapon-die"; label: "d10" }
@@ -466,10 +463,7 @@ const THRESHOLD_LEVELS = [
 ] as const satisfies readonly AdrenalineThresholdLevel[];
 
 const WOUND_DURATIONS = ["heure", "jour", "semaine", "mois"] as const;
-const WOUND_COLUMNS = [
-  { key: "premiereColonne" },
-  { key: "secondeColonne" },
-] as const;
+const WOUND_COLUMNS = [{ key: "premiereColonne" }, { key: "secondeColonne" }] as const;
 
 export const PJ_PRESENTATION = definePresentation({
   version: 1,

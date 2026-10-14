@@ -71,11 +71,15 @@ export const PJ_CARACTERISTIQUE_MAXIMUM = 50;
  * Une caractéristique PJ : la feuille n'en imprime qu'une valeur, en pourcentage. Le plafond de la
  * feuille (50 %) est la seule borne ; il n'y a ni minimum ni maximum à saisir.
  */
-const CaracteristiqueJoueur = z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
-  description:
-    "Caractéristique PJ : pourcentage de d100, de 0 à 50 %. La feuille n'imprime que cette valeur.",
-  examples: [30],
-});
+const CaracteristiqueJoueur = z
+  .int()
+  .min(0)
+  .max(PJ_CARACTERISTIQUE_MAXIMUM)
+  .meta({
+    description:
+      "Caractéristique PJ : pourcentage de d100, de 0 à 50 %. La feuille n'imprime que cette valeur.",
+    examples: [30],
+  });
 
 const CaracteristiquesJoueur = Caracteristiques.extend({
   for: CaracteristiqueJoueur,

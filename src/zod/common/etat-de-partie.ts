@@ -144,9 +144,13 @@ const colonneDeBlessures = (versant: string) =>
       mois: CercleDeBlessure.optional().meta({
         description: `Blessure ${versant} annulée au mois : le cercle de la feuille est coché ou non.`,
       }),
-      notes: z.string().min(1).optional().meta({
-        description: `Ce que la blessure ${versant} est, écrit dans l'espace libre sous les cercles de la feuille.`,
-      }),
+      notes: z
+        .string()
+        .min(1)
+        .optional()
+        .meta({
+          description: `Ce que la blessure ${versant} est, écrit dans l'espace libre sous les cercles de la feuille.`,
+        }),
     })
     .meta({
       description: `Une blessure ${versant} de la feuille : un cercle par durée de guérison (heure, jour, semaine, mois ; la feuille n'en coche qu'un) et un espace libre pour l'écrire.`,
@@ -172,11 +176,15 @@ const BlessuresDUnVersant = (versant: string) =>
  */
 const ChocDeJoueur = Choc.omit({ heures: true })
   .extend({
-    notes: z.string().min(1).optional().meta({
-      description:
-        "Zone écrite de la case Choc, à côté des cercles : malus et fréquence d'annulation, notés librement.",
-      examples: ["1 malus, annulé au round"],
-    }),
+    notes: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description:
+          "Zone écrite de la case Choc, à côté des cercles : malus et fréquence d'annulation, notés librement.",
+        examples: ["1 malus, annulé au round"],
+      }),
   })
   .meta({
     description:
@@ -206,11 +214,15 @@ const MalusDeJoueur = Malus.extend({
  * `EtatDePartie` telle quelle.
  */
 export const EtatDePartieDeJoueur = EtatDePartie.extend({
-  etats: z.string().min(1).optional().meta({
-    description:
-      "États encaissés ou temporaires : la zone libre « États » de la feuille, écrite telle quelle, une ligne par état.",
-    examples: ["Contusion au torse\nPeur panique jusqu'à la fin de la scène"],
-  }),
+  etats: z
+    .string()
+    .min(1)
+    .optional()
+    .meta({
+      description:
+        "États encaissés ou temporaires : la zone libre « États » de la feuille, écrite telle quelle, une ligne par état.",
+      examples: ["Contusion au torse\nPeur panique jusqu'à la fin de la scène"],
+    }),
   malus: MalusDeJoueur.optional().meta({
     description: "Malus encaissés : Choc, Divers et Total.",
   }),

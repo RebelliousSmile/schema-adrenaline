@@ -241,20 +241,27 @@ const ArmureDeJoueur = joueur.ProtectionsPhysiques.shape.armure
   .unwrap()
   .omit({ des: true, couverture: true, proprietes: true, reduction: true })
   .optional()
-  .meta({ description: "Armure portée, si le personnage en a une : nom, points et localisations." });
+  .meta({
+    description: "Armure portée, si le personnage en a une : nom, points et localisations.",
+  });
 const CaractereDeJoueur = joueur.ProtectionsMentales.shape.caractere
   .unwrap()
   .omit({ des: true, emotions: true, proprietes: true, reduction: true })
   .optional()
   .meta({
-    description: "Trait de caractère protecteur, si le personnage en a un : trait, points et localisations.",
+    description:
+      "Trait de caractère protecteur, si le personnage en a un : trait, points et localisations.",
   });
-export const ProtectionsPhysiques = joueur.ProtectionsPhysiques
-  .omit({ solidite: true, bouclier: true })
+export const ProtectionsPhysiques = joueur.ProtectionsPhysiques.omit({
+  solidite: true,
+  bouclier: true,
+})
   .extend({ armure: ArmureDeJoueur })
   .meta({ description: "Protections physiques : armure et localisations couvertes." });
-export const ProtectionsMentales = joueur.ProtectionsMentales
-  .omit({ solidite: true, bouclier: true })
+export const ProtectionsMentales = joueur.ProtectionsMentales.omit({
+  solidite: true,
+  bouclier: true,
+})
   .extend({ caractere: CaractereDeJoueur })
   .meta({ description: "Protections mentales : trait de caractère et localisations couvertes." });
 /** Protections d'un personnage joueur : armure ou trait de caractère, points en triplet jouable. */

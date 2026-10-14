@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file.
 - The PJ characteristics become plain numbers from 0 to 50, like the PJ
   formation and skill percentages: the paper sheet prints one value per
   characteristic. A PJ document that still enters `{ minimum, current,
-  maximum }` for a characteristic is rejected, naming the key. Procedure:
+maximum }` for a characteristic is rejected, naming the key. Procedure:
   replace each characteristic table by its `current` value (`for = 30`).
   `caracteristiqueDeCreationPj` is removed; `PJ_CARACTERISTIQUE_MAXIMUM` stays.
   The PNJ and creature characteristics are unchanged.
@@ -79,6 +79,7 @@ All notable changes to this project will be documented in this file.
   "Psychologique"). No key, bound or presentation entry moves.
 
 ### Added
+
 - `subtitlePaths` is also accepted on a `game-parameters` block: those
   pointers are printed on one line under the sheet label and no longer in the
   rows. The PJ publishes `/parametresDuJeu/typeDeScenario` there; the header

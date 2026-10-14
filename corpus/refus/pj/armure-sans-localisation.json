@@ -55,9 +55,7 @@
       "caractere": {
         "trait": "Cynique",
         "points": 2,
-        "localisations": [
-          "peur"
-        ]
+        "localisations": ["peur"]
       }
     }
   }

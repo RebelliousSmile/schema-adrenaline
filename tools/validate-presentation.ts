@@ -63,9 +63,7 @@ const THRESHOLD_LEVELS = [
 /** Fixed texts of the player sheet, by block. */
 const PJ_NOTES: Record<string, string[]> = {
   "formations-competences": ["Compétence de substitution : malus de -10 %"],
-  "caracteristiques-physiques": [
-    "Marcher (qualité de RAP) ; Courir (Marcher × 3)",
-  ],
+  "caracteristiques-physiques": ["Marcher (qualité de RAP) ; Courir (Marcher × 3)"],
   "total-malus": ["1 malus = -10 %"],
 };
 
@@ -409,10 +407,7 @@ function decoration(value: unknown, where: string): void {
       keys(rule, ["kind", "side", "durations", "columns", "circles"], where);
       assert.ok(rule.side === "physical" || rule.side === "mental", `${where}.side is unknown`);
       assert.deepEqual(rule.durations, ["heure", "jour", "semaine", "mois"]);
-      assert.deepEqual(rule.columns, [
-        { key: "premiereColonne" },
-        { key: "secondeColonne" },
-      ]);
+      assert.deepEqual(rule.columns, [{ key: "premiereColonne" }, { key: "secondeColonne" }]);
       assert.equal(rule.circles, 1, `${where}.circles must be one circle per duration`);
       break;
     case "weapon-die":
@@ -1420,10 +1415,7 @@ if (process.argv.includes("--self-test")) {
   const wrongBound = clone(source);
   const bound: Obj = nodeAt(wrongBound, "/caracteristiques/for", "for").node;
   bound.maximum = 200;
-  assert.throws(
-    () => validatePresentation(wrongBound, "pj"),
-    /pj\.for must be capped at 50/,
-  );
+  assert.throws(() => validatePresentation(wrongBound, "pj"), /pj\.for must be capped at 50/);
   const sectionsOf = (value: Obj) => obj(value[EXTENSION], EXTENSION).sections as Obj[];
   const tooWide = clone(source);
   const wideSections = sectionsOf(tooWide);
