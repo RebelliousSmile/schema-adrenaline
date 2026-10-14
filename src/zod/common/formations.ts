@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Degats } from "./degats.js";
-import { KIT_JOUEUR, KIT_SOUPLE, type KitDeValeurs } from "./primitives.js";
+import { KIT_JOUEUR, KIT_SOUPLE, Pourcentage, type KitDeValeurs } from "./primitives.js";
 
 /**
  * Les huit caractéristiques, par leur abréviation de feuille.
@@ -26,10 +26,10 @@ export const TypeDeFormation = z.enum(["classe-sociale", "professionnelle", "per
 
 /**
  * Compétences et formations, construites sur le kit de valeurs de la fiche :
- * pourcentages en triplet jouable pour le PJ, en nombre simple ou en triplet
+ * pourcentages en nombre simple pour le PJ, en nombre simple ou en triplet
  * pour le PNJ et la créature.
  */
-function construireFormations<K extends KitDeValeurs>(k: K) {
+function construireFormations<K extends KitDeValeurs>(k: K, detaillee: boolean) {
   /**
    * Une compétence telle que la fiche la porte.
    *
@@ -62,47 +62,56 @@ function construireFormations<K extends KitDeValeurs>(k: K) {
         description: "Pourcentage jouable de la compétence seule, hors caractéristique." + k.note,
         examples: [k.exemple(30)],
       }),
-      caracteristique: AbreviationDeCaracteristique.optional().meta({
-        description:
-          "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ comme sur la feuille de PJ.",
-        examples: ["cha"],
-      }),
-      total: k.pourcentage.optional().meta({
-        description:
-          "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire." +
-          k.note,
-        examples: [k.exemple(50)],
-      }),
-      degats: Degats.optional().meta({
-        description:
-          "Ligne d'arme de la compétence : dégâts, munitions et portée, imprimés sous elle sans retrait.",
-      }),
-      action: z
-        .string()
-        .min(1)
-        .optional()
-        .meta({
-          description:
-            "Ligne d'action libre imprimée sous la compétence, précédée de « Action : ».",
-          examples: ["Charger, puis renverser sa cible"],
-        }),
-      avantages: z
-        .array(z.string().min(1).meta({ description: "Un avantage, en une ligne." }))
-        .optional()
-        .meta({
-          description:
-            "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
-          examples: [["Gestion du stress"]],
-        }),
-      notes: z
-        .string()
-        .min(1)
-        .optional()
-        .meta({
-          description:
-            "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
-          examples: ["Judo"],
-        }),
+      /*
+       * La feuille de PJ n'imprime qu'un nom, une spécialité et un pourcentage par compétence : le
+       * meneur choisit à la table la caractéristique qui s'y associe. Le reste (caractéristique,
+       * total, ligne d'arme, action, avantages, note) n'existe que sur la fiche de PNJ.
+       */
+      ...(detaillee
+        ? {
+            caracteristique: AbreviationDeCaracteristique.optional().meta({
+              description:
+                "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ. Absente de la feuille de PJ : le meneur la choisit à la table.",
+              examples: ["cha"],
+            }),
+            total: k.pourcentage.optional().meta({
+              description:
+                "Pourcentage testé, compétence plus caractéristique. Pré-calculé sur la fiche de PNJ ; se recalcule à tout instant. Le schéma ne vérifie pas la somme — la caractéristique vit dans un autre bloc et draft-7 ne sait pas exprimer cette dépendance : un consommateur doit recalculer la valeur plutôt que la croire." +
+                k.note,
+              examples: [k.exemple(50)],
+            }),
+            degats: Degats.optional().meta({
+              description:
+                "Ligne d'arme de la compétence : dégâts, munitions et portée, imprimés sous elle sans retrait.",
+            }),
+            action: z
+              .string()
+              .min(1)
+              .optional()
+              .meta({
+                description:
+                  "Ligne d'action libre imprimée sous la compétence, précédée de « Action : ».",
+                examples: ["Charger, puis renverser sa cible"],
+              }),
+            avantages: z
+              .array(z.string().min(1).meta({ description: "Un avantage, en une ligne." }))
+              .optional()
+              .meta({
+                description:
+                  "Avantages rattachés à cette compétence, notés sous elle sur la fiche : gestion du stress, bouclier personnel, équipement favori.",
+                examples: [["Gestion du stress"]],
+              }),
+            notes: z
+              .string()
+              .min(1)
+              .optional()
+              .meta({
+                description:
+                  "Note libre rattachée à la compétence, en une ligne : arme utilisée, contexte, précision laissée à l'utilisateur.",
+                examples: ["Judo"],
+              }),
+          }
+        : {}),
     })
     .meta({ description: "Une compétence de la fiche, avec sa spécialité et son total éventuel." });
 
@@ -144,12 +153,24 @@ function construireFormations<K extends KitDeValeurs>(k: K) {
   return { Competence, Formation };
 }
 
-const joueur = construireFormations(KIT_JOUEUR);
-const souple = construireFormations(KIT_SOUPLE);
+/*
+ * Un pourcentage de formation ou de compétence ne varie pas en cours de partie : le PJ le porte en
+ * nombre simple, sans minimum ni maximum. Seules les valeurs qui bougent en jeu (caractéristiques,
+ * santé, protections, points d'expérience) restent des triplets jouables.
+ */
+const joueur = construireFormations(
+  {
+    ...KIT_JOUEUR,
+    pourcentage: Pourcentage,
+    exemple: (nombre: number) => nombre,
+  },
+  false,
+);
+const souple = construireFormations(KIT_SOUPLE, true);
 
-/** Compétence d'un personnage joueur : pourcentages en triplet jouable. */
+/** Compétence d'un personnage joueur : pourcentages en nombre simple. */
 export const Competence = joueur.Competence;
-/** Formation d'un personnage joueur : pourcentages en triplet jouable. */
+/** Formation d'un personnage joueur : pourcentage en nombre simple. */
 export const Formation = joueur.Formation;
 /** Compétence d'un PNJ ou d'une créature : nombre simple ou triplet. */
 export const CompetenceSouple = souple.Competence;

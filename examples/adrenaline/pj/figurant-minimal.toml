@@ -1,91 +1,28 @@
 nom = "Karim"
 
-[caracteristiques.for]
-minimum = 20
-current = 20
-maximum = 50
+[caracteristiques]
+for = 20
+con = 30
+dex = 30
+rap = 20
+log = 20
+vol = 20
+per = 30
+cha = 30
 
-[caracteristiques.con]
-minimum = 30
-current = 30
-maximum = 50
-
-[caracteristiques.dex]
-minimum = 30
-current = 30
-maximum = 50
-
-[caracteristiques.rap]
-minimum = 20
-current = 20
-maximum = 50
-
-[caracteristiques.log]
-minimum = 20
-current = 20
-maximum = 50
-
-[caracteristiques.vol]
-minimum = 20
-current = 20
-maximum = 50
-
-[caracteristiques.per]
-minimum = 30
-current = 30
-maximum = 50
-
-[caracteristiques.cha]
-minimum = 30
-current = 30
-maximum = 50
-
-[sante.physique.superficiel.base]
-minimum = 0
-current = 5
-maximum = 5
-
-[sante.physique.leger.base]
-minimum = 0
-current = 10
-maximum = 10
-
-[sante.physique.grave.base]
-minimum = 0
-current = 15
-maximum = 15
-
-[sante.physique.profond.base]
-minimum = 0
-current = 20
-maximum = 20
-
-[sante.mental.superficiel.base]
-minimum = 0
-current = 4
-maximum = 4
-
-[sante.mental.leger.base]
-minimum = 0
-current = 8
-maximum = 8
-
-[sante.mental.grave.base]
-minimum = 0
-current = 13
-maximum = 13
-
-[sante.mental.profond.base]
-minimum = 0
-current = 18
-maximum = 18
-
-[protections.physiques.solidite]
-minimum = 0
-current = 5
-maximum = 5
-
-[protections.mentales.solidite]
-minimum = 0
-current = 4
-maximum = 4
+[sante.physique.superficiel]
+base = 5
+[sante.physique.leger]
+base = 10
+[sante.physique.grave]
+base = 15
+[sante.physique.profond]
+base = 20
+[sante.mental.superficiel]
+base = 4
+[sante.mental.leger]
+base = 8
+[sante.mental.grave]
+base = 13
+[sante.mental.profond]
+base = 18

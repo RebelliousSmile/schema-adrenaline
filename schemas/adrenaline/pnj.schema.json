@@ -2468,7 +2468,7 @@
                   ]
                 },
                 "caracteristique": {
-                  "description": "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ comme sur la feuille de PJ.",
+                  "description": "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ. Absente de la feuille de PJ : le meneur la choisit à la table.",
                   "examples": [
                     "cha"
                   ],
@@ -2782,7 +2782,7 @@
             ]
           },
           "caracteristique": {
-            "description": "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ comme sur la feuille de PJ.",
+            "description": "Caractéristique qui s'ajoute au pourcentage, notée sur la fiche de PNJ. Absente de la feuille de PJ : le meneur la choisit à la table.",
             "examples": [
               "cha"
             ],
@@ -3117,10 +3117,11 @@
                 "maximum": 100
               },
               "type": {
-                "description": "Contact ou distance pour une arme physique ; sociale pour une arme mentale ; psychologique pour une arme de créature.",
+                "description": "Contact ou distance pour une arme physique ; psychologique pour une arme de créature.",
                 "examples": [
                   "Contact",
-                  "Sociale"
+                  "Distance",
+                  "Psychologique"
                 ],
                 "type": "string",
                 "minLength": 1
@@ -3138,7 +3139,7 @@
               "nom"
             ],
             "additionalProperties": false,
-            "description": "Une arme, physique, mentale ou psychologique : toutes se notent pareil."
+            "description": "Une arme, physique ou psychologique : toutes se notent pareil."
           }
         }
       },

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { KIT_JOUEUR, KIT_SOUPLE, type KitDeValeurs } from "./primitives.js";
+import { KIT_JOUEUR, KIT_SOUPLE, Points, type KitDeValeurs } from "./primitives.js";
 
 /**
  * Les blocs Santé, construits sur le kit de valeurs de la fiche : triplet
@@ -118,7 +118,15 @@ function construireSante<K extends KitDeValeurs>(k: K) {
   return { Seuil, QuatreSeuils, SeuilsPhysiques, SeuilsMentaux, Sante, SanteDeCreature };
 }
 
-const joueur = construireSante(KIT_JOUEUR);
+/*
+ * Un seuil ne varie pas en cours de partie : le PJ le porte en nombre simple, comme la feuille
+ * l'imprime, sans minimum ni maximum.
+ */
+const joueur = construireSante({
+  ...KIT_JOUEUR,
+  points: Points,
+  exemple: (nombre: number) => nombre,
+});
 const souple = construireSante(KIT_SOUPLE);
 
 export const SeuilsPhysiques = joueur.SeuilsPhysiques;

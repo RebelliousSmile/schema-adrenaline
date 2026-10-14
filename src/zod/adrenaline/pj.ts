@@ -2,12 +2,11 @@ import { z } from "zod";
 import { PJ_PRESENTATION } from "../../presentation.js";
 import { Caracteristiques } from "../common/caracteristiques.js";
 import { Equipement } from "../common/equipement.js";
-import { EtatDePartie } from "../common/etat-de-partie.js";
+import { EtatDePartieDeJoueur } from "../common/etat-de-partie.js";
 import { Formation, TypeDeFormation } from "../common/formations.js";
-import { Identite } from "../common/identite.js";
+import { IdentiteDeJoueur } from "../common/identite.js";
 import { Meta } from "../common/meta.js";
 import { CumulJouable } from "../common/primitives.js";
-import { PourcentageJouable } from "../common/primitives.js";
 import { Protections } from "../common/protections.js";
 import { Sante } from "../common/sante.js";
 
@@ -32,6 +31,14 @@ const ParametresDuJeu = z
         description: "Attribution distributive ou tirage aléatoire.",
         examples: ["equitable"],
       }),
+    scenario: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description: "Scénario de la partie pour laquelle la fiche a été produite, en texte libre.",
+        examples: ["Les Veilleurs"],
+      }),
     typeDeScenario: z
       .enum(["one-shot", "campagne"])
       .optional()
@@ -54,39 +61,20 @@ const ParametresDuJeu = z
   })
   .meta({
     description:
-      "Bloc « Paramètres du jeu » de la feuille : qui joue, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier.",
+      "Bloc « Paramètres du jeu » de la feuille : qui joue, scénario, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier.",
   });
 
 /** Plafond d'une caractéristique PJ : la feuille ne dépasse jamais 50 %. */
 export const PJ_CARACTERISTIQUE_MAXIMUM = 50;
 
 /**
- * Une caractéristique PJ telle qu'elle sort de la création : la valeur de
- * création est à la fois le plancher et la valeur actuelle, et la borne haute
- * est le plafond de la feuille — la caractéristique ne peut que progresser.
+ * Une caractéristique PJ : la feuille n'en imprime qu'une valeur, en pourcentage. Le plafond de la
+ * feuille (50 %) est la seule borne ; il n'y a ni minimum ni maximum à saisir.
  */
-export function caracteristiqueDeCreationPj(valeur: number) {
-  return { minimum: valeur, current: valeur, maximum: PJ_CARACTERISTIQUE_MAXIMUM };
-}
-
-/** La limite de saisie de la feuille PJ ne s'applique pas aux PNJ ni aux créatures. */
-const CaracteristiqueJoueur = PourcentageJouable.extend({
-  minimum: z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
-    description:
-      "Valeur de création PJ, affichée dans la première colonne. La caractéristique ne descend pas sous elle.",
-  }),
-  current: z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
-    description:
-      "Valeur actuelle PJ, affichée dans la seconde colonne. Égale à la valeur de création en début de partie.",
-  }),
-  maximum: z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
-    description:
-      "Borne haute PJ réservée à l'éditeur, jamais affichée sur la fiche : 50 pour toute caractéristique.",
-  }),
-}).meta({
+const CaracteristiqueJoueur = z.int().min(0).max(PJ_CARACTERISTIQUE_MAXIMUM).meta({
   description:
-    "Caractéristique PJ : valeur de création (plancher), valeur actuelle et borne haute à 50 %. En début de partie, minimum = current et maximum = 50. La fiche n'affiche pas la borne haute.",
-  examples: [caracteristiqueDeCreationPj(30)],
+    "Caractéristique PJ : pourcentage de d100, de 0 à 50 %. La feuille n'imprime que cette valeur.",
+  examples: [30],
 });
 
 const CaracteristiquesJoueur = Caracteristiques.extend({
@@ -107,11 +95,11 @@ const CaracteristiquesJoueur = Caracteristiques.extend({
  * paramètres du jeu, compétence, identité, caractéristique, équipement, santé.
  *
  * Est requis ce qu'une feuille jouable porte toujours : le nom, les huit
- * caractéristiques, les seuils de santé et les solidités. Le bloc identité est
+ * caractéristiques et les seuils de santé. Le bloc identité est
  * facultatif, le livre le laissant libre au joueur.
  *
- * Ne sont pas stockés les compteurs qui se remplissent en jeu : dés de stress,
- * malus et états encaissés. Les valeurs numériques jouables de la fiche portent
+ * Les compteurs qui se remplissent en jeu (dés de stress, malus, blessures par
+ * durée, états encaissés) sont facultatifs et rangés sous `etatDePartie`. Les valeurs numériques jouables de la fiche portent
  * leur borne basse, leur état courant et leur borne haute.
  */
 /**
@@ -134,12 +122,15 @@ export const PersonnageJoueur = z
         description: "Nom du personnage, en en-tête de la feuille.",
         examples: ["Claire Vasseur"],
       }),
-    identite: Identite.optional().meta({
+    identite: IdentiteDeJoueur.optional().meta({
       description: "Bloc Identité de la feuille. Facultatif : le livre le laisse libre au joueur.",
     }),
     caracteristiques: CaracteristiquesJoueur,
     sante: Sante,
-    protections: Protections,
+    protections: Protections.optional().meta({
+      description:
+        "Protections : l'armure et le trait de caractère avec leurs localisations couvertes. La feuille n'imprime ni Solidité ni bouclier.",
+    }),
     formations: z.array(FormationJoueur).max(TypeDeFormation.options.length).optional().meta({
       description:
         "Formations du personnage : trois au plus, une par type — classe sociale, professionnelle, personnelle. La feuille en imprime toujours les trois colonnes ; le type est imprimé, seul l'intitulé s'écrit.",
@@ -148,7 +139,7 @@ export const PersonnageJoueur = z
       description: "Bloc Équipement de la feuille.",
     }),
     parametresDuJeu: ParametresDuJeu.optional(),
-    etatDePartie: EtatDePartie.optional().meta({
+    etatDePartie: EtatDePartieDeJoueur.optional().meta({
       description: "Compteurs et états temporaires de la scène, séparés du profil de référence.",
     }),
     meta: Meta.optional().meta({
@@ -159,7 +150,7 @@ export const PersonnageJoueur = z
     $id: "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/pj.schema.json",
     title: "Personnage joueur — Adrenaline System",
     description:
-      "Feuille de personnage joueur du socle Adrenaline System : nom, identité, huit caractéristiques en pourcentage, seuils de santé physiques et mentaux, protections, formations et équipement.",
+      "Feuille de personnage joueur du socle Adrenaline System : nom, identité, huit caractéristiques en pourcentage, seuils de santé physiques et mentaux, protections, formations, équipement, avantages et immunités ; en option, les contraintes, l'historique, la personnalité et l'état de partie.",
     "x-adrenaline-presentation": PJ_PRESENTATION,
   });
 

@@ -4,8 +4,8 @@ _Schémas de données ouverts et versionnés pour l'Adrenaline System, le moteur
 
 ## État du projet
 
-Ce dépôt déclare `schema-adrenaline@4.0.0` et la baseline de schéma `4.0.0`
-(rupture avec le contrat 3 : voir le `CHANGELOG`). Les consommateurs épinglent une archive de release
+Ce dépôt déclare `schema-adrenaline@5.0.0` et la baseline de schéma `5.0.0`
+(rupture avec le contrat 4 : voir le `CHANGELOG`). Les consommateurs épinglent une archive de release
 publiée, pas la branche mouvante.
 
 - _Ça marche aujourd'hui :_ trois schémas de personnage (`pj`, `pnj`, `monstre`) avec exemples JSON et TOML, un corpus de conformité partagé, des codecs TypeScript, et le pack Handbook (thèmes, polices, callouts)
@@ -165,7 +165,7 @@ Chaque cible publie, dans son schéma JSON, un descripteur `x-adrenaline-present
 
 - `pointerRows` (bloc) : lignes de JSON Pointers, chaque pointeur descendant d'un chemin du bloc. Imprime les cellules dans cet ordre, ligne par ligne, avec `label` à la place du nom quand il est donné. Une cellule sans valeur saisie n'est pas imprimée : ne la remplace ni par un zéro ni par un tiret, et n'en calcule aucune.
   Graisse : seule une cellule sans `label` (le sigle d'une caractéristique : FOR, CON, DEX, RAP, PER) imprime son nom en gras ; une cellule qui publie un `label` (« Zone de détection », « Dépl. ») l'imprime en graisse normale.
-- `subtitlePaths` (bloc `name-card`) : pointeurs, parmi les chemins du bloc, imprimés sur une ligne sous le nom, dans cet ordre et séparés par une espace (créature : `/instinct`, `/typeDeCorps`, soit « Enragé Corps moyen »). Une valeur non saisie n'est pas imprimée, et ces chemins ne sont pas imprimés une seconde fois dans la bannière. Ni la PNJ ni le PJ n'en publient.
+- `subtitlePaths` (blocs `name-card` et `game-parameters`) : pointeurs, parmi les chemins du bloc, imprimés sur une ligne sous le nom, dans cet ordre et séparés par une espace (créature : `/instinct`, `/typeDeCorps`, soit « Enragé Corps moyen »). Une valeur non saisie n'est pas imprimée, et ces chemins ne sont pas imprimés une seconde fois dans la bannière. Le PJ en publie un sur ses paramètres du jeu : le type de scénario s'imprime sous le libellé de la feuille et non dans les lignes des paramètres. Ni la PNJ ni la créature n'en publient.
 - `rowLabels` (bloc `combat`) : le libellé imprimé de chaque chemin, dans l'ordre de `paths` (créature : « Actions », « Défense »), en gras devant sa valeur. La forme `combat` imprime `/actionsParRound` sous la forme `<n>/round` et `/defense` sous la forme `<niveau> (<bonus> bonus)` ; `niveau` s'écrit « Oui », « Exposé » ou « Non », et le bonus est omis quand il n'est pas saisi. Une précision saisie dans `/defense/notes` s'imprime à la suite, telle quelle : un champ déclaré n'est jamais masqué.
 - `cards` (descripteur, créature seule) : déclare les cartes, `principal` (toujours imprimée, sans condition) et `secondaire`. La carte `secondaire` porte `existsWhenAny: ["/etats", "/etatAlternatif"]` : elle existe quand le document saisit une valeur à l'un de ces pointeurs, une liste comptant quand elle n'est pas vide. Sans valeur saisie, elle n'existe pas. Toute carte citée ailleurs dans le descripteur est déclarée ici.
 - `cards` (section ou bloc, créature seule) : les cartes qui impriment cette section ou ce bloc ; absent sur un bloc, toutes les cartes de sa section. Une section sans `cards` s'imprime une fois, hors des cartes.
@@ -176,6 +176,8 @@ Chaque cible publie, dans son schéma JSON, un descripteur `x-adrenaline-present
 - `decoration` `state-badge` (bloc `etat`) : un repère devant chaque déclencheur, et la case de l'état courant, lue à `/etatActif`, dessinée sur les cartes listées par `current.cards` seulement. La couleur est le jeton `--adrenaline-card-badge`, déclaré par le pack : le consommateur le lit. `current.position` (`end`) place la case à droite de la bande de titre de l'état.
 - Forme `state-header` (bloc `etat`) : par définition de la forme, sans autre champ publié, le nom de l'état s'imprime sur une bande de titre de section (jeton `--adrenaline-section-band`), la case de l'état courant à l'extrémité de cette bande (`current.position`), et le déclencheur dessous : une icône ronde à flèche suivie du texte nu, sans pastille de fond. L'icône prend le jeton `--adrenaline-card-badge`, comme la case.
 - Forme `threshold-rows` : sur la carte compacte (créature et PNJ), les seuils d'une rangée s'impriment après leur sigle, séparés par une barre oblique entourée d'espaces : « SP 7 / 14 / 19 / 24 ». La feuille de papier du PJ ne change pas.
+
+- Fiche PJ, formes `reference-table` (table de règles à texte fixe, sans chemin lu : `referenceTable` porte colonnes, lignes, légende), `location-grid` (six localisations de trois cases, la localisation saisie coche la première), `wound-circles` (blessures par durée, deux colonnes, un cercle coché ou non par durée) et `circle-row` (quatre cercles). Propriétés de bloc : `thresholdLevels` (libellés des seuils par position, malus de 1 à 4) et `notes` (textes fixes de la feuille), `minimumRows` (formes `ruled-list` et `weapon-lines`, entier ≥ 1 : nombre minimal de lignes réglées imprimées, soit 5 pour `possessions`, 7 pour `armes-physiques`, 5 pour `avantages-immunites` ; les lignes saisies au-delà s'ajoutent, rien n'est tronqué, et la liste du document reste non bornée). Le PJ imprime la valeur courante seule des caractéristiques ; les valeurs ne sont jamais calculées.
 
 ### Compatibilité et versionnement
 

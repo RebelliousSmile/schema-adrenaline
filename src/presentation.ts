@@ -30,21 +30,77 @@ export type AdrenalinePresentationForm =
   | "malus-circles"
   | "inline-list"
   | "skill-lines"
-  | "action-lines";
+  | "action-lines"
+  | "reference-table"
+  | "location-grid"
+  | "wound-circles"
+  | "circle-row";
+
+/** A location of the player sheet grid, with the d10 range that designates it. */
+export type AdrenalineLocationCell = { id: string; label: string; range: string };
+
+/** Nature of a damage die, by the colour of its badge: yellow shocks, red wounds. */
+export type AdrenalineDamageNature = "choquante" | "blessante";
+
+/**
+ * A fixed table the sheet prints as it is, whatever the document holds (the
+ * social weapons). Its text is published here, never entered.
+ */
+export type AdrenalineReferenceTable = {
+  columns: readonly [string, string];
+  /** One line per entry: its name and what it does, with the threshold of its 2d10 when it has one. */
+  lines: readonly { name: string; properties: string }[];
+  /** Wording of the two natures of die, for the editors that offer them: the sheet does not print it. */
+  legend: readonly { dice: string; nature: AdrenalineDamageNature; meaning: string }[];
+};
+
+/**
+ * Label and malus count of a health threshold level on the player sheet. The
+ * match with the contract key is positional: `superficiel` is printed « Léger ».
+ */
+export type AdrenalineThresholdLevel = {
+  key: "superficiel" | "leger" | "grave" | "profond";
+  label: string;
+  malus: 1 | 2 | 3 | 4;
+};
 
 export type AdrenalinePresentationDecoration =
   | {
       kind: "dice-options";
       favorable: readonly ["+1d100", "+2d100"];
-      defavorable: readonly ["-1d100", "-2d100"];
+      defavorable: readonly ["+1d100", "+2d100"];
     }
   | {
       kind: "circle-groups";
-      groups: readonly [{ label: "rounds"; count: 5 }, { label: "heures"; count: 5 }];
+      groups: readonly [{ key: "rounds"; label: "ROUND"; count: 5; shape: "round" }];
     }
-  | { kind: "scale"; from: 1; to: 10 }
+  /** From 1 to 9, then `last` for the tenth malus. */
+  | { kind: "scale"; from: 1; to: 9; last: "HS" }
+  /** Divers: `count` circles, ticked by the counter; the text is still read. */
+  | { kind: "circle-row"; count: 4 }
+  /**
+   * Protection lines followed by the grid of the six locations: a listed
+   * location ticks the first of its `boxes`, the others stay empty.
+   */
+  | {
+      kind: "location-grid";
+      side: "physical" | "mental";
+      unit: "PP" | "PM";
+      boxes: 3;
+      locations: readonly AdrenalineLocationCell[];
+    }
+  /** Wounds by duration: two columns, each printing `circles` circle (ticked or not) per duration. */
+  | {
+      kind: "wound-circles";
+      side: "physical" | "mental";
+      durations: readonly ["heure", "jour", "semaine", "mois"];
+      columns: readonly [
+        { key: "premiereColonne" },
+        { key: "secondeColonne" },
+      ];
+      circles: 1;
+    }
   | { kind: "weapon-die"; label: "d10" }
-  | { kind: "protection-units"; physical: "PP"; mental: "PM" }
   /**
    * Stress and malus tracks of a compact card: `length` circles per track, the
    * first `stressDefault` stress circles bold when the document gives no count.
@@ -155,18 +211,20 @@ export type AdrenalinePresentationBlock = {
   columns?: number;
   form?: AdrenalinePresentationForm;
   /** Visible columns of a playable range; maximum remains editor-only. */
-  rangeDisplay?: readonly ("minimum" | "current")[];
+  rangeDisplay?: readonly "current"[];
   rowLabels?: readonly string[];
   /**
-   * `name-card` only: the pointers, among the block paths, printed on one line
-   * under the name, in this order and joined by a space; a value the document
-   * leaves out is not printed. They are not printed again in the banner.
+   * `name-card` and `game-parameters` only: the pointers, among the block paths,
+   * printed on one line under the name (under the sheet label for the game
+   * parameters), in this order and joined by a space; a value the document
+   * leaves out is not printed. They are not printed again in the banner or in
+   * the rows of the parameters.
    */
   subtitlePaths?: readonly string[];
   valueSuffix?: "%" | "PX";
   formationFields?: {
     header: readonly ["type", "nom", "pourcentage"];
-    competence: readonly ["nom", "specialite", "caracteristique", "pourcentage"];
+    competence: readonly ["nom", "specialite", "pourcentage"];
   };
   /**
    * Printed formation columns, one per type, in sheet order: the sheet keeps
@@ -189,7 +247,20 @@ export type AdrenalinePresentationBlock = {
   /** Creature only: the cards that print this block; absent, every card of its section. */
   cards?: readonly AdrenalineCardId[];
   decoration?: AdrenalinePresentationDecoration;
-  /** JSON Pointers read by this visible block. */
+  /** `reference-table` only: the fixed table, which reads no document path. */
+  referenceTable?: AdrenalineReferenceTable;
+  /** `threshold-rows` of the player sheet: printed label and malus count of each level. */
+  thresholdLevels?: readonly AdrenalineThresholdLevel[];
+  /** Fixed texts printed by the block, as the sheet words them. */
+  notes?: readonly string[];
+  /**
+   * `ruled-list` and `weapon-lines` of the player sheet: the number of ruled
+   * lines printed at least, as the sheet draws them. Lines the document enters
+   * beyond it are printed after them; none is cut. It is a placement of the
+   * sheet, never a bound of the document: the contract list stays unbounded.
+   */
+  minimumRows?: number;
+  /** JSON Pointers read by this visible block; only a `reference-table` may read none. */
   paths: string[];
 };
 
@@ -205,7 +276,7 @@ export type AdrenalinePresentationSection = {
    * side by side; `span` is the share of the sheet width, in thirds.
    */
   row?: { id: string; span: 1 | 2 | 3 };
-  /** Folded by default. No sheet uses it yet: the player sheet will. */
+  /** Folded by default: the player sheet closes its identity section. */
   collapsible?: true;
   /** JSON Pointer whose value is printed after the label: `Comportement (Rôdeur)`. */
   labelFrom?: string;
@@ -357,6 +428,49 @@ const CREATURE_CARD = {
   tokens: CREATURE_CARD_TOKENS,
 } as const satisfies AdrenalinePresentationAppearance;
 
+/** Fixed table of the social weapons: the name, then what sets the die to 2d10, no more. */
+const SOCIAL_WEAPONS_TABLE = {
+  columns: ["Armes sociales", "Propriétés"],
+  lines: [
+    { name: "Bluff", properties: "Inf." },
+    { name: "Intimidation", properties: "Inf., Ét. sans issue (2d10)" },
+    { name: "Manipulation", properties: "Inf." },
+    { name: "Négociation", properties: "Négo. situation diff. (2d10)" },
+    { name: "Persuasion", properties: "Inf. insoluble (2d10)" },
+    {
+      name: "Provocation",
+      properties: "Inf., Loc. Colère, Étourd.",
+    },
+    { name: "Séduction", properties: "Séd. loyal/amoureux (2d10)" },
+  ],
+  legend: [
+    {
+      dice: "Xd10",
+      nature: "choquante",
+      meaning: "dégâts des armes ayant la propriété Choquante",
+    },
+    {
+      dice: "Xd10",
+      nature: "blessante",
+      meaning: "dégâts des armes ayant la propriété Blessante",
+    },
+  ],
+} as const satisfies AdrenalineReferenceTable;
+
+/** Labels and malus count of the thresholds: positional, `superficiel` is printed « Léger ». */
+const THRESHOLD_LEVELS = [
+  { key: "superficiel", label: "Léger", malus: 1 },
+  { key: "leger", label: "Modéré", malus: 2 },
+  { key: "grave", label: "Grave", malus: 3 },
+  { key: "profond", label: "Profond", malus: 4 },
+] as const satisfies readonly AdrenalineThresholdLevel[];
+
+const WOUND_DURATIONS = ["heure", "jour", "semaine", "mois"] as const;
+const WOUND_COLUMNS = [
+  { key: "premiereColonne" },
+  { key: "secondeColonne" },
+] as const;
+
 export const PJ_PRESENTATION = definePresentation({
   version: 1,
   capability: "block:adrenaline-pj",
@@ -387,12 +501,14 @@ export const PJ_PRESENTATION = definePresentation({
           layout: "grid",
           columns: 2,
           form: "game-parameters",
-          rowLabels: ["Joueuse/Joueur", "Type de création", "Type de scénario"],
+          rowLabels: ["Joueur.se", "Type création", "Type de scénario", "Scénario"],
           paths: [
             "/parametresDuJeu/joueur",
             "/parametresDuJeu/typeDeCreation",
             "/parametresDuJeu/typeDeScenario",
+            "/parametresDuJeu/scenario",
           ],
+          subtitlePaths: ["/parametresDuJeu/typeDeScenario"],
         },
         {
           id: "px",
@@ -422,37 +538,11 @@ export const PJ_PRESENTATION = definePresentation({
           valueSuffix: "%",
           formationFields: {
             header: ["type", "nom", "pourcentage"],
-            competence: ["nom", "specialite", "caracteristique", "pourcentage"],
+            competence: ["nom", "specialite", "pourcentage"],
           },
           formationTypes: ["classe-sociale", "professionnelle", "personnelle"],
+          notes: ["Compétence de substitution : malus de -10 %"],
           paths: ["/formations"],
-        },
-      ],
-    },
-    {
-      id: "identite",
-      label: "Identité",
-      order: 30,
-      layout: "stack",
-      columns: 1,
-      row: { id: "profil", span: 1 },
-      blocks: [
-        {
-          id: "identite",
-          label: "Identité",
-          order: 10,
-          layout: "grid",
-          columns: 2,
-          form: "identity-fields",
-          fieldRows: [
-            ["nationalite", "genre"],
-            ["cheveux", "age"],
-            ["yeux", "taille"],
-            ["peau", "poids"],
-            ["signesParticuliers"],
-          ],
-          placement: { column: 1, row: 1 },
-          paths: ["/identite"],
         },
       ],
     },
@@ -461,8 +551,8 @@ export const PJ_PRESENTATION = definePresentation({
       label: "Caractéristique",
       order: 35,
       layout: "columns",
-      columns: 2,
-      row: { id: "profil", span: 2 },
+      columns: 3,
+      row: { id: "profil", span: 3 },
       blocks: [
         {
           id: "caracteristiques-physiques",
@@ -471,9 +561,10 @@ export const PJ_PRESENTATION = definePresentation({
           layout: "grid",
           columns: 2,
           form: "characteristic-rows",
-          rangeDisplay: ["minimum", "current"],
+          rangeDisplay: ["current"],
           rowLabels: ["Force", "Constitution", "Dextérité", "Rapidité"],
           valueSuffix: "%",
+          notes: ["Marcher (qualité de RAP) ; Courir (Marcher × 3)"],
           placement: { column: 1, row: 1 },
           paths: [
             "/caracteristiques/for",
@@ -489,7 +580,7 @@ export const PJ_PRESENTATION = definePresentation({
           layout: "grid",
           columns: 2,
           form: "characteristic-rows",
-          rangeDisplay: ["minimum", "current"],
+          rangeDisplay: ["current"],
           rowLabels: ["Logique", "Volonté", "Perception", "Charisme"],
           valueSuffix: "%",
           placement: { column: 2, row: 1 },
@@ -499,6 +590,20 @@ export const PJ_PRESENTATION = definePresentation({
             "/caracteristiques/per",
             "/caracteristiques/cha",
           ],
+        },
+        {
+          id: "stress",
+          label: "Dés de stress",
+          order: 40,
+          layout: "stack",
+          form: "stress-dice",
+          decoration: {
+            kind: "dice-options",
+            favorable: ["+1d100", "+2d100"],
+            defavorable: ["+1d100", "+2d100"],
+          },
+          placement: { column: 3, row: 1 },
+          paths: ["/etatDePartie/stress"],
         },
       ],
     },
@@ -510,51 +615,89 @@ export const PJ_PRESENTATION = definePresentation({
       columns: 3,
       blocks: [
         {
-          id: "possessions",
-          label: "Possessions",
-          order: 10,
-          layout: "stack",
-          form: "ruled-list",
-          placement: { column: 1, row: 1, rowSpan: 2 },
-          paths: ["/equipement/possessions", "/equipement/equipementFavori"],
-        },
-        {
           id: "armes-physiques",
           label: "Armes physiques",
-          order: 20,
+          order: 10,
           layout: "stack",
           form: "weapon-lines",
           decoration: { kind: "weapon-die", label: "d10" },
-          placement: { column: 2, row: 1 },
+          placement: { column: 1, row: 1 },
+          minimumRows: 5,
           paths: ["/equipement/armesPhysiques"],
         },
         {
-          id: "armes-mentales",
-          label: "Armes mentales",
+          id: "armes-sociales",
+          label: "Armes sociales",
+          order: 20,
+          layout: "stack",
+          form: "reference-table",
+          referenceTable: SOCIAL_WEAPONS_TABLE,
+          placement: { column: 2, row: 1 },
+          paths: ["/equipement/armesSocialesBarrees"],
+        },
+        {
+          id: "avantages-immunites",
+          label: "Avantages et immunités",
           order: 30,
           layout: "stack",
-          form: "weapon-lines",
-          decoration: { kind: "weapon-die", label: "d10" },
+          form: "ruled-list",
           placement: { column: 3, row: 1 },
-          paths: ["/equipement/armesMentales"],
+          minimumRows: 5,
+          paths: ["/equipement/avantagesEtImmunites"],
+        },
+        {
+          id: "possessions",
+          label: "Possessions",
+          order: 40,
+          layout: "stack",
+          form: "ruled-list",
+          placement: { column: 1, row: 2 },
+          minimumRows: 4,
+          paths: ["/equipement/possessions", "/equipement/equipementFavori"],
         },
         {
           id: "protections-physiques",
           label: "Protections physiques",
-          order: 40,
+          order: 50,
           layout: "stack",
-          form: "protection-lines",
-          decoration: { kind: "protection-units", physical: "PP", mental: "PM" },
+          form: "location-grid",
+          decoration: {
+            kind: "location-grid",
+            side: "physical",
+            unit: "PP",
+            boxes: 3,
+            locations: [
+              { id: "jambe-droite", label: "Jambe D", range: "1" },
+              { id: "jambe-gauche", label: "Jambe G", range: "2" },
+              { id: "torse", label: "Torse", range: "3-4" },
+              { id: "bras-faible", label: "Bras faible", range: "5-6" },
+              { id: "bras-fort", label: "Bras fort", range: "7-8" },
+              { id: "tete", label: "Tête", range: "9-0" },
+            ],
+          },
           placement: { column: 2, row: 2 },
           paths: ["/protections/physiques"],
         },
         {
           id: "protections-mentales",
           label: "Protections mentales",
-          order: 50,
+          order: 60,
           layout: "stack",
-          form: "protection-lines",
-          decoration: { kind: "protection-units", physical: "PP", mental: "PM" },
+          form: "location-grid",
+          decoration: {
+            kind: "location-grid",
+            side: "mental",
+            unit: "PM",
+            boxes: 3,
+            locations: [
+              { id: "culpabilite", label: "Culpabilité", range: "1" },
+              { id: "tristesse", label: "Tristesse", range: "2" },
+              { id: "colere", label: "Colère", range: "3-4" },
+              { id: "impuissance", label: "Impuissance", range: "5-6" },
+              { id: "anxiete", label: "Anxiété", range: "7-8" },
+              { id: "peur", label: "Peur", range: "9-0" },
+            ],
+          },
           placement: { column: 3, row: 2 },
           paths: ["/protections/mentales"],
         },
@@ -568,24 +711,12 @@ export const PJ_PRESENTATION = definePresentation({
       columns: 3,
       blocks: [
         {
-          id: "stress",
-          label: "Dés de stress",
-          order: 10,
-          layout: "stack",
-          form: "stress-dice",
-          decoration: {
-            kind: "dice-options",
-            favorable: ["+1d100", "+2d100"],
-            defavorable: ["-1d100", "-2d100"],
-          },
-          paths: ["/etatDePartie/stress"],
-        },
-        {
           id: "seuils-physiques",
           label: "Seuils physiques",
           order: 20,
           layout: "stack",
           form: "threshold-rows",
+          thresholdLevels: THRESHOLD_LEVELS,
           paths: ["/sante/physique"],
         },
         {
@@ -594,6 +725,7 @@ export const PJ_PRESENTATION = definePresentation({
           order: 30,
           layout: "stack",
           form: "threshold-rows",
+          thresholdLevels: THRESHOLD_LEVELS,
           paths: ["/sante/mental"],
         },
         {
@@ -604,20 +736,48 @@ export const PJ_PRESENTATION = definePresentation({
           form: "shock-circles",
           decoration: {
             kind: "circle-groups",
-            groups: [
-              { label: "rounds", count: 5 },
-              { label: "heures", count: 5 },
-            ],
+            groups: [{ key: "rounds", label: "ROUND", count: 5, shape: "round" }],
           },
-          paths: ["/etatDePartie/malus/choc"],
+          paths: ["/etatDePartie/malus/choc", "/etatDePartie/malus/choc/notes"],
         },
         {
           id: "divers",
           label: "Divers",
           order: 50,
           layout: "stack",
-          form: "status-frames",
-          paths: ["/etatDePartie/malus/divers"],
+          form: "circle-row",
+          decoration: { kind: "circle-row", count: 4 },
+          paths: ["/etatDePartie/malus/divers", "/etatDePartie/malus/diversCercles"],
+        },
+        {
+          id: "blessures-physiques",
+          label: "Blessures physiques",
+          order: 52,
+          layout: "stack",
+          form: "wound-circles",
+          decoration: {
+            kind: "wound-circles",
+            side: "physical",
+            durations: WOUND_DURATIONS,
+            columns: WOUND_COLUMNS,
+            circles: 1,
+          },
+          paths: ["/etatDePartie/blessures/physiques"],
+        },
+        {
+          id: "blessures-mentales",
+          label: "Blessures mentales",
+          order: 54,
+          layout: "stack",
+          form: "wound-circles",
+          decoration: {
+            kind: "wound-circles",
+            side: "mental",
+            durations: WOUND_DURATIONS,
+            columns: WOUND_COLUMNS,
+            circles: 1,
+          },
+          paths: ["/etatDePartie/blessures/mentales"],
         },
         {
           id: "etats-encaisses",
@@ -633,8 +793,70 @@ export const PJ_PRESENTATION = definePresentation({
           order: 70,
           layout: "stack",
           form: "malus-scale",
-          decoration: { kind: "scale", from: 1, to: 10 },
+          decoration: { kind: "scale", from: 1, to: 9, last: "HS" },
+          notes: ["1 malus = -10 %"],
           paths: ["/etatDePartie/malus/total"],
+        },
+      ],
+    },
+    {
+      id: "identite",
+      label: "Identité",
+      order: 60,
+      layout: "stack",
+      columns: 1,
+      collapsible: true,
+      blocks: [
+        {
+          id: "identite",
+          label: "Identité",
+          order: 10,
+          layout: "grid",
+          columns: 2,
+          form: "identity-fields",
+          fieldRows: [
+            ["nationalite", "genre"],
+            ["cheveux", "age"],
+            ["yeux", "taille"],
+            ["peau", "poids"],
+            ["signesParticuliers"],
+          ],
+          paths: ["/identite"],
+        },
+        {
+          id: "contraintes",
+          label: "Contraintes",
+          order: 20,
+          layout: "grid",
+          columns: 1,
+          form: "compact-rows",
+          pointerRows: [
+            [{ path: "/identite/contraintes/professionnelles", label: "Professionnelles" }],
+            [{ path: "/identite/contraintes/familiales", label: "Familiales" }],
+            [
+              {
+                path: "/identite/contraintes/engagementsExterieurs",
+                label: "Engagements extérieurs",
+              },
+            ],
+          ],
+          paths: ["/identite/contraintes"],
+        },
+        {
+          id: "historique",
+          label: "Historique",
+          order: 30,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/identite/historique"],
+        },
+        {
+          id: "personnalite",
+          label: "Personnalité",
+          order: 40,
+          layout: "stack",
+          form: "narrative",
+          paths: ["/identite/personnalite"],
         },
       ],
     },

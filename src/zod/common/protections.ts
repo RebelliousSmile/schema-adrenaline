@@ -219,13 +219,54 @@ function construireProtections<K extends KitDeValeurs>(k: K) {
   return { ProtectionsPhysiques, ProtectionsMentales, Protections, ProtectionsAbregees };
 }
 
-const joueur = construireProtections(KIT_JOUEUR);
+/* Les points de protection s'écrivent en nombre simple sur la feuille de PJ. */
+const joueur = construireProtections({
+  ...KIT_JOUEUR,
+  points: Points,
+  exemple: (nombre: number) => nombre,
+});
 const souple = construireProtections(KIT_SOUPLE);
 
-export const ProtectionsPhysiques = joueur.ProtectionsPhysiques;
-export const ProtectionsMentales = joueur.ProtectionsMentales;
-/** Protections d'un personnage joueur : solidités et points en triplet jouable. */
-export const Protections = joueur.Protections;
+/**
+ * La feuille de PJ n'imprime ni Solidité ni bouclier : l'armure ou le trait de
+ * caractère et leurs localisations en sont toute la protection. Les seuils de
+ * santé se saisissent tels quels.
+ */
+/**
+ * Sur la feuille de PJ l'armure tient en une ligne : son nom, ses points et les
+ * localisations qu'elle couvre. Les détails du PNJ (dés, couverture libre,
+ * propriétés, réduction) n'y ont pas de place et ne sont pas déclarés.
+ */
+const ArmureDeJoueur = joueur.ProtectionsPhysiques.shape.armure
+  .unwrap()
+  .omit({ des: true, couverture: true, proprietes: true, reduction: true })
+  .optional()
+  .meta({ description: "Armure portée, si le personnage en a une : nom, points et localisations." });
+const CaractereDeJoueur = joueur.ProtectionsMentales.shape.caractere
+  .unwrap()
+  .omit({ des: true, emotions: true, proprietes: true, reduction: true })
+  .optional()
+  .meta({
+    description: "Trait de caractère protecteur, si le personnage en a un : trait, points et localisations.",
+  });
+export const ProtectionsPhysiques = joueur.ProtectionsPhysiques
+  .omit({ solidite: true, bouclier: true })
+  .extend({ armure: ArmureDeJoueur })
+  .meta({ description: "Protections physiques : armure et localisations couvertes." });
+export const ProtectionsMentales = joueur.ProtectionsMentales
+  .omit({ solidite: true, bouclier: true })
+  .extend({ caractere: CaractereDeJoueur })
+  .meta({ description: "Protections mentales : trait de caractère et localisations couvertes." });
+/** Protections d'un personnage joueur : armure ou trait de caractère, points en triplet jouable. */
+export const Protections = z
+  .strictObject({
+    physiques: ProtectionsPhysiques.optional(),
+    mentales: ProtectionsMentales.optional(),
+  })
+  .meta({
+    description:
+      "Les deux versants de la protection. Symétriques par construction : le socle traite le conflit mental comme le conflit physique.",
+  });
 /** Protections d'un PNJ ou d'une créature : nombre simple ou triplet. */
 export const ProtectionsAbregees = souple.ProtectionsAbregees;
 

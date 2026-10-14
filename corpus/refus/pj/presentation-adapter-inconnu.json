@@ -1,32 +1,50 @@
 {
   "nom": "Fixture présentation",
   "caracteristiques": {
-    "for": { "minimum": 0, "current": 0, "maximum": 0 },
-    "con": { "minimum": 0, "current": 0, "maximum": 0 },
-    "dex": { "minimum": 0, "current": 0, "maximum": 0 },
-    "rap": { "minimum": 0, "current": 0, "maximum": 0 },
-    "log": { "minimum": 0, "current": 0, "maximum": 0 },
-    "vol": { "minimum": 0, "current": 0, "maximum": 0 },
-    "per": { "minimum": 0, "current": 0, "maximum": 0 },
-    "cha": { "minimum": 0, "current": 0, "maximum": 0 }
+    "for": 0,
+    "con": 0,
+    "dex": 0,
+    "rap": 0,
+    "log": 0,
+    "vol": 0,
+    "per": 0,
+    "cha": 0
   },
   "sante": {
     "physique": {
-      "superficiel": { "base": { "minimum": 0, "current": 0, "maximum": 0 } },
-      "leger": { "base": { "minimum": 0, "current": 0, "maximum": 0 } },
-      "grave": { "base": { "minimum": 0, "current": 0, "maximum": 0 } },
-      "profond": { "base": { "minimum": 0, "current": 0, "maximum": 0 } }
+      "superficiel": {
+        "base": 0
+      },
+      "leger": {
+        "base": 0
+      },
+      "grave": {
+        "base": 0
+      },
+      "profond": {
+        "base": 0
+      }
     },
     "mental": {
-      "superficiel": { "base": { "minimum": 0, "current": 0, "maximum": 0 } },
-      "leger": { "base": { "minimum": 0, "current": 0, "maximum": 0 } },
-      "grave": { "base": { "minimum": 0, "current": 0, "maximum": 0 } },
-      "profond": { "base": { "minimum": 0, "current": 0, "maximum": 0 } }
+      "superficiel": {
+        "base": 0
+      },
+      "leger": {
+        "base": 0
+      },
+      "grave": {
+        "base": 0
+      },
+      "profond": {
+        "base": 0
+      }
     }
   },
   "protections": {
-    "physiques": { "solidite": { "minimum": 0, "current": 0, "maximum": 0 } },
-    "mentales": { "solidite": { "minimum": 0, "current": 0, "maximum": 0 } }
+    "physiques": {},
+    "mentales": {}
   },
-  "presentation": { "adapter": "adrenaline-pj" }
+  "presentation": {
+    "adapter": "adrenaline-pj"
+  }
 }

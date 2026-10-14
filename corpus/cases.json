@@ -52,7 +52,7 @@
       "expect": "accept"
     },
     {
-      "path": "corpus/refus/pj/abreviation-de-caracteristique-inconnue.json",
+      "path": "corpus/refus/pj/competence-avec-caracteristique.json",
       "target": "pj",
       "format": "json",
       "expect": "reject"
@@ -100,6 +100,18 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pj/formation-pourcentage-en-triplet.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pj/competence-avec-ligne-d-arme.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
       "path": "corpus/refus/pj/malus-physique.json",
       "target": "pj",
       "format": "json",
@@ -130,10 +142,10 @@
       "expect": "reject"
     },
     {
-      "path": "corpus/refus/pj/protections-absentes.json",
+      "path": "corpus/temoins/pj/protections-absentes.json",
       "target": "pj",
       "format": "json",
-      "expect": "reject"
+      "expect": "accept"
     },
     {
       "path": "corpus/refus/pj/sante-absente.json",
@@ -388,10 +400,10 @@
       "expect": "reject"
     },
     {
-      "path": "corpus/contract/invalid/pj-protections-absentes.toml",
+      "path": "corpus/contract/valid/pj-protections-absentes.toml",
       "target": "pj",
       "format": "toml",
-      "expect": "reject"
+      "expect": "accept"
     },
     {
       "path": "corpus/contract/invalid/monstre-etat-alternatif-et-etats.toml",
@@ -471,17 +483,38 @@
       "names": "armesPsychologiques"
     },
     {
+      "path": "corpus/refus/pj/armes-mentales-sur-pj.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject",
+      "names": "armesMentales"
+    },
+    {
+      "path": "corpus/refus/pj/identite-cle-inconnue.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject",
+      "names": "profession"
+    },
+    {
+      "path": "corpus/refus/pj/blessure-nombre-au-lieu-de-booleen.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject",
+      "names": "heure"
+    },
+    {
       "path": "corpus/refus/pnj/nombre-hors-borne.json",
       "target": "pnj",
       "format": "json",
       "expect": "reject"
     },
     {
-      "path": "corpus/refus/pj/caracteristique-nombre-simple.json",
+      "path": "corpus/refus/pj/caracteristique-en-triplet.json",
       "target": "pj",
       "format": "json",
       "expect": "reject",
-      "names": "con"
+      "names": "for"
     },
     {
       "path": "corpus/refus/monstre/nombre-hors-borne.json",
@@ -496,6 +529,12 @@
       "format": "json",
       "expect": "reject",
       "names": "points"
+    },
+    {
+      "path": "corpus/refus/pj/etats-en-liste.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject"
     }
   ]
 }

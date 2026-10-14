@@ -32,7 +32,153 @@ const FORMS = new Set([
   "inline-list",
   "skill-lines",
   "action-lines",
+  "reference-table",
+  "location-grid",
+  "wound-circles",
+  "circle-row",
 ]);
+const PHYSICAL_LOCATIONS = [
+  { id: "jambe-droite", label: "Jambe D", range: "1" },
+  { id: "jambe-gauche", label: "Jambe G", range: "2" },
+  { id: "torse", label: "Torse", range: "3-4" },
+  { id: "bras-faible", label: "Bras faible", range: "5-6" },
+  { id: "bras-fort", label: "Bras fort", range: "7-8" },
+  { id: "tete", label: "Tête", range: "9-0" },
+];
+const MENTAL_LOCATIONS = [
+  { id: "culpabilite", label: "Culpabilité", range: "1" },
+  { id: "tristesse", label: "Tristesse", range: "2" },
+  { id: "colere", label: "Colère", range: "3-4" },
+  { id: "impuissance", label: "Impuissance", range: "5-6" },
+  { id: "anxiete", label: "Anxiété", range: "7-8" },
+  { id: "peur", label: "Peur", range: "9-0" },
+];
+/** Positional: the contract key `superficiel` is printed « Léger ». */
+const THRESHOLD_LEVELS = [
+  { key: "superficiel", label: "Léger", malus: 1 },
+  { key: "leger", label: "Modéré", malus: 2 },
+  { key: "grave", label: "Grave", malus: 3 },
+  { key: "profond", label: "Profond", malus: 4 },
+];
+/** Fixed texts of the player sheet, by block. */
+const PJ_NOTES: Record<string, string[]> = {
+  "formations-competences": ["Compétence de substitution : malus de -10 %"],
+  "caracteristiques-physiques": [
+    "Marcher (qualité de RAP) ; Courir (Marcher × 3)",
+  ],
+  "total-malus": ["1 malus = -10 %"],
+};
+
+/** Block id of the decorations that name a side: the decoration must match the block it sits on. */
+const PJ_SIDES: Record<string, "physical" | "mental"> = {
+  "blessures-physiques": "physical",
+  "blessures-mentales": "mental",
+  "protections-physiques": "physical",
+  "protections-mentales": "mental",
+};
+
+/** The paths a PJ block reads, by block id: a side is bound to what the block reads, not to its id only. */
+const PJ_PATHS: Record<string, string[]> = {
+  "blessures-physiques": ["/etatDePartie/blessures/physiques"],
+  "blessures-mentales": ["/etatDePartie/blessures/mentales"],
+  "protections-physiques": ["/protections/physiques"],
+  "protections-mentales": ["/protections/mentales"],
+  divers: ["/etatDePartie/malus/divers", "/etatDePartie/malus/diversCercles"],
+};
+
+/** The decoration the player sheet draws on a block, by block id: it is required, not merely allowed. */
+const PJ_DECORATIONS: Record<string, string> = {
+  stress: "dice-options",
+  divers: "circle-row",
+  "blessures-physiques": "wound-circles",
+  "blessures-mentales": "wound-circles",
+  "protections-physiques": "location-grid",
+  "protections-mentales": "location-grid",
+};
+
+/** A form whose decoration has the same name: the one never goes without the other. */
+const FORM_DECORATIONS = new Set(["location-grid", "wound-circles", "circle-row"]);
+
+/** The printed label and the section of the PJ blocks whose place is a decision of the sheet. */
+const PJ_PLACES: Record<string, { label: string; section: string }> = {
+  "armes-sociales": { label: "Armes sociales", section: "equipement" },
+  "blessures-physiques": { label: "Blessures physiques", section: "sante" },
+  "blessures-mentales": { label: "Blessures mentales", section: "sante" },
+  contraintes: { label: "Contraintes", section: "identite" },
+};
+
+/** The three lines of the constraints block: path and printed label, in order. */
+const PJ_CONSTRAINT_ROWS = [
+  [{ path: "/identite/contraintes/professionnelles", label: "Professionnelles" }],
+  [{ path: "/identite/contraintes/familiales", label: "Familiales" }],
+  [{ path: "/identite/contraintes/engagementsExterieurs", label: "Engagements extérieurs" }],
+];
+
+/** The identity fields the PJ prints in their own blocks, so the fields grid leaves them out. */
+const PJ_IDENTITY_SIBLINGS = ["contraintes", "historique", "personnalite"];
+
+/** The fixed table of the social weapons, as the sheet prints it: text and order. */
+const SOCIAL_WEAPONS_TABLE = {
+  columns: ["Armes sociales", "Propriétés"],
+  lines: [
+    { name: "Bluff", properties: "Inf." },
+    { name: "Intimidation", properties: "Inf., Ét. sans issue (2d10)" },
+    { name: "Manipulation", properties: "Inf." },
+    { name: "Négociation", properties: "Négo. situation diff. (2d10)" },
+    { name: "Persuasion", properties: "Inf. insoluble (2d10)" },
+    {
+      name: "Provocation",
+      properties: "Inf., Loc. Colère, Étourd.",
+    },
+    { name: "Séduction", properties: "Séd. loyal/amoureux (2d10)" },
+  ],
+  legend: [
+    { dice: "Xd10", nature: "choquante", meaning: "dégâts des armes ayant la propriété Choquante" },
+    { dice: "Xd10", nature: "blessante", meaning: "dégâts des armes ayant la propriété Blessante" },
+  ],
+};
+
+/** The fixed table of the social weapons: two columns, seven lines, no dice column; the legend is wording for editors, not printed. */
+function referenceTable(value: unknown, where: string): void {
+  const table = obj(value, where);
+  keys(table, ["columns", "lines", "legend"], where);
+  assert.deepEqual(
+    table.columns,
+    SOCIAL_WEAPONS_TABLE.columns,
+    `${where}.columns differ from the sheet`,
+  );
+  assert.ok(Array.isArray(table.lines), `${where}.lines must be a list`);
+  assert.equal(table.lines.length, 7, `${where} must print seven lines`);
+  table.lines.forEach((raw: unknown, i: number) => {
+    const line = obj(raw, `${where}.lines.${i}`);
+    const name = typeof line.name === "string" ? line.name : `#${i}`;
+    keys(line, ["name", "properties"], `${where}.lines.${name}`);
+    assert.ok(name.length > 0, `${where}.lines.${i} needs a name`);
+    assert.ok(
+      typeof line.properties === "string" && line.properties.length > 0,
+      `${where}.lines.${name} needs its properties`,
+    );
+  });
+  assert.deepEqual(
+    (table.lines as Obj[]).map((line) => line.name),
+    SOCIAL_WEAPONS_TABLE.lines.map((line) => line.name),
+    `${where}.lines are not the seven social weapons of the sheet, in order`,
+  );
+  table.lines.forEach((raw: unknown, i: number) => {
+    const expected = SOCIAL_WEAPONS_TABLE.lines[i];
+    const line = obj(raw, `${where}.lines.${i}`);
+    assert.equal(
+      line.properties,
+      expected.properties,
+      `${where}.lines.${expected.name} properties differ from the sheet`,
+    );
+  });
+  assert.deepEqual(
+    table.legend,
+    SOCIAL_WEAPONS_TABLE.legend,
+    `${where}.legend differs from the sheet: choquante then blessante, as worded`,
+  );
+}
 const BASE_TOKENS = [
   "paper",
   "card",
@@ -188,21 +334,37 @@ function appearance(value: unknown, where: string, target: Target): void {
   }
   // Both print their figures flush right: handwritten on the paper sheet, typeset on the card.
   if (compact) {
-    assert.deepEqual(visual.sectionTitles, { align: "start", font: "heading" });
-    assert.deepEqual(visual.values, {
-      align: "end",
-      font: "body",
-      color: "ink",
-      renderMaximum: false,
-    });
+    assert.deepEqual(
+      visual.sectionTitles,
+      { align: "start", font: "heading" },
+      `${where}.sectionTitles must start-align on the compact card`,
+    );
+    assert.deepEqual(
+      visual.values,
+      {
+        align: "end",
+        font: "body",
+        color: "ink",
+        renderMaximum: false,
+      },
+      `${where}.values must be typeset on the compact card`,
+    );
   } else {
-    assert.deepEqual(visual.sectionTitles, { align: "center", font: "heading" });
-    assert.deepEqual(visual.values, {
-      align: "end",
-      font: "handwritten",
-      color: "handwrittenInk",
-      renderMaximum: false,
-    });
+    assert.deepEqual(
+      visual.sectionTitles,
+      { align: "center", font: "heading" },
+      `${where}.sectionTitles must be centred on the paper sheet`,
+    );
+    assert.deepEqual(
+      visual.values,
+      {
+        align: "end",
+        font: "handwritten",
+        color: "handwrittenInk",
+        renderMaximum: false,
+      },
+      `${where}.values must be handwritten on the paper sheet`,
+    );
   }
 }
 
@@ -212,28 +374,50 @@ function decoration(value: unknown, where: string): void {
     case "dice-options":
       keys(rule, ["kind", "favorable", "defavorable"], where);
       assert.deepEqual(rule.favorable, ["+1d100", "+2d100"]);
-      assert.deepEqual(rule.defavorable, ["-1d100", "-2d100"]);
+      assert.deepEqual(rule.defavorable, ["+1d100", "+2d100"]);
       break;
     case "circle-groups":
       keys(rule, ["kind", "groups"], where);
-      assert.deepEqual(rule.groups, [
-        { label: "rounds", count: 5 },
-        { label: "heures", count: 5 },
-      ]);
+      assert.deepEqual(rule.groups, [{ key: "rounds", label: "ROUND", count: 5, shape: "round" }]);
       break;
     case "scale":
-      keys(rule, ["kind", "from", "to"], where);
+      keys(rule, ["kind", "from", "to", "last"], where);
       assert.equal(rule.from, 1);
-      assert.equal(rule.to, 10);
+      assert.equal(rule.to, 9);
+      assert.equal(rule.last, "HS");
+      break;
+    case "circle-row":
+      keys(rule, ["kind", "count"], where);
+      assert.equal(rule.count, 4);
+      break;
+    case "location-grid":
+      keys(rule, ["kind", "side", "unit", "boxes", "locations"], where);
+      assert.ok(rule.side === "physical" || rule.side === "mental", `${where}.side is unknown`);
+      assert.equal(
+        rule.unit,
+        rule.side === "physical" ? "PP" : "PM",
+        `${where}.unit must be ${rule.side === "physical" ? "PP" : "PM"}, the unit of the ${String(rule.side)} side`,
+      );
+      assert.equal(rule.boxes, 3, `${where}.boxes must be three per location`);
+      assert.deepEqual(
+        rule.locations,
+        rule.side === "physical" ? PHYSICAL_LOCATIONS : MENTAL_LOCATIONS,
+        `${where}.locations differ from the six locations and their d10 ranges`,
+      );
+      break;
+    case "wound-circles":
+      keys(rule, ["kind", "side", "durations", "columns", "circles"], where);
+      assert.ok(rule.side === "physical" || rule.side === "mental", `${where}.side is unknown`);
+      assert.deepEqual(rule.durations, ["heure", "jour", "semaine", "mois"]);
+      assert.deepEqual(rule.columns, [
+        { key: "premiereColonne" },
+        { key: "secondeColonne" },
+      ]);
+      assert.equal(rule.circles, 1, `${where}.circles must be one circle per duration`);
       break;
     case "weapon-die":
       keys(rule, ["kind", "label"], where);
       assert.equal(rule.label, "d10");
-      break;
-    case "protection-units":
-      keys(rule, ["kind", "physical", "mental"], where);
-      assert.equal(rule.physical, "PP");
-      assert.equal(rule.mental, "PM");
       break;
     case "malus-tracks":
       keys(rule, ["kind", "length", "stressDefault"], where);
@@ -320,7 +504,11 @@ export function validatePresentation(source: unknown, target: Target): void {
     EXTENSION,
   );
   assert.equal(descriptor.version, 1);
-  assert.equal(descriptor.capability, `block:adrenaline-${target}`);
+  assert.equal(
+    descriptor.capability,
+    `block:adrenaline-${target}`,
+    `${target}.capability must be block:adrenaline-${target}`,
+  );
   const sheet = obj(descriptor.sheet, `${target}.sheet`);
   keys(sheet, ["id", "label"], `${target}.sheet`);
   assert.equal(sheet.id, `adrenaline-${target}`);
@@ -385,7 +573,13 @@ export function validatePresentation(source: unknown, target: Target): void {
   const sectionList = entries(descriptor.sections, `${target}.sections`);
   const coverage = new Set<string>();
   const usedPaths: string[] = [];
+  const siblingPaths = sectionList.flatMap((section) =>
+    entries(section.blocks, `${target}.sections.${section.id}.blocks`).flatMap(
+      (block) => block.paths as string[],
+    ),
+  );
   const forms = new Map<string, string>();
+  const sectionOf = new Map<string, string>();
   const rows: { id: string; span: number }[] = [];
   for (const section of sectionList) {
     const where = `${target}.sections.${section.id}`;
@@ -520,6 +714,10 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.pointerRows === undefined ? [] : ["pointerRows"]),
           ...(block.cards === undefined ? [] : ["cards"]),
           ...(block.decoration === undefined ? [] : ["decoration"]),
+          ...(block.referenceTable === undefined ? [] : ["referenceTable"]),
+          ...(block.thresholdLevels === undefined ? [] : ["thresholdLevels"]),
+          ...(block.notes === undefined ? [] : ["notes"]),
+          ...(block.minimumRows === undefined ? [] : ["minimumRows"]),
           "paths",
         ],
         blockWhere,
@@ -533,8 +731,17 @@ export function validatePresentation(source: unknown, target: Target): void {
           "characteristic-rows",
           `${blockWhere}.rangeDisplay needs characteristic rows`,
         );
-        assert.deepEqual(block.rangeDisplay, ["minimum", "current"]);
+        assert.deepEqual(
+          block.rangeDisplay,
+          ["current"],
+          `${blockWhere}.rangeDisplay must print the current value only`,
+        );
       }
+      assert.ok(
+        !(target === "pj" && block.form === "characteristic-rows") ||
+          block.rangeDisplay !== undefined,
+        `${blockWhere}.rangeDisplay must be published: the player sheet prints the current value only`,
+      );
       if (block.rowLabels !== undefined) {
         assert.ok(
           Array.isArray(block.rowLabels) &&
@@ -546,7 +753,10 @@ export function validatePresentation(source: unknown, target: Target): void {
         );
       }
       if (block.subtitlePaths !== undefined) {
-        assert.equal(block.form, "name-card", `${blockWhere}.subtitlePaths needs a name card`);
+        assert.ok(
+          block.form === "name-card" || block.form === "game-parameters",
+          `${blockWhere}.subtitlePaths needs a name card or game parameters`,
+        );
         assert.ok(
           Array.isArray(block.subtitlePaths) && block.subtitlePaths.length > 0,
           `${blockWhere}.subtitlePaths must not be empty`,
@@ -572,7 +782,20 @@ export function validatePresentation(source: unknown, target: Target): void {
         );
         const paths = block.paths as string[];
         assert.equal(paths.length, 1, `${blockWhere}.fieldRows needs one path`);
-        const fields = obj(nodeAt(schema, paths[0], blockWhere).node.properties, blockWhere);
+        // Only the player sheet prints identity fields in blocks of their own (the constraints,
+        // the history, the personality): those are not part of its grid. Elsewhere every field is.
+        const fields = Object.fromEntries(
+          Object.entries(
+            obj(nodeAt(schema, paths[0], blockWhere).node.properties, blockWhere),
+          ).filter(
+            ([name]) =>
+              !(
+                target === "pj" &&
+                PJ_IDENTITY_SIBLINGS.includes(name) &&
+                siblingPaths.includes(`${paths[0]}/${name}`)
+              ),
+          ),
+        );
         assert.ok(Array.isArray(block.fieldRows) && block.fieldRows.length > 0);
         const named = (block.fieldRows as unknown[]).map((row, i) => {
           assert.ok(
@@ -677,7 +900,7 @@ export function validatePresentation(source: unknown, target: Target): void {
         assert.equal(block.form, "formation-columns");
         assert.deepEqual(block.formationFields, {
           header: ["type", "nom", "pourcentage"],
-          competence: ["nom", "specialite", "caracteristique", "pourcentage"],
+          competence: ["nom", "specialite", "pourcentage"],
         });
         const formation = nodeAt(schema, "/formations", blockWhere).node;
         const item = obj(formation.items, `${blockWhere}.items`);
@@ -690,11 +913,12 @@ export function validatePresentation(source: unknown, target: Target): void {
           `${blockWhere}.competenceFields`,
         );
         for (const field of ["type", "nom", "pourcentage"]) assert.ok(Object.hasOwn(header, field));
-        for (const field of ["nom", "specialite", "caracteristique", "pourcentage"])
+        for (const field of ["nom", "specialite", "pourcentage"])
           assert.ok(Object.hasOwn(competence, field));
       }
       assert.ok(!forms.has(block.id as string), `${target} block id ${block.id} is duplicated`);
       if (block.form !== undefined) forms.set(block.id as string, block.form as string);
+      sectionOf.set(block.id as string, String(section.id));
       if (block.placement !== undefined) {
         const placement = obj(block.placement, `${blockWhere}.placement`);
         keys(
@@ -718,7 +942,79 @@ export function validatePresentation(source: unknown, target: Target): void {
           `${blockWhere}.placement.column exceeds section columns`,
         );
       }
+      // A decoration that names a side belongs to the block of that side, not to the other.
+      // The side is judged first: the rules of the decoration itself come after.
+      if (target === "pj" && Object.hasOwn(PJ_SIDES, block.id as string)) {
+        assert.equal(
+          obj(block.decoration, `${blockWhere}.decoration`).side,
+          PJ_SIDES[block.id as string],
+          `${blockWhere}.decoration.side must be ${PJ_SIDES[block.id as string]}, the side of the block`,
+        );
+      }
+      // The side is bound to what the block reads, not to its id only.
+      if (target === "pj" && Object.hasOwn(PJ_PATHS, block.id as string))
+        assert.deepEqual(
+          block.paths,
+          PJ_PATHS[block.id as string],
+          `${blockWhere} must read ${PJ_PATHS[block.id as string].join(" and ")}`,
+        );
+      // A form and its decoration of the same name never go without each other.
+      const decorationKind =
+        block.decoration === undefined ? undefined : obj(block.decoration, blockWhere).kind;
+      if (FORM_DECORATIONS.has(block.form as string))
+        assert.equal(
+          decorationKind,
+          block.form,
+          `${blockWhere} form ${String(block.form)} needs its ${String(block.form)} decoration`,
+        );
+      if (FORM_DECORATIONS.has(decorationKind as string))
+        assert.equal(
+          block.form,
+          decorationKind,
+          `${blockWhere}.decoration ${String(decorationKind)} needs a ${String(decorationKind)} block`,
+        );
+      if (target === "pj" && Object.hasOwn(PJ_DECORATIONS, block.id as string))
+        assert.equal(
+          decorationKind,
+          PJ_DECORATIONS[block.id as string],
+          `${blockWhere}.decoration must be published as ${PJ_DECORATIONS[block.id as string]}: the player sheet draws it`,
+        );
       if (block.decoration !== undefined) decoration(block.decoration, `${blockWhere}.decoration`);
+      // What the wound circles print is what the schema declares: its durations and its columns.
+      if (decorationKind === "wound-circles") {
+        const rule = obj(block.decoration, blockWhere);
+        const woundPaths = block.paths as string[];
+        assert.equal(woundPaths.length, 1, `${blockWhere} wound circles need one path`);
+        const side = obj(nodeAt(schema, woundPaths[0], blockWhere).node.properties, blockWhere);
+        assert.deepEqual(
+          (rule.columns as Obj[]).map((column) => column.key),
+          Object.keys(side),
+          `${blockWhere}.decoration.columns differ from the columns the schema declares`,
+        );
+        for (const [column, node] of Object.entries(side)) {
+          const columnProperties = obj(obj(node, `${blockWhere}/${column}`).properties, blockWhere);
+          // `notes` is the writing area under the circles, not a duration.
+          assert.equal(
+            obj(columnProperties.notes, `${blockWhere}/${column}/notes`).type,
+            "string",
+            `${blockWhere}/${column}/notes must be the free writing area (string)`,
+          );
+          const durations = Object.fromEntries(
+            Object.entries(columnProperties).filter(([key]) => key !== "notes"),
+          ) as Obj;
+          assert.deepEqual(
+            rule.durations,
+            Object.keys(durations),
+            `${blockWhere}.decoration.durations differ from the durations the schema declares in ${column}`,
+          );
+          for (const [duration, circle] of Object.entries(durations))
+            assert.equal(
+              obj(circle, `${blockWhere}/${column}/${duration}`).type,
+              "boolean",
+              `${blockWhere}/${column}/${duration} must be a ticked or unticked circle (boolean)`,
+            );
+        }
+      }
       if (
         block.decoration !== undefined &&
         obj(block.decoration, blockWhere).kind === "state-badge"
@@ -752,10 +1048,63 @@ export function validatePresentation(source: unknown, target: Target): void {
           block.form === "malus-tracks" && tracks === "malus-tracks",
           `${blockWhere} malus tracks need both their form and their decoration`,
         );
-      assert.ok(
-        Array.isArray(block.paths) && block.paths.length > 0,
-        `${blockWhere}.paths must not be empty`,
-      );
+      if (block.form === "reference-table") {
+        assert.equal(target, "pj", `${blockWhere} reference table belongs to the player sheet`);
+        assert.deepEqual(
+          block.paths,
+          ["/equipement/armesSocialesBarrees"],
+          `${blockWhere} reads only the list of the weapons struck out: its table is fixed`,
+        );
+        referenceTable(block.referenceTable, `${blockWhere}.referenceTable`);
+      } else {
+        assert.equal(
+          block.referenceTable,
+          undefined,
+          `${blockWhere}.referenceTable needs a reference table`,
+        );
+        assert.ok(
+          Array.isArray(block.paths) && block.paths.length > 0,
+          `${blockWhere}.paths must not be empty`,
+        );
+      }
+      if (block.thresholdLevels !== undefined) {
+        assert.equal(target, "pj", `${blockWhere}.thresholdLevels belongs to the player sheet`);
+        assert.equal(
+          block.form,
+          "threshold-rows",
+          `${blockWhere}.thresholdLevels needs threshold rows`,
+        );
+        assert.deepEqual(
+          block.thresholdLevels,
+          THRESHOLD_LEVELS,
+          `${blockWhere}.thresholdLevels differ from the sheet labels and malus count`,
+        );
+      } else
+        assert.ok(
+          !(target === "pj" && block.form === "threshold-rows"),
+          `${blockWhere} must publish its threshold levels`,
+        );
+      if (block.notes !== undefined) {
+        assert.equal(target, "pj", `${blockWhere}.notes belongs to the player sheet`);
+        assert.deepEqual(
+          block.notes,
+          PJ_NOTES[block.id as string],
+          `${blockWhere}.notes differ from the fixed texts of the sheet`,
+        );
+      }
+      const ruledForm = block.form === "ruled-list" || block.form === "weapon-lines";
+      if (block.minimumRows !== undefined) {
+        assert.equal(target, "pj", `${blockWhere}.minimumRows belongs to the player sheet`);
+        assert.ok(ruledForm, `${blockWhere}.minimumRows needs a ruled list or weapon lines`);
+        assert.ok(
+          Number.isInteger(block.minimumRows) && Number(block.minimumRows) >= 1,
+          `${blockWhere}.minimumRows must be an integer of at least 1`,
+        );
+      } else
+        assert.ok(
+          !(target === "pj" && ruledForm),
+          `${blockWhere} must publish its minimum printed rows`,
+        );
       for (const raw of block.paths) {
         coverage.add(nodeAt(schema, raw, blockWhere).root);
         usedPaths.push(raw as string);
@@ -785,37 +1134,123 @@ export function validatePresentation(source: unknown, target: Target): void {
       "caracteristiques-mentales": "characteristic-rows",
       possessions: "ruled-list",
       "armes-physiques": "weapon-lines",
-      "armes-mentales": "weapon-lines",
-      "protections-physiques": "protection-lines",
-      "protections-mentales": "protection-lines",
+      "avantages-immunites": "ruled-list",
+      "protections-physiques": "location-grid",
+      "protections-mentales": "location-grid",
+      "armes-sociales": "reference-table",
+      contraintes: "compact-rows",
+      historique: "narrative",
+      personnalite: "narrative",
+      "blessures-physiques": "wound-circles",
+      "blessures-mentales": "wound-circles",
       stress: "stress-dice",
       "seuils-physiques": "threshold-rows",
       "seuils-mentaux": "threshold-rows",
       choc: "shock-circles",
-      divers: "status-frames",
+      divers: "circle-row",
       "etats-encaisses": "status-frames",
       "total-malus": "malus-scale",
     }))
       assert.equal(forms.get(id), expectedForm, `${target}.${id} has wrong form`);
-    for (const name of ["for", "con", "dex", "rap", "log", "vol", "per", "cha"]) {
-      for (const field of ["minimum", "current", "maximum"]) {
-        const numericField: Obj = nodeAt(
-          schema,
-          `/caracteristiques/${name}/${field}`,
-          `${target}.${name}.${field}`,
-        ).node;
-        assert.equal(numericField.maximum, 50, `${target}.${name}.${field} must be capped at 50`);
-      }
+    const noted = sectionList.flatMap((section) =>
+      entries(section.blocks, `${target}.sections.${section.id}.blocks`)
+        .filter((block) => block.notes !== undefined)
+        .map((block) => block.id),
+    );
+    assert.deepEqual(noted.sort(), Object.keys(PJ_NOTES).sort(), `${target} fixed texts missing`);
+    // The places the sheet decides: printed label and section of a block, the lines of the constraints.
+    for (const [id, place] of Object.entries(PJ_PLACES)) {
+      assert.equal(
+        blockOf(sectionList, id).label,
+        place.label,
+        `${target}.${id}.label must be « ${place.label} »`,
+      );
+      assert.equal(
+        sectionOf.get(id),
+        place.section,
+        `${target}.${id} must sit in the ${place.section} section`,
+      );
     }
-    for (const field of ["rounds", "heures"]) {
+    assert.deepEqual(
+      blockOf(sectionList, "contraintes").pointerRows,
+      PJ_CONSTRAINT_ROWS,
+      `${target}.contraintes must print the three lines of the sheet, with their labels`,
+    );
+    // One reference table, the social weapons: a second one, under another id, is not the sheet's.
+    assert.deepEqual(
+      [...forms.entries()].filter(([, form]) => form === "reference-table").map(([id]) => id),
+      ["armes-sociales"],
+      `${target} must print one reference table, the social weapons (block armes-sociales)`,
+    );
+    // The scenario is the third line of the game parameters: its path and its printed label.
+    const parameters = blockOf(sectionList, "parametres-jeu");
+    const scenarioAt = (parameters.paths as string[]).indexOf("/parametresDuJeu/scenario");
+    assert.ok(scenarioAt >= 0, `${target}.parametres-jeu must read /parametresDuJeu/scenario`);
+    assert.equal(
+      (parameters.rowLabels as string[])[scenarioAt],
+      "Scénario",
+      `${target}.parametres-jeu must label the scenario line « Scénario »`,
+    );
+    assert.equal(
+      scenarioAt,
+      (parameters.paths as string[]).indexOf("/parametresDuJeu/typeDeScenario") + 1,
+      `${target}.parametres-jeu must print the scenario line right after the scenario format`,
+    );
+    assert.equal(
+      scenarioAt,
+      3,
+      `${target}.parametres-jeu must print the scenario as its fourth line`,
+    );
+    // The stress dice sit with the characteristics, read from the stress counters.
+    const stressDice = entries(
+      obj(
+        sectionList.find((section) => section.id === "caracteristique"),
+        `${target}.sections.caracteristique`,
+      ).blocks,
+      `${target}.sections.caracteristique.blocks`,
+    ).find((block) => block.id === "stress");
+    assert.ok(
+      stressDice,
+      `${target}.sections.caracteristique must hold the stress dice block, with the characteristics`,
+    );
+    assert.equal(stressDice.form, "stress-dice", `${target}.stress must be the stress dice`);
+    assert.deepEqual(
+      stressDice.paths,
+      ["/etatDePartie/stress"],
+      `${target}.stress must read /etatDePartie/stress`,
+    );
+    const identity = sectionList.find((section) => section.id === "identite");
+    assert.ok(identity, `${target} needs its identity section`);
+    assert.equal(identity.collapsible, true, `${target} identity section must be foldable`);
+    assert.equal(identity.row, undefined, `${target} identity section sits in no row`);
+    assert.equal(
+      identity,
+      sectionList[sectionList.length - 1],
+      `${target} identity section comes last`,
+    );
+    for (const name of ["for", "con", "dex", "rap", "log", "vol", "per", "cha"]) {
       const numericField: Obj = nodeAt(
         schema,
-        `/etatDePartie/malus/choc/${field}`,
-        `${target}.malus.choc.${field}`,
+        `/caracteristiques/${name}`,
+        `${target}.${name}`,
       ).node;
-      assert.equal(numericField.minimum, 0);
-      assert.equal(numericField.maximum, 5);
+      assert.equal(numericField.type, "integer", `${target}.${name} must be a plain number`);
+      assert.equal(numericField.maximum, 50, `${target}.${name} must be capped at 50`);
     }
+    const shockRounds: Obj = nodeAt(
+      schema,
+      "/etatDePartie/malus/choc/rounds",
+      `${target}.malus.choc.rounds`,
+    ).node;
+    assert.equal(shockRounds.minimum, 0);
+    assert.equal(shockRounds.maximum, 5);
+    // The sheet prints no « hour » circle: the PJ shock box carries no `heures`.
+    assert.equal(
+      (nodeAt(schema, "/etatDePartie/malus/choc", `${target}.malus.choc`).node.properties as Obj)
+        ?.heures,
+      undefined,
+      `${target}.malus.choc must not carry heures`,
+    );
     const total: Obj = nodeAt(schema, "/etatDePartie/malus/total", `${target}.malus.total`).node;
     assert.equal(total.minimum, 0);
     assert.equal(total.maximum, 10, `${target}.malus.total must stop at 10, the HS state`);
@@ -874,6 +1309,14 @@ export function validatePresentation(source: unknown, target: Target): void {
         "monster characteristics must allow values above 50",
       );
   }
+}
+
+function blockOf(sectionList: Obj[], id: string): Obj {
+  const found = sectionList
+    .flatMap((section) => section.blocks as Obj[])
+    .find((block) => block.id === id);
+  assert.ok(found, `block ${id} is missing`);
+  return found;
 }
 
 function clone<T>(value: T): T {
@@ -949,44 +1392,551 @@ if (process.argv.includes("--self-test")) {
   assert.ok(source);
   const wrongCapability = clone(source);
   obj(wrongCapability[EXTENSION], EXTENSION).capability = "block:adrenaline-pnj";
-  assert.throws(() => validatePresentation(wrongCapability, "pj"));
+  assert.throws(
+    () => validatePresentation(wrongCapability, "pj"),
+    /pj\.capability must be block:adrenaline-pj/,
+  );
   const unknownPath = clone(source);
   const firstSection = (obj(unknownPath[EXTENSION], EXTENSION).sections as Obj[])[0];
   const firstBlock = (firstSection.blocks as Obj[])[0];
   (firstBlock.paths as string[])[0] = "/inconnu";
-  assert.throws(() => validatePresentation(unknownPath, "pj"));
+  assert.throws(
+    () => validatePresentation(unknownPath, "pj"),
+    /references unknown property inconnu/,
+  );
   const duplicatePath = clone(source);
   const duplicateSection = (obj(duplicatePath[EXTENSION], EXTENSION).sections as Obj[])[0];
   const duplicateBlock = (duplicateSection.blocks as Obj[])[0];
   (duplicateBlock.paths as string[]).push((duplicateBlock.paths as string[])[0]);
-  assert.throws(() => validatePresentation(duplicatePath, "pj"));
+  assert.throws(() => validatePresentation(duplicatePath, "pj"), /pj paths must be unique/);
   const missingStyle = clone(source);
   const visual = obj(obj(missingStyle[EXTENSION], EXTENSION).appearance, "appearance");
   const tokens = obj(visual.tokens, "tokens");
   tokens.handwrittenInk = "--missing-written-ink";
-  assert.throws(() => validatePresentation(missingStyle, "pj"));
+  assert.throws(
+    () => validatePresentation(missingStyle, "pj"),
+    /token --missing-written-ink missing in light/,
+  );
   const wrongBound = clone(source);
-  const bound: Obj = nodeAt(wrongBound, "/caracteristiques/for/current", "for.current").node;
+  const bound: Obj = nodeAt(wrongBound, "/caracteristiques/for", "for").node;
   bound.maximum = 200;
-  assert.throws(() => validatePresentation(wrongBound, "pj"));
+  assert.throws(
+    () => validatePresentation(wrongBound, "pj"),
+    /pj\.for must be capped at 50/,
+  );
   const sectionsOf = (value: Obj) => obj(value[EXTENSION], EXTENSION).sections as Obj[];
   const tooWide = clone(source);
-  for (const section of sectionsOf(tooWide)) if (section.row) obj(section.row, "row").span = 3;
-  assert.throws(() => validatePresentation(tooWide, "pj"));
+  const wideSections = sectionsOf(tooWide);
+  const wideAt = wideSections.findIndex((section) => section.row);
+  wideSections[wideAt + 1].row = { id: obj(wideSections[wideAt].row, "row").id, span: 1 };
+  assert.throws(
+    () => validatePresentation(tooWide, "pj"),
+    /sections\.equipement\.row exceeds the sheet width/,
+  );
   const splitRow = clone(source);
   const lastSection = sectionsOf(splitRow)[sectionsOf(splitRow).length - 1];
   lastSection.row = { id: "profil", span: 1 };
-  assert.throws(() => validatePresentation(splitRow, "pj"));
+  assert.throws(
+    () => validatePresentation(splitRow, "pj"),
+    /sections\.identite\.row must follow its row/,
+  );
   const missingField = clone(source);
   for (const section of sectionsOf(missingField))
     for (const block of section.blocks as Obj[])
       if (block.fieldRows) (block.fieldRows as string[][]).pop();
-  assert.throws(() => validatePresentation(missingField, "pj"));
+  assert.throws(
+    () => validatePresentation(missingField, "pj"),
+    /fieldRows must name each field once/,
+  );
   const missingType = clone(source);
   for (const section of sectionsOf(missingType))
     for (const block of section.blocks as Obj[])
       if (block.formationTypes) (block.formationTypes as string[]).pop();
-  assert.throws(() => validatePresentation(missingType, "pj"));
+  assert.throws(
+    () => validatePresentation(missingType, "pj"),
+    /formationTypes must print every published formation type, in order/,
+  );
+  const pjBlocks = (value: Obj) => sectionsOf(value).flatMap((section) => section.blocks as Obj[]);
+  const findBlock = (value: Obj, id: string) => {
+    const block = pjBlocks(value).find((candidate) => candidate.id === id);
+    assert.ok(block, `self-test: block ${id}`);
+    return block;
+  };
+  const sixLines = clone(source);
+  (obj(findBlock(sixLines, "armes-sociales").referenceTable, "table").lines as Obj[]).pop();
+  assert.throws(() => validatePresentation(sixLines, "pj"), /seven lines/);
+  const tablePath = clone(source);
+  findBlock(tablePath, "armes-sociales").paths = ["/equipement/armesPhysiques"];
+  assert.throws(
+    () => validatePresentation(tablePath, "pj"),
+    /armes-sociales reads only the list of the weapons struck out/,
+  );
+  const wrongLevels = clone(source);
+  (findBlock(wrongLevels, "seuils-physiques").thresholdLevels as string[]).reverse();
+  assert.throws(
+    () => validatePresentation(wrongLevels, "pj"),
+    /seuils-physiques\.thresholdLevels differ from the sheet labels and malus count/,
+  );
+  const noLevels = clone(source);
+  delete findBlock(noLevels, "seuils-mentaux").thresholdLevels;
+  assert.throws(
+    () => validatePresentation(noLevels, "pj"),
+    /seuils-mentaux must publish its threshold levels/,
+  );
+  const wrongNote = clone(source);
+  findBlock(wrongNote, "total-malus").notes = ["1 malus = -5 %"];
+  assert.throws(
+    () => validatePresentation(wrongNote, "pj"),
+    /total-malus\.notes differ from the fixed texts of the sheet/,
+  );
+  const noRows = clone(source);
+  delete findBlock(noRows, "possessions").minimumRows;
+  assert.throws(
+    () => validatePresentation(noRows, "pj"),
+    /possessions must publish its minimum printed rows/,
+  );
+  for (const bad of [0, 2.5, "7"]) {
+    const badRows = clone(source);
+    findBlock(badRows, "armes-physiques").minimumRows = bad;
+    assert.throws(
+      () => validatePresentation(badRows, "pj"),
+      /armes-physiques\.minimumRows must be an integer of at least 1/,
+    );
+  }
+  const rowsOnForm = clone(source);
+  findBlock(rowsOnForm, "seuils-physiques").minimumRows = 4;
+  assert.throws(
+    () => validatePresentation(rowsOnForm, "pj"),
+    /seuils-physiques\.minimumRows needs a ruled list or weapon lines/,
+  );
+  const rowsOnPnj = clone(schemas.get("pnj") as Obj);
+  pjBlocks(rowsOnPnj)[0].minimumRows = 4;
+  assert.throws(
+    () => validatePresentation(rowsOnPnj, "pnj"),
+    /minimumRows belongs to the player sheet/,
+  );
+  const unfoldedIdentity = clone(source);
+  delete sectionsOf(unfoldedIdentity).find((section) => section.id === "identite")?.collapsible;
+  assert.throws(
+    () => validatePresentation(unfoldedIdentity, "pj"),
+    /pj identity section must be foldable/,
+  );
+  const identityFirst = clone(source);
+  const identitySections = sectionsOf(identityFirst);
+  const movedIdentity = identitySections.splice(identitySections.length - 1, 1)[0];
+  movedIdentity.order = 5;
+  identitySections.unshift(movedIdentity);
+  assert.throws(() => validatePresentation(identityFirst, "pj"), /pj identity section comes last/);
+  const wrongGrid = clone(source);
+  const grid = obj(findBlock(wrongGrid, "protections-physiques").decoration, "decoration");
+  (grid.locations as Obj[])[0].range = "1-2";
+  assert.throws(
+    () => validatePresentation(wrongGrid, "pj"),
+    /protections-physiques\.decoration\.locations differ from the six locations and their d10 ranges/,
+  );
+  /* The social weapons table: every printed text is pinned, not only its shape. */
+  const tableOf = (value: Obj): Obj =>
+    obj(findBlock(value, "armes-sociales").referenceTable, "table");
+  const refuseTable = (name: string, mutate: (table: Obj) => void, message: RegExp): void => {
+    const mutated = clone(source);
+    mutate(tableOf(mutated));
+    assert.throws(() => validatePresentation(mutated, "pj"), message, name);
+  };
+  refuseTable(
+    "weapon renamed",
+    (table) => ((table.lines as Obj[])[0].name = "Baratin"),
+    /lines are not the seven social weapons of the sheet, in order/,
+  );
+  refuseTable(
+    "property changed",
+    (table) => ((table.lines as Obj[])[2].properties = "Inf., Ét."),
+    /lines\.Manipulation properties differ from the sheet/,
+  );
+  refuseTable(
+    "lines reversed",
+    (table) => (table.lines as Obj[]).reverse(),
+    /lines are not the seven social weapons of the sheet, in order/,
+  );
+  refuseTable(
+    "legend meanings swapped",
+    (table) => {
+      const legend = table.legend as Obj[];
+      [legend[0].meaning, legend[1].meaning] = [legend[1].meaning, legend[0].meaning];
+    },
+    /legend differs from the sheet/,
+  );
+  refuseTable(
+    "column renamed",
+    (table) => ((table.columns as string[])[1] = "Dommages"),
+    /referenceTable\.columns differ from the sheet/,
+  );
+  /* A decoration that names a side belongs to the block of that side. */
+  const wrongSide = clone(source);
+  obj(findBlock(wrongSide, "blessures-physiques").decoration, "decoration").side = "mental";
+  assert.throws(
+    () => validatePresentation(wrongSide, "pj"),
+    /blessures-physiques\.decoration\.side must be physical, the side of the block/,
+  );
+  const woundSideMental = clone(source);
+  obj(findBlock(woundSideMental, "blessures-mentales").decoration, "decoration").side = "physical";
+  assert.throws(
+    () => validatePresentation(woundSideMental, "pj"),
+    /blessures-mentales\.decoration\.side must be mental, the side of the block/,
+  );
+  const mentalGridOnPhysical = clone(source);
+  findBlock(mentalGridOnPhysical, "protections-physiques").decoration = clone(
+    findBlock(source, "protections-mentales").decoration,
+  );
+  assert.throws(
+    () => validatePresentation(mentalGridOnPhysical, "pj"),
+    /protections-physiques\.decoration\.side must be physical, the side of the block/,
+  );
+  const physicalGridOnMental = clone(source);
+  findBlock(physicalGridOnMental, "protections-mentales").decoration = clone(
+    findBlock(source, "protections-physiques").decoration,
+  );
+  assert.throws(
+    () => validatePresentation(physicalGridOnMental, "pj"),
+    /protections-mentales\.decoration\.side must be mental, the side of the block/,
+  );
+  const crowdedWounds = clone(source);
+  obj(findBlock(crowdedWounds, "blessures-mentales").decoration, "decoration").circles = 4;
+  assert.throws(
+    () => validatePresentation(crowdedWounds, "pj"),
+    /blessures-mentales\.decoration\.circles must be one circle per duration/,
+  );
+  /* One refusal per rule on the player sheet: the mutation must fail with the rule's own message. */
+  const refusePj = (name: string, mutate: (value: Obj) => void, message: RegExp): void => {
+    const mutated = clone(source);
+    mutate(mutated);
+    assert.throws(() => validatePresentation(mutated, "pj"), message, name);
+  };
+  const decorationOf = (value: Obj, id: string): Obj =>
+    obj(findBlock(value, id).decoration, `${id}.decoration`);
+  const woundSide = (value: Obj, side: "physiques" | "mentales"): Obj => {
+    const state = obj(obj(value.properties, "properties").etatDePartie, "etatDePartie");
+    const wounds = obj(obj(state.properties, "etatDePartie.properties").blessures, "blessures");
+    return obj(obj(wounds.properties, "blessures.properties")[side], side);
+  };
+  const woundColumn = (value: Obj, side: "physiques" | "mentales", column: string): Obj =>
+    obj(obj(woundSide(value, side).properties, `${side}.properties`)[column], column);
+  /* A side is bound to what the block reads, not to its id only. */
+  refusePj(
+    "wound paths swapped",
+    (value) => {
+      const physical = findBlock(value, "blessures-physiques");
+      const mental = findBlock(value, "blessures-mentales");
+      [physical.paths, mental.paths] = [mental.paths, physical.paths];
+    },
+    /blessures-physiques must read \/etatDePartie\/blessures\/physiques/,
+  );
+  refusePj(
+    "physical wounds read the parent",
+    (value) => (findBlock(value, "blessures-physiques").paths = ["/etatDePartie/blessures"]),
+    /blessures-physiques must read \/etatDePartie\/blessures\/physiques/,
+  );
+  refusePj(
+    "mental wounds read the parent",
+    (value) => (findBlock(value, "blessures-mentales").paths = ["/etatDePartie/blessures"]),
+    /blessures-mentales must read \/etatDePartie\/blessures\/mentales/,
+  );
+  refusePj(
+    "protection paths swapped",
+    (value) => {
+      const physical = findBlock(value, "protections-physiques");
+      const mental = findBlock(value, "protections-mentales");
+      [physical.paths, mental.paths] = [mental.paths, physical.paths];
+    },
+    /protections-physiques must read \/protections\/physiques/,
+  );
+  refusePj(
+    "divers loses its text path",
+    (value) => (findBlock(value, "divers").paths = ["/etatDePartie/malus/diversCercles"]),
+    /divers must read \/etatDePartie\/malus\/divers and \/etatDePartie\/malus\/diversCercles/,
+  );
+  refusePj(
+    "divers loses its counter path",
+    (value) => (findBlock(value, "divers").paths = ["/etatDePartie/malus/divers"]),
+    /divers must read \/etatDePartie\/malus\/divers and \/etatDePartie\/malus\/diversCercles/,
+  );
+  /* A form and its decoration of the same name never go without each other. */
+  refusePj(
+    "wound circles on a location grid block",
+    (value) =>
+      (findBlock(value, "protections-physiques").decoration = clone(
+        decorationOf(source, "blessures-physiques"),
+      )),
+    /protections-physiques form location-grid needs its location-grid decoration/,
+  );
+  refusePj(
+    "location grid on a wound circles block",
+    (value) =>
+      (findBlock(value, "blessures-physiques").decoration = clone(
+        decorationOf(source, "protections-physiques"),
+      )),
+    /blessures-physiques form wound-circles needs its wound-circles decoration/,
+  );
+  refusePj(
+    "wound circles on divers",
+    (value) =>
+      (findBlock(value, "divers").decoration = clone(decorationOf(source, "blessures-physiques"))),
+    /divers form circle-row needs its circle-row decoration/,
+  );
+  refusePj(
+    "divers loses its four circles",
+    (value) => delete findBlock(value, "divers").decoration,
+    /divers form circle-row needs its circle-row decoration/,
+  );
+  refusePj(
+    "divers turned into a wound block",
+    (value) => {
+      const divers = findBlock(value, "divers");
+      divers.form = "wound-circles";
+      divers.decoration = clone(decorationOf(source, "blessures-physiques"));
+    },
+    /divers\.decoration must be published as circle-row: the player sheet draws it/,
+  );
+  refusePj(
+    "stress loses its dice options",
+    (value) => delete findBlock(value, "stress").decoration,
+    /stress\.decoration must be published as dice-options: the player sheet draws it/,
+  );
+  refusePj(
+    "circle row decoration on a plain block",
+    (value) => (findBlock(value, "possessions").decoration = { kind: "circle-row", count: 4 }),
+    /possessions\.decoration circle-row needs a circle-row block/,
+  );
+  /* The side of a protection fails on the side rule, before the rules of the grid. */
+  refusePj(
+    "physical grid declared mental",
+    (value) => (decorationOf(value, "protections-physiques").side = "mental"),
+    /protections-physiques\.decoration\.side must be physical, the side of the block/,
+  );
+  refusePj(
+    "mental grid declared physical",
+    (value) => (decorationOf(value, "protections-mentales").side = "physical"),
+    /protections-mentales\.decoration\.side must be mental, the side of the block/,
+  );
+  refusePj(
+    "physical grid with the unit of the other side",
+    (value) => (decorationOf(value, "protections-physiques").unit = "PM"),
+    /protections-physiques\.decoration\.unit must be PP, the unit of the physical side/,
+  );
+  /* What the wound circles print is what the schema declares. */
+  refusePj(
+    "a fifth duration in the schema",
+    (value) => {
+      const column = woundColumn(value, "physiques", "premiereColonne");
+      obj(column.properties, "column.properties").annee = { type: "boolean" };
+    },
+    /blessures-physiques\.decoration\.durations differ from the durations the schema declares in premiereColonne/,
+  );
+  refusePj(
+    "a column dropped from the schema",
+    (value) =>
+      delete obj(woundSide(value, "mentales").properties, "mentales.properties").secondeColonne,
+    /blessures-mentales\.decoration\.columns differ from the columns the schema declares/,
+  );
+  refusePj(
+    "a duration that is no longer a circle",
+    (value) => {
+      const column = woundColumn(value, "physiques", "premiereColonne");
+      obj(obj(column.properties, "column.properties").heure, "heure").type = "integer";
+    },
+    /blessures-physiques\/premiereColonne\/heure must be a ticked or unticked circle \(boolean\)/,
+  );
+  /* The places and labels the sheet decides. */
+  refusePj(
+    "social weapons relabelled",
+    (value) => (findBlock(value, "armes-sociales").label = "Armes mentales"),
+    /armes-sociales\.label must be « Armes sociales »/,
+  );
+  refusePj(
+    "social weapons moved to another section",
+    (value) => {
+      const sections = sectionsOf(value);
+      const from = sections.find((section) => section.id === "equipement") as Obj;
+      const blocks = from.blocks as Obj[];
+      const [moved] = blocks.splice(
+        blocks.findIndex((block) => block.id === "armes-sociales"),
+        1,
+      );
+      delete moved.placement;
+      moved.order = 99;
+      ((sections.find((section) => section.id === "sante") as Obj).blocks as Obj[]).push(moved);
+    },
+    /armes-sociales must sit in the equipement section/,
+  );
+  refusePj(
+    "physical wounds labelled mental",
+    (value) => (findBlock(value, "blessures-physiques").label = "Blessures mentales"),
+    /blessures-physiques\.label must be « Blessures physiques »/,
+  );
+  refusePj(
+    "mental wounds relabelled",
+    (value) => (findBlock(value, "blessures-mentales").label = "Blessures psychiques"),
+    /blessures-mentales\.label must be « Blessures mentales »/,
+  );
+  refusePj(
+    "a constraint line relabelled",
+    (value) => ((findBlock(value, "contraintes").pointerRows as Obj[][])[0][0].label = "Pro"),
+    /contraintes must print the three lines of the sheet, with their labels/,
+  );
+  refusePj(
+    "a second reference table under another id",
+    (value) => {
+      const copy = clone(findBlock(value, "armes-sociales"));
+      copy.id = "armes-sociales-bis";
+      copy.order = 61;
+      copy.placement = { column: 1, row: 4, columnSpan: 3 };
+      const host = sectionsOf(value).find((section) => section.id === "equipement") as Obj;
+      (host.blocks as Obj[]).push(copy);
+    },
+    /pj paths must be unique|pj must print one reference table, the social weapons \(block armes-sociales\)/,
+  );
+  /* The scenario comes after the format, on the fourth line. */
+  refusePj(
+    "scenario before the format",
+    (value) => {
+      const parameters = findBlock(value, "parametres-jeu");
+      for (const list of [parameters.paths, parameters.rowLabels] as string[][])
+        [list[2], list[3]] = [list[3], list[2]];
+    },
+    /parametres-jeu must print the scenario line right after the scenario format/,
+  );
+  /* Identity fields: a field read by a sibling block is left out of the grid on the player sheet only,
+     whatever the name of the field. */
+  const npcWithIdentityGrid = clone(schemas.get("pnj") as Obj);
+  const gridBlocks = sectionsOf(npcWithIdentityGrid)[0].blocks as Obj[];
+  const lastOrder = Number(gridBlocks[gridBlocks.length - 1].order);
+  gridBlocks.push(
+    {
+      id: "sonde-grille",
+      label: "Narratif",
+      order: lastOrder + 10,
+      layout: "grid",
+      columns: 1,
+      form: "identity-fields",
+      fieldRows: [
+        ["role"],
+        ["attitude"],
+        ["personnalite"],
+        ["evolutionPossible"],
+        ["interpretation"],
+        ["repliques"],
+        ["notesMj"],
+      ],
+      paths: ["/narratif"],
+    },
+    {
+      id: "sonde-frere",
+      label: "Historique",
+      order: lastOrder + 20,
+      layout: "stack",
+      form: "narrative",
+      paths: ["/narratif/historique"],
+    },
+  );
+  assert.throws(
+    () => validatePresentation(npcWithIdentityGrid, "pnj"),
+    /sonde-grille\.fieldRows must name each field once/,
+  );
+  /* The threshold levels are the player sheet's alone. */
+  for (const target of ["pnj", "monstre"] as const) {
+    const withLevels = clone(schemas.get(target) as Obj);
+    const thresholds = pjBlocks(withLevels).find((block) => block.form === "threshold-rows");
+    assert.ok(thresholds, `self-test: ${target} threshold rows`);
+    thresholds.thresholdLevels = clone(THRESHOLD_LEVELS);
+    assert.throws(
+      () => validatePresentation(withLevels, target),
+      /blocks\.sante\.thresholdLevels belongs to the player sheet/,
+      target,
+    );
+  }
+  /* The reference table is the player sheet's alone. */
+  for (const target of ["pnj", "monstre"] as const) {
+    const withTable = clone(schemas.get(target) as Obj);
+    const host = sectionsOf(withTable)[0];
+    const hosted = host.blocks as Obj[];
+    const table = clone(findBlock(source, "armes-sociales"));
+    delete table.placement;
+    table.order = Number(hosted[hosted.length - 1].order) + 10;
+    hosted.push(table);
+    assert.throws(
+      () => validatePresentation(withTable, target),
+      /blocks\.armes-sociales reference table belongs to the player sheet/,
+      target,
+    );
+  }
+  /* What the player sheet prints is required, not merely allowed. */
+  const noRange = clone(source);
+  delete findBlock(noRange, "caracteristiques-physiques").rangeDisplay;
+  assert.throws(
+    () => validatePresentation(noRange, "pj"),
+    /caracteristiques-physiques\.rangeDisplay must be published: the player sheet prints the current value only/,
+  );
+  const noRangeMental = clone(source);
+  delete findBlock(noRangeMental, "caracteristiques-mentales").rangeDisplay;
+  assert.throws(
+    () => validatePresentation(noRangeMental, "pj"),
+    /caracteristiques-mentales\.rangeDisplay must be published/,
+  );
+  const scenarioRenamed = clone(source);
+  (findBlock(scenarioRenamed, "parametres-jeu").rowLabels as string[])[3] = "Scénarios";
+  assert.throws(
+    () => validatePresentation(scenarioRenamed, "pj"),
+    /parametres-jeu must label the scenario line « Scénario »/,
+  );
+  const scenarioDropped = clone(source);
+  const parameters = findBlock(scenarioDropped, "parametres-jeu");
+  (parameters.paths as string[]).pop();
+  (parameters.rowLabels as string[]).pop();
+  assert.throws(
+    () => validatePresentation(scenarioDropped, "pj"),
+    /parametres-jeu must read \/parametresDuJeu\/scenario/,
+  );
+  const scenarioMoved = clone(source);
+  const movedParameters = findBlock(scenarioMoved, "parametres-jeu");
+  (movedParameters.paths as string[]).reverse();
+  assert.throws(
+    () => validatePresentation(scenarioMoved, "pj"),
+    /parametres-jeu must label the scenario line « Scénario »/,
+  );
+  const strayStress = clone(source);
+  const stressSections = sectionsOf(strayStress);
+  const profile = stressSections.find((section) => section.id === "caracteristique") as Obj;
+  const [stressBlock] = (profile.blocks as Obj[]).splice(
+    (profile.blocks as Obj[]).findIndex((block) => block.id === "stress"),
+    1,
+  );
+  delete stressBlock.placement;
+  const health = stressSections.find((section) => section.id === "sante") as Obj;
+  stressBlock.order = 80;
+  (health.blocks as Obj[]).push(stressBlock);
+  assert.throws(
+    () => validatePresentation(strayStress, "pj"),
+    /pj\.sections\.caracteristique must hold the stress dice block, with the characteristics/,
+  );
+  const stressElsewhere = clone(source);
+  findBlock(stressElsewhere, "stress").paths = ["/etatDePartie/malus"];
+  assert.throws(
+    () => validatePresentation(stressElsewhere, "pj"),
+    /pj\.stress must read \/etatDePartie\/stress/,
+  );
+  /* The unit decoration of the former protection lines is gone from the closed list. */
+  const retiredUnits = clone(source);
+  findBlock(retiredUnits, "possessions").decoration = {
+    kind: "protection-units",
+    physical: "PP",
+    mental: "PM",
+  };
+  assert.throws(
+    () => validatePresentation(retiredUnits, "pj"),
+    /possessions\.decoration decoration is unknown/,
+  );
+  const notesOnPnj = clone(schemas.get("pnj") as Obj);
+  pjBlocks(notesOnPnj)[0].notes = ["Marcher / Courir"];
+  assert.throws(() => validatePresentation(notesOnPnj, "pnj"), /notes belongs to the player sheet/);
   const monster = schemas.get("monstre");
   assert.ok(monster);
   const unknownCard = clone(monster);
@@ -999,10 +1949,13 @@ if (process.argv.includes("--self-test")) {
   const labelTwice = clone(monster);
   for (const section of sectionsOf(labelTwice))
     if (section.labelFrom) section.labelFrom = "/caracteristiques";
-  assert.throws(() => validatePresentation(labelTwice, "monstre"));
+  assert.throws(() => validatePresentation(labelTwice, "monstre"), /monstre paths must be unique/);
   const wrongVariant = clone(monster);
   obj(obj(wrongVariant[EXTENSION], EXTENSION).categories, "categories").defaultVariant = "pink";
-  assert.throws(() => validatePresentation(wrongVariant, "monstre"));
+  assert.throws(
+    () => validatePresentation(wrongVariant, "monstre"),
+    /monstre\.categories\.defaultVariant/,
+  );
   const blocksOf = (value: Obj) => sectionsOf(value).flatMap((section) => section.blocks as Obj[]);
   type Cell = { path: string; label?: string };
   const rowsOf = (value: Obj) => {
@@ -1484,10 +2437,16 @@ if (process.argv.includes("--self-test")) {
   for (const section of sectionsOf(bareTracks))
     for (const block of section.blocks as Obj[])
       if (block.form === "malus-tracks") delete block.decoration;
-  assert.throws(() => validatePresentation(bareTracks, "pnj"));
+  assert.throws(
+    () => validatePresentation(bareTracks, "pnj"),
+    /malus tracks need both their form and their decoration/,
+  );
   const cardsOnNpc = clone(npc);
   sectionsOf(cardsOnNpc)[1].cards = ["principal"];
-  assert.throws(() => validatePresentation(cardsOnNpc, "pnj"));
+  assert.throws(
+    () => validatePresentation(cardsOnNpc, "pnj"),
+    /pnj\.sections\.[a-z-]+\.cards belongs to the creature card/,
+  );
   const handwrittenCard = clone(npc);
   obj(obj(handwrittenCard[EXTENSION], EXTENSION).appearance, "appearance").values = {
     align: "end",
@@ -1495,14 +2454,26 @@ if (process.argv.includes("--self-test")) {
     color: "handwrittenInk",
     renderMaximum: false,
   };
-  assert.throws(() => validatePresentation(handwrittenCard, "pnj"));
+  assert.throws(
+    () => validatePresentation(handwrittenCard, "pnj"),
+    /pnj\.appearance\.values must be typeset on the compact card/,
+  );
   const twiceAliased = clone(calloutSource as unknown as Obj) as unknown as Obj[];
   (twiceAliased[1].aliases as string[]).push((twiceAliased[0].aliases as string[])[0]);
-  assert.throws(() => validateCallouts(twiceAliased, calloutContract, calloutExample));
+  assert.throws(
+    () => validateCallouts(twiceAliased, calloutContract, calloutExample),
+    /alias .+ used twice/,
+  );
   const foreignCapability = clone(calloutSource as unknown as Obj) as unknown as Obj[];
   foreignCapability[0].capability = "style:pbta";
-  assert.throws(() => validateCallouts(foreignCapability, calloutContract, calloutExample));
+  assert.throws(
+    () => validateCallouts(foreignCapability, calloutContract, calloutExample),
+    /capability not required by the pack/,
+  );
   const undocumented = calloutContract.replace("`adrenaline-encart`", "encart");
-  assert.throws(() => validateCallouts(calloutSource, undocumented, calloutExample));
+  assert.throws(
+    () => validateCallouts(calloutSource, undocumented, calloutExample),
+    /adrenaline-encart missing from callout-contract\.md/,
+  );
   console.log("✓ presentation validator self-test passed");
 }

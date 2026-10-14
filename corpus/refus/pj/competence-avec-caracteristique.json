@@ -1,0 +1,87 @@
+{
+  "nom": "Témoin",
+  "caracteristiques": {
+    "for": 40,
+    "con": 50,
+    "dex": 45,
+    "rap": 35,
+    "log": 30,
+    "vol": 40,
+    "per": 50,
+    "cha": 25
+  },
+  "sante": {
+    "physique": {
+      "superficiel": {
+        "base": 7
+      },
+      "leger": {
+        "base": 16
+      },
+      "grave": {
+        "base": 21
+      },
+      "profond": {
+        "base": 26
+      }
+    },
+    "mental": {
+      "superficiel": {
+        "base": 5,
+        "couvert": 7
+      },
+      "leger": {
+        "base": 10,
+        "couvert": 12
+      },
+      "grave": {
+        "base": 15,
+        "couvert": 17
+      },
+      "profond": {
+        "base": 20,
+        "couvert": 22
+      }
+    }
+  },
+  "protections": {
+    "physiques": {
+      "armure": {
+        "points": 2,
+        "localisations": [
+          "torse"
+        ]
+      }
+    },
+    "mentales": {
+      "caractere": {
+        "trait": "Cynique",
+        "points": 2,
+        "localisations": [
+          "peur"
+        ]
+      }
+    }
+  },
+  "formations": [
+    {
+      "nom": "Infirmière",
+      "pourcentage": {
+        "minimum": 0,
+        "current": 40,
+        "maximum": 40
+      },
+      "competences": [
+        {
+          "nom": "Soins",
+          "pourcentage": {
+            "minimum": 0,
+            "current": 30,
+            "maximum": 30
+          },
+          "caracteristique": "cha"
+        }
+      ]
+    }
+  ]
+}

@@ -1,159 +1,65 @@
 {
   "nom": "Témoin",
   "caracteristiques": {
-    "for": {
-      "minimum": 40,
-      "current": 40,
-      "maximum": 50
-    },
-    "con": {
-      "minimum": 50,
-      "current": 50,
-      "maximum": 50
-    },
-    "dex": {
-      "minimum": 45,
-      "current": 45,
-      "maximum": 50
-    },
-    "rap": {
-      "minimum": 35,
-      "current": 35,
-      "maximum": 50
-    },
-    "log": {
-      "minimum": 30,
-      "current": 30,
-      "maximum": 50
-    },
-    "vol": {
-      "minimum": 40,
-      "current": 40,
-      "maximum": 50
-    },
-    "per": {
-      "minimum": 50,
-      "current": 50,
-      "maximum": 50
-    },
-    "cha": {
-      "minimum": 25,
-      "current": 25,
-      "maximum": 50
-    }
+    "for": 40,
+    "con": 50,
+    "dex": 45,
+    "rap": 35,
+    "log": 30,
+    "vol": 40,
+    "per": 50,
+    "cha": 25
   },
   "sante": {
     "physique": {
       "superficiel": {
-        "base": {
-          "minimum": 0,
-          "current": 7,
-          "maximum": 7
-        }
+        "base": 7
       },
       "leger": {
-        "base": {
-          "minimum": 0,
-          "current": 16,
-          "maximum": 16
-        }
+        "base": 16
       },
       "grave": {
-        "base": {
-          "minimum": 0,
-          "current": 21,
-          "maximum": 21
-        }
+        "base": 21
       },
       "profond": {
-        "base": {
-          "minimum": 0,
-          "current": 26,
-          "maximum": 26
-        }
+        "base": 26
       }
     },
     "mental": {
       "superficiel": {
-        "base": {
-          "minimum": 0,
-          "current": 5,
-          "maximum": 5
-        },
-        "couvert": {
-          "minimum": 0,
-          "current": 7,
-          "maximum": 7
-        }
+        "base": 5,
+        "couvert": 7
       },
       "leger": {
-        "base": {
-          "minimum": 0,
-          "current": 10,
-          "maximum": 10
-        },
-        "couvert": {
-          "minimum": 0,
-          "current": 12,
-          "maximum": 12
-        }
+        "base": 10,
+        "couvert": 12
       },
       "grave": {
-        "base": {
-          "minimum": 0,
-          "current": 15,
-          "maximum": 15
-        },
-        "couvert": {
-          "minimum": 0,
-          "current": 17,
-          "maximum": 17
-        }
+        "base": 15,
+        "couvert": 17
       },
       "profond": {
-        "base": {
-          "minimum": 0,
-          "current": 20,
-          "maximum": 20
-        },
-        "couvert": {
-          "minimum": 0,
-          "current": 22,
-          "maximum": 22
-        }
+        "base": 20,
+        "couvert": 22
       }
     }
   },
   "protections": {
     "physiques": {
-      "solidite": {
-        "minimum": 0,
-        "current": 7,
-        "maximum": 7
-      },
       "armure": {
-        "points": {
-          "minimum": 0,
-          "current": 2,
-          "maximum": 2
-        },
-        "localisations": ["torse"]
+        "points": 2,
+        "localisations": [
+          "torse"
+        ]
       }
     },
     "mentales": {
-      "solidite": {
-        "minimum": 0,
-        "current": 5,
-        "maximum": 5
-      },
       "caractere": {
         "trait": "Cynique",
-        "points": {
-          "minimum": 0,
-          "current": 2,
-          "maximum": 2
-        },
-        "localisations": ["peur"]
+        "points": 2,
+        "localisations": [
+          "peur"
+        ]
       }
     }
   },
@@ -165,13 +71,6 @@
     "malus": {
       "physique": 2
     },
-    "etats": [
-      {
-        "nom": "Contusion",
-        "versant": "physique",
-        "localisation": "torse",
-        "duree": "Jusqu'aux soins"
-      }
-    ]
+    "etats": "Contusion (torse, Jusqu'aux soins)"
   }
 }

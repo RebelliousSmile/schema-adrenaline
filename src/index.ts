@@ -63,8 +63,14 @@ export { Monstre } from "./zod/adrenaline/monstre.js";
 export type { MonstreValeur } from "./zod/adrenaline/monstre.js";
 export { ActionDeCreature, DefenseDeCreature } from "./zod/common/combat.js";
 export type { ActionDeCreatureValeur, DefenseDeCreatureValeur } from "./zod/common/combat.js";
-export { EtatDePartie, EtatEncaissé } from "./zod/common/etat-de-partie.js";
-export type { EtatDePartieValeur, EtatEncaisséValeur } from "./zod/common/etat-de-partie.js";
+export { EtatDePartie, EtatDePartieDeJoueur, EtatEncaissé } from "./zod/common/etat-de-partie.js";
+export type {
+  EtatDePartieDeJoueurValeur,
+  EtatDePartieValeur,
+  EtatEncaisséValeur,
+} from "./zod/common/etat-de-partie.js";
+export { IdentiteDeJoueur } from "./zod/common/identite.js";
+export type { IdentiteDeJoueurValeur } from "./zod/common/identite.js";
 export {
   CaracteristiquesDeCreature,
   DeltaEtatDeCreature,
@@ -79,7 +85,6 @@ export {
   PJ_CARACTERISTIQUE_MAXIMUM,
   FormationJoueur,
   PersonnageJoueur,
-  caracteristiqueDeCreationPj,
 } from "./zod/adrenaline/pj.js";
 export type { ParametresDuJeuValeur, PersonnageJoueurValeur } from "./zod/adrenaline/pj.js";
 export { PersonnageNonJoue } from "./zod/adrenaline/pnj.js";

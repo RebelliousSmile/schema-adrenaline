@@ -10,162 +10,65 @@ taille = "1,68 m"
 peau = "Mate"
 poids = "61 kg"
 signesParticuliers = [ "Cicatrice à l'avant-bras gauche", "Tatouage au poignet droit" ]
+historique = "Ancienne cheffe d'équipe de chantier, reconvertie dans la logistique de secours après l'effondrement du dépôt municipal."
+personnalite = "Obstinée, méthodique, d'un humour sec qui désamorce les tensions."
 
-[caracteristiques.for]
-minimum = 30
-current = 30
-maximum = 50
+[identite.contraintes]
+professionnelles = "Astreinte radio chaque soir à 20 h"
+familiales = "Veille sur son père, malade"
+engagementsExterieurs = "Bénévole à la protection civile"
 
-[caracteristiques.con]
-minimum = 40
-current = 40
-maximum = 50
+[caracteristiques]
+for = 30
+con = 40
+dex = 50
+rap = 40
+log = 30
+vol = 40
+per = 50
+cha = 30
 
-[caracteristiques.dex]
-minimum = 50
-current = 50
-maximum = 50
-
-[caracteristiques.rap]
-minimum = 40
-current = 40
-maximum = 50
-
-[caracteristiques.log]
-minimum = 30
-current = 30
-maximum = 50
-
-[caracteristiques.vol]
-minimum = 40
-current = 40
-maximum = 50
-
-[caracteristiques.per]
-minimum = 50
-current = 50
-maximum = 50
-
-[caracteristiques.cha]
-minimum = 30
-current = 30
-maximum = 50
-
-[sante.physique.superficiel.base]
-minimum = 0
-current = 6
-maximum = 6
-
-[sante.physique.superficiel.couvert]
-minimum = 0
-current = 9
-maximum = 9
-
-[sante.physique.leger.base]
-minimum = 0
-current = 13
-maximum = 13
-
-[sante.physique.leger.couvert]
-minimum = 0
-current = 16
-maximum = 16
-
-[sante.physique.grave.base]
-minimum = 0
-current = 18
-maximum = 18
-
-[sante.physique.grave.couvert]
-minimum = 0
-current = 21
-maximum = 21
-
-[sante.physique.profond.base]
-minimum = 0
-current = 23
-maximum = 23
-
-[sante.physique.profond.couvert]
-minimum = 0
-current = 26
-maximum = 26
-
-[sante.mental.superficiel.base]
-minimum = 0
-current = 5
-maximum = 5
-
-[sante.mental.superficiel.couvert]
-minimum = 0
-current = 7
-maximum = 7
-
-[sante.mental.leger.base]
-minimum = 0
-current = 12
-maximum = 12
-
-[sante.mental.leger.couvert]
-minimum = 0
-current = 14
-maximum = 14
-
-[sante.mental.grave.base]
-minimum = 0
-current = 17
-maximum = 17
-
-[sante.mental.grave.couvert]
-minimum = 0
-current = 19
-maximum = 19
-
-[sante.mental.profond.base]
-minimum = 0
-current = 22
-maximum = 22
-
-[sante.mental.profond.couvert]
-minimum = 0
-current = 24
-maximum = 24
-
-[protections.physiques.solidite]
-minimum = 0
-current = 6
-maximum = 6
+[sante.physique.superficiel]
+base = 6
+couvert = 9
+[sante.physique.leger]
+base = 13
+couvert = 16
+[sante.physique.grave]
+base = 18
+couvert = 21
+[sante.physique.profond]
+base = 23
+couvert = 26
+[sante.mental.superficiel]
+base = 5
+couvert = 7
+[sante.mental.leger]
+base = 12
+couvert = 14
+[sante.mental.grave]
+base = 17
+couvert = 19
+[sante.mental.profond]
+base = 22
+couvert = 24
 
 [protections.physiques.armure]
 nom = "Veste de chantier renforcée"
 localisations = [ "torse", "bras-fort" ]
 
-[protections.physiques.armure.points]
-minimum = 0
-current = 3
-maximum = 3
-
-[protections.physiques.bouclier]
-nom = "Panneau de signalisation"
-proprietes = [ "Couvert partiel" ]
-
-[protections.mentales.solidite]
-minimum = 0
-current = 5
-maximum = 5
+points = 3
 
 [protections.mentales.caractere]
 trait = "Obstinée"
 localisations = [ "anxiete", "peur", "culpabilite" ]
 
-[protections.mentales.caractere.points]
-minimum = 0
-current = 2
-maximum = 2
+points = 2
 
 [parametresDuJeu]
 joueur = "Camille"
 typeDeCreation = "equitable"
+scenario = "Les Cendres de Valmy"
 typeDeScenario = "campagne"
 
 [parametresDuJeu.px]
@@ -176,170 +79,72 @@ maximum = 12
 [equipement]
 possessions = [ "Trousse de secours", "Radio à manivelle", "Carnet de relevés" ]
 equipementFavori = "Multitool héritée de son père"
+avantagesEtImmunites = [ "Immunité au froid", "Sommeil léger" ]
+armesSocialesBarrees = [ "Séduction", "Provocation" ]
 
 [[equipement.armesPhysiques]]
 nom = "Pied-de-biche"
+pourcentage = 55
 desDeDegats = 2
-type = "Contact"
-
-[equipement.armesPhysiques.pourcentage]
-minimum = 0
-current = 55
-maximum = 55
+nature = "blessante"
 
 [[equipement.armesPhysiques]]
 nom = "Carabine .22"
+pourcentage = 40
 desDeDegats = 3
-type = "Distance"
-
-[equipement.armesPhysiques.pourcentage]
-minimum = 0
-current = 40
-maximum = 40
-
-[[equipement.armesMentales]]
-nom = "Arme sociale (Apaisement)"
-desDeDegats = 1
-type = "Sociale"
-
-[equipement.armesMentales.pourcentage]
-minimum = 0
-current = 60
-maximum = 60
+nature = "choquante"
 
 [[formations]]
+pourcentage = 20
 type = "classe-sociale"
 nom = "Classe moyenne"
 
-[formations.pourcentage]
-minimum = 0
-current = 20
-maximum = 20
-
 [[formations.competences]]
+pourcentage = 40
 nom = "Étiquette"
 specialite = "Classe moyenne"
-caracteristique = "vol"
-
-[formations.competences.pourcentage]
-minimum = 0
-current = 40
-maximum = 40
-
-[formations.competences.total]
-minimum = 0
-current = 80
-maximum = 80
 
 [[formations.competences]]
+pourcentage = 35
 nom = "Bureaucratie"
-caracteristique = "log"
-
-[formations.competences.pourcentage]
-minimum = 0
-current = 35
-maximum = 35
-
-[formations.competences.total]
-minimum = 0
-current = 65
-maximum = 65
 
 [[formations]]
+pourcentage = 25
 type = "professionnelle"
 nom = "Secours et logistique"
 
-[formations.pourcentage]
-minimum = 0
-current = 25
-maximum = 25
-
 [[formations.competences]]
+pourcentage = 40
 nom = "Survie"
 specialite = "Premiers secours"
-caracteristique = "per"
-avantages = [ "Gestion du stress" ]
-
-[formations.competences.pourcentage]
-minimum = 0
-current = 40
-maximum = 40
-
-[formations.competences.total]
-minimum = 0
-current = 90
-maximum = 90
 
 [[formations.competences]]
+pourcentage = 35
 nom = "Conduite"
 specialite = "Poids lourd"
-caracteristique = "per"
-
-[formations.competences.pourcentage]
-minimum = 0
-current = 35
-maximum = 35
-
-[formations.competences.total]
-minimum = 0
-current = 85
-maximum = 85
 
 [[formations.competences]]
+pourcentage = 35
 nom = "Gestion de ressources"
-caracteristique = "log"
-
-[formations.competences.pourcentage]
-minimum = 0
-current = 35
-maximum = 35
-
-[formations.competences.total]
-minimum = 0
-current = 65
-maximum = 65
 
 [[formations]]
+pourcentage = 15
 type = "personnelle"
 nom = "Loisirs"
 
-[formations.pourcentage]
-minimum = 0
-current = 15
-maximum = 15
-
 [[formations.competences]]
+pourcentage = 30
 nom = "Sport"
 specialite = "Escalade"
-caracteristique = "dex"
-avantages = [ "Équipement favori" ]
-
-[formations.competences.pourcentage]
-minimum = 0
-current = 30
-maximum = 30
-
-[formations.competences.total]
-minimum = 0
-current = 80
-maximum = 80
 
 [[formations.competences]]
+pourcentage = 30
 nom = "Arme sociale"
 specialite = "Apaisement"
-caracteristique = "cha"
-avantages = [ "Bouclier personnel" ]
-notes = "Arme mentale associée : Arme sociale (Apaisement), 60 %, 1 dé de dégâts"
 
-[formations.competences.pourcentage]
-minimum = 0
-current = 30
-maximum = 30
-
-[formations.competences.total]
-minimum = 0
-current = 60
-maximum = 60
+[etatDePartie]
+etats = """Contusion au torse (jusqu'aux soins)
+Froid : mains engourdies"""
 
 [etatDePartie.stress]
 adrenaline = 1
@@ -347,13 +152,20 @@ panique = 0
 
 [etatDePartie.malus]
 divers = "1 malus (froid), annulé à l'heure"
+diversCercles = 1
 total = 3
 
 [etatDePartie.malus.choc]
 rounds = 2
 
-[[etatDePartie.etats]]
-nom = "Contusion"
-versant = "physique"
-localisation = "torse"
-duree = "Jusqu'aux soins"
+[etatDePartie.blessures.physiques.premiereColonne]
+heure = true
+notes = "Foulure à la cheville"
+
+[etatDePartie.blessures.physiques.secondeColonne]
+semaine = true
+notes = "Côte fêlée"
+
+[etatDePartie.blessures.mentales.premiereColonne]
+mois = true
+notes = "Cauchemars"

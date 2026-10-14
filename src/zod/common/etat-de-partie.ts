@@ -125,3 +125,107 @@ export const EtatDePartie = z
 
 export type EtatDePartieValeur = z.infer<typeof EtatDePartie>;
 export type EtatEncaisséValeur = z.infer<typeof EtatEncaissé>;
+
+/** Cercle d'une durée de blessure : coché (`true`) ou non (absent ou `false`). */
+const CercleDeBlessure = z.boolean();
+
+const colonneDeBlessures = (versant: string) =>
+  z
+    .strictObject({
+      heure: CercleDeBlessure.optional().meta({
+        description: `Blessure ${versant} annulée à l'heure : le cercle de la feuille est coché ou non.`,
+      }),
+      jour: CercleDeBlessure.optional().meta({
+        description: `Blessure ${versant} annulée au jour : le cercle de la feuille est coché ou non.`,
+      }),
+      semaine: CercleDeBlessure.optional().meta({
+        description: `Blessure ${versant} annulée à la semaine : le cercle de la feuille est coché ou non.`,
+      }),
+      mois: CercleDeBlessure.optional().meta({
+        description: `Blessure ${versant} annulée au mois : le cercle de la feuille est coché ou non.`,
+      }),
+      notes: z.string().min(1).optional().meta({
+        description: `Ce que la blessure ${versant} est, écrit dans l'espace libre sous les cercles de la feuille.`,
+      }),
+    })
+    .meta({
+      description: `Une blessure ${versant} de la feuille : un cercle par durée de guérison (heure, jour, semaine, mois ; la feuille n'en coche qu'un) et un espace libre pour l'écrire.`,
+    });
+
+const BlessuresDUnVersant = (versant: string) =>
+  z
+    .strictObject({
+      premiereColonne: colonneDeBlessures(versant).optional().meta({
+        description: "Première des deux blessures de la feuille.",
+      }),
+      secondeColonne: colonneDeBlessures(versant).optional().meta({
+        description: "Seconde des deux blessures de la feuille.",
+      }),
+    })
+    .meta({
+      description: `Blessures ${versant} cochées sur la feuille : deux colonnes de quatre cercles, un par durée. Le sens des deux colonnes n'est pas établi, elles ne portent donc pas d'autre nom.`,
+    });
+
+/**
+ * Choc d'un PJ : la feuille n'imprime que les cinq cercles « round ». `heures` n'existe pas sur
+ * la feuille de PJ, il est donc retiré : un document qui l'écrit est refusé.
+ */
+const ChocDeJoueur = Choc.omit({ heures: true })
+  .extend({
+    notes: z.string().min(1).optional().meta({
+      description:
+        "Zone écrite de la case Choc, à côté des cercles : malus et fréquence d'annulation, notés librement.",
+      examples: ["1 malus, annulé au round"],
+    }),
+  })
+  .meta({
+    description:
+      "Case Choc (jaune) de la feuille de PJ : cinq cercles annulés au round, et une zone écrite.",
+  });
+
+const MalusDeJoueur = Malus.extend({
+  choc: ChocDeJoueur.optional().meta({ description: "Malus de choc de la case Choc." }),
+  diversCercles: z
+    .int()
+    .min(0)
+    .max(4)
+    .optional()
+    .meta({
+      description:
+        "Case Divers : malus cochés sur les quatre cercles. Le texte `divers` reste lu en plus.",
+      examples: [2],
+    }),
+}).meta({
+  description:
+    "Malus encaissés d'un PJ : Choc, Divers (texte et cercles) et Total des malus (de 1 à 9, puis HS à 10).",
+});
+
+/**
+ * État de partie d'un personnage joueur : celui du socle, plus le compteur de
+ * la case Divers et les blessures par durée. Le PNJ et la créature gardent
+ * `EtatDePartie` telle quelle.
+ */
+export const EtatDePartieDeJoueur = EtatDePartie.extend({
+  etats: z.string().min(1).optional().meta({
+    description:
+      "États encaissés ou temporaires : la zone libre « États » de la feuille, écrite telle quelle, une ligne par état.",
+    examples: ["Contusion au torse\nPeur panique jusqu'à la fin de la scène"],
+  }),
+  malus: MalusDeJoueur.optional().meta({
+    description: "Malus encaissés : Choc, Divers et Total.",
+  }),
+  blessures: z
+    .strictObject({
+      physiques: BlessuresDUnVersant("physiques").optional(),
+      mentales: BlessuresDUnVersant("mentales").optional(),
+    })
+    .optional()
+    .meta({
+      description: "Blessures physiques et mentales, par durée de guérison, comme sur la feuille.",
+    }),
+}).meta({
+  description:
+    "État transitoire de partie d'un PJ : stress, malus, blessures par durée et états encaissés.",
+});
+
+export type EtatDePartieDeJoueurValeur = z.infer<typeof EtatDePartieDeJoueur>;

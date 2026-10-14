@@ -4,6 +4,178 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [5.0.0] - 2026-10-12
+
+### Breaking
+
+- The PJ shock box (`etatDePartie.malus.choc`) loses `heures`: the sheet prints only the five « round » circles, so the field had nothing to fill. A document that writes it is now refused; remove the key. The PNJ and creature shock keep it.
+
+- The PJ loses `equipement.armesMentales`, with no replacement: no field takes
+  its place. The social weapons are a reference table published by the
+  presentation (block `armes-sociales`), not an entry. A PJ document that still
+  enters `armesMentales` is rejected, naming the key. Procedure: remove the
+  `[[equipement.armesMentales]]` tables from the PJ block. The example
+  `survivante-complete.toml` drops them.
+- The PJ loses `protections.physiques.solidite`, `protections.mentales.solidite`
+  and both `bouclier` entries: the paper sheet prints neither. `protections`
+  itself becomes optional on the PJ. A document that still enters one of those
+  keys is rejected, naming the key. Procedure: remove `solidite` and `bouclier`
+  from the PJ block. The PNJ abbreviated protections are unchanged.
+- The PJ characteristics become plain numbers from 0 to 50, like the PJ
+  formation and skill percentages: the paper sheet prints one value per
+  characteristic. A PJ document that still enters `{ minimum, current,
+  maximum }` for a characteristic is rejected, naming the key. Procedure:
+  replace each characteristic table by its `current` value (`for = 30`).
+  `caracteristiqueDeCreationPj` is removed; `PJ_CARACTERISTIQUE_MAXIMUM` stays.
+  The PNJ and creature characteristics are unchanged.
+- The PJ physical weapon loses `type` (contact or distance), which the paper
+  sheet does not print: `nature` (choquante, blessante) takes its place. Its
+  `pourcentage` becomes a plain number. A PJ weapon that still enters `type`
+  or a triplet is rejected, naming the key. Procedure: remove `type`, keep
+  the `current` value. It also loses `notes`, which the sheet does not print.
+  The PNJ and creature weapons are unchanged.
+- The PJ thresholds (`base`, `couvert`) and the protection `points` become plain
+  numbers: the sheet prints one value. A PJ threshold or protection that still
+  enters a triplet is rejected, naming the key. Procedure: replace each table
+  by its `current` value (`base = 6`). The PNJ and creature values are unchanged.
+- The PJ skill loses `caracteristique`: the paper sheet prints only a name, a
+  specialty and a percentage, the game master picking the characteristic at the
+  table. A PJ skill that still enters it is rejected, naming the key.
+  Procedure: remove the key. The PNJ and creature skills are unchanged.
+- The social weapons print the condition of the 2d10 first, then the die:
+  "sans issue (2d10)" instead of "2d10 si sans issue".
+- The Choc circles print the sheet's word, "ROUND": a group of `circle-groups` carries
+  its document `key` (`rounds`) apart from its printed `label`.
+- The wound columns carry no label: the presentation publishes their keys only
+  (`columns: [{ key }]`), the sheet prints none.
+- The equipment prints five weapon lines (as many as the advantages) and four
+  possessions lines (`minimumRows`).
+- The PJ presentation changes (the creature and PNJ ones do not):
+  - the thresholds are printed "Léger", "Modéré", "Grave", "Profond", by
+    position (the key `superficiel` prints "Léger"), with a malus count from 1
+    to 4;
+  - the characteristics print the current value only (`rangeDisplay` is
+    `["current"]`);
+  - the shock is five round circles (`circle-groups`), the total goes from 1 to
+    9 then "HS" (`scale`), the stress dice offer "+1d100" and "+2d100" on both
+    sides (`dice-options`);
+  - the `armes-mentales` block is gone, replaced by `armes-sociales`;
+  - the identity section is last, foldable and closed by default, out of the
+    `profil` row; the `caracteristique` section takes the freed width;
+  - the stress dice (block `stress`) move from the `sante` section to the
+    `caracteristique` section; the `divers` block goes from the `status-frames`
+    form to `circle-row`; the protections blocks go from `protection-lines` to
+    `location-grid`.
+- The presentation decoration `protection-units` is removed from the closed
+  list: no block of the PJ, PNJ or creature presentation uses it any more
+  (the 4.0.0 PJ was the last to). A descriptor that still declares it is
+  refused by `validate:presentation` ("decoration is unknown").
+- `rangeDisplay` now admits `current` only: the PJ publishes `["current"]` on
+  its characteristics and neither the PNJ nor the creature uses the property.
+  The type no longer offers `minimum`.
+- The PNJ and creature schemas change by two descriptions and one example list
+  (the shared weapon text no longer mentions the mental weapon; the examples
+  of the weapon `type` go from "Contact", "Sociale" to "Contact", "Distance",
+  "Psychologique"). No key, bound or presentation entry moves.
+
+### Added
+- `subtitlePaths` is also accepted on a `game-parameters` block: those
+  pointers are printed on one line under the sheet label and no longer in the
+  rows. The PJ publishes `/parametresDuJeu/typeDeScenario` there; the header
+  rows keep the player, the creation type and the scenario.
+- The PJ armour holds one line, as on the sheet: `protections.physiques.armure`
+  keeps `nom`, `points` and `localisations`; `protections.mentales.caractere`
+  keeps `trait`, `points` and `localisations`. The dice, the coverage, the
+  properties, the emotions and the reduction of the PJ armour are no longer
+  declared and a document that enters them is rejected. PNJ and creature keep
+  their detailed protections.
+- The PJ `equipement.armesSocialesBarrees`: the social weapons the
+  character does not use, among the seven names of the table. The sheet strikes
+  them out in the table, which keeps its seven lines; the others stay normal.
+  Optional; the block `armes-sociales` now reads this one path.
+- The PJ `etatDePartie.blessures.<versant>.<colonne>.notes`: the free text
+  written under a wound, as on the paper sheet, which ticks one duration per
+  column (the consumers tick one; the contract does not enforce it).
+- The PJ `etatDePartie.etats` is one free text (the « États » zone of the
+  sheet), no longer a list; PNJ and creature keep their list. A PJ document
+  that enters a list is rejected.
+
+- PJ, all optional: `parametresDuJeu.scenario`; `identite.contraintes`
+  (`professionnelles`, `familiales`, `engagementsExterieurs`),
+  `identite.historique`, `identite.personnalite`;
+  `etatDePartie.malus.diversCercles` (0..4, the `divers` text is still read);
+  `etatDePartie.blessures.physiques` and `.mentales`, each with
+  `premiereColonne` and `secondeColonne`, each column holding `heure`, `jour`,
+  `semaine`, `mois`, each a ticked or unticked circle (boolean, the sheet prints
+  one circle per duration); `equipement.avantagesEtImmunites` (list of texts);
+  `equipement.armesPhysiques[].nature` (`choquante` or `blessante`).
+  `choc.heures`, the "couvert" threshold and the characteristics triplet stay.
+- Presentation forms `reference-table`, `location-grid`, `wound-circles` and
+  `circle-row`; block properties `referenceTable`, `thresholdLevels` and
+  `notes`; the fixed texts of the sheet ("-10 %" for a substitute skill,
+  "Marcher / Courir", "1 malus = -10 %", the d10 ranges).
+- Block property `minimumRows` (PJ only, on the `ruled-list` and `weapon-lines`
+  forms): the number of ruled lines the sheet prints at least, an integer of 1
+  or more. Lines the document enters beyond it are printed after them and none
+  is cut: it is a placement of the sheet, not a bound of the document, whose
+  lists stay unbounded. The PJ publishes 7 on `possessions` (as many as the
+  seven lines of the neighbouring social weapons table), 4 on `armes-physiques`
+  and 3 on `avantages-immunites`. `validate:presentation` refuses it outside
+  the PJ and on another form, refuses a value that is not an integer of 1 or
+  more, and requires it on every PJ block of those forms.
+- Blocks `avantages-immunites`, `blessures-physiques`, `blessures-mentales`,
+  `contraintes`, `historique`, `personnalite`; the protections blocks print the
+  location grid (six locations, three boxes each, a listed location ticks the
+  first box).
+- Refusal corpus: `armesMentales` on a PJ, an unknown identity key, a number
+  where a wound circle expects a boolean.
+- Exports: `EtatDePartieDeJoueur` and `IdentiteDeJoueur`, with the types
+  `EtatDePartieDeJoueurValeur` and `IdentiteDeJoueurValeur`.
+- Pack 0.12.0. Schema baseline `5.0.0`; `schemas/adrenaline/4.0.0` stays intact.
+
+### Changed
+
+- `contractVersion` goes from 4 to 5.
+- `validate:presentation` knows the new forms and fixed texts; each rule has a
+  negative proof in its self-test, and every refusal of the self-test names
+  the message of the rule it targets. The rules of the validator for the PJ
+  presentation are:
+  - the social weapons table is pinned text by text (note, column titles, the
+    seven lines in order, legend), and the PJ prints one reference table only,
+    block `armes-sociales`, labelled "Armes sociales" in the `equipement`
+    section; the reference table is refused outside the PJ;
+  - a wound or protection decoration must match the side of its block, and
+    that side is judged before the other rules of the decoration; the blocks
+    `blessures-*`, `protections-*` and `divers` read the paths of their side
+    (`/etatDePartie/blessures/<side>`, `/protections/<side>`,
+    `/etatDePartie/malus/divers` and `/etatDePartie/malus/diversCercles`);
+  - the forms `location-grid`, `wound-circles` and `circle-row` take the
+    decoration of the same name and no other block takes those decorations;
+    the PJ must publish the decoration of `stress` (dice options), `divers`,
+    the wounds and the protections. The PNJ and creature publish no new
+    decoration;
+  - the durations and the columns of the wound decoration are exactly those
+    the PJ schema declares for the side, each duration being a boolean;
+  - the labels "Blessures physiques", "Blessures mentales", "Contraintes" and
+    the three labelled lines of `contraintes` are pinned, with the section of
+    these blocks;
+  - `thresholdLevels` and `notes` are refused outside the PJ, and the PJ must
+    publish the threshold levels;
+  - the PJ must publish `rangeDisplay`, the "Scénario" line (the fourth, right
+    after the scenario format) and the stress dice with the characteristics;
+  - `fieldRows` must name each field once: only on the PJ is a field read by a
+    sibling block (`contraintes`, `historique`, `personnalite`) left out of
+    the grid, the PNJ and creature keep the rule unchanged.
+- The PJ `etatDePartie.malus.choc.heures` stays in the contract, but the sheet
+  prints only the five "round" circles: its description says so.
+
+### Migration
+
+- Remove the `[[equipement.armesMentales]]` tables from the PJ block. Nothing
+  replaces them.
+- Every new field is optional: a PJ document that did not use `armesMentales`
+  stays valid unchanged.
+
 ## [4.0.0] - 2026-10-11
 
 ### Breaking
