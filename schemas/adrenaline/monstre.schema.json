@@ -406,12 +406,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -422,16 +422,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -441,7 +441,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -454,7 +454,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -470,12 +470,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -486,16 +486,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -505,7 +505,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -518,7 +518,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -536,12 +536,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -552,16 +552,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -571,7 +571,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -584,7 +584,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -600,12 +600,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -616,16 +616,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -635,7 +635,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -648,7 +648,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -666,12 +666,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -682,16 +682,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -701,7 +701,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -714,7 +714,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -730,12 +730,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -746,16 +746,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -765,7 +765,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -778,7 +778,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -796,12 +796,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -812,16 +812,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -831,7 +831,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -844,7 +844,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -860,12 +860,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -876,16 +876,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -895,7 +895,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -908,7 +908,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -940,12 +940,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -956,16 +956,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -975,7 +975,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -988,7 +988,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -1004,12 +1004,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -1020,16 +1020,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -1039,7 +1039,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -1052,7 +1052,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -1070,12 +1070,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -1086,16 +1086,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -1105,7 +1105,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -1118,7 +1118,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -1134,12 +1134,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -1150,16 +1150,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -1169,7 +1169,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -1182,7 +1182,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -1200,12 +1200,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -1216,16 +1216,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -1235,7 +1235,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -1248,7 +1248,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -1264,12 +1264,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -1280,16 +1280,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -1299,7 +1299,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -1312,7 +1312,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -1330,12 +1330,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -1346,16 +1346,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -1365,7 +1365,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -1378,7 +1378,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ],
                   "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -1394,12 +1394,12 @@
                   "anyOf": [
                     {
                       "type": "integer",
-                      "minimum": 0,
+                      "minimum": 1,
                       "maximum": 100,
-                      "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                      "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                       "examples": [
-                        2,
                         7,
+                        16,
                         26
                       ]
                     },
@@ -1410,16 +1410,16 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne basse des points.",
+                          "description": "Borne basse du seuil.",
                           "examples": [
                             0
                           ]
                         },
                         "current": {
                           "type": "integer",
-                          "minimum": 0,
+                          "minimum": 1,
                           "maximum": 100,
-                          "description": "Nombre de points actuel.",
+                          "description": "Valeur actuelle du seuil, d'au moins 1.",
                           "examples": [
                             7,
                             26
@@ -1429,7 +1429,7 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 100,
-                          "description": "Borne haute des points.",
+                          "description": "Borne haute du seuil.",
                           "examples": [
                             10,
                             30
@@ -1442,7 +1442,7 @@
                         "maximum"
                       ],
                       "additionalProperties": false,
-                      "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                      "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                     }
                   ]
                 }
@@ -3442,12 +3442,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3458,16 +3458,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3477,7 +3477,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3490,7 +3490,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -3506,12 +3506,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3522,16 +3522,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3541,7 +3541,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3554,7 +3554,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }
@@ -3572,12 +3572,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3588,16 +3588,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3607,7 +3607,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3620,7 +3620,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -3636,12 +3636,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3652,16 +3652,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3671,7 +3671,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3684,7 +3684,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }
@@ -3702,12 +3702,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3718,16 +3718,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3737,7 +3737,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3750,7 +3750,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -3766,12 +3766,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3782,16 +3782,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3801,7 +3801,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3814,7 +3814,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }
@@ -3832,12 +3832,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3848,16 +3848,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3867,7 +3867,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3880,7 +3880,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -3896,12 +3896,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3912,16 +3912,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -3931,7 +3931,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -3944,7 +3944,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }
@@ -3976,12 +3976,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -3992,16 +3992,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4011,7 +4011,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4024,7 +4024,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -4040,12 +4040,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -4056,16 +4056,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4075,7 +4075,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4088,7 +4088,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }
@@ -4106,12 +4106,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -4122,16 +4122,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4141,7 +4141,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4154,7 +4154,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -4170,12 +4170,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -4186,16 +4186,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4205,7 +4205,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4218,7 +4218,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }
@@ -4236,12 +4236,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -4252,16 +4252,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4271,7 +4271,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4284,7 +4284,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -4300,12 +4300,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -4316,16 +4316,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4335,7 +4335,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4348,7 +4348,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }
@@ -4366,12 +4366,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -4382,16 +4382,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4401,7 +4401,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4414,7 +4414,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ],
                             "description": "Valeur du seuil sur une localisation non couverte. Forme à écrire : le nombre simple ; le triplet { minimum, current, maximum } reste lu.",
@@ -4430,12 +4430,12 @@
                             "anyOf": [
                               {
                                 "type": "integer",
-                                "minimum": 0,
+                                "minimum": 1,
                                 "maximum": 100,
-                                "description": "Nombre de points, dans l'unité des protections et des seuils de dégât.",
+                                "description": "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
                                 "examples": [
-                                  2,
                                   7,
+                                  16,
                                   26
                                 ]
                               },
@@ -4446,16 +4446,16 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne basse des points.",
+                                    "description": "Borne basse du seuil.",
                                     "examples": [
                                       0
                                     ]
                                   },
                                   "current": {
                                     "type": "integer",
-                                    "minimum": 0,
+                                    "minimum": 1,
                                     "maximum": 100,
-                                    "description": "Nombre de points actuel.",
+                                    "description": "Valeur actuelle du seuil, d'au moins 1.",
                                     "examples": [
                                       7,
                                       26
@@ -4465,7 +4465,7 @@
                                     "type": "integer",
                                     "minimum": 0,
                                     "maximum": 100,
-                                    "description": "Borne haute des points.",
+                                    "description": "Borne haute du seuil.",
                                     "examples": [
                                       10,
                                       30
@@ -4478,7 +4478,7 @@
                                   "maximum"
                                 ],
                                 "additionalProperties": false,
-                                "description": "Points jouables. Les codecs vérifient minimum ≤ current ≤ maximum."
+                                "description": "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum."
                               }
                             ]
                           }

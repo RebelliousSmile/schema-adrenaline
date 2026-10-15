@@ -195,6 +195,39 @@ export const PointsSouples = souple(
   "Points, dans l'unité des protections et des seuils de dégât.",
 );
 
+/**
+ * Un seuil de dégât d'une créature ou d'un PNJ : au moins 1.
+ *
+ * Un seuil à zéro n'est pas une valeur de jeu — la feuille imprime toujours un
+ * seuil non nul — c'est un champ laissé en blanc. Le schéma le refuse à la
+ * lecture plutôt que de l'imprimer : la fiche alerte, elle ne s'affiche pas
+ * avec un `SP 0 / 0 / 0 / 0` qui se lirait comme une valeur.
+ *
+ * Le triplet garde son minimum à 0 (c'est la borne basse du jeu, pas la valeur) :
+ * c'est la valeur courante qui ne peut pas être nulle.
+ */
+const SeuilNombre = z
+  .int()
+  .min(1)
+  .max(100)
+  .meta({
+    description: "Seuil de dégât, d'au moins 1 : zéro n'est pas une valeur de seuil.",
+    examples: [7, 16, 26],
+  });
+
+const SeuilJouable = ValeurJouable.extend({
+  minimum: Points.meta({ description: "Borne basse du seuil.", examples: [0] }),
+  current: SeuilNombre.meta({
+    description: "Valeur actuelle du seuil, d'au moins 1.",
+    examples: [7, 26],
+  }),
+  maximum: Points.meta({ description: "Borne haute du seuil.", examples: [10, 30] }),
+}).meta({
+  description: "Seuil jouable. Les codecs vérifient minimum ≤ current ≤ maximum.",
+});
+
+export const SeuilsSouples = souple(SeuilNombre, SeuilJouable, "Seuil de dégât, d'au moins 1.");
+
 /** Probabilité de transmission d'une créature : nombre simple ou triplet. */
 export const ProbabiliteSouple = souple(
   z.int().min(0).max(100),
@@ -210,6 +243,7 @@ export const ProbabiliteSouple = souple(
 export type KitDeValeurs = {
   pourcentage: z.ZodType;
   points: z.ZodType;
+  seuil: z.ZodType;
   probabilite: z.ZodType;
   note: string;
   exemple: (nombre: number) => unknown;
@@ -218,6 +252,7 @@ export type KitDeValeurs = {
 export const KIT_JOUEUR = {
   pourcentage: PourcentageJouable,
   points: PointsJouables,
+  seuil: PointsJouables,
   probabilite: ProbabiliteJouable,
   note: "",
   exemple: (nombre: number) => ({ minimum: 0, current: nombre, maximum: nombre }),
@@ -226,6 +261,7 @@ export const KIT_JOUEUR = {
 export const KIT_SOUPLE = {
   pourcentage: PourcentageSouple,
   points: PointsSouples,
+  seuil: SeuilsSouples,
   probabilite: ProbabiliteSouple,
   note: NOTE_FORME,
   exemple: (nombre: number) => nombre,

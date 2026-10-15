@@ -20,11 +20,11 @@ function construireSante<K extends KitDeValeurs>(k: K) {
    */
   const Seuil = z
     .strictObject({
-      base: k.points.meta({
+      base: k.seuil.meta({
         description: "Valeur du seuil sur une localisation non couverte." + k.note,
         examples: [k.exemple(7)],
       }),
-      couvert: k.points.optional().meta({
+      couvert: k.seuil.optional().meta({
         description:
           "Valeur du seuil sur une localisation couverte par une armure ou un trait de caractère. Vaut la base augmentée des points de protection." +
           k.note,
@@ -125,6 +125,7 @@ function construireSante<K extends KitDeValeurs>(k: K) {
 const joueur = construireSante({
   ...KIT_JOUEUR,
   points: Points,
+  seuil: Points,
   exemple: (nombre: number) => nombre,
 });
 const souple = construireSante(KIT_SOUPLE);

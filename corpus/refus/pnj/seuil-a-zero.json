@@ -1,0 +1,33 @@
+{
+  "nom": "Seuils à zéro",
+  "sante": {
+    "physique": {
+      "superficiel": {
+        "base": 0
+      },
+      "leger": {
+        "base": 0
+      },
+      "grave": {
+        "base": 0
+      },
+      "profond": {
+        "base": 0
+      }
+    },
+    "mental": {
+      "superficiel": {
+        "base": 0
+      },
+      "leger": {
+        "base": 0
+      },
+      "grave": {
+        "base": 0
+      },
+      "profond": {
+        "base": 0
+      }
+    }
+  }
+}

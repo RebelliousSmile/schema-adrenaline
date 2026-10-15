@@ -1,0 +1,26 @@
+{
+  "nom": "Seuils à zéro",
+  "caracteristiques": {
+    "for": 40,
+    "con": 50,
+    "dex": 20,
+    "rap": 15,
+    "per": 30
+  },
+  "sante": {
+    "physique": {
+      "superficiel": {
+        "base": 0
+      },
+      "leger": {
+        "base": 0
+      },
+      "grave": {
+        "base": 0
+      },
+      "profond": {
+        "base": 0
+      }
+    }
+  }
+}

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [6.0.0] - 2026-10-15
+
+### Breaking
+
+- A PNJ or creature damage threshold (`base`, `couvert`) of zero is refused:
+  the paper sheet never prints a zero threshold, so a `0 / 0 / 0 / 0` row was a
+  blank field read as a value. The document is rejected, naming `base`, instead
+  of printing `SP 0 / 0 / 0 / 0`. Procedure: enter the real threshold, or remove
+  the `sante` block. The triplet keeps `minimum = 0`; its `current` must be at
+  least 1. The PJ thresholds are unchanged.
+
 ## [5.0.0] - 2026-10-12
 
 ### Breaking

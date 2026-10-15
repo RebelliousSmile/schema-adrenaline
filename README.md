@@ -4,8 +4,8 @@ _Schémas de données ouverts et versionnés pour l'Adrenaline System, le moteur
 
 ## État du projet
 
-Ce dépôt déclare `schema-adrenaline@5.0.0` et la baseline de schéma `5.0.0`
-(rupture avec le contrat 4 : voir le `CHANGELOG`). Les consommateurs épinglent une archive de release
+Ce dépôt déclare `schema-adrenaline@6.0.0` et la baseline de schéma `6.0.0`
+(rupture avec le contrat 5 : voir le `CHANGELOG`). Les consommateurs épinglent une archive de release
 publiée, pas la branche mouvante.
 
 - _Ça marche aujourd'hui :_ trois schémas de personnage (`pj`, `pnj`, `monstre`) avec exemples JSON et TOML, un corpus de conformité partagé, des codecs TypeScript, et le pack Handbook (thèmes, polices, callouts)

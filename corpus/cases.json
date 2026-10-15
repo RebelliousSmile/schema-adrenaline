@@ -535,6 +535,20 @@
       "target": "pj",
       "format": "json",
       "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/pnj/seuil-a-zero.json",
+      "target": "pnj",
+      "format": "json",
+      "expect": "reject",
+      "names": "base"
+    },
+    {
+      "path": "corpus/refus/monstre/seuil-a-zero.json",
+      "target": "monstre",
+      "format": "json",
+      "expect": "reject",
+      "names": "base"
     }
   ]
 }
