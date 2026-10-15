@@ -18,7 +18,7 @@ Une fiche de personnage Zombiology rendue dans Obsidian par Handbook, thème som
 
 ![Fiche PJ Zombiology rendue dans Obsidian par Handbook](docs/images/handbook-fiche-pj.png)
 
-Le même pack existe en polarité claire. Ces deux captures sont rendues par Playwright à partir des jetons, polices et textures de `handbook/adrenaline/pack.json` : c'est une mise en page de référence construite depuis le pack, pas une capture d'Obsidian.
+Le même pack existe en polarité claire. Ces deux captures sont de vraies captures d'Obsidian 1.14.4 avec le plugin Handbook : la note de test porte un titre, un mot-clé, un seuil de dégâts, des encarts et une table de lancer, rendus avec les jetons, polices et textures de `handbook/adrenaline/pack.json`.
 
 ![Jetons du pack Adrenaline, polarité claire](docs/images/pack-light.png)
 ![Jetons du pack Adrenaline, polarité sombre](docs/images/pack-dark.png)
