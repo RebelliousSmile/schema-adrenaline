@@ -3081,7 +3081,7 @@
       "minLength": 1
     },
     "etats": {
-      "description": "L'autre état de la créature, en plus de son état de base : zéro (carte unique) ou un, jamais davantage. Il porte un delta complet de profil. La forme héritée `etatAlternatif` compte pour cet unique état : la combiner avec `etats`, même vide, est refusé par le codec seul : le générateur de schéma n'émet pas cette contrainte sans `refine`, que le dépôt interdit, donc le schéma JSON publié accepte ce mélange.",
+      "description": "L'autre état de la créature, en plus de son état de base : zéro (carte unique) ou un, jamais davantage. Il porte un delta complet de profil. La forme héritée `etatAlternatif` compte pour cet unique état : la combiner avec `etats`, même vide, ou avec `etatActif` est refusé, par le codec et par le schéma JSON publié (mot-clé `not`).",
       "maxItems": 1,
       "type": "array",
       "items": {
@@ -8732,6 +8732,22 @@
     "hiddenPaths": [
       "/etatDePartie",
       "/meta"
+    ]
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "etatAlternatif",
+          "etats"
+        ]
+      },
+      {
+        "required": [
+          "etatAlternatif",
+          "etatActif"
+        ]
+      }
     ]
   }
 }

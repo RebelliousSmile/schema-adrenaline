@@ -4,7 +4,7 @@ _Schémas de données ouverts et versionnés pour l'Adrenaline System, le moteur
 
 ## État du projet
 
-Ce dépôt déclare `schema-adrenaline@6.0.0` et la baseline de schéma `6.0.0`
+Ce dépôt déclare `schema-adrenaline@6.1.0` et la baseline de schéma `6.1.0`
 (rupture avec le contrat 5 : voir le `CHANGELOG`). Les consommateurs épinglent une archive de release
 publiée, pas la branche mouvante.
 

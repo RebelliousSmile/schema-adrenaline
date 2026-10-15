@@ -185,7 +185,7 @@ export const Monstre = z
     }),
     etats: z.array(EtatDeCreature).max(1).optional().meta({
       description:
-        "L'autre état de la créature, en plus de son état de base : zéro (carte unique) ou un, jamais davantage. Il porte un delta complet de profil. La forme héritée `etatAlternatif` compte pour cet unique état : la combiner avec `etats`, même vide, est refusé par le codec seul : le générateur de schéma n'émet pas cette contrainte sans `refine`, que le dépôt interdit, donc le schéma JSON publié accepte ce mélange.",
+        "L'autre état de la créature, en plus de son état de base : zéro (carte unique) ou un, jamais davantage. Il porte un delta complet de profil. La forme héritée `etatAlternatif` compte pour cet unique état : la combiner avec `etats`, même vide, ou avec `etatActif` est refusé, par le codec et par le schéma JSON publié (mot-clé `not`).",
     }),
     etatAlternatif: EtatAlternatifHistorique.optional().meta({
       description: "Ancien format lu pour compatibilité. Les nouveaux documents utilisent `etats`.",
@@ -230,6 +230,15 @@ export const Monstre = z
     description:
       "Fiche de créature du socle Adrenaline System : nom et caractéristiques physiques requis, perception optionnelle, états identifiés, combat structuré, contagion générique et bloc narratif facultatifs.",
     "x-adrenaline-presentation": MONSTRE_PRESENTATION,
+    // `etatAlternatif` est la forme héritée de l'état unique : la mêler à `etats` ou à
+    // `etatActif` est refusé par le codec. Le mot-clé `not` porte la même exclusion dans le
+    // schéma JSON, sans `refine` (que le dépôt interdit).
+    not: {
+      anyOf: [
+        { required: ["etatAlternatif", "etats"] },
+        { required: ["etatAlternatif", "etatActif"] },
+      ],
+    },
   });
 
 export type MonstreValeur = z.infer<typeof Monstre>;

@@ -129,13 +129,12 @@ for (const testCase of manifest.cases) {
         `${label}: the draft-7 schema must accept a structurally valid inverted range`,
       );
     }
-    // The mix of `etatAlternatif` with `etats` is refused by the codec alone: the generator
-    // emits no such constraint without a `refine`, which the repository forbids. The published
-    // schema accepts both fixtures; if it ever refuses them, the documented gap has moved.
+    // The mix of `etatAlternatif` with `etats` is refused by the codec and, since 6.1.0, by the
+    // published schema too (a `not` carried by the creature meta), so both fixtures must fail.
     if (testCase.path.includes("etat-alternatif-et-etats")) {
       assert.ok(
-        structuralValidator(testCase.target)(raw),
-        `${label}: the draft-7 schema must accept the mix the codec refuses`,
+        !structuralValidator(testCase.target)(raw),
+        `${label}: the draft-7 schema must refuse the mix the codec refuses`,
       );
     }
     if (testCase.path.includes("presentation-adapter-inconnu")) {

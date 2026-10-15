@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [6.1.0] - 2026-10-15
+
+### Changed
+
+- The published JSON Schema for a creature now refuses `etatAlternatif` together
+  with `etats` or `etatActif`, as the codec already did. Until now a JSON Schema
+  validator accepted the mix that the codec rejected. The codec and the corpus
+  are unchanged; only the published schema is stricter. Contract 6 is kept.
+
 ## [6.0.0] - 2026-10-15
 
 ### Breaking
