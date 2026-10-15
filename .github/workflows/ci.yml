@@ -47,7 +47,7 @@ jobs:
 
       - name: Install Handbook dependencies
         working-directory: handbook-host
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       # Handbook's source-assertion script (tools/assert-adrenaline-source.mjs) is
       # deliberately not run here. It only exists on the frozen 2.7.x tags, where its
