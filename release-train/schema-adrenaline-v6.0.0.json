@@ -1,0 +1,25 @@
+{
+  "protocol": 1,
+  "candidate": {
+    "provider": "schema-adrenaline",
+    "releaseUrl": "https://github.com/RebelliousSmile/schema-adrenaline/releases/download/v6.0.0-rc.1/schema-adrenaline-6.0.0.tgz",
+    "sha256": "5d76fcdc88d81aa3fe287571abd4f9651922e857e1e8e8594eae7c9e0dd9ee21",
+    "integrity": "sha512-xv8IkKQi/4XqWqCJd3OmyPHUduSq2L1HQNdDarOslHmeoLPO9h2fRids12TUrJrEcs0v0eXQh+fCitBa8fpTpQ==",
+    "version": "6.0.0",
+    "stagingTag": "v6.0.0-rc.1",
+    "finalTag": "v6.0.0",
+    "providerCommit": "25011b2f1edb26539b6a6e8002465098693f9c1b"
+  },
+  "consumers": [
+    {
+      "role": "handbook",
+      "repository": "RebelliousSmile/obsidian-handbook",
+      "ref": "c2cec289e6afaf6280c52f9b764873bee6ab3060"
+    },
+    {
+      "role": "lantern",
+      "repository": "RebelliousSmile/lantern",
+      "ref": "89dec0099b8661abe4bfa98299bdf3f31417dde8"
+    }
+  ]
+}
