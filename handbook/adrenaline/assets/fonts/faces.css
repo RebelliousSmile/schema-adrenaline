@@ -1,0 +1,36 @@
+/*
+ * Static weights of Adrenaline Body (EB Garamond) beyond the 400 face that
+ * assets.fonts declares. One file per weight: a variable font reaches a
+ * Chromium PDF export as Type3 glyph procedures, which printers refuse.
+ */
+@font-face {
+  font-family: "Adrenaline Body";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("adrenaline-body-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Adrenaline Body";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("adrenaline-body-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Adrenaline Body";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("adrenaline-body-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Adrenaline Body";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("adrenaline-body-800.woff2") format("woff2");
+}

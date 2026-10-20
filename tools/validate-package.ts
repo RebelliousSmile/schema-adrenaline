@@ -123,6 +123,8 @@ const assetFiles = [
   ...Object.values(pack.pack.assets.fonts).map((asset) =>
     typeof asset === "string" ? asset : asset.file,
   ),
+  ...(pack.pack.assets.stylesheets ?? []),
+  ...(pack.pack.assets.resources ?? []),
 ];
 for (const asset of assetFiles) {
   assert.ok(

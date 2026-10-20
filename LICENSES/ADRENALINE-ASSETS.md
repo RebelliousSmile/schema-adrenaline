@@ -25,6 +25,6 @@ licence text is stored beside the font files and in this directory.
 
 | Family in the pack     | File                         | Upstream                                                   | Licence     |
 | ---------------------- | ---------------------------- | ---------------------------------------------------------- | ----------- |
-| Adrenaline Body        | `adrenaline-body.woff2`      | EB Garamond, `@fontsource-variable/eb-garamond@5.3.0`      | SIL OFL 1.1 |
+| Adrenaline Body        | `adrenaline-body-400.woff2` to `adrenaline-body-800.woff2` (one per weight) | EB Garamond, `@fontsource/eb-garamond@5.3.0`, `eb-garamond-latin-<weight>-normal.woff2` | SIL OFL 1.1 |
 | Adrenaline Display     | `adrenaline-display.woff2`   | Rubik Dirt, `@fontsource/rubik-dirt@5.3.0`                 | SIL OFL 1.1 |
-| Adrenaline Handwriting | `adrenaline-handwriting.ttf` | Caveat, googlefonts/caveat at `59745e8`                    | SIL OFL 1.1 |
+| Adrenaline Handwriting | `adrenaline-handwriting.ttf` | Caveat, googlefonts/caveat at `59745e8`, `fonts/ttf/Caveat-Regular.ttf` | SIL OFL 1.1 |

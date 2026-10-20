@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 type RecordValue = Record<string, unknown>;
@@ -33,6 +34,16 @@ const TOKEN_PATTERN = /^--[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FORBIDDEN_VALUE = /[{};<>]/;
 const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "webp", "gif", "svg"]);
 const FONT_EXTENSIONS = new Set(["woff2", "woff", "ttf", "otf"]);
+const ASSET_FIELDS = ["root", "images", "fonts", "stylesheets", "resources"];
+/* WOFF2 known-table index (W3C WOFF2, table 5.1): the directory names a table by its position. */
+const WOFF2_KNOWN_TAGS = (
+  "cmap head hhea hmtx maxp name OS/2 post cvt_ fpgm glyf loca prep CFF_ VORG EBDT EBLC gasp " +
+  "hdmx kern LTSH PCLT VDMX vhea vmtx BASE GDEF GPOS GSUB EBSC JSTF MATH CBDT CBLC COLR CPAL " +
+  "SVG_ sbix acnt avar bdat bloc bsln cvar fdsc feat fmtx fvar gvar hsty just lcar mort morx " +
+  "opbd prop trak Zapf Silf Glat Gloc Feat Sill"
+)
+  .split(" ")
+  .map((tag) => tag.replace("_", " "));
 const ADRENALINE_CAPABILITIES = [
   "block:adrenaline-pj",
   "block:adrenaline-pnj",
@@ -211,7 +222,7 @@ function validateAssetMap(
   packRoot: string,
   assetRoot: string,
   required: string[],
-): void {
+): string[] {
   const declarations = record(assets[field], `assets.${field}`);
   /* The loop below proves every declared file exists; it cannot notice a role that was never
      declared. Handbook resolves these roles by name, so a missing key is a silent theme hole. */
@@ -220,6 +231,7 @@ function validateAssetMap(
       throw new Error(`missing asset declaration: assets.${field}.${role}`);
     }
   }
+  const files: string[] = [];
   for (const [role, declaration] of Object.entries(declarations)) {
     const file =
       typeof declaration === "string"
@@ -230,6 +242,98 @@ function validateAssetMap(
       throw new Error(`unsupported ${field} extension: ${relative}`);
     const resolved = path.join(packRoot, assetRoot, relative);
     if (!fs.existsSync(resolved)) throw new Error(`missing asset: ${resolved}`);
+    if (field === "fonts") requireStaticFont(resolved);
+    files.push(relative);
+  }
+  return files;
+}
+
+/* Table tags of a font file, read from its directory: sfnt (TTF/OTF), WOFF and WOFF2. */
+function fontTables(file: string): string[] {
+  const bytes = fs.readFileSync(file);
+  const signature = bytes.toString("latin1", 0, 4);
+  const tags: string[] = [];
+  if (signature === "wOF2") {
+    let offset = 48;
+    const readBase128 = (): number => {
+      let value = 0;
+      for (let index = 0; index < 5; index += 1) {
+        const byte = bytes[offset];
+        offset += 1;
+        value = value * 128 + (byte & 0x7f);
+        if ((byte & 0x80) === 0) return value;
+      }
+      throw new Error(`${file}: malformed WOFF2 table directory`);
+    };
+    for (let table = 0; table < bytes.readUInt16BE(12); table += 1) {
+      const flags = bytes[offset];
+      offset += 1;
+      const known = flags & 0x3f;
+      let tag: string;
+      if (known === 63) {
+        tag = bytes.toString("latin1", offset, offset + 4);
+        offset += 4;
+      } else {
+        tag = WOFF2_KNOWN_TAGS[known] ?? `#${known}`;
+      }
+      readBase128();
+      const transform = flags >> 6;
+      const glyphData = tag === "glyf" || tag === "loca";
+      if ((glyphData && transform === 0) || (!glyphData && transform !== 0)) readBase128();
+      tags.push(tag);
+    }
+    return tags;
+  }
+  const woff = signature === "wOFF";
+  const count = bytes.readUInt16BE(woff ? 12 : 4);
+  const start = woff ? 44 : 12;
+  const size = woff ? 20 : 16;
+  for (let table = 0; table < count; table += 1) {
+    tags.push(bytes.toString("latin1", start + table * size, start + table * size + 4));
+  }
+  return tags;
+}
+
+/* Chromium writes every weight and size of a variable font into a PDF export as Type3 glyph
+   procedures, and printers refuse such files (obsidian-handbook#116): one static file per weight. */
+function requireStaticFont(file: string): void {
+  if (fontTables(file).includes("fvar")) throw new Error(`variable font: ${file}`);
+}
+
+function assetList(assets: RecordValue, field: "stylesheets" | "resources"): string[] {
+  const value = assets[field];
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) throw new Error(`assets.${field} must be a list`);
+  return value.map((entry, index) =>
+    safeRelative(text(entry, `assets.${field}[${index}]`), `assets.${field}[${index}]`),
+  );
+}
+
+/* The checks Handbook runs on a pack stylesheet before it loads it (src/games/assets.ts:
+   validatePackCss, rewritePackUrls): a sheet it would drop must not be published. */
+function validateStylesheets(
+  assets: RecordValue,
+  packRoot: string,
+  assetRoot: string,
+  declared: Set<string>,
+): void {
+  for (const stylesheet of assetList(assets, "stylesheets")) {
+    if (extension(stylesheet) !== "css") throw new Error(`unsupported stylesheet: ${stylesheet}`);
+    const resolved = path.join(packRoot, assetRoot, stylesheet);
+    if (!fs.existsSync(resolved)) throw new Error(`missing asset: ${resolved}`);
+    const source = fs.readFileSync(resolved, "utf8");
+    if (/@import\b/i.test(source)) throw new Error(`${stylesheet}: @import is not allowed`);
+    const folder = stylesheet.includes("/") ? stylesheet.slice(0, stylesheet.lastIndexOf("/")) : "";
+    const pattern = /url\(\s*(['"]?)([^'"\s)]+)\1\s*\)/gi;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(source)) !== null) {
+      const value = match[2];
+      if (/^(?:[a-z][a-z0-9+.-]*:|\/|\\)/i.test(value)) {
+        throw new Error(`${stylesheet}: unsafe URL ${value}`);
+      }
+      const relative = folder ? `${folder}/${value}` : value;
+      if (!declared.has(relative)) throw new Error(`${stylesheet}: undeclared URL ${value}`);
+    }
   }
 }
 
@@ -316,8 +420,27 @@ export function validateHandbookPack(
     assets.root === undefined
       ? "assets"
       : safeRelative(text(assets.root, "assets.root"), "assets.root");
-  validateAssetMap(assets, "images", IMAGE_EXTENSIONS, packRoot, assetRoot, REQUIRED_IMAGE_KEYS);
-  validateAssetMap(assets, "fonts", FONT_EXTENSIONS, packRoot, assetRoot, REQUIRED_FONT_KEYS);
+  knownFields(assets, ASSET_FIELDS, "pack.assets");
+  const declared = new Set([
+    ...validateAssetMap(
+      assets,
+      "images",
+      IMAGE_EXTENSIONS,
+      packRoot,
+      assetRoot,
+      REQUIRED_IMAGE_KEYS,
+    ),
+    ...validateAssetMap(assets, "fonts", FONT_EXTENSIONS, packRoot, assetRoot, REQUIRED_FONT_KEYS),
+  ]);
+  for (const resource of assetList(assets, "resources")) {
+    if (!FONT_EXTENSIONS.has(extension(resource)))
+      throw new Error(`unsupported resources extension: ${resource}`);
+    const resolved = path.join(packRoot, assetRoot, resource);
+    if (!fs.existsSync(resolved)) throw new Error(`missing asset: ${resolved}`);
+    requireStaticFont(resolved);
+    declared.add(resource);
+  }
+  validateStylesheets(assets, packRoot, assetRoot, declared);
 
   for (const polarity of ["light", "dark"]) {
     const layer = record(style[polarity], `style.${polarity}`);
@@ -521,6 +644,24 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   const fontAssets = record(fontPack.assets, "assets");
   delete record(fontAssets.fonts, "fonts")["Adrenaline Display"];
 
+  const undeclaredFace = clone(packSource) as RecordValue;
+  const undeclaredAssets = record(record(undeclaredFace.pack, "pack").assets, "assets");
+  undeclaredAssets.resources = (undeclaredAssets.resources as string[]).slice(1);
+
+  const escapingResource = clone(packSource) as RecordValue;
+  const escapingAssets = record(record(escapingResource.pack, "pack").assets, "assets");
+  escapingAssets.resources = ["../pack.json"];
+
+  const sheetResource = clone(packSource) as RecordValue;
+  const sheetAssets = record(record(sheetResource.pack, "pack").assets, "assets");
+  sheetAssets.resources = [
+    ...(sheetAssets.resources as string[]),
+    ...(sheetAssets.stylesheets as string[]),
+  ];
+
+  const unknownAssetField = clone(packSource) as RecordValue;
+  record(record(unknownAssetField.pack, "pack").assets, "assets").scripts = ["fonts/faces.js"];
+
   const lowFloor = clone(packSource) as RecordValue;
   lowFloor.minimumHandbookVersion = justBelow(MINIMUM_HANDBOOK_FLOOR);
 
@@ -575,6 +716,50 @@ function selfTest(catalogueSource: unknown, packSource: unknown): void {
   refused("texture token in workspace", () => validateHandbookPack(workspaceTexture));
   refused("missing font declaration", () => validateHandbookPack(missingFont));
   refused("minimumHandbookVersion below floor", () => validateHandbookPack(lowFloor));
+  refused(
+    "stylesheet URL left out of resources",
+    () => validateHandbookPack(undeclaredFace),
+    "undeclared URL",
+  );
+  refused("escaping resource", () => validateHandbookPack(escapingResource), "safe relative path");
+  refused(
+    "stylesheet listed as a resource",
+    () => validateHandbookPack(sheetResource),
+    "unsupported resources extension",
+  );
+  refused("unknown asset field", () => validateHandbookPack(unknownAssetField), "scripts");
+  /* Font directories written by hand: an sfnt and a WOFF2 that name fvar, by its WOFF2 index and
+     by an arbitrary tag, so the reader is proven on each path it takes. */
+  const folder = fs.mkdtempSync(path.join(os.tmpdir(), "adrenaline-fonts-"));
+  try {
+    const sfnt = Buffer.alloc(28);
+    sfnt.writeUInt32BE(0x00010000, 0);
+    sfnt.writeUInt16BE(1, 4);
+    sfnt.write("fvar", 12, "latin1");
+    const woff2 = (entry: number[]): Buffer => {
+      const bytes = Buffer.alloc(48 + entry.length);
+      bytes.write("wOF2", 0, "latin1");
+      bytes.writeUInt16BE(1, 12);
+      Buffer.from(entry).copy(bytes, 48);
+      return bytes;
+    };
+    const fvar = [..."fvar"].map((character) => character.charCodeAt(0));
+    const cases: [string, Buffer][] = [
+      ["variable.ttf", sfnt],
+      ["variable-known.woff2", woff2([47, 1])],
+      ["variable-tagged.woff2", woff2([63, ...fvar, 1])],
+    ];
+    for (const [name, bytes] of cases) {
+      const file = path.join(folder, name);
+      fs.writeFileSync(file, bytes);
+      refused(name, () => requireStaticFont(file), "variable font");
+    }
+    const staticFile = path.join(folder, "static.woff2");
+    fs.writeFileSync(staticFile, woff2([10, 1, 1]));
+    requireStaticFont(staticFile);
+  } finally {
+    fs.rmSync(folder, { recursive: true, force: true });
+  }
 }
 
 const catalogueSource = JSON.parse(fs.readFileSync(CATALOGUE_PATH, "utf8")) as unknown;

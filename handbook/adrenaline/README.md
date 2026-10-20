@@ -30,16 +30,24 @@ repository licenses. The current asset payload is reported by
 
 The text and title faces are freely redistributable substitutes, taken
 unmodified from Fontsource; they are not claimed to be the typefaces of the
-original game. `Adrenaline Body` is EB Garamond (variable, weights 400 to 800,
-`@fontsource-variable/eb-garamond@5.3.0`) and `Adrenaline Display` is Rubik
+original game. `Adrenaline Body` is EB Garamond (one static file per weight,
+400 to 800, `@fontsource/eb-garamond@5.3.0`) and `Adrenaline Display` is Rubik
 Dirt (`@fontsource/rubik-dirt@5.3.0`), both Latin subsets under the SIL Open
 Font License 1.1, included at `assets/fonts/EBGaramond-OFL.txt` and
 `assets/fonts/RubikDirt-OFL.txt`.
 
 The handwriting face is [Caveat](https://github.com/googlefonts/caveat),
-downloaded from commit `59745e818ef7973e11e70cb1358d0e902b56c5fc`.
+its static `fonts/ttf/Caveat-Regular.ttf` downloaded from commit
+`59745e818ef7973e11e70cb1358d0e902b56c5fc`.
 Its unmodified font file is distributed under the SIL Open Font License 1.1,
 included at `assets/fonts/Caveat-OFL.txt`.
+
+Every face is a static font: a variable font reaches a Chromium PDF export as
+Type3 glyph procedures, which some printers refuse. `assets.fonts` declares
+the 400 face of each family; the other weights of `Adrenaline Body` are
+`@font-face` rules of `assets/fonts/faces.css`, their files listed in
+`assets.resources`. A host older than Handbook 2.22.0 ignores those two fields
+and synthesises bold from the 400 face.
 
 ## Pack tokens vs. host selectors
 

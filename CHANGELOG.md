@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [6.2.0] - 2026-10-20
+
+### Changed
+
+- The Handbook pack (0.14.0) publishes static fonts only. A Chromium PDF
+  export writes every weight of a variable font as Type3 glyph procedures, and
+  some printers refuse the file (RebelliousSmile/obsidian-handbook#116).
+  `Adrenaline Body` is now one EB Garamond file per weight
+  (`fonts/adrenaline-body-400.woff2` to `-800.woff2`, Fontsource 5.3.0, latin
+  subset, unmodified): `assets.fonts` keeps the 400 face, and
+  `fonts/faces.css` declares 500 to 800 from `assets.resources`. Handbook below
+  2.22.0 does not install these and keeps synthesising bold from the 400 face.
+  `Adrenaline Handwriting` is the static Caveat Regular, same file path.
+  `fonts/adrenaline-body.woff2` is removed: a consumer that imported it by path
+  reads the per-weight files instead.
+- `validate:handbook` refuses a variable font in `assets.fonts` or
+  `assets.resources`, an unknown asset field, and a pack stylesheet that
+  Handbook would drop (`@import`, a URL outside the declared files).
+
 ## [6.1.0] - 2026-10-15
 
 ### Changed

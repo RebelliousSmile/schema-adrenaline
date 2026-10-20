@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "version": "0.13.0",
+  "version": "0.14.0",
   "minimumHandbookVersion": "2.7.0",
   "requires": [
     "block:adrenaline-pj",
@@ -370,8 +370,8 @@
       },
       "fonts": {
         "Adrenaline Body": {
-          "file": "fonts/adrenaline-body.woff2",
-          "weight": "400 800"
+          "file": "fonts/adrenaline-body-400.woff2",
+          "weight": "400"
         },
         "Adrenaline Display": {
           "file": "fonts/adrenaline-display.woff2",
@@ -381,7 +381,14 @@
           "file": "fonts/adrenaline-handwriting.ttf",
           "weight": "400"
         }
-      }
+      },
+      "stylesheets": ["fonts/faces.css"],
+      "resources": [
+        "fonts/adrenaline-body-500.woff2",
+        "fonts/adrenaline-body-600.woff2",
+        "fonts/adrenaline-body-700.woff2",
+        "fonts/adrenaline-body-800.woff2"
+      ]
     }
   }
 }

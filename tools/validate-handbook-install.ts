@@ -105,12 +105,32 @@ function resolvedSource(revision: string, marker: number, failAssets = false): R
 }
 
 const installationRoot = ".obsidian/handbook/sources/rebellioussmile--schema-adrenaline";
+/* Read from the pack, never listed here: a list would go on naming files the pack has dropped.
+   The extra fields only count once the Handbook under test installs them. */
+const packAssets = (
+  JSON.parse(fs.readFileSync(path.join("handbook", "adrenaline", "pack.json"), "utf8")) as {
+    pack: {
+      assets: {
+        images: Record<string, string>;
+        fonts: Record<string, string | { file: string }>;
+        stylesheets?: string[];
+        resources?: string[];
+      };
+    };
+  }
+).pack.assets;
+const hostAssetFields =
+  /const ASSET_FIELDS = \[([^\]]*)\]/.exec(
+    fs.readFileSync(path.join(handbookRoot, "src", "games", "fromSchema.ts"), "utf8"),
+  )?.[1] ?? "";
 const assetFiles = [
-  "paper-grain.webp",
-  "dark-organic.webp",
-  "warning-stripe.webp",
-  "fonts/adrenaline-body.woff2",
-  "fonts/adrenaline-display.woff2",
+  ...Object.keys(packAssets.images).map((role) => packAssets.images[role]),
+  ...Object.keys(packAssets.fonts).map((family) => {
+    const face = packAssets.fonts[family];
+    return typeof face === "string" ? face : face.file;
+  }),
+  ...(hostAssetFields.includes('"stylesheets"') ? (packAssets.stylesheets ?? []) : []),
+  ...(hostAssetFields.includes('"resources"') ? (packAssets.resources ?? []) : []),
 ];
 
 await installResolvedSchemaSource(plugin, source, resolvedSource("a".repeat(40), 1));
