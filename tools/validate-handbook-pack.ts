@@ -48,6 +48,7 @@ const ADRENALINE_CAPABILITIES = [
   "block:adrenaline-pj",
   "block:adrenaline-pnj",
   "block:adrenaline-monstre",
+  "block:adrenaline-relations",
   "style:adrenaline",
 ];
 /* Note tokens no contrast pair reaches: they paint surfaces, rules and bands rather than text,
