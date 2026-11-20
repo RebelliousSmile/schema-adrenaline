@@ -121,6 +121,28 @@ function releverBornesNues(noeud: unknown, chemin: string, trouvees: string[]): 
   }
 }
 
+/** Relève les chaînes libres sans `maxLength` et les tableaux sans `maxItems`. */
+function releverCapacitesManquantes(noeud: unknown, chemin: string, trouvees: string[]): void {
+  if (noeud === null || typeof noeud !== "object") return;
+  const o = noeud as Record<string, unknown>;
+
+  if (o.type === "string" && o.enum === undefined && o.const === undefined) {
+    if (typeof o.maxLength !== "number") trouvees.push(chemin);
+  }
+  if (o.type === "array" && typeof o.maxItems !== "number") trouvees.push(chemin);
+
+  for (const [cle, valeur] of Object.entries(o)) {
+    // Les exemples sont des valeurs, pas des sous-schémas.
+    if (cle === "examples" || cle === "default") continue;
+    // `meta` est la provenance commune aux quatre cibles, masquée à l'impression : elle n'occupe
+    // aucune place sur la page, et la borner ici changerait aussi les contrats pj, pnj et monstre.
+    if (chemin === "#/properties" && cle === "meta") continue;
+    if (valeur && typeof valeur === "object") {
+      releverCapacitesManquantes(valeur, `${chemin}/${cle}`, trouvees);
+    }
+  }
+}
+
 function listerFichiers(dossier: string): string[] {
   if (!fs.existsSync(dossier)) return [];
   return fs
@@ -300,6 +322,20 @@ function run(): void {
     } else if (capacite !== undefined) {
       console.error(`  ✗ ${t.name} ne porte pas de notes de partie`);
       echecs++;
+    }
+
+    // 6c. feuille de relations : une page A4 a une contenance finie, chaque texte et chaque
+    // tableau doivent publier leur borne
+    if (t.name === "relations") {
+      const nonBornes: string[] = [];
+      releverCapacitesManquantes(schema, "#", nonBornes);
+      if (nonBornes.length === 0) {
+        console.log("  ✓ relations : chaque texte et chaque tableau publient leur capacité");
+      } else {
+        for (const chemin of nonBornes)
+          console.error(`  ✗ relations : capacité absente à ${chemin}`);
+        echecs++;
+      }
     }
 
     // 7. cas de refus : chacun doit être rejeté

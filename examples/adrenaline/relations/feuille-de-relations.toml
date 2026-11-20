@@ -1,0 +1,40 @@
+personnage = "Claire Vasseur"
+joueur = "Camille"
+partie = "Les Veilleurs"
+testsDeDrame = 1
+
+[[autresPersonnages]]
+nom = "Malik"
+ceQueJeSais = "Ancien pompier, il cache une morsure au bras gauche."
+ceQueJeLuiDois = "Il m'a sortie de l'entrepôt en flammes."
+
+[[autresPersonnages]]
+nom = "Inès"
+ceQueJeSais = "Elle connaît les tunnels sous la gare."
+ceQuIlMeDoit = "Je lui ai cédé ma dernière dose d'antibiotiques."
+
+[[pnjs]]
+numero = 1
+nom = "Le docteur Ferran"
+attitude = "amicale"
+lien = { type = "travail", description = "ancien chef de service" }
+reliesA = [2]
+ceQuiLuiEstArrive = "Retranché dans l'aile nord de l'hôpital."
+notes = "Je me méfie de ses silences."
+
+[[pnjs]]
+numero = 2
+nom = "Joël Ferran"
+attitude = "inamicale"
+lien = { type = "familial", description = "neveu du docteur" }
+reliesA = [1]
+
+[[pnjs]]
+numero = 3
+nom = "Sœur Agathe"
+attitude = "indifferente"
+lien = { type = "amitie" }
+ceQuiLuiEstArrive = "Disparue depuis l'attaque du marché."
+
+[meta]
+typeDePublication = "maison"

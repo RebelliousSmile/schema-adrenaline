@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- A fourth document target, `relations`: the relationship sheet of a character, one
+  A4 page separate from the player sheet. A header line carries `personnage`
+  (required), `joueur` and `partie`. `autresPersonnages` holds up to 4 other player
+  characters, each with what the character knows of them and the debts both ways,
+  with no modifier. `pnjs` holds up to 10 NPCs, each with a sheet number from 1 to 99
+  (so a second sheet can carry on the numbering), a name, an attitude, a link (family,
+  friendship or work, with a short precision), the numbers of the NPCs it is linked
+  to, what happened to it and notes. `testsDeDrame` counts the drama tests made. Every
+  text and every list publishes its capacity (`maxLength`, `maxItems`): the capacities
+  are those of a printed page, not rules of the game.
+- The social modifier of an NPC is deduced from its attitude and never entered: the
+  presentation publishes `attitudeLevels` (label, nature, count), exported as
+  `ATTITUDE_LEVELS`.
+- The presentation of the sheet, `RELATIONS_PRESENTATION`, with the capability
+  `block:adrenaline-relations` and three forms: `pc-ties`, `npc-entries` and
+  `counter`. On a list, `fieldRows` names the properties of each item.
+- New exports: `FeuilleDeRelations`, `AttitudeDePnj`, `TypeDeLien`, the slot
+  constants, `parseRelationsJson`, `parseRelationsToml`, `stringifyRelationsJson`,
+  `stringifyRelationsToml`, `FeuilleDeRelationsDocument` and
+  `AdrenalineAttitudeLevel`. The codec registry gains the `relations` key.
+- Contract 6 and TOML 1.0.0 do not change: existing documents and consumers are
+  unaffected. The schema does not check that NPC numbers are unique nor that the
+  numbers in `reliesA` exist; an editor keeps them stable. The Handbook pack does not
+  require the new capability, and neither Handbook nor Lantern renders the sheet yet.
+
 ## [6.3.0] - 2026-11-20
 
 ### Added

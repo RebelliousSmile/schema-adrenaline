@@ -1,14 +1,14 @@
 # Schema Adrenaline
 
-_Schémas de données ouverts et versionnés pour l'Adrenaline System, le moteur d100 de Damien Coltice derrière Zombiology : fiches de personnage, PNJ et monstres échangés en JSON ou TOML entre Handbook, Lantern et les autres outils, sans format propriétaire._
+_Schémas de données ouverts et versionnés pour l'Adrenaline System, le moteur d100 de Damien Coltice derrière Zombiology : fiches de personnage, PNJ, monstres et feuilles de relations échangés en JSON ou TOML entre Handbook, Lantern et les autres outils, sans format propriétaire._
 
 ## État du projet
 
-Ce dépôt déclare `schema-adrenaline@6.3.0` et la baseline de schéma `6.3.0`
+Ce dépôt déclare `schema-adrenaline@6.4.0` et la baseline de schéma `6.4.0`
 (rupture avec le contrat 5 : voir le `CHANGELOG`). Les consommateurs épinglent une archive de release
 publiée, pas la branche mouvante.
 
-- _Ça marche aujourd'hui :_ trois schémas de personnage (`pj`, `pnj`, `monstre`) avec exemples JSON et TOML, un corpus de conformité partagé, des codecs TypeScript, et le pack Handbook (thèmes, polices, callouts)
+- _Ça marche aujourd'hui :_ quatre schémas — trois fiches de personnage (`pj`, `pnj`, `monstre`) et la feuille de relations (`relations`) — avec exemples JSON et TOML, un corpus de conformité partagé, des codecs TypeScript, et le pack Handbook (thèmes, polices, callouts)
 - _Pas encore :_ les catalogues de jeu (formations, compétences, armes) ne sont volontairement pas énumérés ; aucun schéma n'existe pour les règles, seulement pour les fiches
 - _Prochaine étape :_ l'intégration propre à Lantern vivra sous `lantern/` quand cet outil en aura besoin
 
@@ -90,11 +90,14 @@ La [documentation de Handbook](https://github.com/RebelliousSmile/obsidian-handb
 
 Ils vivent sous `adrenaline` plutôt que sous un dossier de jeu : ils décrivent le moteur, que partagent tous les jeux qui l'utilisent. Un dossier de jeu ne contient que ce qui lui est propre.
 
-| Schéma                                   | Couvre                                                                                                                                                                                                                                            |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `schemas/adrenaline/pj.schema.json`      | Une fiche de personnage joueur, bloc par bloc comme la fiche imprimée : nom, huit caractéristiques, quatre seuils physiques et quatre mentaux avec leur valeur couverte, protections, formations et compétences, équipement et paramètres de jeu. |
-| `schemas/adrenaline/pnj.schema.json`     | Une fiche de personnage non joueur : seul le nom est requis, tout le reste est optionnel, d'un figurant nommé avec un niveau de danger et une ligne en italique jusqu'à un personnage majeur entièrement chiffré.                                 |
-| `schemas/adrenaline/monstre.schema.json` | Une fiche de créature : nom et quatre caractéristiques physiques requis, mentales optionnelles, avec un état alternatif, un bloc de contagion générique et un bloc narratif.                                                                      |
+| Schéma                                     | Couvre                                                                                                                                                                                                                                                  |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `schemas/adrenaline/pj.schema.json`        | Une fiche de personnage joueur, bloc par bloc comme la fiche imprimée : nom, huit caractéristiques, quatre seuils physiques et quatre mentaux avec leur valeur couverte, protections, formations et compétences, équipement et paramètres de jeu.       |
+| `schemas/adrenaline/pnj.schema.json`       | Une fiche de personnage non joueur : seul le nom est requis, tout le reste est optionnel, d'un figurant nommé avec un niveau de danger et une ligne en italique jusqu'à un personnage majeur entièrement chiffré.                                       |
+| `schemas/adrenaline/monstre.schema.json`   | Une fiche de créature : nom et quatre caractéristiques physiques requis, mentales optionnelles, avec un état alternatif, un bloc de contagion générique et un bloc narratif.                                                                            |
+| `schemas/adrenaline/relations.schema.json` | Une feuille de relations A4, séparée de la fiche PJ : ligne d'en-tête (personnage, joueur, partie), quatre autres PJ avec ce qu'on sait d'eux et les dettes, dix PNJ numérotés avec attitude, lien et liens croisés, et le décompte des tests de drame. |
+
+La feuille de relations n'est pas encore rendue par Handbook ni éditée par Lantern : en attendant, elle s'échange en JSON ou en TOML et se valide avec le schéma ou les codecs. Le modificateur social d'un PNJ se déduit de son attitude, il ne se saisit pas : la table vit dans l'export `ATTITUDE_LEVELS`.
 
 ## Provenance d'un fichier
 
@@ -125,7 +128,7 @@ const pnj = parsePnjToml(tomlSource);
 const json = ADRENALINE_DOCUMENT_CODECS.monstre.parseJson(jsonSource);
 ```
 
-Les clés du registre sont `pj`, `pnj` et `monstre`. Chaque codec lit et sérialise JSON et TOML avec le même schéma Zod strict, puis vérifie `minimum ≤ current ≤ maximum` : les clés inconnues et les intervalles jouables inversés sont rejetés, pas supprimés en silence. Les schémas Zod exportés ne valident volontairement que la structure ; utilise un codec ou `validatePlayableRanges` pour le contrat portable complet.
+Les clés du registre sont `pj`, `pnj`, `monstre` et `relations` (`parseRelationsJson`, `parseRelationsToml`, `stringifyRelationsJson`, `stringifyRelationsToml`). Chaque codec lit et sérialise JSON et TOML avec le même schéma Zod strict, puis vérifie `minimum ≤ current ≤ maximum` : les clés inconnues et les intervalles jouables inversés sont rejetés, pas supprimés en silence. Les schémas Zod exportés ne valident volontairement que la structure ; utilise un codec ou `validatePlayableRanges` pour le contrat portable complet.
 
 ### Valider des données (tout langage)
 
@@ -178,6 +181,7 @@ Chaque cible publie, dans son schéma JSON, un descripteur `x-adrenaline-present
 - Forme `threshold-rows` : sur la carte compacte (créature et PNJ), les seuils d'une rangée s'impriment après leur sigle, séparés par une barre oblique entourée d'espaces : « SP 7 / 14 / 19 / 24 ». La feuille de papier du PJ ne change pas.
 
 - Fiche PJ, formes `reference-table` (table de règles à texte fixe, sans chemin lu : `referenceTable` porte colonnes, lignes, légende), `location-grid` (six localisations de trois cases, la localisation saisie coche la première), `wound-circles` (blessures par durée, deux colonnes, un cercle coché ou non par durée) et `circle-row` (quatre cercles). Propriétés de bloc : `thresholdLevels` (libellés des seuils par position, malus de 1 à 4) et `notes` (textes fixes de la feuille), `minimumRows` (formes `ruled-list` et `weapon-lines`, entier ≥ 1 : nombre minimal de lignes réglées imprimées, soit 5 pour `possessions`, 7 pour `armes-physiques`, 5 pour `avantages-immunites` ; les lignes saisies au-delà s'ajoutent, rien n'est tronqué, et la liste du document reste non bornée). Le PJ imprime la valeur courante seule des caractéristiques ; les valeurs ne sont jamais calculées.
+- Feuille de relations (capacité `block:adrenaline-relations`), formes `pc-ties` (un emplacement d'autre PJ par élément de `/autresPersonnages`), `npc-entries` (une fiche par élément de `/pnjs`) et `counter` (un entier écrit après son libellé). Sur ces deux listes, `fieldRows` nomme les propriétés de chaque élément ; le nombre d'emplacements imprimés est le `maxItems` du schéma. `attitudeLevels` (bloc `npc-entries` seul) donne, dans l'ordre de l'enum `attitude`, le libellé, la nature (`bonus`, `malus`, `aucun`) et le nombre de modificateurs de chaque attitude : le consommateur imprime le modificateur après l'attitude saisie, sans jamais le stocker.
 
 ### Compatibilité et versionnement
 

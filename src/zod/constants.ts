@@ -3,6 +3,7 @@ import { ZodObject } from "zod";
 import { PersonnageJoueur } from "./adrenaline/pj.js";
 import { PersonnageNonJoue } from "./adrenaline/pnj.js";
 import { Monstre } from "./adrenaline/monstre.js";
+import { FeuilleDeRelations } from "./adrenaline/relations.js";
 
 type Game = {
   name: string;
@@ -60,6 +61,11 @@ export const TARGETS: Array<SchemaTarget> = [
   {
     name: "monstre",
     zod: Monstre,
+    game: GAMES.adrenaline,
+  },
+  {
+    name: "relations",
+    zod: FeuilleDeRelations,
     game: GAMES.adrenaline,
   },
 ];

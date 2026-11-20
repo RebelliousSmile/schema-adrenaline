@@ -3,10 +3,17 @@ export {
   ADRENALINE_SCHEMA_VERSION,
   ADRENALINE_TOML_VERSION,
 } from "./contract-version.js";
-export { MONSTRE_PRESENTATION, PJ_PRESENTATION, PNJ_PRESENTATION } from "./presentation.js";
+export {
+  ATTITUDE_LEVELS,
+  MONSTRE_PRESENTATION,
+  PJ_PRESENTATION,
+  PNJ_PRESENTATION,
+  RELATIONS_PRESENTATION,
+} from "./presentation.js";
 export { ADRENALINE_VISUAL_CALLOUTS } from "./callouts.js";
 export type { AdrenalineVisualCallout } from "./callouts.js";
 export type {
+  AdrenalineAttitudeLevel,
   AdrenalinePresentation,
   AdrenalinePresentationAppearance,
   AdrenalinePresentationBlock,
@@ -24,18 +31,23 @@ export {
   parsePjToml,
   parsePnjJson,
   parsePnjToml,
+  parseRelationsJson,
+  parseRelationsToml,
   stringifyMonstreJson,
   stringifyMonstreToml,
   stringifyPjJson,
   stringifyPjToml,
   stringifyPnjJson,
   stringifyPnjToml,
+  stringifyRelationsJson,
+  stringifyRelationsToml,
   resoudreEtatMonstre,
 } from "./codecs/documents.js";
 export type {
   AdrenalineDocumentByTarget,
   AdrenalineDocumentCodec,
   AdrenalineDocumentTarget,
+  FeuilleDeRelationsDocument,
   MonstreDocument,
   MonstreResolu,
   Pj,
@@ -89,3 +101,16 @@ export {
 export type { ParametresDuJeuValeur, PersonnageJoueurValeur } from "./zod/adrenaline/pj.js";
 export { PersonnageNonJoue } from "./zod/adrenaline/pnj.js";
 export type { PersonnageNonJoueValeur } from "./zod/adrenaline/pnj.js";
+export {
+  AUTRES_PJ_EMPLACEMENTS,
+  AttitudeDePnj,
+  FeuilleDeRelations,
+  NUMERO_PNJ_MAXIMUM,
+  PNJ_EMPLACEMENTS,
+  TypeDeLien,
+} from "./zod/adrenaline/relations.js";
+export type {
+  AttitudeDePnjValeur,
+  FeuilleDeRelationsValeur,
+  TypeDeLienValeur,
+} from "./zod/adrenaline/relations.js";

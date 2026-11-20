@@ -1,0 +1,13 @@
+{
+  "personnage": "Claire Vasseur",
+  "pnjs": [
+    {
+      "numero": 0,
+      "nom": "Le docteur Ferran",
+      "attitude": "amicale",
+      "lien": {
+        "type": "travail"
+      }
+    }
+  ]
+}

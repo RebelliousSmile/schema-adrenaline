@@ -34,7 +34,10 @@ export type AdrenalinePresentationForm =
   | "reference-table"
   | "location-grid"
   | "wound-circles"
-  | "circle-row";
+  | "circle-row"
+  | "pc-ties"
+  | "npc-entries"
+  | "counter";
 
 /** A location of the player sheet grid, with the d10 range that designates it. */
 export type AdrenalineLocationCell = { id: string; label: string; range: string };
@@ -62,6 +65,19 @@ export type AdrenalineThresholdLevel = {
   key: "superficiel" | "leger" | "grave" | "profond";
   label: string;
   malus: 1 | 2 | 3 | 4;
+};
+
+/**
+ * Label, nature and count of an attitude level on the relationship sheet: the social modifier
+ * printed after the attitude, deduced from it and never entered. One bonus or malus is worth 10 %.
+ * The match with the contract enum `attitude` is positional and checked by the presentation
+ * validator: this module never imports the contract, which already imports it.
+ */
+export type AdrenalineAttitudeLevel = {
+  key: "hostile" | "inamicale" | "indifferente" | "amicale" | "loyale";
+  label: string;
+  nature: "bonus" | "malus" | "aucun";
+  count: number;
 };
 
 export type AdrenalinePresentationDecoration =
@@ -230,7 +246,8 @@ export type AdrenalinePresentationBlock = {
   formationTypes?: readonly string[];
   placement?: { column: number; row: number; rowSpan?: number; columnSpan?: number };
   /**
-   * Printed rows of a field grid, by property name under the block path. A row
+   * Printed rows of a field grid, by property name under the block path. On a
+   * block that reads an array, they name the properties of each item. A row
    * naming one field spans the whole block.
    */
   fieldRows?: readonly (readonly string[])[];
@@ -248,6 +265,8 @@ export type AdrenalinePresentationBlock = {
   referenceTable?: AdrenalineReferenceTable;
   /** `threshold-rows` of the player sheet: printed label and malus count of each level. */
   thresholdLevels?: readonly AdrenalineThresholdLevel[];
+  /** `npc-entries` only: the attitude levels and the social modifier each one sets. */
+  attitudeLevels?: readonly AdrenalineAttitudeLevel[];
   /** Fixed texts printed by the block, as the sheet words them. */
   notes?: readonly string[];
   /**
@@ -339,9 +358,9 @@ export type AdrenalinePresentationCategories = {
 
 export type AdrenalinePresentation = {
   version: 1;
-  capability: `block:adrenaline-${"pj" | "pnj" | "monstre"}`;
+  capability: `block:adrenaline-${"pj" | "pnj" | "monstre" | "relations"}`;
   sheet: {
-    id: `adrenaline-${"pj" | "pnj" | "monstre"}`;
+    id: `adrenaline-${"pj" | "pnj" | "monstre" | "relations"}`;
     label: string;
   };
   appearance: AdrenalinePresentationAppearance;
@@ -484,6 +503,20 @@ const THRESHOLD_LEVELS = [
   { key: "grave", label: "Grave", malus: 3 },
   { key: "profond", label: "Profond", malus: 4 },
 ] as const satisfies readonly AdrenalineThresholdLevel[];
+
+/**
+ * Attitude levels, from the most hostile to the most loyal, with the modifier each one sets on the
+ * social weapon tests (Zombiology 1 — Contamination, folio 48; the five attitudes, folio 61). The
+ * modifier depends on the attitude of the target towards the one who tests. One bonus or malus is
+ * worth 10 %.
+ */
+export const ATTITUDE_LEVELS = [
+  { key: "hostile", label: "Hostile", nature: "malus", count: 4 },
+  { key: "inamicale", label: "Inamicale", nature: "malus", count: 2 },
+  { key: "indifferente", label: "Indifférente", nature: "aucun", count: 0 },
+  { key: "amicale", label: "Amicale", nature: "bonus", count: 2 },
+  { key: "loyale", label: "Loyale", nature: "bonus", count: 4 },
+] as const satisfies readonly AdrenalineAttitudeLevel[];
 
 const WOUND_DURATIONS = ["heure", "jour", "semaine", "mois"] as const;
 const WOUND_COLUMNS = [{ key: "premiereColonne" }, { key: "secondeColonne" }] as const;
@@ -1378,6 +1411,99 @@ export const MONSTRE_PRESENTATION = definePresentation({
     },
   ],
   hiddenPaths: ["/etatDePartie", "/meta"],
+});
+
+/**
+ * The relationship sheet: one A4 page, separate from the player sheet. The number of printed slots
+ * is the `maxItems` of the schema; the sheet declares neither pages nor minimum rows.
+ */
+export const RELATIONS_PRESENTATION = definePresentation({
+  version: 1,
+  capability: "block:adrenaline-relations",
+  sheet: { id: "adrenaline-relations", label: "Feuille de relations" },
+  appearance: PAPER_SHEET,
+  values: VALUES,
+  sections: [
+    {
+      id: "entete",
+      label: "En-tête",
+      order: 1,
+      layout: "banner",
+      blocks: [
+        {
+          id: "entete",
+          label: "En-tête",
+          order: 1,
+          layout: "columns",
+          columns: 3,
+          form: "name-card",
+          paths: ["/personnage", "/joueur", "/partie"],
+          pointerRows: [
+            [
+              { path: "/personnage", label: "Personnage" },
+              { path: "/joueur", label: "Joueur" },
+              { path: "/partie", label: "Partie" },
+            ],
+          ],
+        },
+      ],
+    },
+    {
+      id: "autresPersonnages",
+      label: "Autres personnages",
+      order: 2,
+      layout: "grid",
+      columns: 4,
+      blocks: [
+        {
+          id: "autresPersonnages",
+          label: "Autres personnages",
+          order: 1,
+          layout: "stack",
+          columns: 1,
+          form: "pc-ties",
+          paths: ["/autresPersonnages"],
+          fieldRows: [["nom"], ["ceQueJeSais"], ["ceQueJeLuiDois"], ["ceQuIlMeDoit"]],
+        },
+      ],
+    },
+    {
+      id: "pnjs",
+      label: "PNJ",
+      order: 3,
+      layout: "grid",
+      columns: 2,
+      blocks: [
+        {
+          id: "testsDeDrame",
+          label: "Tests de drame",
+          order: 1,
+          layout: "stack",
+          form: "counter",
+          paths: ["/testsDeDrame"],
+        },
+        {
+          id: "pnjs",
+          label: "PNJ",
+          order: 2,
+          layout: "stack",
+          columns: 2,
+          form: "npc-entries",
+          paths: ["/pnjs"],
+          fieldRows: [
+            ["numero", "nom"],
+            ["attitude"],
+            ["lien"],
+            ["reliesA"],
+            ["ceQuiLuiEstArrive"],
+            ["notes"],
+          ],
+          attitudeLevels: ATTITUDE_LEVELS,
+        },
+      ],
+    },
+  ],
+  hiddenPaths: ["/meta"],
 });
 
 export { ADRENALINE_VISUAL_CALLOUTS } from "./callouts.js";

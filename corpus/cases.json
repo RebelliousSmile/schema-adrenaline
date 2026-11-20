@@ -556,6 +556,90 @@
       "format": "json",
       "expect": "reject",
       "names": "base"
+    },
+    {
+      "path": "corpus/temoins/relations/temoin.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/temoins/relations/pleine-capacite.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
+      "path": "corpus/refus/relations/personnage-absent.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/attitude-amoureuse.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/type-de-lien-inconnu.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/autre-pj-en-trop.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/pnj-en-trop.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/texte-au-dela-de-la-capacite.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/numero-hors-borne.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/tests-de-drame-negatif.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/modificateur-saisi.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/cle-inconnue.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/presentation-adapter-inconnu.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "examples/adrenaline/relations/feuille-de-relations.toml",
+      "target": "relations",
+      "format": "toml",
+      "expect": "accept"
     }
   ]
 }
