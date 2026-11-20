@@ -36,7 +36,24 @@ jobs:
       - name: Read minimum Handbook release
         id: handbook-ref
         working-directory: schema-adrenaline
-        run: echo "tag=$(node -p 'require("./handbook/adrenaline/pack.json").minimumHandbookVersion')" >> "$GITHUB_OUTPUT"
+        # Handbook tags are `v<x.y.z>` (bare `<x.y.z>` up to 2.8.3). The release a pack asks for
+        # is published after the provider in the same train, so until its tag exists the host is
+        # read from `main`, whose own version must then be at least the minimum the pack declares.
+        run: |
+          min=$(node -p 'require("./handbook/adrenaline/pack.json").minimumHandbookVersion')
+          repo=https://github.com/RebelliousSmile/obsidian-handbook
+          ref=
+          for candidate in "v$min" "$min"; do
+            if git ls-remote --exit-code --tags "$repo" "refs/tags/$candidate" > /dev/null; then ref="$candidate"; break; fi
+          done
+          if [ -z "$ref" ]; then
+            ref=main
+            main_version=$(curl -fsS https://raw.githubusercontent.com/RebelliousSmile/obsidian-handbook/main/package.json | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).version')
+            lowest=$(printf '%s\n%s\n' "$min" "$main_version" | sort -V | head -n 1)
+            [ "$lowest" = "$min" ] \
+              || { echo "Handbook main is $main_version, below the declared minimum $min"; exit 1; }
+          fi
+          echo "tag=$ref" >> "$GITHUB_OUTPUT"
 
       - name: Checkout declared Handbook release
         uses: actions/checkout@v4
