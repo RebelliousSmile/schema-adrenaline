@@ -1,0 +1,471 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "personnage": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "description": "Nom du personnage propriétaire de la feuille, sur la ligne d'en-tête.",
+      "examples": [
+        "Claire Vasseur"
+      ]
+    },
+    "joueur": {
+      "description": "Personne qui joue le personnage, sur la ligne d'en-tête.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "partie": {
+      "description": "Nom de la partie ou de la campagne, sur la ligne d'en-tête.",
+      "examples": [
+        "Les Veilleurs"
+      ],
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "autresPersonnages": {
+      "description": "Les autres personnages joueurs, en haut de la feuille : quatre emplacements au plus.",
+      "maxItems": 4,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "Nom de l'autre personnage joueur.",
+            "examples": [
+              "Malik"
+            ]
+          },
+          "ceQueJeSais": {
+            "description": "Ce que le personnage sait de lui.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "ceQueJeLuiDois": {
+            "description": "Ce que le personnage lui doit.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "ceQuIlMeDoit": {
+            "description": "Ce qu'il doit au personnage.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "nom"
+        ],
+        "additionalProperties": false,
+        "description": "Un autre personnage joueur : ce qu'on sait de lui et les dettes. Aucun modificateur."
+      }
+    },
+    "testsDeDrame": {
+      "description": "Nombre de tests de drame faits. C'est un décompte, jamais déduit du nombre de PNJ morts.",
+      "examples": [
+        2
+      ],
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "pnjs": {
+      "description": "Les PNJ connus du personnage : dix emplacements au plus. Une feuille pleine se poursuit dans un second document.",
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "numero": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99,
+            "description": "Numéro du PNJ sur la feuille, de 1 à 99. Un éditeur doit le garder unique et stable ; le schéma ne vérifie ni son unicité ni l'existence des numéros qui y renvoient.",
+            "examples": [
+              3
+            ]
+          },
+          "nom": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "Nom du PNJ.",
+            "examples": [
+              "Le docteur Ferran"
+            ]
+          },
+          "attitude": {
+            "description": "Attitude du PNJ envers le personnage propriétaire de la feuille. Elle seule fixe le modificateur aux tests d'Arme sociale, qui se lit dans la présentation et ne se saisit pas.",
+            "type": "string",
+            "enum": [
+              "hostile",
+              "inamicale",
+              "indifferente",
+              "amicale",
+              "loyale"
+            ],
+            "examples": [
+              "amicale"
+            ]
+          },
+          "lien": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "familial",
+                  "amitie",
+                  "travail"
+                ],
+                "description": "Type de lien entre le personnage et le PNJ : familial, amitié ou travail.",
+                "examples": [
+                  "travail"
+                ]
+              },
+              "description": {
+                "description": "Précision du lien, en quelques mots.",
+                "examples": [
+                  "ancien collègue du dépôt"
+                ],
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false,
+            "description": "Lien entre le personnage et le PNJ."
+          },
+          "reliesA": {
+            "description": "Numéros des autres PNJ auxquels celui-ci est relié. Le schéma ne vérifie pas que ces numéros existent.",
+            "examples": [
+              [
+                1,
+                4
+              ]
+            ],
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 99,
+              "description": "Numéro du PNJ sur la feuille, de 1 à 99. Un éditeur doit le garder unique et stable ; le schéma ne vérifie ni son unicité ni l'existence des numéros qui y renvoient.",
+              "examples": [
+                3
+              ]
+            }
+          },
+          "ceQuiLuiEstArrive": {
+            "description": "Ce qui lui est arrivé au fil des parties.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "notes": {
+            "description": "Notes libres : l'attitude du personnage envers le PNJ, son autorité sociale, les nuances.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "numero",
+          "nom"
+        ],
+        "additionalProperties": false,
+        "description": "Un PNJ connu du personnage, repéré par son numéro."
+      }
+    },
+    "meta": {
+      "description": "Attribution et catalogage : d'où vient cette feuille.",
+      "type": "object",
+      "properties": {
+        "typeDePublication": {
+          "type": "string",
+          "enum": [
+            "officiel",
+            "tiers",
+            "communautaire",
+            "maison"
+          ],
+          "description": "Origine du contenu, pour le catalogage par les outils tiers. Correspondance schema-in-the-mist : officiel/official, tiers/third_party, communautaire/cauldron, maison/homebrew.",
+          "examples": [
+            "officiel",
+            "maison"
+          ]
+        },
+        "source": {
+          "description": "Titre de l'ouvrage, du supplément ou du PDF dont la fiche est tirée.",
+          "examples": [
+            "Zombiology — Contamination",
+            "Livret PNJ et animaux"
+          ],
+          "type": "string",
+          "minLength": 1
+        },
+        "auteurs": {
+          "description": "Personnes créditées.",
+          "examples": [
+            [
+              "Damien Coltice"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Un nom crédité."
+          }
+        },
+        "page": {
+          "description": "Page dans la source, quand elle est pertinente.",
+          "examples": [
+            42,
+            118
+          ],
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "licence": {
+          "description": "Conditions de réutilisation de cette fiche, en clair.",
+          "examples": [
+            "CC BY 4.0"
+          ],
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "personnage"
+  ],
+  "additionalProperties": false,
+  "$id": "https://raw.githubusercontent.com/RebelliousSmile/schema-adrenaline/main/schemas/adrenaline/relations.schema.json",
+  "title": "Feuille de relations — Adrenaline System",
+  "description": "Feuille de relations du socle Adrenaline System, séparée de la fiche PJ : ligne d'en-tête (personnage, joueur, partie), autres personnages joueurs avec ce qu'on sait d'eux et les dettes, PNJ numérotés avec attitude, lien, liens croisés, et le décompte des tests de drame.",
+  "x-adrenaline-presentation": {
+    "version": 1,
+    "capability": "block:adrenaline-relations",
+    "sheet": {
+      "id": "adrenaline-relations",
+      "label": "Feuille de relations"
+    },
+    "appearance": {
+      "variant": "zombiology",
+      "surface": "paper-sheet",
+      "outerRule": true,
+      "fonts": {
+        "body": "Adrenaline Body",
+        "heading": "Adrenaline Display",
+        "handwritten": "Adrenaline Handwriting"
+      },
+      "tokens": {
+        "paper": "--background-primary",
+        "card": "--adrenaline-card-surface",
+        "ink": "--text-normal",
+        "band": "--adrenaline-band",
+        "bandInk": "--adrenaline-band-ink",
+        "sectionBand": "--adrenaline-section-band",
+        "rule": "--adrenaline-rule",
+        "handwrittenInk": "--adrenaline-handwritten-ink",
+        "statusYellowBg": "--adrenaline-status-yellow-bg",
+        "statusYellowInk": "--adrenaline-status-yellow-ink",
+        "statusRedBg": "--adrenaline-status-red-bg",
+        "statusRedInk": "--adrenaline-status-red-ink"
+      },
+      "sectionTitles": {
+        "align": "center",
+        "font": "heading"
+      },
+      "values": {
+        "align": "end",
+        "font": "handwritten",
+        "color": "handwrittenInk",
+        "renderMaximum": false
+      }
+    },
+    "values": {
+      "editorBounds": "json-schema",
+      "range": {
+        "minimum": "minimum",
+        "current": "current",
+        "maximum": "maximum",
+        "render": "current"
+      }
+    },
+    "sections": [
+      {
+        "id": "entete",
+        "label": "En-tête",
+        "order": 1,
+        "layout": "banner",
+        "blocks": [
+          {
+            "id": "entete",
+            "label": "En-tête",
+            "order": 1,
+            "layout": "columns",
+            "columns": 3,
+            "form": "name-card",
+            "paths": [
+              "/personnage",
+              "/joueur",
+              "/partie"
+            ],
+            "pointerRows": [
+              [
+                {
+                  "path": "/personnage",
+                  "label": "Personnage"
+                },
+                {
+                  "path": "/joueur",
+                  "label": "Joueur"
+                },
+                {
+                  "path": "/partie",
+                  "label": "Partie"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "autresPersonnages",
+        "label": "Autres personnages",
+        "order": 2,
+        "layout": "grid",
+        "columns": 4,
+        "blocks": [
+          {
+            "id": "autresPersonnages",
+            "label": "Autres personnages",
+            "order": 1,
+            "layout": "stack",
+            "columns": 1,
+            "form": "pc-ties",
+            "paths": [
+              "/autresPersonnages"
+            ],
+            "fieldRows": [
+              [
+                "nom"
+              ],
+              [
+                "ceQueJeSais"
+              ],
+              [
+                "ceQueJeLuiDois"
+              ],
+              [
+                "ceQuIlMeDoit"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pnjs",
+        "label": "PNJ",
+        "order": 3,
+        "layout": "grid",
+        "columns": 2,
+        "blocks": [
+          {
+            "id": "testsDeDrame",
+            "label": "Tests de drame",
+            "order": 1,
+            "layout": "stack",
+            "form": "counter",
+            "paths": [
+              "/testsDeDrame"
+            ]
+          },
+          {
+            "id": "pnjs",
+            "label": "PNJ",
+            "order": 2,
+            "layout": "stack",
+            "columns": 2,
+            "form": "npc-entries",
+            "paths": [
+              "/pnjs"
+            ],
+            "fieldRows": [
+              [
+                "numero",
+                "nom"
+              ],
+              [
+                "attitude"
+              ],
+              [
+                "lien"
+              ],
+              [
+                "reliesA"
+              ],
+              [
+                "ceQuiLuiEstArrive"
+              ],
+              [
+                "notes"
+              ]
+            ],
+            "attitudeLevels": [
+              {
+                "key": "hostile",
+                "label": "Hostile",
+                "nature": "malus",
+                "count": 4
+              },
+              {
+                "key": "inamicale",
+                "label": "Inamicale",
+                "nature": "malus",
+                "count": 2
+              },
+              {
+                "key": "indifferente",
+                "label": "Indifférente",
+                "nature": "aucun",
+                "count": 0
+              },
+              {
+                "key": "amicale",
+                "label": "Amicale",
+                "nature": "bonus",
+                "count": 2
+              },
+              {
+                "key": "loyale",
+                "label": "Loyale",
+                "nature": "bonus",
+                "count": 4
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "hiddenPaths": [
+      "/meta"
+    ]
+  }
+}

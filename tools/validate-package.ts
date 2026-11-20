@@ -79,16 +79,19 @@ import {
   ADRENALINE_TOML_VERSION,
   ADRENALINE_VISUAL_CALLOUTS,
   PNJ_PRESENTATION,
+  RELATIONS_PRESENTATION,
   parsePnjToml,
+  parseRelationsToml,
 } from "schema-adrenaline";
 import {
   ADRENALINE_VISUAL_CALLOUTS as ADRENALINE_VISUAL_CALLOUTS_SUBPATH,
   PNJ_PRESENTATION as PNJ_PRESENTATION_SUBPATH,
+  RELATIONS_PRESENTATION as RELATIONS_PRESENTATION_SUBPATH,
 } from "schema-adrenaline/presentation";
 
 assert.equal(ADRENALINE_CONTRACT_VERSION, ${contractMajor});
 assert.equal(ADRENALINE_TOML_VERSION, "1.0.0");
-assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj", "pnj"]);
+assert.deepEqual(Object.keys(ADRENALINE_DOCUMENT_CODECS).sort(), ["monstre", "pj", "pnj", "relations"]);
 
 const schema = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/schemas/pnj.schema.json")), "utf8"));
 assert.match(
@@ -98,6 +101,10 @@ assert.match(
 assert.deepEqual(schema["x-adrenaline-presentation"], PNJ_PRESENTATION);
 assert.deepEqual(PNJ_PRESENTATION_SUBPATH, PNJ_PRESENTATION);
 assert.equal(PNJ_PRESENTATION.capability, "block:adrenaline-pnj");
+const relationsSchema = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/schemas/relations.schema.json")), "utf8"));
+assert.deepEqual(relationsSchema["x-adrenaline-presentation"], RELATIONS_PRESENTATION);
+assert.deepEqual(RELATIONS_PRESENTATION_SUBPATH, RELATIONS_PRESENTATION);
+assert.equal(RELATIONS_PRESENTATION.capability, "block:adrenaline-relations");
 assert.deepEqual(ADRENALINE_VISUAL_CALLOUTS_SUBPATH, ADRENALINE_VISUAL_CALLOUTS);
 assert.ok(ADRENALINE_VISUAL_CALLOUTS.every((entry) => entry.capability === "style:adrenaline"));
 assert.ok(fs.statSync(new URL(import.meta.resolve("schema-adrenaline/handbook/adrenaline/callout-contract.md"))).isFile());
@@ -136,6 +143,8 @@ for (const asset of assetFiles) {
 }
 const source = fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/examples/adrenaline/pnj/pnj-secondaire.toml")), "utf8");
 assert.equal(parsePnjToml(source).nom, "Le veilleur de nuit");
+const relationsSource = fs.readFileSync(new URL(import.meta.resolve("schema-adrenaline/examples/adrenaline/relations/feuille-de-relations.toml")), "utf8");
+assert.equal(parseRelationsToml(relationsSource).personnage, "Claire Vasseur");
 await assert.rejects(import("schema-adrenaline/codecs/documents.js"), (error) => error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED");
 await assert.rejects(import("schema-adrenaline/tools/validate-package.ts"), (error) => error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED");
 `;

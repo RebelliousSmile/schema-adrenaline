@@ -3,6 +3,7 @@ import { type ZodType, z } from "zod";
 import { Monstre } from "../zod/adrenaline/monstre.js";
 import { PersonnageJoueur } from "../zod/adrenaline/pj.js";
 import { PersonnageNonJoue } from "../zod/adrenaline/pnj.js";
+import { FeuilleDeRelations } from "../zod/adrenaline/relations.js";
 import { validatePlayableRanges } from "../validation/playable-ranges.js";
 
 /**
@@ -13,18 +14,21 @@ export const ADRENALINE_DOCUMENT_SCHEMAS = {
   pj: PersonnageJoueur,
   pnj: PersonnageNonJoue,
   monstre: Monstre,
+  relations: FeuilleDeRelations,
 } as const;
 
 export type AdrenalineDocumentTarget = keyof typeof ADRENALINE_DOCUMENT_SCHEMAS;
 export type Pj = z.infer<typeof PersonnageJoueur>;
 export type Pnj = z.infer<typeof PersonnageNonJoue>;
 export type MonstreDocument = z.infer<typeof Monstre>;
+export type FeuilleDeRelationsDocument = z.infer<typeof FeuilleDeRelations>;
 export type MonstreResolu = Omit<MonstreDocument, "etatActif" | "etatAlternatif" | "etats">;
 
 export interface AdrenalineDocumentByTarget {
   pj: Pj;
   pnj: Pnj;
   monstre: MonstreDocument;
+  relations: FeuilleDeRelationsDocument;
 }
 
 export interface AdrenalineDocumentCodec<T> {
@@ -133,6 +137,7 @@ export const ADRENALINE_DOCUMENT_CODECS: {
   pj: codec(PersonnageJoueur),
   pnj: codec(PersonnageNonJoue),
   monstre: codecMonstre(),
+  relations: codec(FeuilleDeRelations),
 };
 
 export const parsePjJson = ADRENALINE_DOCUMENT_CODECS.pj.parseJson;
@@ -149,3 +154,8 @@ export const parseMonstreJson = ADRENALINE_DOCUMENT_CODECS.monstre.parseJson;
 export const stringifyMonstreJson = ADRENALINE_DOCUMENT_CODECS.monstre.stringifyJson;
 export const parseMonstreToml = ADRENALINE_DOCUMENT_CODECS.monstre.parseToml;
 export const stringifyMonstreToml = ADRENALINE_DOCUMENT_CODECS.monstre.stringifyToml;
+
+export const parseRelationsJson = ADRENALINE_DOCUMENT_CODECS.relations.parseJson;
+export const stringifyRelationsJson = ADRENALINE_DOCUMENT_CODECS.relations.stringifyJson;
+export const parseRelationsToml = ADRENALINE_DOCUMENT_CODECS.relations.parseToml;
+export const stringifyRelationsToml = ADRENALINE_DOCUMENT_CODECS.relations.stringifyToml;

@@ -4,8 +4,8 @@ import path from "node:path";
 import { ADRENALINE_VISUAL_CALLOUTS } from "../src/callouts.js";
 
 type Obj = Record<string, unknown>;
-type Target = "pj" | "pnj" | "monstre";
-const TARGETS: Target[] = ["pj", "pnj", "monstre"];
+type Target = "pj" | "pnj" | "monstre" | "relations";
+const TARGETS: Target[] = ["pj", "pnj", "monstre", "relations"];
 const EXTENSION = "x-adrenaline-presentation";
 const LAYOUTS = new Set(["banner", "columns", "grid", "stack"]);
 const FORMS = new Set([
@@ -36,7 +36,21 @@ const FORMS = new Set([
   "location-grid",
   "wound-circles",
   "circle-row",
+  "pc-ties",
+  "npc-entries",
+  "counter",
 ]);
+/** The forms only the relationship sheet prints. */
+const RELATIONS_FORMS = new Set(["pc-ties", "npc-entries", "counter"]);
+/** Forms whose `fieldRows` name fields: the identity grid, and the items of the relationship lists. */
+const FIELD_ROW_FORMS = new Set(["identity-fields", "pc-ties", "npc-entries"]);
+/** The blocks of the relationship sheet: form and paths, by block id. */
+const RELATIONS_BLOCKS: Record<string, { form: string; paths: string[] }> = {
+  entete: { form: "name-card", paths: ["/personnage", "/joueur", "/partie"] },
+  autresPersonnages: { form: "pc-ties", paths: ["/autresPersonnages"] },
+  testsDeDrame: { form: "counter", paths: ["/testsDeDrame"] },
+  pnjs: { form: "npc-entries", paths: ["/pnjs"] },
+};
 const PHYSICAL_LOCATIONS = [
   { id: "jambe-droite", label: "Jambe D", range: "1" },
   { id: "jambe-gauche", label: "Jambe G", range: "2" },
@@ -786,6 +800,7 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.decoration === undefined ? [] : ["decoration"]),
           ...(block.referenceTable === undefined ? [] : ["referenceTable"]),
           ...(block.thresholdLevels === undefined ? [] : ["thresholdLevels"]),
+          ...(block.attitudeLevels === undefined ? [] : ["attitudeLevels"]),
           ...(block.notes === undefined ? [] : ["notes"]),
           ...(block.minimumRows === undefined ? [] : ["minimumRows"]),
           "paths",
@@ -795,6 +810,12 @@ export function validatePresentation(source: unknown, target: Target): void {
       layout(block, blockWhere);
       if (block.form !== undefined)
         assert.ok(FORMS.has(block.form as string), `${blockWhere}.form is unknown`);
+      if (RELATIONS_FORMS.has(block.form as string))
+        assert.equal(
+          target,
+          "relations",
+          `${blockWhere}.form ${String(block.form)} belongs to the relationship sheet`,
+        );
       if (block.rangeDisplay !== undefined) {
         assert.equal(
           block.form,
@@ -845,19 +866,20 @@ export function validatePresentation(source: unknown, target: Target): void {
         }
       }
       if (block.fieldRows !== undefined) {
-        assert.equal(
-          block.form,
-          "identity-fields",
-          `${blockWhere}.fieldRows needs identity fields`,
+        assert.ok(
+          FIELD_ROW_FORMS.has(block.form as string),
+          `${blockWhere}.fieldRows needs identity fields, other characters or NPC entries`,
         );
         const paths = block.paths as string[];
         assert.equal(paths.length, 1, `${blockWhere}.fieldRows needs one path`);
+        // On a list, the rows name the properties of each item.
+        const fieldNode = nodeAt(schema, paths[0], blockWhere).node;
+        const fieldHolder =
+          fieldNode.type === "array" ? obj(fieldNode.items, `${blockWhere}.items`) : fieldNode;
         // Only the player sheet prints identity fields in blocks of their own (the constraints,
         // the history, the personality): those are not part of its grid. Elsewhere every field is.
         const fields = Object.fromEntries(
-          Object.entries(
-            obj(nodeAt(schema, paths[0], blockWhere).node.properties, blockWhere),
-          ).filter(
+          Object.entries(obj(fieldHolder.properties, blockWhere)).filter(
             ([name]) =>
               !(
                 target === "pj" &&
@@ -1162,6 +1184,52 @@ export function validatePresentation(source: unknown, target: Target): void {
           `${blockWhere}.notes differ from the fixed texts of the sheet`,
         );
       }
+      if (block.attitudeLevels !== undefined) {
+        assert.equal(block.form, "npc-entries", `${blockWhere}.attitudeLevels needs NPC entries`);
+        const levels = block.attitudeLevels;
+        assert.ok(
+          Array.isArray(levels) && levels.length > 0,
+          `${blockWhere}.attitudeLevels must not be empty`,
+        );
+        const npcs = nodeAt(schema, (block.paths as string[])[0], blockWhere).node;
+        const attitude = obj(
+          obj(obj(npcs.items, `${blockWhere}.items`).properties, `${blockWhere}.properties`)
+            .attitude,
+          `${blockWhere}.attitude`,
+        );
+        assert.deepEqual(
+          (levels as Obj[]).map((level) => level.key),
+          attitude.enum,
+          `${blockWhere}.attitudeLevels must follow the published attitudes, in order`,
+        );
+        (levels as unknown[]).forEach((raw, i) => {
+          const levelWhere = `${blockWhere}.attitudeLevels.${i}`;
+          const level = obj(raw, levelWhere);
+          keys(level, ["key", "label", "nature", "count"], levelWhere);
+          assert.ok(
+            typeof level.label === "string" && level.label.trim().length > 0,
+            `${levelWhere}.label must be text`,
+          );
+          assert.ok(
+            ["bonus", "malus", "aucun"].includes(level.nature as string),
+            `${levelWhere}.nature must be bonus, malus or aucun`,
+          );
+          assert.ok(
+            Number.isInteger(level.count) && Number(level.count) >= 0,
+            `${levelWhere}.count must be a non-negative integer`,
+          );
+          assert.equal(
+            level.nature === "aucun",
+            level.count === 0,
+            `${levelWhere}: nature aucun goes with a count of 0, and only with it`,
+          );
+        });
+      } else
+        assert.notEqual(
+          block.form,
+          "npc-entries",
+          `${blockWhere} must publish its attitude levels`,
+        );
       const ruledForm = block.form === "ruled-list" || block.form === "weapon-lines";
       if (block.minimumRows !== undefined) {
         assert.equal(target, "pj", `${blockWhere}.minimumRows belongs to the player sheet`);
@@ -1326,6 +1394,24 @@ export function validatePresentation(source: unknown, target: Target): void {
     const total: Obj = nodeAt(schema, "/etatDePartie/malus/total", `${target}.malus.total`).node;
     assert.equal(total.minimum, 0);
     assert.equal(total.maximum, 10, `${target}.malus.total must stop at 10, the HS state`);
+  }
+  if (target === "relations") {
+    const printed = sectionList.flatMap((section) =>
+      entries(section.blocks, `${target}.sections.${section.id}.blocks`),
+    );
+    assert.deepEqual(
+      printed.map((block) => block.id).sort(),
+      Object.keys(RELATIONS_BLOCKS).sort(),
+      `${target} must print the blocks of the sheet, and only them`,
+    );
+    for (const [id, expected] of Object.entries(RELATIONS_BLOCKS)) {
+      assert.equal(forms.get(id), expected.form, `${target}.${id} has wrong form`);
+      assert.deepEqual(
+        blockOf(sectionList, id).paths,
+        expected.paths,
+        `${target}.${id} must read ${expected.paths.join(", ")}`,
+      );
+    }
   }
   if (target === "monstre" || target === "pnj") {
     // Creature and NPC accept a plain number or a triplet everywhere: a strict triplet
@@ -2543,6 +2629,61 @@ if (process.argv.includes("--self-test")) {
   assert.throws(
     () => validateCallouts(calloutSource, undocumented, calloutExample),
     /adrenaline-encart missing from callout-contract\.md/,
+  );
+  /* One refusal per rule on the relationship sheet: the mutation must fail with the rule's own message. */
+  const relations = schemas.get("relations");
+  assert.ok(relations);
+  const relationsBlock = (value: Obj, id: string): Obj => {
+    const block = sectionsOf(value)
+      .flatMap((section) => section.blocks as Obj[])
+      .find((candidate) => candidate.id === id);
+    assert.ok(block, `self-test: relations block ${id}`);
+    return block;
+  };
+  const refuseRelations = (name: string, mutate: (value: Obj) => void, message: RegExp): void => {
+    const mutated = clone(relations);
+    mutate(mutated);
+    assert.throws(
+      () => validatePresentation(mutated, "relations"),
+      message,
+      `self-test: ${name} must be refused`,
+    );
+  };
+  refuseRelations(
+    "attitude levels reversed",
+    (value) => (relationsBlock(value, "pnjs").attitudeLevels as Obj[]).reverse(),
+    /pnjs\.attitudeLevels must follow the published attitudes, in order/,
+  );
+  refuseRelations(
+    "a count for the neutral attitude",
+    (value) => ((relationsBlock(value, "pnjs").attitudeLevels as Obj[])[2].count = 1),
+    /attitudeLevels\.2: nature aucun goes with a count of 0, and only with it/,
+  );
+  refuseRelations(
+    "pages on the relationship sheet",
+    (value) => (obj(value[EXTENSION], EXTENSION).pages = []),
+    /relations\.pages belongs to the player sheet/,
+  );
+  refuseRelations(
+    "notes left out of the NPC rows",
+    (value) => (relationsBlock(value, "pnjs").fieldRows as string[][]).pop(),
+    /pnjs\.fieldRows must name each field once/,
+  );
+  refuseRelations(
+    "NPC entries without attitude levels",
+    (value) => delete relationsBlock(value, "pnjs").attitudeLevels,
+    /pnjs must publish its attitude levels/,
+  );
+  refuseRelations(
+    "NPC entries on one column",
+    (value) => (relationsBlock(value, "pnjs").columns = 1),
+    /pnjs\.fieldRows\.0 must fit the block columns/,
+  );
+  const npcEntriesOnNpc = clone(schemas.get("pnj") as Obj);
+  (sectionsOf(npcEntriesOnNpc)[0].blocks as Obj[])[0].form = "npc-entries";
+  assert.throws(
+    () => validatePresentation(npcEntriesOnNpc, "pnj"),
+    /form npc-entries belongs to the relationship sheet/,
   );
   console.log("✓ presentation validator self-test passed");
 }

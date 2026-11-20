@@ -202,7 +202,25 @@ for (const target of targets) {
   assert.ok(tomlWitnesses.has(target), `${target}: corpus must contain an accepted TOML case`);
 }
 
-for (const target of targets) {
+// Only targets whose generated schema publishes a root `etatDePartie` can carry a state of play.
+// On the others, the rejections below would fail anyway on the unknown key, which proves nothing.
+const stateTargets = targets.filter((target) => {
+  const schemaPath = path.join(root, "schemas", "adrenaline", `${target}.schema.json`);
+  const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8")) as {
+    properties?: Record<string, unknown>;
+  };
+  const publishes = Object.hasOwn(schema.properties ?? {}, "etatDePartie");
+  if (!publishes) {
+    console.log(`- state-of-play checks skipped: ${target} (its schema publishes no etatDePartie)`);
+  }
+  return publishes;
+});
+assert.ok(
+  stateTargets.length > 0,
+  "no target publishes etatDePartie: the state-of-play checks would silently run on nothing",
+);
+
+for (const target of stateTargets) {
   const stateWitness = JSON.parse(
     fs.readFileSync(path.join(root, "corpus", "temoins", target, "temoin.json"), "utf8"),
   ) as Record<string, unknown>;

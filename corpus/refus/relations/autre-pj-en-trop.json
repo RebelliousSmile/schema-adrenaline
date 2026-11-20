@@ -1,0 +1,20 @@
+{
+  "personnage": "Claire Vasseur",
+  "autresPersonnages": [
+    {
+      "nom": "PJ 1"
+    },
+    {
+      "nom": "PJ 2"
+    },
+    {
+      "nom": "PJ 3"
+    },
+    {
+      "nom": "PJ 4"
+    },
+    {
+      "nom": "PJ 5"
+    }
+  ]
+}
