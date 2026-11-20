@@ -258,6 +258,50 @@ function run(): void {
       }
     }
 
+    // 6b. capacité des notes de partie : lue dans le schéma, jamais recopiée ici
+    const capacite = (schema.properties as Record<string, { maxLength?: number }> | undefined)
+      ?.notesDePartie?.maxLength;
+    if (t.name === "pj") {
+      if (!Number.isInteger(capacite) || Number(capacite) <= 0) {
+        console.error("  ✗ notesDePartie : le schéma ne publie aucune capacité (maxLength)");
+        echecs++;
+      } else {
+        const pj = JSON.parse(
+          fs.readFileSync(path.join("corpus", "temoins", "pj", "temoin.json"), "utf-8"),
+        );
+        const avecNotes = (n: number) => ({ ...pj, notesDePartie: "x".repeat(n) });
+        const pile = valider(avecNotes(Number(capacite)));
+        const audessus = valider(avecNotes(Number(capacite) + 1));
+        if (pile && !audessus) {
+          console.log(`  ✓ notesDePartie : ${capacite} caractères acceptés, un de plus refusé`);
+        } else {
+          console.error(
+            `  ✗ notesDePartie : la capacité publiée (${capacite}) n'est pas la borne appliquée`,
+          );
+          echecs++;
+        }
+        const trop = JSON.parse(
+          fs.readFileSync(
+            path.join("corpus", "refus", "pj", "notes-de-partie-au-dela-de-la-capacite.json"),
+            "utf-8",
+          ),
+        );
+        const isole = valider({
+          ...trop,
+          notesDePartie: String(trop.notesDePartie).slice(0, capacite),
+        });
+        if (String(trop.notesDePartie).length > Number(capacite) && isole) {
+          console.log("  ✓ le refus « notes au-delà de la capacité » ne tient qu'aux notes");
+        } else {
+          console.error("  ✗ le refus des notes dépasse la capacité pour une autre raison");
+          echecs++;
+        }
+      }
+    } else if (capacite !== undefined) {
+      console.error(`  ✗ ${t.name} ne porte pas de notes de partie`);
+      echecs++;
+    }
+
     // 7. cas de refus : chacun doit être rejeté
     const refus = listerFichiers(path.join("corpus", "refus", t.name));
     if (refus.length === 0) {

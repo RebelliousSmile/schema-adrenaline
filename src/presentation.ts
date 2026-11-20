@@ -304,6 +304,24 @@ export type AdrenalinePresentationSection = {
   blocks: AdrenalinePresentationBlock[];
 };
 
+/** A page label in both languages: the schema publishes the words, the consumers draw them. */
+export type AdrenalinePageLabel = { fr: string; en: string };
+
+/**
+ * A page of the printed sheet. A sheet that declares pages is exported page by page: one image per
+ * page, one printed sheet per page. Either the page prints sections of the sheet (`sections`, by
+ * id) or it is the notes page (`notesPath`), never both. The notes page is the last one: the
+ * player writes into it while playing, it never precedes the sheet.
+ */
+export type AdrenalinePresentationPage = {
+  id: string;
+  label: AdrenalinePageLabel;
+  /** Ids of the sections printed on this page, in sheet order. */
+  sections?: readonly string[];
+  /** The notes page only: JSON Pointer of the free text it carries (a bounded string). */
+  notesPath?: string;
+};
+
 export type AdrenalineCategoryVariant = "garnet" | "blue" | "orange";
 
 /**
@@ -342,6 +360,11 @@ export type AdrenalinePresentation = {
     };
   };
   sections: AdrenalinePresentationSection[];
+  /**
+   * Player sheet only: the printed pages, in order. Every section is printed on exactly one page;
+   * the notes page, when declared, is the last one.
+   */
+  pages?: readonly AdrenalinePresentationPage[];
   /** Portable metadata intentionally absent from the visual sheet. */
   hiddenPaths: string[];
 };
@@ -853,6 +876,23 @@ export const PJ_PRESENTATION = definePresentation({
           paths: ["/identite/personnalite"],
         },
       ],
+    },
+  ],
+  pages: [
+    {
+      id: "recto",
+      label: { fr: "Recto", en: "Front" },
+      sections: ["competence", "caracteristique", "equipement", "sante"],
+    },
+    {
+      id: "verso",
+      label: { fr: "Verso", en: "Back" },
+      sections: ["entete", "identite"],
+    },
+    {
+      id: "notes",
+      label: { fr: "Notes de partie", en: "Session notes" },
+      notesPath: "/notesDePartie",
     },
   ],
   hiddenPaths: ["/meta", "/parametresDuJeu/declinaisonDeCampagne"],

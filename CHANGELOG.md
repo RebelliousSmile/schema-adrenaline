@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [6.3.0] - 2026-11-20
+
+### Added
+
+- The player sheet (`pj`) takes `notesDePartie`: a free text the player writes while
+  playing, printed on a page of its own, always the last of the sheet. It is
+  optional, so no existing document changes. Its capacity is the `maxLength` of the
+  published field (6000 characters), which a page holds; a text beyond it is
+  refused. Contract 6 is kept.
+- The presentation of the player sheet declares its printed `pages`: `recto` and
+  `verso` (the two sides of the paper sheet, each naming the sections it prints) and
+  `notes` (the notes page, last, reading `/notesDePartie`). Each page carries its label
+  in French and English. A consumer that exports the sheet page by page reads this list
+  instead of cutting the sheet itself.
+- `validate:presentation` checks the pages: every section sits on exactly one page, the
+  notes page is last and reads a text whose capacity the schema publishes.
+- The corpus gains the witness with notes (`temoin.json`), the witness without
+  (`protections-absentes.json`) and the refusal « notes beyond the capacity »;
+  `audit` reads the capacity in the schema, never as a literal.
+
 ## [6.2.0] - 2026-10-20
 
 ### Changed

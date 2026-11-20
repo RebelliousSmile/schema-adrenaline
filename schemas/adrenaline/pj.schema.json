@@ -1136,6 +1136,14 @@
       },
       "additionalProperties": false
     },
+    "notesDePartie": {
+      "description": "Notes de partie : texte libre que le joueur consigne en jouant, imprimé sur une page à part, toujours la dernière de la feuille. Le texte tient sur une page : au-delà de la capacité, il est refusé.",
+      "examples": [
+        "Séance 3 : le groupe quitte l'entrepôt par le toit.\n\nÀ retenir : Claire a perdu sa radio."
+      ],
+      "type": "string",
+      "maxLength": 6000
+    },
     "meta": {
       "description": "Attribution et catalogage : d'où vient cette fiche.",
       "type": "object",
@@ -1965,6 +1973,40 @@
             ]
           }
         ]
+      }
+    ],
+    "pages": [
+      {
+        "id": "recto",
+        "label": {
+          "fr": "Recto",
+          "en": "Front"
+        },
+        "sections": [
+          "competence",
+          "caracteristique",
+          "equipement",
+          "sante"
+        ]
+      },
+      {
+        "id": "verso",
+        "label": {
+          "fr": "Verso",
+          "en": "Back"
+        },
+        "sections": [
+          "entete",
+          "identite"
+        ]
+      },
+      {
+        "id": "notes",
+        "label": {
+          "fr": "Notes de partie",
+          "en": "Session notes"
+        },
+        "notesPath": "/notesDePartie"
       }
     ],
     "hiddenPaths": [

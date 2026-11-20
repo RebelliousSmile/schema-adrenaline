@@ -479,6 +479,80 @@ function numericBounds(value: unknown, where: string): void {
     if (key !== EXTENSION) numericBounds(child, `${where}.${key}`);
 }
 
+/**
+ * The printed pages: every section sits on exactly one page, the notes page is the last one and
+ * reads one bounded text, whose capacity the schema publishes (`maxLength`) and the pages never
+ * restate.
+ */
+function pages(
+  schema: Obj,
+  value: unknown,
+  sectionList: Obj[],
+  target: Target,
+  coverage: Set<string>,
+  usedPaths: string[],
+): void {
+  const where = `${target}.pages`;
+  assert.equal(target, "pj", `${where} belongs to the player sheet`);
+  assert.ok(Array.isArray(value) && value.length >= 2, `${where} must declare at least two pages`);
+  const list = value.map((raw, i) => obj(raw, `${where}.${i}`));
+  const ids = list.map((page) => page.id);
+  assert.ok(
+    ids.every((id) => typeof id === "string" && /^[a-z0-9-]+$/.test(id)),
+    `${where} ids must be lowercase text`,
+  );
+  assert.equal(new Set(ids).size, ids.length, `${where} ids must be unique`);
+  const sectionIds = sectionList.map((section) => section.id as string);
+  const placed: string[] = [];
+  let notesPages = 0;
+  list.forEach((page, i) => {
+    const pageWhere = `${where}.${page.id}`;
+    keys(
+      page,
+      ["id", "label", ...(page.sections === undefined ? ["notesPath"] : ["sections"])],
+      pageWhere,
+    );
+    const label = obj(page.label, `${pageWhere}.label`);
+    keys(label, ["fr", "en"], `${pageWhere}.label`);
+    for (const language of ["fr", "en"])
+      assert.ok(
+        typeof label[language] === "string" && label[language].length > 0,
+        `${pageWhere}.label.${language} must be text`,
+      );
+    if (page.notesPath !== undefined) {
+      notesPages += 1;
+      assert.equal(i, list.length - 1, `${pageWhere} is the notes page, it must be the last page`);
+      const { root, node } = nodeAt(schema, page.notesPath, `${pageWhere}.notesPath`);
+      assert.equal(node.type, "string", `${pageWhere}.notesPath must read a text`);
+      assert.ok(
+        Number.isInteger(node.maxLength) && Number(node.maxLength) > 0,
+        `${pageWhere}.notesPath must read a text whose capacity the schema publishes`,
+      );
+      coverage.add(root);
+      usedPaths.push(page.notesPath as string);
+      return;
+    }
+    assert.ok(
+      Array.isArray(page.sections) && page.sections.length > 0,
+      `${pageWhere}.sections must not be empty`,
+    );
+    for (const id of page.sections as unknown[]) {
+      assert.ok(
+        sectionIds.includes(String(id)),
+        `${pageWhere} names unknown section ${String(id)}`,
+      );
+      placed.push(String(id));
+    }
+  });
+  assert.ok(notesPages <= 1, `${where} declares more than one notes page`);
+  assert.equal(notesPages, 1, `${where} must end with the notes page`);
+  assert.deepEqual(
+    [...placed].sort(),
+    [...sectionIds].sort(),
+    `${where} must print every section on exactly one page`,
+  );
+}
+
 export function validatePresentation(source: unknown, target: Target): void {
   const schema = obj(source, `${target} schema`);
   const properties = obj(schema.properties, `${target}.properties`);
@@ -492,6 +566,7 @@ export function validatePresentation(source: unknown, target: Target): void {
       "appearance",
       ...(descriptor.categories === undefined ? [] : ["categories"]),
       ...(descriptor.cards === undefined ? [] : ["cards"]),
+      ...(descriptor.pages === undefined ? [] : ["pages"]),
       "values",
       "sections",
       "hiddenPaths",
@@ -1106,6 +1181,8 @@ export function validatePresentation(source: unknown, target: Target): void {
       }
     }
   }
+  if (descriptor.pages !== undefined)
+    pages(schema, descriptor.pages, sectionList, target, coverage, usedPaths);
   assert.ok(Array.isArray(descriptor.hiddenPaths), `${target}.hiddenPaths must be an array`);
   for (const raw of descriptor.hiddenPaths) {
     coverage.add(nodeAt(schema, raw, `${target}.hiddenPaths`).root);

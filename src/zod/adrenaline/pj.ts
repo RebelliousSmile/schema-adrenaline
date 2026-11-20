@@ -64,6 +64,13 @@ const ParametresDuJeu = z
       "Bloc « Paramètres du jeu » de la feuille : qui joue, scénario, comment la fiche a été produite, PX accumulés. Décrit la partie, pas le fichier.",
   });
 
+/**
+ * Capacité de la page « Notes de partie », en caractères : ce que la page de notes de la fiche
+ * peut porter. Une page qui contient des lignes courtes se remplit avant : le refus de saisie de
+ * l'éditeur se fait aussi sur la hauteur rendue, ce plafond n'est que la borne du contrat.
+ */
+export const NOTES_DE_PARTIE_CAPACITE = 6000;
+
 /** Plafond d'une caractéristique PJ : la feuille ne dépasse jamais 50 %. */
 export const PJ_CARACTERISTIQUE_MAXIMUM = 50;
 
@@ -146,6 +153,17 @@ export const PersonnageJoueur = z
     etatDePartie: EtatDePartieDeJoueur.optional().meta({
       description: "Compteurs et états temporaires de la scène, séparés du profil de référence.",
     }),
+    notesDePartie: z
+      .string()
+      .max(NOTES_DE_PARTIE_CAPACITE)
+      .optional()
+      .meta({
+        description:
+          "Notes de partie : texte libre que le joueur consigne en jouant, imprimé sur une page à part, toujours la dernière de la feuille. Le texte tient sur une page : au-delà de la capacité, il est refusé.",
+        examples: [
+          "Séance 3 : le groupe quitte l'entrepôt par le toit.\n\nÀ retenir : Claire a perdu sa radio.",
+        ],
+      }),
     meta: Meta.optional().meta({
       description: "Attribution et catalogage : d'où vient cette fiche.",
     }),

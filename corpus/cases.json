@@ -136,6 +136,13 @@
       "expect": "reject"
     },
     {
+      "path": "corpus/refus/pj/notes-de-partie-au-dela-de-la-capacite.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject",
+      "names": "notesDePartie"
+    },
+    {
       "path": "corpus/refus/pj/nom-vide.json",
       "target": "pj",
       "format": "json",
