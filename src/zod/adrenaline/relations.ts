@@ -152,7 +152,7 @@ const Pnj = z
       .optional()
       .meta({
         description:
-          "Le drame a touché ce PNJ. Plusieurs PNJ peuvent l'être sur une même feuille : la coche se pose sur chaque PNJ concerné.",
+          "Case à cocher à droite du nom du PNJ : le drame l'a touché, ou tout autre usage que le meneur lui donne. Plusieurs PNJ peuvent l'être sur une même feuille.",
         examples: [true],
       }),
   })

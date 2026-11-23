@@ -1535,12 +1535,11 @@ export const RELATIONS_PRESENTATION = definePresentation({
           form: "npc-entries",
           paths: ["/pnjs"],
           fieldRows: [
-            ["numero", "nom"],
+            ["numero", "nom", "toucheParLeDrame"],
             ["attitude", "reliesA"],
             ["lien"],
             ["resume"],
             ["notes"],
-            ["toucheParLeDrame"],
           ],
           attitudeLevels: ATTITUDE_LEVELS,
         },
