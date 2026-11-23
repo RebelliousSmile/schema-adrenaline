@@ -409,6 +409,15 @@
                 }
               }
             ],
+            "genderMark": {
+              "key": "nom",
+              "genderKey": "genre",
+              "marks": {
+                "masculin": "il",
+                "feminin": "elle",
+                "neutre": "iel"
+              }
+            },
             "countPath": "/nombreDAutresPersonnages"
           }
         ]

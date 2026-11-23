@@ -57,6 +57,21 @@ export type AdrenalineReferenceTable = {
 };
 
 /**
+ * A short mark printed on the line of the field `key`, to the right of its value, that follows a gender:
+ * `marks[item[genderKey]]`, nothing when the item carries no gender. The marks name every value of the
+ * enum of `genderKey`, in its order. The gender field itself is not printed (it needs no place in `fieldRows`).
+ */
+export type AdrenalineGenderMark = {
+  key: string;
+  genderKey: string;
+  marks: {
+    masculin: string;
+    feminin: string;
+    neutre: string;
+  };
+};
+
+/**
  * Label and malus count of a health threshold level on the player sheet. The
  * match with the contract key is positional: `superficiel` is printed « Léger ».
  */
@@ -286,6 +301,8 @@ export type AdrenalinePresentationBlock = {
   attitudeLevels?: readonly AdrenalineAttitudeLevel[];
   /** `pc-ties` only: the labels whose wording follows a gender the document carries (the gender itself is not printed). */
   genderedLabels?: readonly AdrenalineGenderedLabel[];
+  /** `pc-ties` only: the short mark of the gender printed to the right of a field of the line (the name of the character). */
+  genderMark?: AdrenalineGenderMark;
   /** Fixed texts printed by the block, as the sheet words them. */
   notes?: readonly string[];
   /**
@@ -1515,6 +1532,11 @@ export const RELATIONS_PRESENTATION = definePresentation({
               },
             },
           ],
+          genderMark: {
+            key: "nom",
+            genderKey: "genre",
+            marks: { masculin: "il", feminin: "elle", neutre: "iel" },
+          },
           countPath: "/nombreDAutresPersonnages",
         },
       ],

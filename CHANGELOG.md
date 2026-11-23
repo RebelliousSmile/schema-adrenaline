@@ -17,8 +17,10 @@ All notable changes to this project will be documented in this file.
   friendship or work, with a short precision), the numbers of the NPCs it is linked
   to, what happened to it, notes and a free tick (`toucheParLeDrame`: the drama touched it, or any use the game
   master gives it; it is printed unlabelled, to the right of the name, on each NPC concerned). `genre` of an other
-  player character (`masculin`, `feminin` or `neutre`) is not printed: the presentation
-  publishes the labels it picks (`genderedLabels`), « Ce qu'iel me doit » when absent. Every
+  player character (`masculin`, `feminin` or `neutre`) is not printed as such: the presentation
+  publishes the labels it picks (`genderedLabels`), « Ce qu'iel me doit » when absent, and
+  the short mark printed to the right of the name (`genderMark`: « il », « elle », « iel »,
+  nothing when absent). Every
   text and every list publishes its capacity (`maxLength`, `maxItems`): the capacities
   are those of a printed page, not rules of the game.
 - The social modifier of an NPC is deduced from its attitude and never entered: the

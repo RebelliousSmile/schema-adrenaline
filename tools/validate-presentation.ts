@@ -807,6 +807,7 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.minimumRows === undefined ? [] : ["minimumRows"]),
           ...(block.countPath === undefined ? [] : ["countPath"]),
           ...(block.genderedLabels === undefined ? [] : ["genderedLabels"]),
+          ...(block.genderMark === undefined ? [] : ["genderMark"]),
           ...(block.display === undefined ? [] : ["display"]),
           "paths",
         ],
@@ -1255,6 +1256,37 @@ export function validatePresentation(source: unknown, target: Target): void {
               `${labelWhere}.labels must be text`,
             );
         });
+      }
+      if (block.genderMark !== undefined) {
+        assert.equal(block.form, "pc-ties", `${blockWhere}.genderMark needs the other characters`);
+        const holder = nodeAt(schema, (block.paths as string[])[0], blockWhere).node;
+        const properties = obj(
+          obj(holder.items, `${blockWhere}.items`).properties,
+          `${blockWhere}.properties`,
+        );
+        const markWhere = `${blockWhere}.genderMark`;
+        const mark = obj(block.genderMark, markWhere);
+        keys(mark, ["key", "genderKey", "marks"], markWhere);
+        assert.ok(
+          typeof mark.key === "string" && mark.key in properties,
+          `${markWhere}.key must name a field of the list`,
+        );
+        const gender = obj(properties[mark.genderKey as string], `${markWhere}.genderKey`);
+        assert.ok(
+          Array.isArray(gender.enum) && gender.enum.length > 0,
+          `${markWhere}.genderKey must name an enumeration`,
+        );
+        const marks = obj(mark.marks, `${markWhere}.marks`);
+        assert.deepEqual(
+          Object.keys(marks).sort(),
+          [...(gender.enum as string[])].sort(),
+          `${markWhere}.marks must mark every gender`,
+        );
+        for (const text of Object.values(marks))
+          assert.ok(
+            typeof text === "string" && text.trim().length > 0 && text.length <= 6,
+            `${markWhere}.marks must be short texts`,
+          );
       }
       if (block.attitudeLevels !== undefined) {
         assert.equal(block.form, "npc-entries", `${blockWhere}.attitudeLevels needs NPC entries`);
@@ -2778,6 +2810,27 @@ if (process.argv.includes("--self-test")) {
         "labels",
       ).feminin,
     /genderedLabels\.0\.labels must word every gender, and the absent one/,
+  );
+  refuseRelations(
+    "a gender mark that forgets a gender",
+    (value) =>
+      delete obj(obj(relationsBlock(value, "autresPersonnages").genderMark, "mark").marks, "marks")
+        .feminin,
+    /genderMark\.marks must mark every gender/,
+  );
+  refuseRelations(
+    "a gender mark on a field the list does not hold",
+    (value) => (obj(relationsBlock(value, "autresPersonnages").genderMark, "mark").key = "inconnu"),
+    /genderMark\.key must name a field of the list/,
+  );
+  refuseRelations(
+    "a gender mark on the NPCs",
+    (value) =>
+      (relationsBlock(value, "pnjs").genderMark = relationsBlock(
+        value,
+        "autresPersonnages",
+      ).genderMark),
+    /pnjs\.genderMark needs the other characters/,
   );
   refuseRelations(
     "gendered labels on the NPCs",
