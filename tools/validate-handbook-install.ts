@@ -8,6 +8,8 @@ type StoredValue = string | ArrayBuffer;
 interface ResolvedSource {
   revision: string;
   readText(file: string): Promise<string>;
+  /* Newer Handbook releases ask for the size of an asset before reading it; older ones ignore it. */
+  inspectBinary(file: string): Promise<{ contentLength?: number }>;
   readBinary(file: string): Promise<ArrayBuffer>;
 }
 
@@ -97,6 +99,7 @@ function resolvedSource(revision: string, marker: number, failAssets = false): R
   return {
     revision,
     readText: async (file) => fs.readFileSync(localPath(file), "utf8"),
+    inspectBinary: async (file) => ({ contentLength: fs.statSync(localPath(file)).size }),
     readBinary: async (file) => {
       if (failAssets) throw new Error("simulated asset download failure");
       return arrayBuffer(fs.readFileSync(localPath(file)), marker);
