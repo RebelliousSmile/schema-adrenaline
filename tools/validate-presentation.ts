@@ -897,8 +897,13 @@ export function validatePresentation(source: unknown, target: Target): void {
         );
         assert.ok(Array.isArray(block.fieldRows) && block.fieldRows.length > 0);
         const named = (block.fieldRows as unknown[]).map((row, i) => {
+          // The number of an NPC sits in its own box before the name: it is not a column of the row.
+          const width = Array.isArray(row) ? row.length - (row[0] === "numero" ? 1 : 0) : 0;
           assert.ok(
-            Array.isArray(row) && row.length >= 1 && row.length <= Number(block.columns ?? 1),
+            Array.isArray(row) &&
+              row.length >= 1 &&
+              width >= 1 &&
+              width <= Number(block.columns ?? 1),
             `${blockWhere}.fieldRows.${i} must fit the block columns`,
           );
           return row as unknown[];

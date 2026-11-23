@@ -193,7 +193,7 @@
             "maxLength": 120
           },
           "toucheParLeDrame": {
-            "description": "Le drame a touché ce PNJ. Plusieurs PNJ peuvent l'être sur une même feuille : la coche se pose sur chaque PNJ concerné.",
+            "description": "Case à cocher à droite du nom du PNJ : le drame l'a touché, ou tout autre usage que le meneur lui donne. Plusieurs PNJ peuvent l'être sur une même feuille.",
             "examples": [
               true
             ],
@@ -433,7 +433,8 @@
             "fieldRows": [
               [
                 "numero",
-                "nom"
+                "nom",
+                "toucheParLeDrame"
               ],
               [
                 "attitude",
@@ -447,9 +448,6 @@
               ],
               [
                 "notes"
-              ],
-              [
-                "toucheParLeDrame"
               ]
             ],
             "attitudeLevels": [
