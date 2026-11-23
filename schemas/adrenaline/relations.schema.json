@@ -177,8 +177,8 @@
               ]
             }
           },
-          "ceQuiLuiEstArrive": {
-            "description": "Ce qui lui est arrivé au fil des parties.",
+          "resume": {
+            "description": "Résumé de ce qui est arrivé au PNJ au fil des parties.",
             "type": "string",
             "minLength": 1,
             "maxLength": 120
@@ -431,7 +431,7 @@
                 "lien"
               ],
               [
-                "ceQuiLuiEstArrive"
+                "resume"
               ],
               [
                 "notes"

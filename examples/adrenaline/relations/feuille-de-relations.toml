@@ -20,7 +20,7 @@ nom = "Le docteur Ferran"
 attitude = "amicale"
 lien = { type = "travail", description = "ancien chef de service" }
 reliesA = [2]
-ceQuiLuiEstArrive = "Retranché dans l'aile nord de l'hôpital."
+resume = "Retranché dans l'aile nord de l'hôpital."
 notes = "Je me méfie de ses silences."
 
 [[pnjs]]
@@ -35,7 +35,7 @@ numero = 3
 nom = "Sœur Agathe"
 attitude = "indifferente"
 lien = { type = "amitie" }
-ceQuiLuiEstArrive = "Disparue depuis l'attaque du marché."
+resume = "Disparue depuis l'attaque du marché."
 
 [meta]
 typeDePublication = "maison"

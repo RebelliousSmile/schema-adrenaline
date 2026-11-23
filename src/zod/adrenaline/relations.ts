@@ -37,8 +37,8 @@ export const DETTE_CAPACITE = 100;
 /** Capacité de la précision d'un lien, à côté de ses cases à cocher. */
 export const LIEN_DESCRIPTION_CAPACITE = 60;
 
-/** Capacité de « Ce qui lui est arrivé ». */
-export const CE_QUI_LUI_EST_ARRIVE_CAPACITE = 120;
+/** Capacité du résumé du PNJ. */
+export const RESUME_CAPACITE = 120;
 
 /** Capacité des notes d'un PNJ. */
 export const NOTES_PNJ_CAPACITE = 120;
@@ -129,8 +129,8 @@ const Pnj = z
           "Numéros des autres PNJ auxquels celui-ci est relié. Le schéma ne vérifie pas que ces numéros existent.",
         examples: [[1, 4]],
       }),
-    ceQuiLuiEstArrive: texte(CE_QUI_LUI_EST_ARRIVE_CAPACITE).optional().meta({
-      description: "Ce qui lui est arrivé au fil des parties.",
+    resume: texte(RESUME_CAPACITE).optional().meta({
+      description: "Résumé de ce qui est arrivé au PNJ au fil des parties.",
     }),
     notes: texte(NOTES_PNJ_CAPACITE).optional().meta({
       description:
