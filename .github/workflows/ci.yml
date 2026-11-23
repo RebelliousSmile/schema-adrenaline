@@ -66,6 +66,17 @@ jobs:
         working-directory: handbook-host
         run: npm install --legacy-peer-deps
 
+      # While the declared Handbook release has no tag, the host is `main`, which already reads the
+      # contract this train publishes but still pins the previous provider release: its imports of a
+      # schema file the candidate adds would not resolve. The host then runs against the candidate
+      # itself, packed here, which is the provider the release it is waiting for will pin.
+      - name: Install the candidate provider into an unreleased host
+        if: steps.handbook-ref.outputs.tag == 'main'
+        working-directory: schema-adrenaline
+        run: |
+          tarball=$(npm pack --silent --pack-destination "$RUNNER_TEMP" | tail -n 1)
+          npm install --no-save --legacy-peer-deps --prefix ../handbook-host "$RUNNER_TEMP/$tarball"
+
       # Handbook's source-assertion script (tools/assert-adrenaline-source.mjs) is
       # deliberately not run here. It only exists on the frozen 2.7.x tags, where its
       # harness hardcodes the pack version it expects (`0.2.0`), so it fails on every
