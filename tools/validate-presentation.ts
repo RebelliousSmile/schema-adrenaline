@@ -1251,10 +1251,6 @@ export function validatePresentation(source: unknown, target: Target): void {
             );
         });
       }
-      if (block.display !== undefined) {
-        assert.equal(block.form, "npc-entries", `${blockWhere}.display needs NPC entries`);
-        assert.equal(block.display, "table", `${blockWhere}.display must be table`);
-      }
       if (block.attitudeLevels !== undefined) {
         assert.equal(block.form, "npc-entries", `${blockWhere}.attitudeLevels needs NPC entries`);
         const levels = block.attitudeLevels;
@@ -2786,11 +2782,6 @@ if (process.argv.includes("--self-test")) {
         "autresPersonnages",
       ).genderedLabels),
     /pnjs\.genderedLabels needs the other characters/,
-  );
-  refuseRelations(
-    "a table display on the other characters",
-    (value) => (relationsBlock(value, "autresPersonnages").display = "table"),
-    /autresPersonnages\.display needs NPC entries/,
   );
   refuseRelations(
     "the other characters without their count",

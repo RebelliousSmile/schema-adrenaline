@@ -425,23 +425,18 @@
             "label": "PNJ",
             "order": 1,
             "layout": "stack",
-            "columns": 1,
+            "columns": 2,
             "form": "npc-entries",
-            "display": "table",
             "paths": [
               "/pnjs"
             ],
             "fieldRows": [
               [
-                "numero"
-              ],
-              [
+                "numero",
                 "nom"
               ],
               [
-                "attitude"
-              ],
-              [
+                "attitude",
                 "reliesA"
               ],
               [

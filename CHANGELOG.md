@@ -17,8 +17,7 @@ All notable changes to this project will be documented in this file.
   to, what happened to it, notes and whether the drama touched it (`toucheParLeDrame`: one
   or several tests per sheet, the tick sits on each NPC concerned). `genre` of an other
   player character (`masculin`, `feminin` or `neutre`) is not printed: the presentation
-  publishes the labels it picks (`genderedLabels`), « Ce qu'iel me doit » when absent. The
-  NPCs print as a table (`display: "table"`): a column per field, a row per slot. Every
+  publishes the labels it picks (`genderedLabels`), « Ce qu'iel me doit » when absent. Every
   text and every list publishes its capacity (`maxLength`, `maxItems`): the capacities
   are those of a printed page, not rules of the game.
 - The social modifier of an NPC is deduced from its attitude and never entered: the

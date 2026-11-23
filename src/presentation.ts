@@ -286,12 +286,6 @@ export type AdrenalinePresentationBlock = {
   attitudeLevels?: readonly AdrenalineAttitudeLevel[];
   /** `pc-ties` only: the labels whose wording follows a gender the document carries (the gender itself is not printed). */
   genderedLabels?: readonly AdrenalineGenderedLabel[];
-  /**
-   * `npc-entries` only: `"table"` prints the entries as one table, a row per slot, each row of
-   * `fieldRows` being a column headed by its field name (the keys of a row share one cell). Absent,
-   * each entry is a card laid out by `fieldRows` and `columns`.
-   */
-  display?: "table";
   /** Fixed texts printed by the block, as the sheet words them. */
   notes?: readonly string[];
   /**
@@ -1524,15 +1518,12 @@ export const RELATIONS_PRESENTATION = definePresentation({
           label: "PNJ",
           order: 1,
           layout: "stack",
-          columns: 1,
+          columns: 2,
           form: "npc-entries",
-          display: "table",
           paths: ["/pnjs"],
           fieldRows: [
-            ["numero"],
-            ["nom"],
-            ["attitude"],
-            ["reliesA"],
+            ["numero", "nom"],
+            ["attitude", "reliesA"],
             ["lien"],
             ["resume"],
             ["notes"],
