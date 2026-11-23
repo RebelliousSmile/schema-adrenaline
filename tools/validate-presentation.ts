@@ -38,6 +38,7 @@ const FORMS = new Set([
   "circle-row",
   "pc-ties",
   "npc-entries",
+  "portrait",
 ]);
 /** The forms only the relationship sheet prints. */
 const RELATIONS_FORMS = new Set(["pc-ties", "npc-entries"]);
@@ -98,6 +99,8 @@ const PJ_PATHS: Record<string, string[]> = {
   "protections-physiques": ["/protections/physiques"],
   "protections-mentales": ["/protections/mentales"],
   divers: ["/etatDePartie/malus/divers", "/etatDePartie/malus/diversCercles"],
+  portrait: ["/portrait"],
+  "notes-de-partie": ["/notesDePartie"],
 };
 
 /** The decoration the player sheet draws on a block, by block id: it is required, not merely allowed. */
@@ -119,6 +122,8 @@ const PJ_PLACES: Record<string, { label: string; section: string }> = {
   "blessures-physiques": { label: "Blessures physiques", section: "sante" },
   "blessures-mentales": { label: "Blessures mentales", section: "sante" },
   contraintes: { label: "Contraintes", section: "identite" },
+  portrait: { label: "Portrait", section: "identite" },
+  "notes-de-partie": { label: "Notes de partie", section: "identite" },
 };
 
 /** The three lines of the constraints block: path and printed label, in order. */
@@ -496,18 +501,11 @@ function numericBounds(value: unknown, where: string): void {
 }
 
 /**
- * The printed pages: every section sits on exactly one page, the notes page is the last one and
- * reads one bounded text, whose capacity the schema publishes (`maxLength`) and the pages never
- * restate.
+ * The printed pages: every section sits on exactly one page. The session notes are not a page: they
+ * are a block of the identity section, which reads one bounded text whose capacity the schema
+ * publishes (`maxLength`).
  */
-function pages(
-  schema: Obj,
-  value: unknown,
-  sectionList: Obj[],
-  target: Target,
-  coverage: Set<string>,
-  usedPaths: string[],
-): void {
+function pages(value: unknown, sectionList: Obj[], target: Target): void {
   const where = `${target}.pages`;
   assert.equal(target, "pj", `${where} belongs to the player sheet`);
   assert.ok(Array.isArray(value) && value.length >= 2, `${where} must declare at least two pages`);
@@ -520,14 +518,9 @@ function pages(
   assert.equal(new Set(ids).size, ids.length, `${where} ids must be unique`);
   const sectionIds = sectionList.map((section) => section.id as string);
   const placed: string[] = [];
-  let notesPages = 0;
-  list.forEach((page, i) => {
+  list.forEach((page) => {
     const pageWhere = `${where}.${page.id}`;
-    keys(
-      page,
-      ["id", "label", ...(page.sections === undefined ? ["notesPath"] : ["sections"])],
-      pageWhere,
-    );
+    keys(page, ["id", "label", "sections"], pageWhere);
     const label = obj(page.label, `${pageWhere}.label`);
     keys(label, ["fr", "en"], `${pageWhere}.label`);
     for (const language of ["fr", "en"])
@@ -535,19 +528,6 @@ function pages(
         typeof label[language] === "string" && label[language].length > 0,
         `${pageWhere}.label.${language} must be text`,
       );
-    if (page.notesPath !== undefined) {
-      notesPages += 1;
-      assert.equal(i, list.length - 1, `${pageWhere} is the notes page, it must be the last page`);
-      const { root, node } = nodeAt(schema, page.notesPath, `${pageWhere}.notesPath`);
-      assert.equal(node.type, "string", `${pageWhere}.notesPath must read a text`);
-      assert.ok(
-        Number.isInteger(node.maxLength) && Number(node.maxLength) > 0,
-        `${pageWhere}.notesPath must read a text whose capacity the schema publishes`,
-      );
-      coverage.add(root);
-      usedPaths.push(page.notesPath as string);
-      return;
-    }
     assert.ok(
       Array.isArray(page.sections) && page.sections.length > 0,
       `${pageWhere}.sections must not be empty`,
@@ -560,8 +540,6 @@ function pages(
       placed.push(String(id));
     }
   });
-  assert.ok(notesPages <= 1, `${where} declares more than one notes page`);
-  assert.equal(notesPages, 1, `${where} must end with the notes page`);
   assert.deepEqual(
     [...placed].sort(),
     [...sectionIds].sort(),
@@ -1319,8 +1297,7 @@ export function validatePresentation(source: unknown, target: Target): void {
       }
     }
   }
-  if (descriptor.pages !== undefined)
-    pages(schema, descriptor.pages, sectionList, target, coverage, usedPaths);
+  if (descriptor.pages !== undefined) pages(descriptor.pages, sectionList, target);
   assert.ok(Array.isArray(descriptor.hiddenPaths), `${target}.hiddenPaths must be an array`);
   for (const raw of descriptor.hiddenPaths) {
     coverage.add(nodeAt(schema, raw, `${target}.hiddenPaths`).root);
@@ -1351,6 +1328,8 @@ export function validatePresentation(source: unknown, target: Target): void {
       contraintes: "compact-rows",
       historique: "narrative",
       personnalite: "narrative",
+      "notes-de-partie": "narrative",
+      portrait: "portrait",
       "blessures-physiques": "wound-circles",
       "blessures-mentales": "wound-circles",
       stress: "stress-dice",
@@ -1385,6 +1364,18 @@ export function validatePresentation(source: unknown, target: Target): void {
       blockOf(sectionList, "contraintes").pointerRows,
       PJ_CONSTRAINT_ROWS,
       `${target}.contraintes must print the three lines of the sheet, with their labels`,
+    );
+    // The portrait is one image reference and the notes one bounded text, whose capacity the schema publishes.
+    assert.equal(
+      nodeAt(schema, "/portrait", `${target}.portrait`).node.type,
+      "string",
+      `${target}.portrait must read an image reference`,
+    );
+    const notesNode = nodeAt(schema, "/notesDePartie", `${target}.notes-de-partie`).node;
+    assert.equal(notesNode.type, "string", `${target}.notes-de-partie must read a text`);
+    assert.ok(
+      Number.isInteger(notesNode.maxLength) && Number(notesNode.maxLength) > 0,
+      `${target}.notes-de-partie must read a text whose capacity the schema publishes`,
     );
     // One reference table, the social weapons: a second one, under another id, is not the sheet's.
     assert.deepEqual(

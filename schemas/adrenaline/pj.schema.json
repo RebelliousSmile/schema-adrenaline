@@ -128,6 +128,14 @@
       },
       "additionalProperties": false
     },
+    "portrait": {
+      "description": "Illustration du personnage : une seule image, référencée par son chemin dans le coffre, imprimée à côté de la carte d'identité, au verso de la feuille. Sans image, la feuille garde l'emplacement du portrait vide.",
+      "examples": [
+        "Zombiology/Portraits/claire-vasseur.png"
+      ],
+      "type": "string",
+      "minLength": 1
+    },
     "caracteristiques": {
       "type": "object",
       "properties": {
@@ -1137,7 +1145,7 @@
       "additionalProperties": false
     },
     "notesDePartie": {
-      "description": "Notes de partie : texte libre que le joueur consigne en jouant, imprimé sur une page à part, toujours la dernière de la feuille. Le texte tient sur une page : au-delà de la capacité, il est refusé.",
+      "description": "Notes de partie : texte libre que le joueur consigne en jouant, imprimé dans la zone de notes de la section Identité, au verso de la feuille. Le texte tient dans cette zone : au-delà de la capacité, il est refusé.",
       "examples": [
         "Séance 3 : le groupe quitte l'entrepôt par le toit.\n\nÀ retenir : Claire a perdu sa radio."
       ],
@@ -1885,8 +1893,8 @@
         "id": "identite",
         "label": "Identité",
         "order": 60,
-        "layout": "stack",
-        "columns": 1,
+        "layout": "columns",
+        "columns": 3,
         "collapsible": true,
         "blocks": [
           {
@@ -1896,6 +1904,11 @@
             "layout": "grid",
             "columns": 2,
             "form": "identity-fields",
+            "placement": {
+              "column": 1,
+              "row": 1,
+              "columnSpan": 2
+            },
             "fieldRows": [
               [
                 "nationalite",
@@ -1922,12 +1935,31 @@
             ]
           },
           {
+            "id": "portrait",
+            "label": "Portrait",
+            "order": 20,
+            "layout": "stack",
+            "form": "portrait",
+            "placement": {
+              "column": 3,
+              "row": 1
+            },
+            "paths": [
+              "/portrait"
+            ]
+          },
+          {
             "id": "contraintes",
             "label": "Contraintes",
-            "order": 20,
+            "order": 30,
             "layout": "grid",
             "columns": 1,
             "form": "compact-rows",
+            "placement": {
+              "column": 1,
+              "row": 2,
+              "columnSpan": 3
+            },
             "pointerRows": [
               [
                 {
@@ -1955,9 +1987,14 @@
           {
             "id": "historique",
             "label": "Historique",
-            "order": 30,
+            "order": 40,
             "layout": "stack",
             "form": "narrative",
+            "placement": {
+              "column": 1,
+              "row": 3,
+              "columnSpan": 3
+            },
             "paths": [
               "/identite/historique"
             ]
@@ -1965,11 +2002,31 @@
           {
             "id": "personnalite",
             "label": "Personnalité",
-            "order": 40,
+            "order": 50,
             "layout": "stack",
             "form": "narrative",
+            "placement": {
+              "column": 1,
+              "row": 4,
+              "columnSpan": 3
+            },
             "paths": [
               "/identite/personnalite"
+            ]
+          },
+          {
+            "id": "notes-de-partie",
+            "label": "Notes de partie",
+            "order": 60,
+            "layout": "stack",
+            "form": "narrative",
+            "placement": {
+              "column": 1,
+              "row": 5,
+              "columnSpan": 3
+            },
+            "paths": [
+              "/notesDePartie"
             ]
           }
         ]
@@ -1983,6 +2040,7 @@
           "en": "Front"
         },
         "sections": [
+          "entete",
           "competence",
           "caracteristique",
           "equipement",
@@ -1996,17 +2054,8 @@
           "en": "Back"
         },
         "sections": [
-          "entete",
           "identite"
         ]
-      },
-      {
-        "id": "notes",
-        "label": {
-          "fr": "Notes de partie",
-          "en": "Session notes"
-        },
-        "notesPath": "/notesDePartie"
       }
     ],
     "hiddenPaths": [

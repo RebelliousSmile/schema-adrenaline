@@ -143,6 +143,13 @@
       "names": "notesDePartie"
     },
     {
+      "path": "corpus/refus/pj/portrait-vide.json",
+      "target": "pj",
+      "format": "json",
+      "expect": "reject",
+      "names": "portrait"
+    },
+    {
       "path": "corpus/refus/pj/nom-vide.json",
       "target": "pj",
       "format": "json",

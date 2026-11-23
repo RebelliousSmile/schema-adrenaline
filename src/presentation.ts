@@ -36,7 +36,8 @@ export type AdrenalinePresentationForm =
   | "wound-circles"
   | "circle-row"
   | "pc-ties"
-  | "npc-entries";
+  | "npc-entries"
+  | "portrait";
 
 /** A location of the player sheet grid, with the d10 range that designates it. */
 export type AdrenalineLocationCell = { id: string; label: string; range: string };
@@ -355,17 +356,14 @@ export type AdrenalinePageLabel = { fr: string; en: string };
 
 /**
  * A page of the printed sheet. A sheet that declares pages is exported page by page: one image per
- * page, one printed sheet per page. Either the page prints sections of the sheet (`sections`, by
- * id) or it is the notes page (`notesPath`), never both. The notes page is the last one: the
- * player writes into it while playing, it never precedes the sheet.
+ * page, one printed sheet per page. A page prints sections of the sheet (`sections`, by id); the
+ * session notes are not a page of their own, they are a block of the identity section.
  */
 export type AdrenalinePresentationPage = {
   id: string;
   label: AdrenalinePageLabel;
   /** Ids of the sections printed on this page, in sheet order. */
-  sections?: readonly string[];
-  /** The notes page only: JSON Pointer of the free text it carries (a bounded string). */
-  notesPath?: string;
+  sections: readonly string[];
 };
 
 export type AdrenalineCategoryVariant = "garnet" | "blue" | "orange";
@@ -407,8 +405,7 @@ export type AdrenalinePresentation = {
   };
   sections: AdrenalinePresentationSection[];
   /**
-   * Player sheet only: the printed pages, in order. Every section is printed on exactly one page;
-   * the notes page, when declared, is the last one.
+   * Player sheet only: the printed pages, in order. Every section is printed on exactly one page.
    */
   pages?: readonly AdrenalinePresentationPage[];
   /** Portable metadata intentionally absent from the visual sheet. */
@@ -891,8 +888,8 @@ export const PJ_PRESENTATION = definePresentation({
       id: "identite",
       label: "Identité",
       order: 60,
-      layout: "stack",
-      columns: 1,
+      layout: "columns",
+      columns: 3,
       collapsible: true,
       blocks: [
         {
@@ -902,6 +899,7 @@ export const PJ_PRESENTATION = definePresentation({
           layout: "grid",
           columns: 2,
           form: "identity-fields",
+          placement: { column: 1, row: 1, columnSpan: 2 },
           fieldRows: [
             ["nationalite", "genre"],
             ["cheveux", "age"],
@@ -912,12 +910,22 @@ export const PJ_PRESENTATION = definePresentation({
           paths: ["/identite"],
         },
         {
+          id: "portrait",
+          label: "Portrait",
+          order: 20,
+          layout: "stack",
+          form: "portrait",
+          placement: { column: 3, row: 1 },
+          paths: ["/portrait"],
+        },
+        {
           id: "contraintes",
           label: "Contraintes",
-          order: 20,
+          order: 30,
           layout: "grid",
           columns: 1,
           form: "compact-rows",
+          placement: { column: 1, row: 2, columnSpan: 3 },
           pointerRows: [
             [{ path: "/identite/contraintes/professionnelles", label: "Professionnelles" }],
             [{ path: "/identite/contraintes/familiales", label: "Familiales" }],
@@ -933,18 +941,29 @@ export const PJ_PRESENTATION = definePresentation({
         {
           id: "historique",
           label: "Historique",
-          order: 30,
+          order: 40,
           layout: "stack",
           form: "narrative",
+          placement: { column: 1, row: 3, columnSpan: 3 },
           paths: ["/identite/historique"],
         },
         {
           id: "personnalite",
           label: "Personnalité",
-          order: 40,
+          order: 50,
           layout: "stack",
           form: "narrative",
+          placement: { column: 1, row: 4, columnSpan: 3 },
           paths: ["/identite/personnalite"],
+        },
+        {
+          id: "notes-de-partie",
+          label: "Notes de partie",
+          order: 60,
+          layout: "stack",
+          form: "narrative",
+          placement: { column: 1, row: 5, columnSpan: 3 },
+          paths: ["/notesDePartie"],
         },
       ],
     },
@@ -953,17 +972,12 @@ export const PJ_PRESENTATION = definePresentation({
     {
       id: "recto",
       label: { fr: "Recto", en: "Front" },
-      sections: ["competence", "caracteristique", "equipement", "sante"],
+      sections: ["entete", "competence", "caracteristique", "equipement", "sante"],
     },
     {
       id: "verso",
       label: { fr: "Verso", en: "Back" },
-      sections: ["entete", "identite"],
-    },
-    {
-      id: "notes",
-      label: { fr: "Notes de partie", en: "Session notes" },
-      notesPath: "/notesDePartie",
+      sections: ["identite"],
     },
   ],
   hiddenPaths: ["/meta", "/parametresDuJeu/declinaisonDeCampagne"],

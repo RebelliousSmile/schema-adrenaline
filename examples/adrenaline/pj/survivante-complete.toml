@@ -1,4 +1,9 @@
 nom = "Naïma Berthier"
+portrait = "Zombiology/Portraits/naima-berthier.png"
+notesDePartie = """
+Séance 3 : le groupe quitte l'entrepôt par le toit.
+
+À retenir : Naïma a perdu sa radio."""
 
 [identite]
 nationalite = "Française"

@@ -65,8 +65,8 @@ const ParametresDuJeu = z
   });
 
 /**
- * Capacité de la page « Notes de partie », en caractères : ce que la page de notes de la fiche
- * peut porter. Une page qui contient des lignes courtes se remplit avant : le refus de saisie de
+ * Capacité des notes de partie, en caractères : ce que la zone de notes du verso de la fiche peut
+ * porter. Une zone qui contient des lignes courtes se remplit avant : le refus de saisie de
  * l'éditeur se fait aussi sur la hauteur rendue, ce plafond n'est que la borne du contrat.
  */
 export const NOTES_DE_PARTIE_CAPACITE = 6000;
@@ -136,6 +136,15 @@ export const PersonnageJoueur = z
     identite: IdentiteDeJoueur.optional().meta({
       description: "Bloc Identité de la feuille. Facultatif : le livre le laisse libre au joueur.",
     }),
+    portrait: z
+      .string()
+      .min(1)
+      .optional()
+      .meta({
+        description:
+          "Illustration du personnage : une seule image, référencée par son chemin dans le coffre, imprimée à côté de la carte d'identité, au verso de la feuille. Sans image, la feuille garde l'emplacement du portrait vide.",
+        examples: ["Zombiology/Portraits/claire-vasseur.png"],
+      }),
     caracteristiques: CaracteristiquesJoueur,
     sante: Sante,
     protections: Protections.optional().meta({
@@ -159,7 +168,7 @@ export const PersonnageJoueur = z
       .optional()
       .meta({
         description:
-          "Notes de partie : texte libre que le joueur consigne en jouant, imprimé sur une page à part, toujours la dernière de la feuille. Le texte tient sur une page : au-delà de la capacité, il est refusé.",
+          "Notes de partie : texte libre que le joueur consigne en jouant, imprimé dans la zone de notes de la section Identité, au verso de la feuille. Le texte tient dans cette zone : au-delà de la capacité, il est refusé.",
         examples: [
           "Séance 3 : le groupe quitte l'entrepôt par le toit.\n\nÀ retenir : Claire a perdu sa radio.",
         ],

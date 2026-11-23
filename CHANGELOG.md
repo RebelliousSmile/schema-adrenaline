@@ -2,7 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [7.0.0] - 2026-11-23
+
+### Breaking
+
+- The printed pages of the player sheet change. The notes page is gone: `pages` lists
+  `recto` and `verso` only, and a page no longer carries `notesPath`. The game notes
+  (`notesDePartie`) now sit in the Identity section, on the back of the sheet, under the
+  identity card, the portrait and the three texts. A consumer that drew a separate
+  notes page reads the block `notes-de-partie` of the section `identite` instead.
+  The header (name, game settings, XP) stays at the top of the front. Procedure: drop the
+  notes page from the export and print the notes in the Identity section.
+
+### Added
+
+- The player sheet (`pj`) takes `portrait`: the character's illustration, one image,
+  referenced by its path in the vault, printed beside the identity card on the back.
+  Optional, so no existing document changes. The presentation publishes a form
+  `portrait` and a block `portrait` (reading `/portrait`) in the section `identite`;
+  without an image the sheet keeps the empty place of the portrait.
+- The section `identite` is laid out on three columns: the identity card (two columns) and
+  the portrait (one) on the first row, then the constraints, the history, the personality
+  and the game notes, each on the full width.
+- The corpus gains the refusal « empty portrait »; the witness carries a portrait.
+- `NOTES_DE_PARTIE_CAPACITE` (6000) is unchanged.
+
+## [6.4.0] - 2026-11-23
 
 ### Added
 
