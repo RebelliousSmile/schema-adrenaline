@@ -9,6 +9,7 @@ export {
   PJ_PRESENTATION,
   PNJ_PRESENTATION,
   RELATIONS_PRESENTATION,
+  placesPerRow,
 } from "./presentation.js";
 export { ADRENALINE_VISUAL_CALLOUTS } from "./callouts.js";
 export type { AdrenalineVisualCallout } from "./callouts.js";

@@ -10,7 +10,8 @@ All notable changes to this project will be documented in this file.
   A4 page separate from the player sheet. A header line carries `personnage`
   (required), `joueur` and `partie`. `autresPersonnages` holds up to 6 other player
   characters (`nombreDAutresPersonnages`, 1 to 6, 4 by default, sets how many places
-  the sheet prints, four to a row), each with what the character knows of them and the debts both ways,
+  the sheet prints: up to four, one row of as many places filling the width; five or six,
+  two rows of three, `placesPerRow`), each with what the character knows of them and the debts both ways,
   with no modifier. `pnjs` holds up to 10 NPCs, each with a sheet number from 1 to 99
   (so a second sheet can carry on the numbering), a name, an attitude, a link (family,
   friendship or work, with a short precision), the numbers of the NPCs it is linked

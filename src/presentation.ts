@@ -291,8 +291,10 @@ export type AdrenalinePresentationBlock = {
   /**
    * `pc-ties` only: JSON Pointer of the integer that sets how many places the block
    * prints; absent from the document, the `default` of that integer in the contract
-   * applies. The places the document fills are printed even beyond it. The block
-   * section `columns` is the number of places per row.
+   * applies. The places the document fills are printed even beyond it. The section
+   * `columns` is the most places a row holds: up to that many, one row of as many
+   * places as printed, filling the width; beyond it, the fewest rows, as even as
+   * possible (`placesPerRow`).
    */
   countPath?: string;
   /**
@@ -544,7 +546,18 @@ export const ATTITUDE_LEVELS = [
   { key: "loyale", label: "Loyale", nature: "bonus", count: 4 },
 ] as const satisfies readonly AdrenalineAttitudeLevel[];
 
-const WOUND_DURATIONS = ["heure", "jour", "semaine", "mois"] as const;
+/**
+ * How many places a row of a `pc-ties` block holds, given the places printed and the most a row
+ * takes (the `columns` of its section): up to that most, one row of as many places as printed;
+ * beyond it, the fewest rows, as even as possible (5 and 6 places on a row of 4 give 3 and 3).
+ */
+export function placesPerRow(count: number, maxPerRow: number): number {
+  const max = Math.max(1, Math.floor(maxPerRow));
+  const places = Math.max(1, Math.floor(count));
+  return places <= max ? places : Math.ceil(places / Math.ceil(places / max));
+}
+
+const WOUND_DURATIONS =["heure", "jour", "semaine", "mois"] as const;
 const WOUND_COLUMNS = [{ key: "premiereColonne" }, { key: "secondeColonne" }] as const;
 
 export const PJ_PRESENTATION = definePresentation({

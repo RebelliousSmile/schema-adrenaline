@@ -87,6 +87,7 @@ import {
   ADRENALINE_VISUAL_CALLOUTS as ADRENALINE_VISUAL_CALLOUTS_SUBPATH,
   PNJ_PRESENTATION as PNJ_PRESENTATION_SUBPATH,
   RELATIONS_PRESENTATION as RELATIONS_PRESENTATION_SUBPATH,
+  placesPerRow,
 } from "schema-adrenaline/presentation";
 
 assert.equal(ADRENALINE_CONTRACT_VERSION, ${contractMajor});
@@ -105,6 +106,7 @@ const relationsSchema = JSON.parse(fs.readFileSync(new URL(import.meta.resolve("
 assert.deepEqual(relationsSchema["x-adrenaline-presentation"], RELATIONS_PRESENTATION);
 assert.deepEqual(RELATIONS_PRESENTATION_SUBPATH, RELATIONS_PRESENTATION);
 assert.equal(RELATIONS_PRESENTATION.capability, "block:adrenaline-relations");
+assert.deepEqual([1, 2, 3, 4, 5, 6].map((count) => placesPerRow(count, 4)), [1, 2, 3, 4, 3, 3]);
 assert.deepEqual(ADRENALINE_VISUAL_CALLOUTS_SUBPATH, ADRENALINE_VISUAL_CALLOUTS);
 assert.ok(ADRENALINE_VISUAL_CALLOUTS.every((entry) => entry.capability === "style:adrenaline"));
 assert.ok(fs.statSync(new URL(import.meta.resolve("schema-adrenaline/handbook/adrenaline/callout-contract.md"))).isFile());
