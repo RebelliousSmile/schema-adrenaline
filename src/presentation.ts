@@ -557,7 +557,7 @@ export function placesPerRow(count: number, maxPerRow: number): number {
   return places <= max ? places : Math.ceil(places / Math.ceil(places / max));
 }
 
-const WOUND_DURATIONS =["heure", "jour", "semaine", "mois"] as const;
+const WOUND_DURATIONS = ["heure", "jour", "semaine", "mois"] as const;
 const WOUND_COLUMNS = [{ key: "premiereColonne" }, { key: "secondeColonne" }] as const;
 
 export const PJ_PRESENTATION = definePresentation({
