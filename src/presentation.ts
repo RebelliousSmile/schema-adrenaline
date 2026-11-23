@@ -82,22 +82,6 @@ export type AdrenalineThresholdLevel = {
 };
 
 /**
- * A printed label whose wording follows a gender: the field `key` is worded by `labels[item[genderKey]]`,
- * or by `labels.default` when the item carries no gender. The gender field is not printed (it needs no
- * place in `fieldRows`). The labels name every value of the enum of `genderKey`, in its order.
- */
-export type AdrenalineGenderedLabel = {
-  key: string;
-  genderKey: string;
-  labels: {
-    default: string;
-    masculin: string;
-    feminin: string;
-    neutre: string;
-  };
-};
-
-/**
  * Label, nature and count of an attitude level on the relationship sheet: the social modifier the
  * attitude sets, deduced from it and never entered. One bonus or malus is worth 10 %. The sheet
  * prints only the label (the room goes to the numbers the NPC is tied to); the modifier is there for
@@ -299,9 +283,7 @@ export type AdrenalinePresentationBlock = {
   thresholdLevels?: readonly AdrenalineThresholdLevel[];
   /** `npc-entries` only: the attitude levels and the social modifier each one sets (a hint for editors: the sheet does not print it). */
   attitudeLevels?: readonly AdrenalineAttitudeLevel[];
-  /** `pc-ties` only: the labels whose wording follows a gender the document carries (the gender itself is not printed). */
-  genderedLabels?: readonly AdrenalineGenderedLabel[];
-  /** `pc-ties` only: the short mark of the gender printed to the right of a field of the line (the name of the character). */
+  /** `pc-ties` and `npc-entries`: the short mark of the gender printed to the right of a field of the line (the name of the character). */
   genderMark?: AdrenalineGenderMark;
   /** Fixed texts printed by the block, as the sheet words them. */
   notes?: readonly string[];
@@ -1520,18 +1502,6 @@ export const RELATIONS_PRESENTATION = definePresentation({
           form: "pc-ties",
           paths: ["/autresPersonnages"],
           fieldRows: [["nom"], ["ceQueJeSais"], ["ceQueJeLuiDois"], ["ceQuOnMeDoit"]],
-          genderedLabels: [
-            {
-              key: "ceQuOnMeDoit",
-              genderKey: "genre",
-              labels: {
-                default: "Ce qu'iel me doit",
-                masculin: "Ce qu'il me doit",
-                feminin: "Ce qu'elle me doit",
-                neutre: "Ce qu'iel me doit",
-              },
-            },
-          ],
           genderMark: {
             key: "nom",
             genderKey: "genre",
@@ -1556,6 +1526,11 @@ export const RELATIONS_PRESENTATION = definePresentation({
           columns: 2,
           form: "npc-entries",
           paths: ["/pnjs"],
+          genderMark: {
+            key: "nom",
+            genderKey: "genre",
+            marks: { masculin: "il", feminin: "elle", neutre: "iel" },
+          },
           fieldRows: [
             ["numero", "nom", "toucheParLeDrame"],
             ["attitude", "reliesA"],

@@ -59,7 +59,7 @@
               "feminin",
               "neutre"
             ],
-            "description": "Genre de l'autre personnage joueur : il accorde l'intitulé de ce qu'il, elle ou iel doit au personnage. Il ne s'imprime pas. Absent, l'intitulé est neutre.",
+            "description": "Genre du personnage : repère imprimé à droite du nom (il, elle, iel). Absent, rien ne s'imprime.",
             "examples": [
               "feminin"
             ]
@@ -77,7 +77,7 @@
             "maxLength": 100
           },
           "ceQuOnMeDoit": {
-            "description": "Ce que cet autre personnage doit au personnage. L'intitulé imprimé s'accorde avec son genre.",
+            "description": "Secrets entre le personnage et cet autre personnage ; la feuille l'imprime sous « Secrets ».",
             "type": "string",
             "minLength": 1,
             "maxLength": 100
@@ -113,6 +113,18 @@
             "description": "Nom du PNJ.",
             "examples": [
               "Le docteur Ferran"
+            ]
+          },
+          "genre": {
+            "type": "string",
+            "enum": [
+              "masculin",
+              "feminin",
+              "neutre"
+            ],
+            "description": "Genre du personnage : repère imprimé à droite du nom (il, elle, iel). Absent, rien ne s'imprime.",
+            "examples": [
+              "feminin"
             ]
           },
           "attitude": {
@@ -397,18 +409,6 @@
                 "ceQuOnMeDoit"
               ]
             ],
-            "genderedLabels": [
-              {
-                "key": "ceQuOnMeDoit",
-                "genderKey": "genre",
-                "labels": {
-                  "default": "Ce qu'iel me doit",
-                  "masculin": "Ce qu'il me doit",
-                  "feminin": "Ce qu'elle me doit",
-                  "neutre": "Ce qu'iel me doit"
-                }
-              }
-            ],
             "genderMark": {
               "key": "nom",
               "genderKey": "genre",
@@ -439,6 +439,15 @@
             "paths": [
               "/pnjs"
             ],
+            "genderMark": {
+              "key": "nom",
+              "genderKey": "genre",
+              "marks": {
+                "masculin": "il",
+                "feminin": "elle",
+                "neutre": "iel"
+              }
+            },
             "fieldRows": [
               [
                 "numero",

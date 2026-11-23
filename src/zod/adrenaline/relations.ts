@@ -57,12 +57,12 @@ export const AttitudeDePnj = z
   });
 
 /**
- * Genre d'un autre personnage joueur. Il ne s'imprime pas : il choisit l'accord de
- * l'intitulé « Ce qu'… me doit » que la présentation publie. Absent, l'intitulé est neutre.
+ * Genre d'un autre personnage joueur ou d'un PNJ. Il s'imprime en repère abrégé (« il »,
+ * « elle », « iel ») à droite du nom ; la présentation le publie. Absent, rien ne s'imprime.
  */
 export const GenreDePersonnage = z.enum(["masculin", "feminin", "neutre"]).meta({
   description:
-    "Genre de l'autre personnage joueur : il accorde l'intitulé de ce qu'il, elle ou iel doit au personnage. Il ne s'imprime pas. Absent, l'intitulé est neutre.",
+    "Genre du personnage : repère imprimé à droite du nom (il, elle, iel). Absent, rien ne s'imprime.",
   examples: ["feminin"],
 });
 
@@ -99,7 +99,7 @@ const AutrePersonnage = z
     }),
     ceQuOnMeDoit: texte(DETTE_CAPACITE).optional().meta({
       description:
-        "Ce que cet autre personnage doit au personnage. L'intitulé imprimé s'accorde avec son genre.",
+        "Secrets entre le personnage et cet autre personnage ; la feuille l'imprime sous « Secrets ».",
     }),
   })
   .meta({
@@ -126,6 +126,7 @@ const Pnj = z
       description: "Nom du PNJ.",
       examples: ["Le docteur Ferran"],
     }),
+    genre: GenreDePersonnage.optional(),
     attitude: AttitudeDePnj.optional().meta({
       description:
         "Attitude du PNJ envers le personnage propriétaire de la feuille. Elle seule fixe le modificateur aux tests d'Arme sociale, qui se lit dans la présentation et ne se saisit pas.",

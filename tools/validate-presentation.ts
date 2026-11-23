@@ -806,7 +806,6 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.notes === undefined ? [] : ["notes"]),
           ...(block.minimumRows === undefined ? [] : ["minimumRows"]),
           ...(block.countPath === undefined ? [] : ["countPath"]),
-          ...(block.genderedLabels === undefined ? [] : ["genderedLabels"]),
           ...(block.genderMark === undefined ? [] : ["genderMark"]),
           ...(block.display === undefined ? [] : ["display"]),
           "paths",
@@ -884,7 +883,9 @@ export function validatePresentation(source: unknown, target: Target): void {
           fieldNode.type === "array" ? obj(fieldNode.items, `${blockWhere}.items`) : fieldNode;
         // Only the player sheet prints identity fields in blocks of their own (the constraints,
         // the history, the personality): those are not part of its grid. Elsewhere every field is.
-        const genderKeys = ((block.genderedLabels ?? []) as Obj[]).map((label) => label.genderKey);
+        const genderKeys = [
+          ...(block.genderMark === undefined ? [] : [obj(block.genderMark, blockWhere).genderKey]),
+        ];
         const fields = Object.fromEntries(
           Object.entries(obj(fieldHolder.properties, blockWhere)).filter(
             ([name]) =>
@@ -1215,50 +1216,11 @@ export function validatePresentation(source: unknown, target: Target): void {
           `${blockWhere}.countPath must be bounded by the places the list holds`,
         );
       }
-      if (block.genderedLabels !== undefined) {
-        assert.equal(
-          block.form,
-          "pc-ties",
-          `${blockWhere}.genderedLabels needs the other characters`,
-        );
-        const holder = nodeAt(schema, (block.paths as string[])[0], blockWhere).node;
-        const properties = obj(
-          obj(holder.items, `${blockWhere}.items`).properties,
-          `${blockWhere}.properties`,
-        );
-        const labelled = block.genderedLabels;
-        assert.ok(
-          Array.isArray(labelled) && labelled.length > 0,
-          `${blockWhere}.genderedLabels must not be empty`,
-        );
-        (labelled as unknown[]).forEach((raw, i) => {
-          const labelWhere = `${blockWhere}.genderedLabels.${i}`;
-          const entry = obj(raw, labelWhere);
-          keys(entry, ["key", "genderKey", "labels"], labelWhere);
-          assert.ok(
-            typeof entry.key === "string" && entry.key in properties,
-            `${labelWhere}.key must name a field of the list`,
-          );
-          const gender = obj(properties[entry.genderKey as string], `${labelWhere}.genderKey`);
-          assert.ok(
-            Array.isArray(gender.enum) && gender.enum.length > 0,
-            `${labelWhere}.genderKey must name an enumeration`,
-          );
-          const labels = obj(entry.labels, `${labelWhere}.labels`);
-          assert.deepEqual(
-            Object.keys(labels).sort(),
-            ["default", ...(gender.enum as string[])].sort(),
-            `${labelWhere}.labels must word every gender, and the absent one`,
-          );
-          for (const label of Object.values(labels))
-            assert.ok(
-              typeof label === "string" && label.trim().length > 0,
-              `${labelWhere}.labels must be text`,
-            );
-        });
-      }
       if (block.genderMark !== undefined) {
-        assert.equal(block.form, "pc-ties", `${blockWhere}.genderMark needs the other characters`);
+        assert.ok(
+          block.form === "pc-ties" || block.form === "npc-entries",
+          `${blockWhere}.genderMark needs the other characters or the NPCs`,
+        );
         const holder = nodeAt(schema, (block.paths as string[])[0], blockWhere).node;
         const properties = obj(
           obj(holder.items, `${blockWhere}.items`).properties,
@@ -2797,21 +2759,6 @@ if (process.argv.includes("--self-test")) {
     /pnjs\.fieldRows\.0 must fit the block columns/,
   );
   refuseRelations(
-    "a gendered label for a field the list does not hold",
-    (value) =>
-      ((relationsBlock(value, "autresPersonnages").genderedLabels as Obj[])[0].key = "inconnu"),
-    /genderedLabels\.0\.key must name a field of the list/,
-  );
-  refuseRelations(
-    "a gendered label that forgets a gender",
-    (value) =>
-      delete obj(
-        (relationsBlock(value, "autresPersonnages").genderedLabels as Obj[])[0].labels,
-        "labels",
-      ).feminin,
-    /genderedLabels\.0\.labels must word every gender, and the absent one/,
-  );
-  refuseRelations(
     "a gender mark that forgets a gender",
     (value) =>
       delete obj(obj(relationsBlock(value, "autresPersonnages").genderMark, "mark").marks, "marks")
@@ -2824,22 +2771,13 @@ if (process.argv.includes("--self-test")) {
     /genderMark\.key must name a field of the list/,
   );
   refuseRelations(
-    "a gender mark on the NPCs",
+    "a gender mark on the header",
     (value) =>
-      (relationsBlock(value, "pnjs").genderMark = relationsBlock(
+      (relationsBlock(value, "entete").genderMark = relationsBlock(
         value,
         "autresPersonnages",
       ).genderMark),
-    /pnjs\.genderMark needs the other characters/,
-  );
-  refuseRelations(
-    "gendered labels on the NPCs",
-    (value) =>
-      (relationsBlock(value, "pnjs").genderedLabels = relationsBlock(
-        value,
-        "autresPersonnages",
-      ).genderedLabels),
-    /pnjs\.genderedLabels needs the other characters/,
+    /entete\.genderMark needs the other characters or the NPCs/,
   );
   refuseRelations(
     "the other characters without their count",
