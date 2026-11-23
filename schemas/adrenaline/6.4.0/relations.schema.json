@@ -424,13 +424,11 @@
                 "nom"
               ],
               [
-                "attitude"
+                "attitude",
+                "reliesA"
               ],
               [
                 "lien"
-              ],
-              [
-                "reliesA"
               ],
               [
                 "ceQuiLuiEstArrive"

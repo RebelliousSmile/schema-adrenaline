@@ -19,7 +19,9 @@ All notable changes to this project will be documented in this file.
   are those of a printed page, not rules of the game.
 - The social modifier of an NPC is deduced from its attitude and never entered: the
   presentation publishes `attitudeLevels` (label, nature, count), exported as
-  `ATTITUDE_LEVELS`.
+  `ATTITUDE_LEVELS`. The sheet prints the attitude alone, with the numbers the NPC
+  is tied to on the same line (`["attitude", "reliesA"]`); the modifier is a hint
+  for editors and is not printed.
 - The presentation of the sheet, `RELATIONS_PRESENTATION`, with the capability
   `block:adrenaline-relations` and three forms: `pc-ties`, `npc-entries` and
   `counter`. On a list, `fieldRows` names the properties of each item.

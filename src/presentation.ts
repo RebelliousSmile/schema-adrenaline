@@ -68,8 +68,10 @@ export type AdrenalineThresholdLevel = {
 };
 
 /**
- * Label, nature and count of an attitude level on the relationship sheet: the social modifier
- * printed after the attitude, deduced from it and never entered. One bonus or malus is worth 10 %.
+ * Label, nature and count of an attitude level on the relationship sheet: the social modifier the
+ * attitude sets, deduced from it and never entered. One bonus or malus is worth 10 %. The sheet
+ * prints only the label (the room goes to the numbers the NPC is tied to); the modifier is there for
+ * the editors that show it as a hint.
  * The match with the contract enum `attitude` is positional and checked by the presentation
  * validator: this module never imports the contract, which already imports it.
  */
@@ -265,7 +267,7 @@ export type AdrenalinePresentationBlock = {
   referenceTable?: AdrenalineReferenceTable;
   /** `threshold-rows` of the player sheet: printed label and malus count of each level. */
   thresholdLevels?: readonly AdrenalineThresholdLevel[];
-  /** `npc-entries` only: the attitude levels and the social modifier each one sets. */
+  /** `npc-entries` only: the attitude levels and the social modifier each one sets (a hint for editors: the sheet does not print it). */
   attitudeLevels?: readonly AdrenalineAttitudeLevel[];
   /** Fixed texts printed by the block, as the sheet words them. */
   notes?: readonly string[];
@@ -1500,9 +1502,8 @@ export const RELATIONS_PRESENTATION = definePresentation({
           paths: ["/pnjs"],
           fieldRows: [
             ["numero", "nom"],
-            ["attitude"],
+            ["attitude", "reliesA"],
             ["lien"],
-            ["reliesA"],
             ["ceQuiLuiEstArrive"],
             ["notes"],
           ],
