@@ -18,6 +18,7 @@ ceQuOnMeDoit = "Je lui ai cédé ma dernière dose d'antibiotiques."
 [[pnjs]]
 numero = 1
 nom = "Le docteur Ferran"
+genre = "masculin"
 attitude = "amicale"
 lien = { type = "travail", description = "ancien chef de service" }
 reliesA = [2]
@@ -28,6 +29,7 @@ toucheParLeDrame = true
 [[pnjs]]
 numero = 2
 nom = "Joël Ferran"
+genre = "masculin"
 attitude = "inamicale"
 lien = { type = "familial", description = "neveu du docteur" }
 reliesA = [1]
@@ -35,6 +37,7 @@ reliesA = [1]
 [[pnjs]]
 numero = 3
 nom = "Sœur Agathe"
+genre = "feminin"
 attitude = "indifferente"
 lien = { type = "amitie" }
 resume = "Disparue depuis l'attaque du marché."
