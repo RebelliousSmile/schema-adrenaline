@@ -886,7 +886,7 @@ export const PJ_PRESENTATION = definePresentation({
     },
     {
       id: "identite",
-      label: "Identité",
+      label: "Verso de la fiche",
       order: 60,
       layout: "columns",
       columns: 3,

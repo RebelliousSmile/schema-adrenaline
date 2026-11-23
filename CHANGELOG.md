@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - The printed pages of the player sheet change. The notes page is gone: `pages` lists
   `recto` and `verso` only, and a page no longer carries `notesPath`. The game notes
-  (`notesDePartie`) now sit in the Identity section, on the back of the sheet, under the
+  (`notesDePartie`) now sit in the back-of-sheet section (`identite`, labelled « Verso de la fiche »), on the back of the sheet, under the
   identity card, the portrait and the three texts. A consumer that drew a separate
   notes page reads the block `notes-de-partie` of the section `identite` instead.
   The header (name, game settings, XP) stays at the top of the front. Procedure: drop the
