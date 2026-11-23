@@ -77,6 +77,13 @@ jobs:
           tarball=$(npm pack --silent --pack-destination "$RUNNER_TEMP" | tail -n 1)
           npm install --no-save --legacy-peer-deps --prefix ../handbook-host "$RUNNER_TEMP/$tarball"
 
+      # The theme assertion of a current Handbook reads the stylesheet it builds: a tagged release
+      # is checked out with the same need only when its script says so, so only `main` is built here.
+      - name: Build the unreleased host
+        if: steps.handbook-ref.outputs.tag == 'main'
+        working-directory: handbook-host
+        run: npm run build:bundle
+
       # Handbook's source-assertion script (tools/assert-adrenaline-source.mjs) is
       # deliberately not run here. It only exists on the frozen 2.7.x tags, where its
       # harness hardcodes the pack version it expects (`0.2.0`), so it fails on every
