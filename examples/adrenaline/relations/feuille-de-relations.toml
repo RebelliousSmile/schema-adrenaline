@@ -1,18 +1,19 @@
 personnage = "Claire Vasseur"
 joueur = "Camille"
 partie = "Les Veilleurs"
-testsDeDrame = 1
 nombreDAutresPersonnages = 3
 
 [[autresPersonnages]]
 nom = "Malik"
+genre = "masculin"
 ceQueJeSais = "Ancien pompier, il cache une morsure au bras gauche."
 ceQueJeLuiDois = "Il m'a sortie de l'entrepôt en flammes."
 
 [[autresPersonnages]]
 nom = "Inès"
+genre = "feminin"
 ceQueJeSais = "Elle connaît les tunnels sous la gare."
-ceQuIlMeDoit = "Je lui ai cédé ma dernière dose d'antibiotiques."
+ceQuOnMeDoit = "Je lui ai cédé ma dernière dose d'antibiotiques."
 
 [[pnjs]]
 numero = 1
@@ -22,6 +23,7 @@ lien = { type = "travail", description = "ancien chef de service" }
 reliesA = [2]
 resume = "Retranché dans l'aile nord de l'hôpital."
 notes = "Je me méfie de ses silences."
+testDeDrame = true
 
 [[pnjs]]
 numero = 2

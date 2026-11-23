@@ -3,10 +3,12 @@
   "nombreDAutresPersonnages": 2,
   "autresPersonnages": [
     {
-      "nom": "Malik"
+      "nom": "Malik",
+      "genre": "masculin"
     },
     {
-      "nom": "Inès"
+      "nom": "Inès",
+      "genre": "feminin"
     }
   ]
 }

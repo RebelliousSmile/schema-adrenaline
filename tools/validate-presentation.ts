@@ -38,10 +38,9 @@ const FORMS = new Set([
   "circle-row",
   "pc-ties",
   "npc-entries",
-  "counter",
 ]);
 /** The forms only the relationship sheet prints. */
-const RELATIONS_FORMS = new Set(["pc-ties", "npc-entries", "counter"]);
+const RELATIONS_FORMS = new Set(["pc-ties", "npc-entries"]);
 /** Forms whose `fieldRows` name fields: the identity grid, and the items of the relationship lists. */
 const FIELD_ROW_FORMS = new Set(["identity-fields", "pc-ties", "npc-entries"]);
 /** The blocks of the relationship sheet: form and paths, by block id. */
@@ -52,7 +51,6 @@ const RELATIONS_BLOCKS: Record<string, { form: string; paths: string[]; countPat
     paths: ["/autresPersonnages"],
     countPath: "/nombreDAutresPersonnages",
   },
-  testsDeDrame: { form: "counter", paths: ["/testsDeDrame"] },
   pnjs: { form: "npc-entries", paths: ["/pnjs"] },
 };
 const PHYSICAL_LOCATIONS = [
@@ -808,6 +806,8 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.notes === undefined ? [] : ["notes"]),
           ...(block.minimumRows === undefined ? [] : ["minimumRows"]),
           ...(block.countPath === undefined ? [] : ["countPath"]),
+          ...(block.genderedLabels === undefined ? [] : ["genderedLabels"]),
+          ...(block.display === undefined ? [] : ["display"]),
           "paths",
         ],
         blockWhere,
@@ -883,9 +883,11 @@ export function validatePresentation(source: unknown, target: Target): void {
           fieldNode.type === "array" ? obj(fieldNode.items, `${blockWhere}.items`) : fieldNode;
         // Only the player sheet prints identity fields in blocks of their own (the constraints,
         // the history, the personality): those are not part of its grid. Elsewhere every field is.
+        const genderKeys = ((block.genderedLabels ?? []) as Obj[]).map((label) => label.genderKey);
         const fields = Object.fromEntries(
           Object.entries(obj(fieldHolder.properties, blockWhere)).filter(
             ([name]) =>
+              !genderKeys.includes(name) &&
               !(
                 target === "pj" &&
                 PJ_IDENTITY_SIBLINGS.includes(name) &&
@@ -1206,6 +1208,52 @@ export function validatePresentation(source: unknown, target: Target): void {
             Number(counted.node.default) <= Number(counted.node.maximum),
           `${blockWhere}.countPath must be bounded by the places the list holds`,
         );
+      }
+      if (block.genderedLabels !== undefined) {
+        assert.equal(
+          block.form,
+          "pc-ties",
+          `${blockWhere}.genderedLabels needs the other characters`,
+        );
+        const holder = nodeAt(schema, (block.paths as string[])[0], blockWhere).node;
+        const properties = obj(
+          obj(holder.items, `${blockWhere}.items`).properties,
+          `${blockWhere}.properties`,
+        );
+        const labelled = block.genderedLabels;
+        assert.ok(
+          Array.isArray(labelled) && labelled.length > 0,
+          `${blockWhere}.genderedLabels must not be empty`,
+        );
+        (labelled as unknown[]).forEach((raw, i) => {
+          const labelWhere = `${blockWhere}.genderedLabels.${i}`;
+          const entry = obj(raw, labelWhere);
+          keys(entry, ["key", "genderKey", "labels"], labelWhere);
+          assert.ok(
+            typeof entry.key === "string" && entry.key in properties,
+            `${labelWhere}.key must name a field of the list`,
+          );
+          const gender = obj(properties[entry.genderKey as string], `${labelWhere}.genderKey`);
+          assert.ok(
+            Array.isArray(gender.enum) && gender.enum.length > 0,
+            `${labelWhere}.genderKey must name an enumeration`,
+          );
+          const labels = obj(entry.labels, `${labelWhere}.labels`);
+          assert.deepEqual(
+            Object.keys(labels).sort(),
+            ["default", ...(gender.enum as string[])].sort(),
+            `${labelWhere}.labels must word every gender, and the absent one`,
+          );
+          for (const label of Object.values(labels))
+            assert.ok(
+              typeof label === "string" && label.trim().length > 0,
+              `${labelWhere}.labels must be text`,
+            );
+        });
+      }
+      if (block.display !== undefined) {
+        assert.equal(block.form, "npc-entries", `${blockWhere}.display needs NPC entries`);
+        assert.equal(block.display, "table", `${blockWhere}.display must be table`);
       }
       if (block.attitudeLevels !== undefined) {
         assert.equal(block.form, "npc-entries", `${blockWhere}.attitudeLevels needs NPC entries`);
@@ -2707,9 +2755,42 @@ if (process.argv.includes("--self-test")) {
     /pnjs must publish its attitude levels/,
   );
   refuseRelations(
-    "NPC entries on one column",
-    (value) => (relationsBlock(value, "pnjs").columns = 1),
+    "two fields in a table column of the NPCs",
+    (value) => {
+      const rows = relationsBlock(value, "pnjs").fieldRows as string[][];
+      rows[0].push(...rows.splice(1, 1)[0]);
+      relationsBlock(value, "pnjs").columns = 1;
+    },
     /pnjs\.fieldRows\.0 must fit the block columns/,
+  );
+  refuseRelations(
+    "a gendered label for a field the list does not hold",
+    (value) =>
+      ((relationsBlock(value, "autresPersonnages").genderedLabels as Obj[])[0].key = "inconnu"),
+    /genderedLabels\.0\.key must name a field of the list/,
+  );
+  refuseRelations(
+    "a gendered label that forgets a gender",
+    (value) =>
+      delete obj(
+        (relationsBlock(value, "autresPersonnages").genderedLabels as Obj[])[0].labels,
+        "labels",
+      ).feminin,
+    /genderedLabels\.0\.labels must word every gender, and the absent one/,
+  );
+  refuseRelations(
+    "gendered labels on the NPCs",
+    (value) =>
+      (relationsBlock(value, "pnjs").genderedLabels = relationsBlock(
+        value,
+        "autresPersonnages",
+      ).genderedLabels),
+    /pnjs\.genderedLabels needs the other characters/,
+  );
+  refuseRelations(
+    "a table display on the other characters",
+    (value) => (relationsBlock(value, "autresPersonnages").display = "table"),
+    /autresPersonnages\.display needs NPC entries/,
   );
   refuseRelations(
     "the other characters without their count",

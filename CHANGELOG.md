@@ -14,7 +14,11 @@ All notable changes to this project will be documented in this file.
   with no modifier. `pnjs` holds up to 10 NPCs, each with a sheet number from 1 to 99
   (so a second sheet can carry on the numbering), a name, an attitude, a link (family,
   friendship or work, with a short precision), the numbers of the NPCs it is linked
-  to, what happened to it and notes. `testsDeDrame` counts the drama tests made. Every
+  to, what happened to it, notes and whether a drama test was made on it (`testDeDrame`: one
+  or several tests per sheet, the tick sits on each NPC concerned). `genre` of an other
+  player character (`masculin`, `feminin` or `neutre`) is not printed: the presentation
+  publishes the labels it picks (`genderedLabels`), « Ce qu'iel me doit » when absent. The
+  NPCs print as a table (`display: "table"`): a column per field, a row per slot. Every
   text and every list publishes its capacity (`maxLength`, `maxItems`): the capacities
   are those of a printed page, not rules of the game.
 - The social modifier of an NPC is deduced from its attitude and never entered: the

@@ -1,0 +1,9 @@
+{
+  "personnage": "Claire Vasseur",
+  "autresPersonnages": [
+    {
+      "nom": "Malik",
+      "genre": "autre"
+    }
+  ]
+}

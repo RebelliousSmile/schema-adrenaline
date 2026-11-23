@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { RELATIONS_PRESENTATION } from "../../presentation.js";
 import { Meta } from "../common/meta.js";
-import { Compte } from "../common/primitives.js";
 
 /**
  * La feuille de relations : un document A4 séparé de la fiche PJ, propre à un
@@ -57,6 +56,16 @@ export const AttitudeDePnj = z
     examples: ["amicale"],
   });
 
+/**
+ * Genre d'un autre personnage joueur. Il ne s'imprime pas : il choisit l'accord de
+ * l'intitulé « Ce qu'… me doit » que la présentation publie. Absent, l'intitulé est neutre.
+ */
+export const GenreDePersonnage = z.enum(["masculin", "feminin", "neutre"]).meta({
+  description:
+    "Genre de l'autre personnage joueur : il accorde l'intitulé de ce qu'il, elle ou iel doit au personnage. Il ne s'imprime pas. Absent, l'intitulé est neutre.",
+  examples: ["feminin"],
+});
+
 /** Les trois types de lien de la session zéro. */
 export const TypeDeLien = z.enum(["familial", "amitie", "travail"]).meta({
   description: "Type de lien entre le personnage et le PNJ : familial, amitié ou travail.",
@@ -81,14 +90,16 @@ const AutrePersonnage = z
       description: "Nom de l'autre personnage joueur.",
       examples: ["Malik"],
     }),
+    genre: GenreDePersonnage.optional(),
     ceQueJeSais: texte(CE_QUE_JE_SAIS_CAPACITE).optional().meta({
-      description: "Ce que le personnage sait de lui.",
+      description: "Ce que le personnage sait de cet autre personnage.",
     }),
     ceQueJeLuiDois: texte(DETTE_CAPACITE).optional().meta({
-      description: "Ce que le personnage lui doit.",
+      description: "Ce que le personnage doit à cet autre personnage.",
     }),
-    ceQuIlMeDoit: texte(DETTE_CAPACITE).optional().meta({
-      description: "Ce qu'il doit au personnage.",
+    ceQuOnMeDoit: texte(DETTE_CAPACITE).optional().meta({
+      description:
+        "Ce que cet autre personnage doit au personnage. L'intitulé imprimé s'accorde avec son genre.",
     }),
   })
   .meta({
@@ -136,6 +147,14 @@ const Pnj = z
       description:
         "Notes libres : l'attitude du personnage envers le PNJ, son autorité sociale, les nuances.",
     }),
+    testDeDrame: z
+      .boolean()
+      .optional()
+      .meta({
+        description:
+          "Un test de drame a été fait sur ce PNJ. On peut en faire plusieurs sur une même feuille : la coche se pose sur chaque PNJ concerné, et le décompte se lit en les comptant.",
+        examples: [true],
+      }),
   })
   .meta({ description: "Un PNJ connu du personnage, repéré par son numéro." });
 
@@ -168,11 +187,6 @@ export const FeuilleDeRelations = z
     autresPersonnages: z.array(AutrePersonnage).max(AUTRES_PJ_EMPLACEMENTS).optional().meta({
       description:
         "Les autres personnages joueurs, en haut de la feuille : six emplacements au plus, par rangées de quatre.",
-    }),
-    testsDeDrame: Compte.optional().meta({
-      description:
-        "Nombre de tests de drame faits. C'est un décompte, jamais déduit du nombre de PNJ morts.",
-      examples: [2],
     }),
     pnjs: z.array(Pnj).max(PNJ_EMPLACEMENTS).optional().meta({
       description:

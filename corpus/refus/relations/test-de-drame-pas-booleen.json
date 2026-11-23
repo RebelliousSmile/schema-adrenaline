@@ -1,0 +1,10 @@
+{
+  "personnage": "Claire Vasseur",
+  "pnjs": [
+    {
+      "numero": 1,
+      "nom": "Le docteur Ferran",
+      "testDeDrame": 2
+    }
+  ]
+}

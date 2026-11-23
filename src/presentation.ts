@@ -36,8 +36,7 @@ export type AdrenalinePresentationForm =
   | "wound-circles"
   | "circle-row"
   | "pc-ties"
-  | "npc-entries"
-  | "counter";
+  | "npc-entries";
 
 /** A location of the player sheet grid, with the d10 range that designates it. */
 export type AdrenalineLocationCell = { id: string; label: string; range: string };
@@ -65,6 +64,22 @@ export type AdrenalineThresholdLevel = {
   key: "superficiel" | "leger" | "grave" | "profond";
   label: string;
   malus: 1 | 2 | 3 | 4;
+};
+
+/**
+ * A printed label whose wording follows a gender: the field `key` is worded by `labels[item[genderKey]]`,
+ * or by `labels.default` when the item carries no gender. The gender field is not printed (it needs no
+ * place in `fieldRows`). The labels name every value of the enum of `genderKey`, in its order.
+ */
+export type AdrenalineGenderedLabel = {
+  key: string;
+  genderKey: string;
+  labels: {
+    default: string;
+    masculin: string;
+    feminin: string;
+    neutre: string;
+  };
 };
 
 /**
@@ -269,6 +284,14 @@ export type AdrenalinePresentationBlock = {
   thresholdLevels?: readonly AdrenalineThresholdLevel[];
   /** `npc-entries` only: the attitude levels and the social modifier each one sets (a hint for editors: the sheet does not print it). */
   attitudeLevels?: readonly AdrenalineAttitudeLevel[];
+  /** `pc-ties` only: the labels whose wording follows a gender the document carries (the gender itself is not printed). */
+  genderedLabels?: readonly AdrenalineGenderedLabel[];
+  /**
+   * `npc-entries` only: `"table"` prints the entries as one table, a row per slot, each row of
+   * `fieldRows` being a column headed by its field name (the keys of a row share one cell). Absent,
+   * each entry is a card laid out by `fieldRows` and `columns`.
+   */
+  display?: "table";
   /** Fixed texts printed by the block, as the sheet words them. */
   notes?: readonly string[];
   /**
@@ -1472,7 +1495,19 @@ export const RELATIONS_PRESENTATION = definePresentation({
           columns: 1,
           form: "pc-ties",
           paths: ["/autresPersonnages"],
-          fieldRows: [["nom"], ["ceQueJeSais"], ["ceQueJeLuiDois"], ["ceQuIlMeDoit"]],
+          fieldRows: [["nom"], ["ceQueJeSais"], ["ceQueJeLuiDois"], ["ceQuOnMeDoit"]],
+          genderedLabels: [
+            {
+              key: "ceQuOnMeDoit",
+              genderKey: "genre",
+              labels: {
+                default: "Ce qu'iel me doit",
+                masculin: "Ce qu'il me doit",
+                feminin: "Ce qu'elle me doit",
+                neutre: "Ce qu'iel me doit",
+              },
+            },
+          ],
           countPath: "/nombreDAutresPersonnages",
         },
       ],
@@ -1482,25 +1517,27 @@ export const RELATIONS_PRESENTATION = definePresentation({
       label: "PNJ",
       order: 3,
       layout: "grid",
-      columns: 2,
+      columns: 1,
       blocks: [
-        {
-          id: "testsDeDrame",
-          label: "Tests de drame",
-          order: 1,
-          layout: "stack",
-          form: "counter",
-          paths: ["/testsDeDrame"],
-        },
         {
           id: "pnjs",
           label: "PNJ",
-          order: 2,
+          order: 1,
           layout: "stack",
-          columns: 2,
+          columns: 1,
           form: "npc-entries",
+          display: "table",
           paths: ["/pnjs"],
-          fieldRows: [["numero", "nom"], ["attitude", "reliesA"], ["lien"], ["resume"], ["notes"]],
+          fieldRows: [
+            ["numero"],
+            ["nom"],
+            ["attitude"],
+            ["reliesA"],
+            ["lien"],
+            ["resume"],
+            ["notes"],
+            ["testDeDrame"],
+          ],
           attitudeLevels: ATTITUDE_LEVELS,
         },
       ],

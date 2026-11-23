@@ -630,7 +630,13 @@
       "expect": "reject"
     },
     {
-      "path": "corpus/refus/relations/tests-de-drame-negatif.json",
+      "path": "corpus/refus/relations/genre-inconnu.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/test-de-drame-pas-booleen.json",
       "target": "relations",
       "format": "json",
       "expect": "reject"

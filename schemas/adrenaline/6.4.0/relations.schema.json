@@ -52,20 +52,32 @@
               "Malik"
             ]
           },
+          "genre": {
+            "type": "string",
+            "enum": [
+              "masculin",
+              "feminin",
+              "neutre"
+            ],
+            "description": "Genre de l'autre personnage joueur : il accorde l'intitulé de ce qu'il, elle ou iel doit au personnage. Il ne s'imprime pas. Absent, l'intitulé est neutre.",
+            "examples": [
+              "feminin"
+            ]
+          },
           "ceQueJeSais": {
-            "description": "Ce que le personnage sait de lui.",
+            "description": "Ce que le personnage sait de cet autre personnage.",
             "type": "string",
             "minLength": 1,
             "maxLength": 160
           },
           "ceQueJeLuiDois": {
-            "description": "Ce que le personnage lui doit.",
+            "description": "Ce que le personnage doit à cet autre personnage.",
             "type": "string",
             "minLength": 1,
             "maxLength": 100
           },
-          "ceQuIlMeDoit": {
-            "description": "Ce qu'il doit au personnage.",
+          "ceQuOnMeDoit": {
+            "description": "Ce que cet autre personnage doit au personnage. L'intitulé imprimé s'accorde avec son genre.",
             "type": "string",
             "minLength": 1,
             "maxLength": 100
@@ -77,15 +89,6 @@
         "additionalProperties": false,
         "description": "Un autre personnage joueur : ce qu'on sait de lui et les dettes. Aucun modificateur."
       }
-    },
-    "testsDeDrame": {
-      "description": "Nombre de tests de drame faits. C'est un décompte, jamais déduit du nombre de PNJ morts.",
-      "examples": [
-        2
-      ],
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 100
     },
     "pnjs": {
       "description": "Les PNJ connus du personnage : dix emplacements au plus. Une feuille pleine se poursuit dans un second document.",
@@ -188,6 +191,13 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 120
+          },
+          "testDeDrame": {
+            "description": "Un test de drame a été fait sur ce PNJ. On peut en faire plusieurs sur une même feuille : la coche se pose sur chaque PNJ concerné, et le décompte se lit en les comptant.",
+            "examples": [
+              true
+            ],
+            "type": "boolean"
           }
         },
         "required": [
@@ -384,8 +394,20 @@
                 "ceQueJeLuiDois"
               ],
               [
-                "ceQuIlMeDoit"
+                "ceQuOnMeDoit"
               ]
+            ],
+            "genderedLabels": [
+              {
+                "key": "ceQuOnMeDoit",
+                "genderKey": "genre",
+                "labels": {
+                  "default": "Ce qu'iel me doit",
+                  "masculin": "Ce qu'il me doit",
+                  "feminin": "Ce qu'elle me doit",
+                  "neutre": "Ce qu'iel me doit"
+                }
+              }
             ],
             "countPath": "/nombreDAutresPersonnages"
           }
@@ -396,35 +418,30 @@
         "label": "PNJ",
         "order": 3,
         "layout": "grid",
-        "columns": 2,
+        "columns": 1,
         "blocks": [
-          {
-            "id": "testsDeDrame",
-            "label": "Tests de drame",
-            "order": 1,
-            "layout": "stack",
-            "form": "counter",
-            "paths": [
-              "/testsDeDrame"
-            ]
-          },
           {
             "id": "pnjs",
             "label": "PNJ",
-            "order": 2,
+            "order": 1,
             "layout": "stack",
-            "columns": 2,
+            "columns": 1,
             "form": "npc-entries",
+            "display": "table",
             "paths": [
               "/pnjs"
             ],
             "fieldRows": [
               [
-                "numero",
+                "numero"
+              ],
+              [
                 "nom"
               ],
               [
-                "attitude",
+                "attitude"
+              ],
+              [
                 "reliesA"
               ],
               [
@@ -435,6 +452,9 @@
               ],
               [
                 "notes"
+              ],
+              [
+                "testDeDrame"
               ]
             ],
             "attitudeLevels": [
