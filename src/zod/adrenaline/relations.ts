@@ -147,12 +147,12 @@ const Pnj = z
       description:
         "Notes libres : l'attitude du personnage envers le PNJ, son autorité sociale, les nuances.",
     }),
-    testDeDrame: z
+    toucheParLeDrame: z
       .boolean()
       .optional()
       .meta({
         description:
-          "Un test de drame a été fait sur ce PNJ. On peut en faire plusieurs sur une même feuille : la coche se pose sur chaque PNJ concerné, et le décompte se lit en les comptant.",
+          "Le drame a touché ce PNJ. Plusieurs PNJ peuvent l'être sur une même feuille : la coche se pose sur chaque PNJ concerné.",
         examples: [true],
       }),
   })

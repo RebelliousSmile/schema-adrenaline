@@ -636,7 +636,7 @@
       "expect": "reject"
     },
     {
-      "path": "corpus/refus/relations/test-de-drame-pas-booleen.json",
+      "path": "corpus/refus/relations/touche-par-le-drame-pas-booleen.json",
       "target": "relations",
       "format": "json",
       "expect": "reject"

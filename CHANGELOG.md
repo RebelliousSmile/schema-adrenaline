@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
   with no modifier. `pnjs` holds up to 10 NPCs, each with a sheet number from 1 to 99
   (so a second sheet can carry on the numbering), a name, an attitude, a link (family,
   friendship or work, with a short precision), the numbers of the NPCs it is linked
-  to, what happened to it, notes and whether a drama test was made on it (`testDeDrame`: one
+  to, what happened to it, notes and whether the drama touched it (`toucheParLeDrame`: one
   or several tests per sheet, the tick sits on each NPC concerned). `genre` of an other
   player character (`masculin`, `feminin` or `neutre`) is not printed: the presentation
   publishes the labels it picks (`genderedLabels`), « Ce qu'iel me doit » when absent. The

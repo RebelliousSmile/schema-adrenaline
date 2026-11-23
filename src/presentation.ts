@@ -1536,7 +1536,7 @@ export const RELATIONS_PRESENTATION = definePresentation({
             ["lien"],
             ["resume"],
             ["notes"],
-            ["testDeDrame"],
+            ["toucheParLeDrame"],
           ],
           attitudeLevels: ATTITUDE_LEVELS,
         },

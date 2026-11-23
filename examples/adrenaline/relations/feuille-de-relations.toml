@@ -23,7 +23,7 @@ lien = { type = "travail", description = "ancien chef de service" }
 reliesA = [2]
 resume = "Retranché dans l'aile nord de l'hôpital."
 notes = "Je me méfie de ses silences."
-testDeDrame = true
+toucheParLeDrame = true
 
 [[pnjs]]
 numero = 2

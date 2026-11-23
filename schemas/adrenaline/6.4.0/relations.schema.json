@@ -192,8 +192,8 @@
             "minLength": 1,
             "maxLength": 120
           },
-          "testDeDrame": {
-            "description": "Un test de drame a été fait sur ce PNJ. On peut en faire plusieurs sur une même feuille : la coche se pose sur chaque PNJ concerné, et le décompte se lit en les comptant.",
+          "toucheParLeDrame": {
+            "description": "Le drame a touché ce PNJ. Plusieurs PNJ peuvent l'être sur une même feuille : la coche se pose sur chaque PNJ concerné.",
             "examples": [
               true
             ],
@@ -454,7 +454,7 @@
                 "notes"
               ],
               [
-                "testDeDrame"
+                "toucheParLeDrame"
               ]
             ],
             "attitudeLevels": [
