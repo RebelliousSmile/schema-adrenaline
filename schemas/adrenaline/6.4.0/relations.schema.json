@@ -26,9 +26,19 @@
       "minLength": 1,
       "maxLength": 60
     },
+    "nombreDAutresPersonnages": {
+      "description": "Nombre d'emplacements « Autres personnages » imprimés, de 1 à 6 : la table compte autant de personnages joueurs que la feuille en a besoin. Absent, la feuille en imprime quatre, sur une seule rangée ; au-delà de quatre, les emplacements passent sur une seconde rangée. Les emplacements remplis s'impriment toujours, même au-delà de ce nombre.",
+      "default": 4,
+      "examples": [
+        3
+      ],
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    },
     "autresPersonnages": {
-      "description": "Les autres personnages joueurs, en haut de la feuille : quatre emplacements au plus.",
-      "maxItems": 4,
+      "description": "Les autres personnages joueurs, en haut de la feuille : six emplacements au plus, par rangées de quatre.",
+      "maxItems": 6,
       "type": "array",
       "items": {
         "type": "object",
@@ -376,7 +386,8 @@
               [
                 "ceQuIlMeDoit"
               ]
-            ]
+            ],
+            "countPath": "/nombreDAutresPersonnages"
           }
         ]
       },

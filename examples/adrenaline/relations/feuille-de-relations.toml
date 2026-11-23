@@ -2,6 +2,7 @@ personnage = "Claire Vasseur"
 joueur = "Camille"
 partie = "Les Veilleurs"
 testsDeDrame = 1
+nombreDAutresPersonnages = 3
 
 [[autresPersonnages]]
 nom = "Malik"

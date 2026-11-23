@@ -570,6 +570,12 @@
       "expect": "accept"
     },
     {
+      "path": "corpus/temoins/relations/deux-autres-pj.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "accept"
+    },
+    {
       "path": "corpus/refus/relations/personnage-absent.json",
       "target": "relations",
       "format": "json",
@@ -589,6 +595,18 @@
     },
     {
       "path": "corpus/refus/relations/autre-pj-en-trop.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/nombre-d-autres-pj-nul.json",
+      "target": "relations",
+      "format": "json",
+      "expect": "reject"
+    },
+    {
+      "path": "corpus/refus/relations/nombre-d-autres-pj-en-trop.json",
       "target": "relations",
       "format": "json",
       "expect": "reject"

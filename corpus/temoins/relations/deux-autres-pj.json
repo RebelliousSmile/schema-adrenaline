@@ -1,0 +1,12 @@
+{
+  "personnage": "Claire Vasseur",
+  "nombreDAutresPersonnages": 2,
+  "autresPersonnages": [
+    {
+      "nom": "Malik"
+    },
+    {
+      "nom": "Inès"
+    }
+  ]
+}

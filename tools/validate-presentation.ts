@@ -45,9 +45,13 @@ const RELATIONS_FORMS = new Set(["pc-ties", "npc-entries", "counter"]);
 /** Forms whose `fieldRows` name fields: the identity grid, and the items of the relationship lists. */
 const FIELD_ROW_FORMS = new Set(["identity-fields", "pc-ties", "npc-entries"]);
 /** The blocks of the relationship sheet: form and paths, by block id. */
-const RELATIONS_BLOCKS: Record<string, { form: string; paths: string[] }> = {
+const RELATIONS_BLOCKS: Record<string, { form: string; paths: string[]; countPath?: string }> = {
   entete: { form: "name-card", paths: ["/personnage", "/joueur", "/partie"] },
-  autresPersonnages: { form: "pc-ties", paths: ["/autresPersonnages"] },
+  autresPersonnages: {
+    form: "pc-ties",
+    paths: ["/autresPersonnages"],
+    countPath: "/nombreDAutresPersonnages",
+  },
   testsDeDrame: { form: "counter", paths: ["/testsDeDrame"] },
   pnjs: { form: "npc-entries", paths: ["/pnjs"] },
 };
@@ -803,6 +807,7 @@ export function validatePresentation(source: unknown, target: Target): void {
           ...(block.attitudeLevels === undefined ? [] : ["attitudeLevels"]),
           ...(block.notes === undefined ? [] : ["notes"]),
           ...(block.minimumRows === undefined ? [] : ["minimumRows"]),
+          ...(block.countPath === undefined ? [] : ["countPath"]),
           "paths",
         ],
         blockWhere,
@@ -1184,6 +1189,24 @@ export function validatePresentation(source: unknown, target: Target): void {
           `${blockWhere}.notes differ from the fixed texts of the sheet`,
         );
       }
+      if (block.countPath !== undefined) {
+        assert.equal(block.form, "pc-ties", `${blockWhere}.countPath needs the other characters`);
+        const counted = nodeAt(schema, block.countPath, `${blockWhere}.countPath`);
+        assert.ok(
+          counted.node.type === "integer" && counted.node.default !== undefined,
+          `${blockWhere}.countPath must name an integer that publishes its default`,
+        );
+        assert.ok(
+          !(block.paths as string[]).includes(block.countPath as string),
+          `${blockWhere}.countPath must not repeat a path of the block`,
+        );
+        const list = nodeAt(schema, (block.paths as string[])[0], blockWhere).node;
+        assert.ok(
+          Number(counted.node.maximum) === Number(list.maxItems) &&
+            Number(counted.node.default) <= Number(counted.node.maximum),
+          `${blockWhere}.countPath must be bounded by the places the list holds`,
+        );
+      }
       if (block.attitudeLevels !== undefined) {
         assert.equal(block.form, "npc-entries", `${blockWhere}.attitudeLevels needs NPC entries`);
         const levels = block.attitudeLevels;
@@ -1246,6 +1269,10 @@ export function validatePresentation(source: unknown, target: Target): void {
       for (const raw of block.paths) {
         coverage.add(nodeAt(schema, raw, blockWhere).root);
         usedPaths.push(raw as string);
+      }
+      if (block.countPath !== undefined) {
+        coverage.add(nodeAt(schema, block.countPath, blockWhere).root);
+        usedPaths.push(block.countPath as string);
       }
     }
   }
@@ -1410,6 +1437,11 @@ export function validatePresentation(source: unknown, target: Target): void {
         blockOf(sectionList, id).paths,
         expected.paths,
         `${target}.${id} must read ${expected.paths.join(", ")}`,
+      );
+      assert.equal(
+        blockOf(sectionList, id).countPath,
+        expected.countPath,
+        `${target}.${id} has wrong countPath`,
       );
     }
   }
@@ -2678,6 +2710,21 @@ if (process.argv.includes("--self-test")) {
     "NPC entries on one column",
     (value) => (relationsBlock(value, "pnjs").columns = 1),
     /pnjs\.fieldRows\.0 must fit the block columns/,
+  );
+  refuseRelations(
+    "the other characters without their count",
+    (value) => delete relationsBlock(value, "autresPersonnages").countPath,
+    /root properties must be covered/,
+  );
+  refuseRelations(
+    "a count that is not an integer",
+    (value) => (relationsBlock(value, "autresPersonnages").countPath = "/personnage"),
+    /countPath must name an integer that publishes its default/,
+  );
+  refuseRelations(
+    "a count carried by another form",
+    (value) => (relationsBlock(value, "pnjs").countPath = "/nombreDAutresPersonnages"),
+    /pnjs\.countPath needs the other characters/,
   );
   const npcEntriesOnNpc = clone(schemas.get("pnj") as Obj);
   (sectionsOf(npcEntriesOnNpc)[0].blocks as Obj[])[0].form = "npc-entries";

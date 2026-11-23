@@ -8,8 +8,9 @@ All notable changes to this project will be documented in this file.
 
 - A fourth document target, `relations`: the relationship sheet of a character, one
   A4 page separate from the player sheet. A header line carries `personnage`
-  (required), `joueur` and `partie`. `autresPersonnages` holds up to 4 other player
-  characters, each with what the character knows of them and the debts both ways,
+  (required), `joueur` and `partie`. `autresPersonnages` holds up to 6 other player
+  characters (`nombreDAutresPersonnages`, 1 to 6, 4 by default, sets how many places
+  the sheet prints, four to a row), each with what the character knows of them and the debts both ways,
   with no modifier. `pnjs` holds up to 10 NPCs, each with a sheet number from 1 to 99
   (so a second sheet can carry on the numbering), a name, an attitude, a link (family,
   friendship or work, with a short precision), the numbers of the NPCs it is linked

@@ -10,8 +10,11 @@ import { Compte } from "../common/primitives.js";
  * pleine se poursuit dans un second document.
  */
 
-/** Emplacements « Autres personnages » en haut de la feuille : quatre colonnes. */
-export const AUTRES_PJ_EMPLACEMENTS = 4;
+/** Emplacements « Autres personnages » au plus : une rangée de quatre, puis deux de plus. */
+export const AUTRES_PJ_EMPLACEMENTS = 6;
+
+/** Emplacements imprimés par défaut : une seule rangée de quatre colonnes. */
+export const AUTRES_PJ_PAR_DEFAUT = 4;
 
 /** Emplacements de PNJ : deux colonnes de cinq rangées. */
 export const PNJ_EMPLACEMENTS = 10;
@@ -151,9 +154,20 @@ export const FeuilleDeRelations = z
         description: "Nom de la partie ou de la campagne, sur la ligne d'en-tête.",
         examples: ["Les Veilleurs"],
       }),
+    nombreDAutresPersonnages: z
+      .int()
+      .min(1)
+      .max(AUTRES_PJ_EMPLACEMENTS)
+      .optional()
+      .meta({
+        description:
+          "Nombre d'emplacements « Autres personnages » imprimés, de 1 à 6 : la table compte autant de personnages joueurs que la feuille en a besoin. Absent, la feuille en imprime quatre, sur une seule rangée ; au-delà de quatre, les emplacements passent sur une seconde rangée. Les emplacements remplis s'impriment toujours, même au-delà de ce nombre.",
+        default: AUTRES_PJ_PAR_DEFAUT,
+        examples: [3],
+      }),
     autresPersonnages: z.array(AutrePersonnage).max(AUTRES_PJ_EMPLACEMENTS).optional().meta({
       description:
-        "Les autres personnages joueurs, en haut de la feuille : quatre emplacements au plus.",
+        "Les autres personnages joueurs, en haut de la feuille : six emplacements au plus, par rangées de quatre.",
     }),
     testsDeDrame: Compte.optional().meta({
       description:

@@ -270,6 +270,13 @@ export type AdrenalinePresentationBlock = {
   /** Fixed texts printed by the block, as the sheet words them. */
   notes?: readonly string[];
   /**
+   * `pc-ties` only: JSON Pointer of the integer that sets how many places the block
+   * prints; absent from the document, the `default` of that integer in the contract
+   * applies. The places the document fills are printed even beyond it. The block
+   * section `columns` is the number of places per row.
+   */
+  countPath?: string;
+  /**
    * `ruled-list` and `weapon-lines` of the player sheet: the number of ruled
    * lines printed at least, as the sheet draws them. Lines the document enters
    * beyond it are printed after them; none is cut. It is a placement of the
@@ -1464,6 +1471,7 @@ export const RELATIONS_PRESENTATION = definePresentation({
           form: "pc-ties",
           paths: ["/autresPersonnages"],
           fieldRows: [["nom"], ["ceQueJeSais"], ["ceQueJeLuiDois"], ["ceQuIlMeDoit"]],
+          countPath: "/nombreDAutresPersonnages",
         },
       ],
     },
